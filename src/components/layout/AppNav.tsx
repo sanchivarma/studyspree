@@ -2,28 +2,31 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, Flame, Home, Settings } from "lucide-react";
+import { BarChart3, BookOpen, Flame, Home, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/hooks/useTranslation";
 
 const items = [
-  { label: "Start", href: "/", icon: Home },
-  { label: "Stats", href: "/stats", icon: BarChart3 },
-  { label: "Settings", href: "/settings", icon: Settings },
+  { label: "common.start", href: "/home", icon: Home },
+  { label: "common.study", href: "/study", icon: BookOpen },
+  { label: "common.stats", href: "/stats", icon: BarChart3 },
+  { label: "common.settings", href: "/settings", icon: Settings },
 ] as const;
 
 export function AppNav({ showStreak }: { showStreak: boolean }) {
   const pathname = usePathname();
+  const { t } = useTranslation();
 
   if (pathname.startsWith("/session")) return null;
 
   return (
     <nav
-      aria-label="Main navigation"
+      aria-label={t("common.navLabel")}
       className="fixed inset-x-0 bottom-0 z-50 h-14 border-t border-border bg-surface md:inset-y-0 md:right-auto md:h-dvh md:w-16 md:border-t-0 md:border-r"
     >
-      <div className="grid h-full grid-cols-3 items-center gap-2 px-2 md:flex md:flex-col md:gap-3 md:pt-6">
+      <div className="grid h-full grid-cols-4 items-center gap-2 px-2 md:flex md:flex-col md:gap-3 md:pt-6">
         {items.map(({ label, href, icon: Icon }) => {
-          const isActive = pathname === href || (href !== "/" && pathname.startsWith(`${href}/`));
+          const isActive = pathname === href || pathname.startsWith(`${href}/`);
 
           return (
             <Link
@@ -38,21 +41,21 @@ export function AppNav({ showStreak }: { showStreak: boolean }) {
               )}
             >
               <Icon aria-hidden="true" className="size-5" strokeWidth={1.75} />
-              <span className="text-[10px] leading-3 md:sr-only">{label}</span>
+              <span className="text-[10px] leading-3 md:sr-only">{t(label)}</span>
               <span
                 aria-hidden="true"
                 className="pointer-events-none absolute top-1/2 left-[calc(100%+12px)] hidden -translate-y-1/2 rounded-lg border border-border bg-surface-2 px-3 py-2 text-small text-foreground opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 md:block"
               >
-                {label}
+                {t(label)}
               </span>
             </Link>
           );
         })}
       </div>
-      {showStreak && (
+      {showStreak && pathname !== "/home" && pathname !== "/study" && (
         <div
           role="img"
-          aria-label="Ready when you are"
+          aria-label={t("common.ready")}
           className="absolute inset-x-0 bottom-6 hidden items-center justify-center gap-1 text-small text-text-muted md:flex"
         >
           <Flame aria-hidden="true" className="size-3.5" strokeWidth={1.75} />

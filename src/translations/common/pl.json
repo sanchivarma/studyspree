@@ -1,0 +1,28 @@
+{
+  "common": {
+    "study": "Nauka",
+    "tagline": "Wielkie cele zaczynają się od obecności",
+    "welcome": "Spokojne miejsce, by zacząć.",
+    "username": "Nazwa użytkownika",
+    "password": "Hasło",
+    "firstName": "Imię",
+    "lastName": "Nazwisko",
+    "email": "E-mail",
+    "google": "Kontynuuj z Google",
+    "facebook": "Kontynuuj z Facebookiem",
+    "or": "lub",
+    "working": "Chwileczkę…",
+    "authUnavailable": "Logowanie jest przygotowywane. Wróć wkrótce.",
+    "authError": "Nie udało się wykonać tej czynności. Spróbuj ponownie.",
+    "invalidFields": "Sprawdź pola i spróbuj ponownie.",
+    "passwordHelp": "Co najmniej 8 znaków.",
+    "language": "Język",
+    "start": "Start",
+    "stats": "Statystyki",
+    "settings": "Ustawienia",
+    "ready": "Gdy będziesz gotowy",
+    "navLabel": "Nawigacja główna",
+    "logout": "Wyloguj się",
+    "accountTabs": "Dostęp do konta"
+  }
+}

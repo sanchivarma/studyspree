@@ -3,7 +3,7 @@
 PROJECT: StudySpree — a silent study-companion web app.
 A user picks an illustrated character who studies beside them in a looping
 video scene. They run a timer, bank hours, and watch progress accumulate.
-Tagline: "Be seen without being watched."
+Tagline: "Big goals start with showing up"
 
 STACK: Next.js 15 App Router, TypeScript strict, Tailwind, shadcn/ui,
 Zustand, TanStack Query, date-fns + date-fns-tz. Backend (later): Supabase.

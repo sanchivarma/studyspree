@@ -1,0 +1,12 @@
+{
+  "recovery": {
+    "title": "Passwort zurücksetzen",
+    "help": "Gib deine E-Mail ein. Wir senden dir einen Link.",
+    "submit": "Link zum Zurücksetzen senden",
+    "backLogin": "Zurück zur Anmeldung",
+    "newPassword": "Neues Passwort",
+    "savePassword": "Passwort speichern",
+    "sent": "Falls ein Konto diese E-Mail verwendet, ist ein Link unterwegs.",
+    "saved": "Dein Passwort wurde aktualisiert."
+  }
+}

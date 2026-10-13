@@ -1,0 +1,12 @@
+{
+  "recovery": {
+    "title": "Réinitialiser le mot de passe",
+    "help": "Saisissez votre e-mail pour recevoir un lien.",
+    "submit": "Envoyer le lien",
+    "backLogin": "Retour à la connexion",
+    "newPassword": "Nouveau mot de passe",
+    "savePassword": "Enregistrer le mot de passe",
+    "sent": "Si cette adresse est associée à un compte, un lien est en route.",
+    "saved": "Votre mot de passe est mis à jour."
+  }
+}

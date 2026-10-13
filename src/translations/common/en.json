@@ -1,0 +1,28 @@
+{
+  "common": {
+    "study": "Study",
+    "tagline": "Big goals start with showing up",
+    "welcome": "A quiet place to begin.",
+    "username": "Username",
+    "password": "Password",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Email",
+    "google": "Continue with Google",
+    "facebook": "Continue with Facebook",
+    "or": "or",
+    "working": "One moment…",
+    "authUnavailable": "Sign-in is being prepared. Please come back soon.",
+    "authError": "We couldn’t complete this request. Please try once more.",
+    "invalidFields": "Please check the fields and try once more.",
+    "passwordHelp": "At least 8 characters.",
+    "language": "Language",
+    "start": "Start",
+    "stats": "Stats",
+    "settings": "Settings",
+    "ready": "Ready when you are",
+    "navLabel": "Main navigation",
+    "logout": "Sign out",
+    "accountTabs": "Account access"
+  }
+}

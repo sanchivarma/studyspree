@@ -93,6 +93,10 @@
   }
 }
 
+.start-screen-scrim {
+  background: linear-gradient(to bottom, transparent 0%, color-mix(in srgb, var(--bg) 85%, transparent) 100%);
+}
+
 .scene-placeholder-gradient {
   position: absolute;
   inset: -4%;

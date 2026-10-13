@@ -1,0 +1,11 @@
+{
+  "study": {
+    "duration": "Czas sesji",
+    "minutes": "{count} min",
+    "open": "Bez limitu",
+    "openHint": "po prostu zacznij",
+    "task": "Nad czym pracujesz? (opcjonalnie)",
+    "switchCharacter": "Zmień postać",
+    "sessionLabel": "Rozpocznij sesję nauki"
+  }
+}

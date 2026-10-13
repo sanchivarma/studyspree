@@ -1,88 +1,74 @@
 # StudySpree
 
-Be seen without being watched.
+Big goals start with showing up.
 
-## Local development
+## Run locally
 
 Requires Node.js 22 and npm.
 
-```sh
-npm install
-npm run dev
+```powershell
+npm.cmd install
+npm.cmd run dev
 ```
 
-Open http://localhost:3000. Prompt 1.2 now shows the Rainy Desk placeholder
-scene. `/session/demo`, `/session/demo/complete`, `/stats`, and `/settings`
-are blank route scaffolds for subsequent prompts.
+Open http://localhost:3000. Only `src/app/(auth)/page.tsx` owns the root URL.
 
-On Windows PowerShell, use `npm.cmd` if script execution policy blocks `npm.ps1`.
-Development uses `.next-dev` and production builds use `.next` so building
-does not disturb a running dev server. If changing this config while a dev
-server is open, restart that server once.
+## Pages
 
-```sh
-npm run typecheck
-npm run lint
-npm run test
-npm run build
+- `/`: public welcome page, translated Login/Register tabs, Google/Facebook
+  buttons, username/password login and password recovery.
+- `/home`: signed-in Start page with the actual username greeting, tagline
+  and a link to Study. No session controls or timer.
+- `/study`: BookOpen navigation item and session setup.
+- `/session/demo` and `/session/demo/complete`: session placeholders.
+- `/stats` and `/settings`: protected placeholders.
+- `/reset-password`: password update after a valid recovery link.
+
+English, German, French, Polish and Italian copy lives in separate JSON
+files under `src/translations/{common,login,register,recovery,home,study}/`. The globe updates visible text, accessible
+labels, document language and metadata. A cookie saves the preference.
+
+## Connect real authentication
+
+Follow [the Supabase setup guide](docs/supabase-setup.md). It covers project
+creation, environment keys, the RLS profile migration, private username
+lookup, email confirmation/recovery and Google/Facebook configuration.
+
+Real accounts require Supabase configuration. Profile data and usernames come
+from verified Supabase users.
+
+For local previews, `.env.local` can define `DEV_ADMIN_USERNAME`,
+`DEV_ADMIN_PASSWORD` and a random `DEV_ADMIN_SESSION_SECRET` of at least 32
+characters. The configured test login works exclusively with `npm.cmd run dev`.
+It uses a signed, HTTP-only cookie and grants no Supabase access or admin
+privileges. Production ignores these credentials.
+
+Dependencies added for authentication:
+- `@supabase/supabase-js`: real Supabase Auth and profile access.
+- `@supabase/ssr`: cookie-based sessions and token refresh.
+- `server-only`: prevents authentication secrets from entering browser code.
+
+## Checks
+
+Browser tests use the running development server on port 3000. Install Chromium
+once with `npx.cmd playwright install chromium`. `@playwright/test` was added
+to verify the translated forms, responsive layout and development login flow.
+
+
+```powershell
+npm.cmd run typecheck
+npm.cmd run lint
+npm.cmd run test
+npm.cmd run build
+npm.cmd run test:e2e
 ```
 
-## Foundation
+Development output is `.next-dev`; production output is `.next`. Restart
+the dev server after route-group or environment changes if it shows old routes.
+Inter uses `next/font` and needs Google Fonts access during its initial compile.
 
-- Next.js 15 App Router, strict TypeScript, Tailwind CSS 4.
-- shadcn/ui manual configuration: new-york, slate, CSS variables; no UI
-  components added yet. `clsx` and `tailwind-merge` implement the `cn` helper;
-  `class-variance-authority` supports future shadcn component variants, and
-  `tw-animate-css` supplies their animation utilities.
-- TanStack Query provider and Framer Motion reduced-motion policy.
-- Zustand, date-fns, date-fns-tz, Zod, Framer Motion, Lucide and clsx are
-  installed as requested for later phases; there is no feature logic yet.
-- Vitest verifies the clock's development and production behavior.
+Clock reads use `now()` in `src/lib/clock.ts`. Development offsets and
+local scene gradients are available for future timer/progress work.
 
-## Clock
-
-All current-time reads use `now()` from `src/lib/clock.ts`.
-In development, `setDevOffset(ms)` persists a browser offset under
-`ss_dev_clock_offset_ms`; `clearDevOffset()` restores real time.
-Server rendering uses real time because browser storage is unavailable.
-Production ignores offsets and the setters do nothing.
-
-Inter is loaded through `next/font` at build time and served locally at
-runtime. The initial development compile and production build need access
-to Google Fonts; this does not add a runtime font request.
-
-See `CLAUDE.md` and `AGENTS.md` for the project's rules.
-
-## Placeholder scenes (Prompt 1.2)
-
-The character registry is `src/lib/characters/registry.ts`.
-`ScenePlaceholder` accepts `slug` and optional `className`; it fills a
-positioned parent, or the viewport when no ancestor is positioned.
-
-To preview each scene, change `selectedCharacter` in `src/lib/mock/profile.ts` to
-`rain-desk`, `night-shift`, `balcony-dusk`, or `dorm-bunk`, then save.
-The default is `rain-desk`. No media files or network calls are needed
-for these backgrounds.
-
-Watch for the very slow 40-second movement. Enable reduced motion in
-your OS or browser to see a still scene. Switching tabs pauses the
-animation; returning resumes it. Resize the browser to check full-bleed
-coverage, film grain and darker edges.
-
-## App shell (Prompt 1.3)
-
-The server layout reads the mock profile and provides the selected
-character's accent to navigation. Desktop navigation is a 64px left rail;
-below the `md` breakpoint (768px), it becomes a 56px bottom bar.
-
-- Click Start, Stats and Settings; the current route has an accent pill.
-- Hover or keyboard-focus desktop icons to reveal labels; links have
-  visible focus rings and support Enter.
-- At phone width, check the three equal navigation items and the space
-  reserved above the bottom bar.
-- Visit `/session/demo` and `/session/demo/complete`: navigation and its
-  reserved padding disappear, leaving the session viewport clear.
-- Set `showStreak` to `false` in `src/lib/mock/profile.ts` to hide the
-  desktop flame and mock count. Restore it to `true` afterward.
-
-Stats, Settings and session routes still have placeholder page content.
+See `CLAUDE.md` and `AGENTS.md` for project conventions. Auth and translations
+were brought forward from the phased plan at the user's request.

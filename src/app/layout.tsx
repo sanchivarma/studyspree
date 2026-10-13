@@ -2,18 +2,25 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Providers } from "./providers";
 import "./globals.css";
+import { cookies } from "next/headers";
+import { isLocale, translate } from "@/translations";
 
 const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-inter" });
 
-export const metadata: Metadata = {
-  title: "StudySpree",
-  description: "Be seen without being watched.",
-};
+async function getLocale() {
+  const value = (await cookies()).get("ss_locale")?.value;
+  return isLocale(value) ? value : "en";
+}
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: "StudySpree", description: translate(await getLocale(), "common.tagline") };
+}
+
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const locale = await getLocale();
   return (
-    <html lang="en" className={`dark ${inter.variable}`}>
-      <body><Providers>{children}</Providers></body>
+    <html lang={locale} className={`dark ${inter.variable}`}>
+      <body><Providers initialLocale={locale}>{children}</Providers></body>
     </html>
   );
 }

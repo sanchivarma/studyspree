@@ -1,0 +1,8 @@
+{
+  "register": {
+    "title": "Register",
+    "submit": "Create account",
+    "checkEmail": "Check your email to confirm your account.",
+    "usernameHelp": "3–30 letters, numbers or underscores."
+  }
+}

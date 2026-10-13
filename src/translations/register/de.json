@@ -1,0 +1,8 @@
+{
+  "register": {
+    "title": "Registrieren",
+    "submit": "Konto erstellen",
+    "checkEmail": "Bestätige dein Konto über die E-Mail.",
+    "usernameHelp": "3–30 Buchstaben, Zahlen oder Unterstriche."
+  }
+}

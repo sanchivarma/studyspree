@@ -1,0 +1,28 @@
+{
+  "common": {
+    "study": "Studio",
+    "tagline": "I grandi obiettivi iniziano quando ti presenti",
+    "welcome": "Un posto tranquillo per iniziare.",
+    "username": "Nome utente",
+    "password": "Password",
+    "firstName": "Nome",
+    "lastName": "Cognome",
+    "email": "E-mail",
+    "google": "Continua con Google",
+    "facebook": "Continua con Facebook",
+    "or": "oppure",
+    "working": "Un momento…",
+    "authUnavailable": "Stiamo preparando l’accesso. Torna presto.",
+    "authError": "Non è stato possibile completare la richiesta. Riprova.",
+    "invalidFields": "Controlla i campi e riprova.",
+    "passwordHelp": "Almeno 8 caratteri.",
+    "language": "Lingua",
+    "start": "Inizia",
+    "stats": "Statistiche",
+    "settings": "Impostazioni",
+    "ready": "Quando sei pronto",
+    "navLabel": "Navigazione principale",
+    "logout": "Esci",
+    "accountTabs": "Accesso all’account"
+  }
+}

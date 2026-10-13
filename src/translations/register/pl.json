@@ -1,0 +1,8 @@
+{
+  "register": {
+    "title": "Rejestracja",
+    "submit": "Utwórz konto",
+    "checkEmail": "Sprawdź e-mail, aby potwierdzić konto.",
+    "usernameHelp": "3–30 liter, cyfr lub podkreśleń."
+  }
+}

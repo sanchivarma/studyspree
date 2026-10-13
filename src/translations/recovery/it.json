@@ -1,0 +1,12 @@
+{
+  "recovery": {
+    "title": "Reimposta la password",
+    "help": "Inserisci l’e-mail e ti invieremo un link.",
+    "submit": "Invia il link",
+    "backLogin": "Torna all’accesso",
+    "newPassword": "Nuova password",
+    "savePassword": "Salva password",
+    "sent": "Se questa e-mail è associata a un account, il link è in arrivo.",
+    "saved": "La password è stata aggiornata."
+  }
+}

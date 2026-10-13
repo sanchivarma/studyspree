@@ -1,0 +1,11 @@
+{
+  "study": {
+    "duration": "Sitzungsdauer",
+    "minutes": "{count} Min.",
+    "open": "Offen",
+    "openHint": "einfach anfangen",
+    "task": "Woran arbeitest du? (optional)",
+    "switchCharacter": "Charakter wechseln",
+    "sessionLabel": "Eine Lerneinheit starten"
+  }
+}

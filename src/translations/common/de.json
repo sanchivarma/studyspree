@@ -1,0 +1,28 @@
+{
+  "common": {
+    "study": "Lernen",
+    "tagline": "Große Ziele beginnen damit, dass du da bist",
+    "welcome": "Ein ruhiger Ort zum Anfangen.",
+    "username": "Benutzername",
+    "password": "Passwort",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "email": "E-Mail",
+    "google": "Mit Google fortfahren",
+    "facebook": "Mit Facebook fortfahren",
+    "or": "oder",
+    "working": "Einen Moment…",
+    "authUnavailable": "Die Anmeldung wird vorbereitet. Schau bald vorbei.",
+    "authError": "Die Anfrage konnte nicht abgeschlossen werden. Bitte versuche es erneut.",
+    "invalidFields": "Prüfe die Felder und versuche es erneut.",
+    "passwordHelp": "Mindestens 8 Zeichen.",
+    "language": "Sprache",
+    "start": "Start",
+    "stats": "Statistik",
+    "settings": "Einstellungen",
+    "ready": "Wenn du bereit bist",
+    "navLabel": "Hauptnavigation",
+    "logout": "Abmelden",
+    "accountTabs": "Kontozugang"
+  }
+}

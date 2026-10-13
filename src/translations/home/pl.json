@@ -1,0 +1,8 @@
+{
+  "home": {
+    "studyLink": "Przejdź do nauki",
+    "morning": "Dzień dobry, {username}.",
+    "afternoon": "Miłego popołudnia, {username}.",
+    "evening": "Dobry wieczór, {username}."
+  }
+}

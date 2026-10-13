@@ -3,6 +3,8 @@
 /.next-dev/
 /out/
 /coverage/
+/test-results/
+/playwright-report/
 *.tsbuildinfo
 next-env.d.ts
 .env*

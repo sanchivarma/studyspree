@@ -1,0 +1,28 @@
+{
+  "common": {
+    "study": "Étudier",
+    "tagline": "Les grands objectifs commencent par votre présence",
+    "welcome": "Un endroit calme pour commencer.",
+    "username": "Nom d’utilisateur",
+    "password": "Mot de passe",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "email": "E-mail",
+    "google": "Continuer avec Google",
+    "facebook": "Continuer avec Facebook",
+    "or": "ou",
+    "working": "Un instant…",
+    "authUnavailable": "La connexion est en préparation. Revenez bientôt.",
+    "authError": "La demande n’a pas pu être traitée. Veuillez réessayer.",
+    "invalidFields": "Vérifiez les champs et réessayez.",
+    "passwordHelp": "Au moins 8 caractères.",
+    "language": "Langue",
+    "start": "Commencer",
+    "stats": "Statistiques",
+    "settings": "Paramètres",
+    "ready": "Quand vous serez prêt",
+    "navLabel": "Navigation principale",
+    "logout": "Se déconnecter",
+    "accountTabs": "Accès au compte"
+  }
+}

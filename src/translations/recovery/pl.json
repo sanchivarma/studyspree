@@ -1,0 +1,12 @@
+{
+  "recovery": {
+    "title": "Zresetuj hasło",
+    "help": "Podaj e-mail, a wyślemy link do resetowania.",
+    "submit": "Wyślij link",
+    "backLogin": "Wróć do logowania",
+    "newPassword": "Nowe hasło",
+    "savePassword": "Zapisz hasło",
+    "sent": "Jeśli ten adres jest powiązany z kontem, link jest w drodze.",
+    "saved": "Hasło zostało zaktualizowane."
+  }
+}

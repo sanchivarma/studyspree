@@ -1,0 +1,12 @@
+{
+  "recovery": {
+    "title": "Reset your password",
+    "help": "Enter your email and we’ll send a reset link.",
+    "submit": "Send reset link",
+    "backLogin": "Back to login",
+    "newPassword": "New password",
+    "savePassword": "Save password",
+    "sent": "If an account uses this email, a reset link is on its way.",
+    "saved": "Your password is updated."
+  }
+}

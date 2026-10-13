@@ -1,0 +1,11 @@
+{
+  "study": {
+    "duration": "Session duration",
+    "minutes": "{count} min",
+    "open": "Open",
+    "openHint": "just open it",
+    "task": "What are you working on? (optional)",
+    "switchCharacter": "Switch character",
+    "sessionLabel": "Start a study session"
+  }
+}
