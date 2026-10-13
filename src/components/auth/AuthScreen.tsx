@@ -48,7 +48,7 @@ export function AuthScreen({ isConfigured, hasDevLogin = false, hasCallbackError
       <div className="relative mx-auto grid max-w-6xl gap-10 px-6 pt-6 pb-12 md:grid-cols-2 md:items-center md:gap-16 md:py-16">
         <section>
           <h1 className="max-w-lg text-4xl leading-tight font-semibold tracking-tight md:text-5xl">{t("common.tagline")}</h1>
-          <p className="mt-5 text-body text-text-muted">{t("common.welcome")}</p>
+          <p className="mt-5 text-body whitespace-pre-line text-text-muted">{t("common.welcome")}</p>
         </section>
         <section className="w-full max-w-[480px] rounded-3xl border border-border bg-surface/90 p-6 shadow-xl md:justify-self-end md:p-8">
           {mode !== "reset" ? (
