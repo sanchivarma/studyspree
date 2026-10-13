@@ -11,8 +11,8 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:3000. Prompt 1.1 intentionally renders a blank dark
-page. `/session/demo`, `/session/demo/complete`, `/stats`, and `/settings`
+Open http://localhost:3000. Prompt 1.2 now shows the Rainy Desk placeholder
+scene. `/session/demo`, `/session/demo/complete`, `/stats`, and `/settings`
 are blank route scaffolds for subsequent prompts.
 
 On Windows PowerShell, use `npm.cmd` if script execution policy blocks `npm.ps1`.
@@ -52,3 +52,19 @@ runtime. The initial development compile and production build need access
 to Google Fonts; this does not add a runtime font request.
 
 See `CLAUDE.md` and `AGENTS.md` for the project's rules.
+
+## Placeholder scenes (Prompt 1.2)
+
+The character registry is `src/lib/characters/registry.ts`.
+`ScenePlaceholder` accepts `slug` and optional `className`; it fills a
+positioned parent, or the viewport when no ancestor is positioned.
+
+To preview each scene, change the `slug` in `src/app/(app)/page.tsx` to
+`rain-desk`, `night-shift`, `balcony-dusk`, or `dorm-bunk`, then save.
+The default is `rain-desk`. No media files or network calls are needed
+for these backgrounds.
+
+Watch for the very slow 40-second movement. Enable reduced motion in
+your OS or browser to see a still scene. Switching tabs pauses the
+animation; returning resumes it. Resize the browser to check full-bleed
+coverage, film grain and darker edges.

@@ -1,3 +1,5 @@
+import { ScenePlaceholder } from "@/components/scene/ScenePlaceholder";
+
 export default function StartPage() {
-  return null;
+  return <ScenePlaceholder slug="rain-desk" />;
 }

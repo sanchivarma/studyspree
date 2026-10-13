@@ -93,6 +93,21 @@
   }
 }
 
+.scene-placeholder-gradient {
+  position: absolute;
+  inset: -4%;
+  animation: scene-breathe 40s ease-in-out infinite;
+}
+
+.scene-placeholder-vignette {
+  background: radial-gradient(ellipse at center, transparent 25%, rgba(0, 0, 0, 0.4) 100%);
+}
+
+@keyframes scene-breathe {
+  0%, 100% { transform: translate3d(-1%, 0, 0) scale(1); opacity: 0.94; }
+  50% { transform: translate3d(1%, -1%, 0) scale(1.025); opacity: 1; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation: none !important;
