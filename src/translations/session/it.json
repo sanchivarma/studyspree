@@ -1,0 +1,10 @@
+{
+  "session": {
+    "label": "Sessione di studio",
+    "progress": "Avanzamento della sessione",
+    "remaining": "{time} rimanenti",
+    "finish": "Concludi",
+    "camera": "fotocamera",
+    "sound": "Audio"
+  }
+}

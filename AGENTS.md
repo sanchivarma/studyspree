@@ -319,10 +319,10 @@ Rooms · other users · chat · AI conversation · webcam-driven avatars · cust
 > **Update this section at the end of every phase.**
 
 - **Current phase:** 1 — The Look
-- **Completed phases:** none
-- **Repository in use:** `LocalRepository` (mock data until Phase 2)
-- **Known issues:** none yet
-- **Next up:** Phase 1.1 — scaffold and design system
+- **Completed work:** scaffold, scenes, navigation, Home/Study, translated authentication and visual session screen
+- **Repository in use:** `authRepository` (Supabase plus development preview login)
+- **Known issues:** session time/progress are static; Complete is a placeholder; live Supabase setup remains external
+- **Next up:** continue the phased session implementation
 
 ---
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import { Shuffle } from "lucide-react";
 import { ScenePlaceholder } from "@/components/scene/ScenePlaceholder";
@@ -17,6 +17,11 @@ export function StartScreen({ displayName, initialHour, slug }: { displayName: s
   const router = useRouter();
   const { t } = useTranslation();
   const [selectedDuration, setSelectedDuration] = useState<(typeof durations)[number]>(5);
+  const taskRef = useRef<HTMLInputElement>(null);
+  const startSession = useCallback(() => {
+    const task = taskRef.current?.value.trim();
+    router.push(task ? `/session/demo?task=${encodeURIComponent(task)}` : "/session/demo");
+  }, [router]);
   const hour = useCurrentHour(initialHour);
   const greeting = t(hour < 12 ? "home.morning" : hour < 18 ? "home.afternoon" : "home.evening", { username: displayName });
   const style = { "--accent": getCharacter(slug).accentColor } as CSSProperties;
@@ -33,12 +38,12 @@ export function StartScreen({ displayName, initialHour, slug }: { displayName: s
       if (target instanceof Element && target.closest("input, textarea, select, button, a, [role='button'], [contenteditable]:not([contenteditable='false'])")) return;
 
       event.preventDefault();
-      router.push("/session/demo");
+      startSession();
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [router]);
+  }, [startSession]);
 
   return (
     <section
@@ -77,6 +82,8 @@ export function StartScreen({ displayName, initialHour, slug }: { displayName: s
         </fieldset>
 
         <input
+          ref={taskRef}
+          maxLength={200}
           aria-label={t("study.task")}
           placeholder={t("study.task")}
           type="text"
@@ -86,7 +93,7 @@ export function StartScreen({ displayName, initialHour, slug }: { displayName: s
         <button
           type="button"
           aria-keyshortcuts="Enter Space"
-          onClick={() => router.push("/session/demo")}
+          onClick={startSession}
           className="h-14 w-full rounded-2xl bg-accent text-[18px] font-semibold text-background"
         >
           {t("common.start")}

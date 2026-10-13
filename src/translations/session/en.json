@@ -1,0 +1,10 @@
+{
+  "session": {
+    "label": "Study session",
+    "progress": "Session progress",
+    "remaining": "{time} left",
+    "finish": "Finish",
+    "camera": "camera",
+    "sound": "Sound"
+  }
+}

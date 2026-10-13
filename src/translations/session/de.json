@@ -1,0 +1,10 @@
+{
+  "session": {
+    "label": "Lernsitzung",
+    "progress": "Sitzungsfortschritt",
+    "remaining": "Noch {time}",
+    "finish": "Fertig",
+    "camera": "Kamera",
+    "sound": "Ton"
+  }
+}

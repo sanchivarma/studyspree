@@ -1,0 +1,10 @@
+{
+  "session": {
+    "label": "Séance d’étude",
+    "progress": "Progression de la séance",
+    "remaining": "{time} restantes",
+    "finish": "Terminer",
+    "camera": "caméra",
+    "sound": "Son"
+  }
+}

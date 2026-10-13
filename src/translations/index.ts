@@ -4,45 +4,50 @@ import enregister from "./register/en.json";
 import enrecovery from "./recovery/en.json";
 import enhome from "./home/en.json";
 import enstudy from "./study/en.json";
+import ensession from "./session/en.json";
 import decommon from "./common/de.json";
 import delogin from "./login/de.json";
 import deregister from "./register/de.json";
 import derecovery from "./recovery/de.json";
 import dehome from "./home/de.json";
 import destudy from "./study/de.json";
+import desession from "./session/de.json";
 import frcommon from "./common/fr.json";
 import frlogin from "./login/fr.json";
 import frregister from "./register/fr.json";
 import frrecovery from "./recovery/fr.json";
 import frhome from "./home/fr.json";
 import frstudy from "./study/fr.json";
+import frsession from "./session/fr.json";
 import plcommon from "./common/pl.json";
 import pllogin from "./login/pl.json";
 import plregister from "./register/pl.json";
 import plrecovery from "./recovery/pl.json";
 import plhome from "./home/pl.json";
 import plstudy from "./study/pl.json";
+import plsession from "./session/pl.json";
 import itcommon from "./common/it.json";
 import itlogin from "./login/it.json";
 import itregister from "./register/it.json";
 import itrecovery from "./recovery/it.json";
 import ithome from "./home/it.json";
 import itstudy from "./study/it.json";
+import itsession from "./session/it.json";
 
 export const locales = ["en", "de", "fr", "pl", "it"] as const;
 export type Locale = (typeof locales)[number];
 
-const en = { ...encommon, ...enlogin, ...enregister, ...enrecovery, ...enhome, ...enstudy };
+const en = { ...encommon, ...enlogin, ...enregister, ...enrecovery, ...enhome, ...enstudy, ...ensession };
 export type Dictionary = typeof en;
 export type TranslationKey = {
   [Namespace in keyof Dictionary]: `${Namespace}.${keyof Dictionary[Namespace] & string}`
 }[keyof Dictionary];
 export const dictionaries = {
   en,
-  de: { ...decommon, ...delogin, ...deregister, ...derecovery, ...dehome, ...destudy },
-  fr: { ...frcommon, ...frlogin, ...frregister, ...frrecovery, ...frhome, ...frstudy },
-  pl: { ...plcommon, ...pllogin, ...plregister, ...plrecovery, ...plhome, ...plstudy },
-  it: { ...itcommon, ...itlogin, ...itregister, ...itrecovery, ...ithome, ...itstudy },
+  de: { ...decommon, ...delogin, ...deregister, ...derecovery, ...dehome, ...destudy, ...desession },
+  fr: { ...frcommon, ...frlogin, ...frregister, ...frrecovery, ...frhome, ...frstudy, ...frsession },
+  pl: { ...plcommon, ...pllogin, ...plregister, ...plrecovery, ...plhome, ...plstudy, ...plsession },
+  it: { ...itcommon, ...itlogin, ...itregister, ...itrecovery, ...ithome, ...itstudy, ...itsession },
 } satisfies Record<Locale, Dictionary>;
 
 export const languageNames: Record<Locale, string> = { en: "English", de: "Deutsch", fr: "Français", pl: "Polski", it: "Italiano" };

@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import type { Dictionary } from "../src/translations";
 
 const locales = ["en", "de", "fr", "pl", "it"] as const;
-const namespaces = ["common", "login", "register", "recovery", "home", "study"];
+const namespaces = ["common", "login", "register", "recovery", "home", "study", "session"];
 const dictionaries = Object.fromEntries(locales.map((locale) => [locale,
   Object.assign({}, ...namespaces.map((namespace) => JSON.parse(readFileSync(new URL(`../src/translations/${namespace}/${locale}.json`, import.meta.url), "utf8")))),
 ])) as Record<(typeof locales)[number], Dictionary>;

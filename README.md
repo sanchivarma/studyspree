@@ -20,12 +20,13 @@ Open http://localhost:3000. Only `src/app/(auth)/page.tsx` owns the root URL.
 - `/home`: signed-in Start page with the actual username greeting, tagline
   and a link to Study. No session controls or timer.
 - `/study`: BookOpen navigation item and session setup.
-- `/session/demo` and `/session/demo/complete`: session placeholders.
+- `/session/demo`: visual session with static progress, optional task, idle
+  controls and Finish/Escape navigation. `/session/demo/complete` is a placeholder.
 - `/stats` and `/settings`: protected placeholders.
 - `/reset-password`: password update after a valid recovery link.
 
 English, German, French, Polish and Italian copy lives in separate JSON
-files under `src/translations/{common,login,register,recovery,home,study}/`. The globe updates visible text, accessible
+files under `src/translations/{common,login,register,recovery,home,study,session}/`. The globe updates visible text, accessible
 labels, document language and metadata. A cookie saves the preference.
 
 ## Connect real authentication
