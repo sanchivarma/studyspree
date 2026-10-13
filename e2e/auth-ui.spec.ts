@@ -81,6 +81,7 @@ test("development login opens Home and keeps session controls on Study", async (
   await page.getByLabel(dictionaries.en.common.password, { exact: true }).fill(value("DEV_ADMIN_PASSWORD"));
   await page.getByRole("button", { name: dictionaries.en.login.submit, exact: true }).click();
   await expect(page).toHaveURL(/\/home$/);
+  await expect(page.getByTestId("auth-feedback").getByRole("status")).toHaveText(dictionaries.en.login.success);
   await expect(page.getByRole("heading")).toContainText(username);
   await expect(page.getByRole("button", { name: /^5 min/ })).toHaveCount(0);
   await page.getByRole("link", { name: dictionaries.en.home.studyLink }).click();
@@ -93,4 +94,29 @@ test("development login opens Home and keeps session controls on Study", async (
   await expect(page).toHaveURL(/\/$/);
   await page.goto("/study");
   await expect(page).toHaveURL(/\/$/);
+});
+
+test("wrong passwords show a visible localized error without signing in", async ({ page }) => {
+  const env = readFileSync(new URL("../.env.local", import.meta.url), "utf8");
+  const username = env.match(/^DEV_ADMIN_USERNAME=(.*)$/m)?.[1].trim().replace(/^["']|["']$/g, "") ?? "";
+  expect(username).toBeTruthy();
+  await page.setViewportSize({ width: 320, height: 568 });
+  await page.goto("/");
+  for (const locale of locales) {
+    const text = dictionaries[locale];
+    await page.getByRole("combobox").selectOption(locale);
+    await page.getByLabel(text.common.username, { exact: true }).fill(username);
+    await page.getByLabel(text.common.password, { exact: true }).fill("incorrect-test-password");
+    await page.getByRole("button", { name: text.login.submit, exact: true }).click();
+    const feedback = page.getByTestId("auth-feedback");
+    await expect(feedback.getByRole("alert")).toHaveText(text.login.invalidCredentials);
+    await expect(page).toHaveURL(/\/$/);
+    expect((await page.context().cookies()).some((cookie) => cookie.name === "ss_dev_admin")).toBe(false);
+    const box = await feedback.boundingBox();
+    expect(box).not.toBeNull();
+    expect(box!.y).toBeGreaterThanOrEqual(0);
+    expect(box!.y + box!.height).toBeLessThanOrEqual(568);
+    await feedback.getByRole("button", { name: text.common.dismiss }).click();
+    await expect(feedback).toHaveCount(0);
+  }
 });

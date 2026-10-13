@@ -2,6 +2,8 @@
   "login": {
     "title": "Accedi",
     "forgotPassword": "Password dimenticata?",
-    "submit": "Accedi"
+    "submit": "Accedi",
+    "invalidCredentials": "Nome utente o password non corretti. Riprova.",
+    "success": "Hai effettuato l’accesso. Benvenuto su StudySpree."
   }
 }

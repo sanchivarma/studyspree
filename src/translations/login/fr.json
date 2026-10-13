@@ -2,6 +2,8 @@
   "login": {
     "title": "Connexion",
     "forgotPassword": "Mot de passe oublié ?",
-    "submit": "Se connecter"
+    "submit": "Se connecter",
+    "invalidCredentials": "Nom d’utilisateur ou mot de passe incorrect. Veuillez réessayer.",
+    "success": "Vous êtes connecté. Bienvenue sur StudySpree."
   }
 }

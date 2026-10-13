@@ -41,9 +41,19 @@ describe("Supabase auth repository", () => {
   });
   it("uses a generic response for unknown usernames and wrong passwords", async () => {
     mocks.rpc.mockResolvedValue({ data: null, error: null });
-    mocks.signIn.mockResolvedValue({ error: new Error("Invalid credentials") });
-    expect(await authRepository.execute("login", { username: "unknown", password: "secret" })).toEqual({ status: "error", message: "common.authError" });
+    mocks.signIn.mockResolvedValue({ error: { code: "invalid_credentials" } });
+    expect(await authRepository.execute("login", { username: "unknown", password: "secret" })).toEqual({ status: "error", message: "login.invalidCredentials" });
     expect(mocks.signIn).toHaveBeenCalledWith({ email: "unknown@invalid.example", password: "secret" });
+  });
+  it("shows the same credential error for an existing account with a wrong password", async () => {
+    mocks.rpc.mockResolvedValue({ data: "alex@example.com", error: null });
+    mocks.signIn.mockResolvedValue({ error: { code: "invalid_credentials" } });
+    expect(await authRepository.execute("login", { username: "alex", password: "incorrect" })).toEqual({ status: "error", message: "login.invalidCredentials" });
+  });
+  it("keeps connection errors distinct from incorrect credentials", async () => {
+    mocks.rpc.mockResolvedValue({ data: "alex@example.com", error: null });
+    mocks.signIn.mockResolvedValue({ error: { code: "unexpected_failure" } });
+    expect(await authRepository.execute("login", { username: "alex", password: "secret" })).toEqual({ status: "error", message: "common.authError" });
   });
   it("does not allow login without a server lookup secret", async () => {
     vi.stubEnv("SUPABASE_USERNAME_LOOKUP_SECRET", "");

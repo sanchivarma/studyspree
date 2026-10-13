@@ -23,6 +23,7 @@
     "ready": "Quando sei pronto",
     "navLabel": "Navigazione principale",
     "logout": "Esci",
-    "accountTabs": "Accesso all’account"
+    "accountTabs": "Accesso all’account",
+    "dismiss": "Chiudi messaggio"
   }
 }

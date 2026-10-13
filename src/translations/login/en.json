@@ -2,6 +2,8 @@
   "login": {
     "title": "Login",
     "forgotPassword": "Forgot password?",
-    "submit": "Sign in"
+    "submit": "Sign in",
+    "invalidCredentials": "Incorrect username or password. Please try once more.",
+    "success": "You’re signed in. Welcome to StudySpree."
   }
 }

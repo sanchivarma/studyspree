@@ -23,6 +23,7 @@
     "ready": "Wenn du bereit bist",
     "navLabel": "Hauptnavigation",
     "logout": "Abmelden",
-    "accountTabs": "Kontozugang"
+    "accountTabs": "Kontozugang",
+    "dismiss": "Meldung schließen"
   }
 }

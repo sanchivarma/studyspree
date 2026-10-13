@@ -2,6 +2,8 @@
   "login": {
     "title": "Logowanie",
     "forgotPassword": "Nie pamiętasz hasła?",
-    "submit": "Zaloguj się"
+    "submit": "Zaloguj się",
+    "invalidCredentials": "Nieprawidłowa nazwa użytkownika lub hasło. Spróbuj ponownie.",
+    "success": "Jesteś zalogowany. Witaj w StudySpree."
   }
 }

@@ -23,6 +23,7 @@
     "ready": "Ready when you are",
     "navLabel": "Main navigation",
     "logout": "Sign out",
-    "accountTabs": "Account access"
+    "accountTabs": "Account access",
+    "dismiss": "Dismiss message"
   }
 }

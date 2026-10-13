@@ -27,7 +27,7 @@ describe("development preview authentication", () => {
     expect(await getDevAdminProfile()).toMatchObject({ username: "ss_admin", selected_character: "rain-desk", show_streak: false });
   });
   it("rejects incorrect passwords without creating a cookie", async () => {
-    expect(await loginDevAdmin({ username: "ss_admin", password: "incorrect" })).toEqual({ status: "error", message: "common.authError" });
+    expect(await loginDevAdmin({ username: "ss_admin", password: "incorrect" })).toEqual({ status: "error", message: "login.invalidCredentials" });
     expect(store.set).not.toHaveBeenCalled();
   });
   it("leaves ordinary accounts to Supabase", async () => {

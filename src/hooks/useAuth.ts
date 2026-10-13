@@ -8,8 +8,9 @@ import { AuthFeedbackContext } from "@/components/auth/AuthFeedbackProvider";
 
 export function useAuth() {
   const router = useRouter();
-  const report = useContext(AuthFeedbackContext);
-  if (!report) throw new Error("AuthFeedbackProvider is required");
+  const feedbackContext = useContext(AuthFeedbackContext);
+  if (!feedbackContext) throw new Error("AuthFeedbackProvider is required");
+  const report = feedbackContext;
   const activeRequest = useRef(false);
   const [isPending, setIsPending] = useState(false);
   const [result, setResult] = useState<AuthResult | null>(null);

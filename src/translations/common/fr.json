@@ -23,6 +23,7 @@
     "ready": "Quand vous serez prêt",
     "navLabel": "Navigation principale",
     "logout": "Se déconnecter",
-    "accountTabs": "Accès au compte"
+    "accountTabs": "Accès au compte",
+    "dismiss": "Fermer le message"
   }
 }
