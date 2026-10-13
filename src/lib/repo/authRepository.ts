@@ -44,7 +44,7 @@ export const authRepository: AuthRepository = {
         // Unknown usernames receive the same auth attempt and response as bad passwords.
         const email = z.email().safeParse(lookup.data);
         const result = await client.auth.signInWithPassword({ email: email.success ? email.data : "unknown@invalid.example", password: parsed.data.password });
-        return result.error ? { status: "error", message: "common.authError" } : { status: "success", navigate: "/home" };
+        return result.error ? { status: "error", message: result.error.code === "invalid_credentials" ? "login.invalidCredentials" : "common.authError" } : { status: "success", navigate: "/home" };
       }
       case "register": {
         const parsed = registrationSchema.safeParse(input);

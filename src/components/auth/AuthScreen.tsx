@@ -88,7 +88,7 @@ export function AuthScreen({ isConfigured, hasDevLogin = false, hasCallbackError
             </form>
             {mode === "reset" && <button type="button" onClick={() => { setMode("login"); clearResult(); }} className="mt-3 min-h-11 text-small text-text-muted">{t("recovery.backLogin")}</button>}
             <div role="status" aria-live="polite" className="mt-4 text-small text-text-muted">
-              {result?.message ? t(result.message) : hasCallbackError ? t("common.authError") : !isConfigured && !(mode === "login" && hasDevLogin) ? t("common.authUnavailable") : null}
+              {result ? mode !== "login" && result.message ? t(result.message) : null : hasCallbackError ? t("common.authError") : !isConfigured && !(mode === "login" && hasDevLogin) ? t("common.authUnavailable") : null}
             </div>
           </div>
         </section>

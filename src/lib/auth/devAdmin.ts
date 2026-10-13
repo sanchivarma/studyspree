@@ -28,7 +28,7 @@ export async function loginDevAdmin(input: unknown): Promise<AuthResult | null> 
   const config = getConfig();
   const parsed = loginSchema.safeParse(input);
   if (!config || !parsed.success || !matches(parsed.data.username, config.username)) return null;
-  if (!matches(parsed.data.password, config.password)) return { status: "error", message: "common.authError" };
+  if (!matches(parsed.data.password, config.password)) return { status: "error", message: "login.invalidCredentials" };
   const payload = Buffer.from(JSON.stringify({ id: randomUUID(), username: config.username, expiresAt: now().getTime() + 86400000 })).toString("base64url");
   const signature = createHmac("sha256", config.secret).update(payload).digest("base64url");
   (await cookies()).set(COOKIE_NAME, `${payload}.${signature}`, { httpOnly: true, sameSite: "lax", path: "/", maxAge: 86400 });
