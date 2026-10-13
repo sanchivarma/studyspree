@@ -59,7 +59,7 @@ The character registry is `src/lib/characters/registry.ts`.
 `ScenePlaceholder` accepts `slug` and optional `className`; it fills a
 positioned parent, or the viewport when no ancestor is positioned.
 
-To preview each scene, change the `slug` in `src/app/(app)/page.tsx` to
+To preview each scene, change `selectedCharacter` in `src/lib/mock/profile.ts` to
 `rain-desk`, `night-shift`, `balcony-dusk`, or `dorm-bunk`, then save.
 The default is `rain-desk`. No media files or network calls are needed
 for these backgrounds.
@@ -68,3 +68,21 @@ Watch for the very slow 40-second movement. Enable reduced motion in
 your OS or browser to see a still scene. Switching tabs pauses the
 animation; returning resumes it. Resize the browser to check full-bleed
 coverage, film grain and darker edges.
+
+## App shell (Prompt 1.3)
+
+The server layout reads the mock profile and provides the selected
+character's accent to navigation. Desktop navigation is a 64px left rail;
+below the `md` breakpoint (768px), it becomes a 56px bottom bar.
+
+- Click Start, Stats and Settings; the current route has an accent pill.
+- Hover or keyboard-focus desktop icons to reveal labels; links have
+  visible focus rings and support Enter.
+- At phone width, check the three equal navigation items and the space
+  reserved above the bottom bar.
+- Visit `/session/demo` and `/session/demo/complete`: navigation and its
+  reserved padding disappear, leaving the session viewport clear.
+- Set `showStreak` to `false` in `src/lib/mock/profile.ts` to hide the
+  desktop flame and mock count. Restore it to `true` afterward.
+
+Stats, Settings and session routes still have placeholder page content.
