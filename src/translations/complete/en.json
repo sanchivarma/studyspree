@@ -4,7 +4,8 @@
     "affirmation": "Solid session.",
     "allTime": "hours, all time",
     "totalLabel": "{hours} hours, all time",
-    "summary": "+25m this session · 1h 10m today",
+    "summary": "+{sessionDuration} this session · {todayDuration} today",
+    "seconds": "{count}s",
     "streak": "{count} day streak",
     "startAnother": "Start another",
     "done": "Done for now"

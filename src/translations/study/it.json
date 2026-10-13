@@ -1,5 +1,6 @@
 {
   "study": {
+    "startError": "Riprova ad avviare la sessione.",
     "duration": "Durata della sessione",
     "minutes": "{count} min",
     "open": "Libera",

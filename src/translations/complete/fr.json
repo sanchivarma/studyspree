@@ -4,7 +4,8 @@
     "affirmation": "Belle séance.",
     "allTime": "heures au total",
     "totalLabel": "{hours} heures au total",
-    "summary": "+25 min cette séance · 1 h 10 min aujourd’hui",
+    "summary": "+{sessionDuration} cette séance · {todayDuration} aujourd’hui",
+    "seconds": "{count}s",
     "streak": "{count} jours de suite",
     "startAnother": "Commencer une autre séance",
     "done": "Terminé pour le moment"

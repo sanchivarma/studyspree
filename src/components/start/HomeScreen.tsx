@@ -1,6 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useActiveSession } from "@/hooks/useActiveSession";
 import { BookOpen } from "lucide-react";
 import { ScenePlaceholder } from "@/components/scene/ScenePlaceholder";
 import { AccountControls } from "@/components/layout/AccountControls";
@@ -10,6 +13,11 @@ import type { CharacterSlug } from "@/lib/characters/registry";
 
 export function HomeScreen({ username, slug, initialHour }: { username: string; slug: CharacterSlug; initialHour: number }) {
   const { t } = useTranslation();
+  const router = useRouter();
+  const active = useActiveSession();
+  useEffect(() => {
+    if (active.data) router.replace(`/session/${active.data.id}`);
+  }, [active.data, router]);
   const hour = useCurrentHour(initialHour);
   return <section className="relative isolate flex min-h-[calc(100dvh-3.5rem)] items-center justify-center md:min-h-dvh">
     <ScenePlaceholder slug={slug} />

@@ -9,22 +9,48 @@ import { cn } from "@/lib/utils";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useCurrentHour } from "@/hooks/useCurrentHour";
 import { AccountControls } from "@/components/layout/AccountControls";
-import type { CharacterSlug } from "@/lib/characters/registry";
+import { useActiveSession } from "@/hooks/useActiveSession";
+import { useProfile } from "@/hooks/useProfile";
+import { useRecentSession } from "@/hooks/useRecentSession";
+import { useStartSession } from "@/hooks/useStartSession";
+import { now } from "@/lib/clock";
 
 const durations = [5, 15, 25, 50, "open"] as const;
 
-export function StartScreen({ displayName, initialHour, slug }: { displayName: string; initialHour: number; slug: CharacterSlug }) {
+export function StartScreen({ displayName, initialHour }: { displayName: string; initialHour: number }) {
   const router = useRouter();
   const { t } = useTranslation();
-  const [selectedDuration, setSelectedDuration] = useState<(typeof durations)[number]>(5);
+  const active = useActiveSession();
+  const profile = useProfile();
+  const recent = useRecentSession();
+  const [chosenDuration, setChosenDuration] = useState<number | null | undefined>(undefined);
+  const latest = recent.data?.[0];
+  const selectedDuration = chosenDuration !== undefined ? chosenDuration : latest?.endedAt ? latest.plannedMinutes : 5;
+  const slug = getCharacter(profile.data?.selectedCharacter ?? "rain-desk").slug;
+  const mountedAt = useRef<number | null>(null);
+  const { mutate, isPending, error } = useStartSession(() => {
+    console.debug("time_to_start_ms", Math.max(0, now().getTime() - (mountedAt.current ?? now().getTime())));
+  });
+  const starting = useRef(false);
   const taskRef = useRef<HTMLInputElement>(null);
   const startSession = useCallback(() => {
+    if (starting.current || isPending) return;
+    starting.current = true;
     const task = taskRef.current?.value.trim();
-    router.push(task ? `/session/demo?task=${encodeURIComponent(task)}` : "/session/demo");
-  }, [router]);
+    mutate({ plannedMinutes: selectedDuration, characterSlug: slug, task: task || null }, {
+      onSettled: () => { starting.current = false; },
+    });
+  }, [mutate, isPending, selectedDuration, slug]);
   const hour = useCurrentHour(initialHour);
-  const greeting = t(hour < 12 ? "home.morning" : hour < 18 ? "home.afternoon" : "home.evening", { username: displayName });
+  const greeting = t(hour < 12 ? "home.morning" : hour < 18 ? "home.afternoon" : "home.evening", { username: profile.data?.displayName || displayName });
   const style = { "--accent": getCharacter(slug).accentColor } as CSSProperties;
+
+  useEffect(() => {
+    mountedAt.current ??= now().getTime();
+  }, []);
+  useEffect(() => {
+    if (active.data && !starting.current) router.replace(`/session/${active.data.id}`);
+  }, [active.data, router]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -65,11 +91,11 @@ export function StartScreen({ displayName, initialHour, slug }: { displayName: s
               <button
                 key={duration}
                 type="button"
-                aria-pressed={selectedDuration === duration}
-                onClick={() => setSelectedDuration(duration)}
+                aria-pressed={selectedDuration === (duration === "open" ? null : duration)}
+                onClick={() => setChosenDuration(duration === "open" ? null : duration)}
                 className={cn(
                   "flex h-16 min-w-0 flex-col items-center justify-center gap-1 rounded-xl border px-0.5 text-small whitespace-nowrap tabular-nums",
-                  selectedDuration === duration
+                  selectedDuration === (duration === "open" ? null : duration)
                     ? "border-accent bg-accent text-background"
                     : "border-border bg-background/20 text-text-muted hover:border-accent/40 hover:text-foreground",
                 )}
@@ -94,10 +120,12 @@ export function StartScreen({ displayName, initialHour, slug }: { displayName: s
           type="button"
           aria-keyshortcuts="Enter Space"
           onClick={startSession}
-          className="h-14 w-full rounded-2xl bg-accent text-[18px] font-semibold text-background"
+          disabled={isPending}
+          className="h-14 w-full rounded-2xl bg-accent text-[18px] font-semibold text-background disabled:opacity-60"
         >
           {t("common.start")}
         </button>
+        {error && <p role="alert" className="mt-3 text-small text-text-muted">{t("study.startError")}</p>}
       </div>
 
       <button

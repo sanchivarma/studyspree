@@ -1,5 +1,7 @@
 {
   "session": {
+    "elapsed": "{time} trascorsi",
+    "finishError": "Riprova a concludere. La tua sessione è ancora qui.",
     "label": "Sessione di studio",
     "progress": "Avanzamento della sessione",
     "remaining": "{time} rimanenti",

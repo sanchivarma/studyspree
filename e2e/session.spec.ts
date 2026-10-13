@@ -1,43 +1,36 @@
 import { readFileSync } from "node:fs";
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test } from "@playwright/test";
+import { signIn, freezeClock, startSession, settleClock } from "./sessionFixtures";
 
-async function signIn(page: Page) {
-  const env = readFileSync(new URL("../.env.local", import.meta.url), "utf8");
-  const value = (key: string) => env.match(new RegExp(`^${key}=(.*)$`, "m"))?.[1].trim().replace(/^["']|["']$/g, "") ?? "";
-  await page.goto("/");
-  await page.getByLabel("Username", { exact: true }).fill(value("DEV_ADMIN_USERNAME"));
-  await page.getByLabel("Password", { exact: true }).fill(value("DEV_ADMIN_PASSWORD"));
-  await page.getByRole("button", { name: "Sign in", exact: true }).click();
-  await expect(page).toHaveURL(/\/home$/);
-}
-
-test("Study opens the static session with the task and Finish goes directly to Complete", async ({ page }) => {
+test("Study starts a persisted timer with its task and Finish banks elapsed time", async ({ page }) => {
   await signIn(page);
-  await page.goto("/study");
-  await page.getByRole("textbox").fill("Read chapter 3 & take notes");
-  await page.getByRole("button", { name: "Start", exact: true }).click();
+  await freezeClock(page);
+  const path = await startSession(page, "Read chapter 3 & take notes");
   await expect(page.getByTestId("session-screen")).toBeVisible();
   await expect(page.getByRole("navigation")).toHaveCount(0);
   await expect(page.getByTestId("auth-feedback")).toHaveCount(0);
-  await expect(page.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "62");
-  await expect(page.getByText("15:23 left", { exact: true })).toBeVisible();
+  await expect(page.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "0");
+  await expect(page.getByTestId("session-time")).toHaveText("5:00 left");
   await expect(page.getByText("Read chapter 3 & take notes", { exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "Sound" })).toHaveAttribute("aria-disabled", "true");
   await page.screenshot({ path: "test-results/session-desktop.png" });
   let hasDialog = false;
   page.on("dialog", async (dialog) => { hasDialog = true; await dialog.dismiss(); });
+  await page.clock.runFor(10_000);
+  await page.mouse.move(10, 10);
   await page.getByRole("button", { name: "Finish", exact: true }).click();
   // A newly added route may need its first development compilation.
-  await expect(page).toHaveURL(/\/session\/demo\/complete$/, { timeout: 15000 });
+  await expect(page).toHaveURL(new RegExp(`${path}/complete$`), { timeout: 15000 });
+  await settleClock(page, "complete-screen");
   await expect(page.getByRole("heading", { name: "Solid session.", exact: true })).toBeVisible();
+  await expect(page.getByTestId("banked-summary")).toHaveText("+10s this session · 10s today");
   expect(hasDialog).toBe(false);
 });
 
 test("five seconds of inactivity hides controls, dims the ring and input restores them", async ({ page }) => {
   await signIn(page);
-  await page.clock.install({ time: new Date("2026-10-13T12:00:00Z") });
-  await page.clock.pauseAt(new Date("2026-10-13T12:00:01Z"));
-  await page.goto("/session/demo?task=Reading");
+  await freezeClock(page);
+  const path = await startSession(page, "Reading");
   const screen = page.getByTestId("session-screen");
   const ring = page.getByRole("progressbar");
   const controls = page.getByTestId("session-controls");
@@ -69,16 +62,16 @@ test("five seconds of inactivity hides controls, dims the ring and input restore
   await page.keyboard.press("Tab");
   await expect(page.getByRole("button", { name: "Finish", exact: true })).toBeFocused();
   await expect(screen).toHaveAttribute("data-controls-visible", "true");
-  await expect(page.getByText("15:23 left", { exact: true })).toHaveText("15:23 left");
+  await expect(page.getByTestId("session-time")).toHaveText("4:40 left");
   await page.clock.fastForward(5000);
   await page.keyboard.press("Escape");
-  await expect(page).toHaveURL(/\/session\/demo\/complete$/);
+  await expect(page).toHaveURL(new RegExp(`${path}/complete$`));
 });
 
 test("phone layout keeps the camera and Finish separate and respects reduced motion", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 568 });
   await signIn(page);
-  await page.goto("/session/demo");
+  await startSession(page);
   const ring = page.getByRole("progressbar");
   const camera = page.getByText("camera", { exact: true }).locator("..");
   const finish = page.getByRole("button", { name: "Finish", exact: true });
@@ -96,12 +89,15 @@ test("phone layout keeps the camera and Finish separate and respects reduced mot
 
 test("session controls are translated in every supported language", async ({ page }) => {
   await signIn(page);
+  await freezeClock(page);
+  const path = await startSession(page);
   for (const locale of ["en", "de", "fr", "pl", "it"]) {
     const { session } = JSON.parse(readFileSync(new URL(`../src/translations/session/${locale}.json`, import.meta.url), "utf8")) as { session: { finish: string; remaining: string; camera: string; sound: string } };
     await page.context().addCookies([{ name: "ss_locale", value: locale, url: "http://localhost:3000" }]);
-    await page.goto("/session/demo");
+    await page.goto(path);
+    await settleClock(page, "session-screen");
     await expect(page.getByRole("button", { name: session.finish, exact: true })).toBeVisible();
-    await expect(page.getByText(session.remaining.replace("{time}", "15:23"), { exact: true })).toBeVisible();
+    await expect(page.getByTestId("session-time")).toHaveText(session.remaining.replace("{time}", "5:00"));
     await expect(page.getByText(session.camera, { exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: session.sound })).toBeVisible();
   }

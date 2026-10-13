@@ -6,5 +6,5 @@ import { now } from "@/lib/clock";
 export default async function StudyPage() {
   const profile = await authRepository.getProfile();
   if (!profile) redirect("/");
-  return <StartScreen displayName={profile.username} initialHour={now().getHours()} slug={profile.selected_character} />;
+  return <StartScreen displayName={profile.username} initialHour={now().getHours()} />;
 }

@@ -1,11 +1,9 @@
 import { redirect } from "next/navigation";
-import { z } from "zod";
-import { SessionScreen } from "@/components/session/SessionScreen";
+import { SessionRoute } from "@/components/session/SessionRoute";
 import { authRepository } from "@/lib/repo/authRepository";
 
-export default async function SessionPage({ searchParams }: { searchParams: Promise<{ task?: string | string[] }> }) {
+export default async function SessionPage({ params }: { params: Promise<{ id: string }> }) {
   const profile = await authRepository.getProfile();
   if (!profile) redirect("/");
-  const task = z.string().trim().max(200).safeParse((await searchParams).task);
-  return <SessionScreen slug={profile.selected_character} task={task.success ? task.data : undefined} />;
+  return <SessionRoute id={(await params).id} />;
 }

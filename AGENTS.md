@@ -318,11 +318,11 @@ Rooms · other users · chat · AI conversation · webcam-driven avatars · cust
 
 > **Update this section at the end of every phase.**
 
-- **Current phase:** 2.2 — Session hooks and timer
-- **Completed work:** scaffold, scenes, navigation, Home/Study, translated authentication, visual session/completion screens, mock Stats dashboard, local session repository, session hooks and timestamp-based timer with lifecycle tests
-- **Repository in use:** `authRepository` for authentication; `repo` exports the tested `LocalRepository` for upcoming session hooks
-- **Known issues:** session time/progress, completion totals and Stats are mock values; live Supabase setup remains external
-- **Next up:** wire Study, session and completion screens to the session hooks and local repository
+- **Current phase:** 2.3 — Full local session flow
+- **Completed work:** scaffold, scenes, navigation, Home/Study, translated authentication, mock Stats dashboard, local session repository, hooks and real timer, persisted completion summary and cross-tab session recovery
+- **Repository in use:** `authRepository` for authentication; `repo` exports the tested `LocalRepository` for the session flow
+- **Known issues:** Stats remains mock data; local profile defaults to UTC; live Supabase setup remains external
+- **Next up:** continue Phase 2 enhancements and replace mock Stats when requested
 
 ---
 

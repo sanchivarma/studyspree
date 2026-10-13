@@ -20,9 +20,9 @@ Open http://localhost:3000. Only `src/app/(auth)/page.tsx` owns the root URL.
 - `/home`: signed-in Start page with the actual username greeting, tagline
   and a link to Study. No session controls or timer.
 - `/study`: BookOpen navigation item and session setup.
-- `/session/demo`: visual session with static progress, optional task, idle
-  controls and Finish/Escape navigation.
-- `/session/demo/complete`: calm completion summary with hardcoded totals and
+- `/session/{id}`: persisted countdown or Open session, optional task, idle
+  controls and Finish/Escape navigation. Refresh resumes from its timestamp.
+- `/session/{id}/complete`: calm summary re-read from the local repository with
   a 1.2-second count-up that respects reduced motion and pauses in hidden tabs.
 - `/stats`: deterministic 365-day mock dashboard with a keyboard-accessible
   CSS heatmap, conditional streak card, 14-day bars and 20 recent sessions.
@@ -85,7 +85,8 @@ the same daily fixture. These values do not write to Supabase.
 `src/lib/repo/index.ts` exports the session `repo`. `LocalRepository` stores
 validated JSON under `ss_profile`, `ss_sessions` and `ss_active`. Its profile
 is separate from authentication and starts with a blank display name and UTC
-timezone; later hooks will initialize it from the signed-in profile.
+timezone. Study falls back to the authenticated username when its local display
+name is blank, and to Rainy Desk until the local character selection is loaded.
 
 Start is idempotent while a session is active. Finish derives banked seconds
 from `now()` timestamps, floors them and caps each session at six hours.
@@ -93,9 +94,7 @@ Web Locks serialize mutations across tabs where supported. Corrupt keys are
 repaired, and denied storage or quota errors fall back to memory for that
 repository instance (memory cannot survive a reload).
 
-The repository contract tests cover this behavior. The visual Study/session
-screens are not wired to it yet, so the Phase 2 timer checklist will become
-available after the session hooks and timer prompts. No new dependencies were
+The repository contract tests cover this behavior. No new dependencies were
 needed; Vitest and TanStack Query were already configured.
 
 Phase 2.2 adds `useActiveSession`, `useStartSession`, `useEndSession` and
@@ -107,10 +106,23 @@ prevents repeated automatic Finish requests, including Strict Mode effect
 restarts. The Zustand session store contains display values without persistence.
 
 Start and Finish hooks invalidate query keys before navigating. Finish sends
-the session ID and reason, and its URL contains no duration or totals. These
-hooks are ready for the next screen-wiring prompt; existing screens remain
-visual previews. Fake-timer tests exercise refresh, sleep, dev offsets,
+the session ID and reason, and its URL contains no duration or totals.
+Fake-timer tests exercise refresh, sleep, dev offsets,
 automatic completion and cleanup without adding dependencies.
+
+Phase 2.3 wires the full session flow. Study can start immediately while its
+queries load, remembers the previous ended session's duration (including Open),
+and logs `time_to_start_ms`. Home and Study resume an active session, including
+when another tab creates one. Finish banks timestamp-derived seconds, and the
+completion screen reads its session, lifetime hours and today's time from the
+repository. Start another returns to Study. Stats remains the Phase 1 mock page.
+
+To test: start five minutes on Study, refresh after ten seconds, then Finish.
+The countdown resumes and the summary shows the seconds banked. A second tab
+opened on `/` resumes the same session. For accelerated expiry, run
+`localStorage.setItem('ss_dev_clock_offset_ms', '600000')` in the console and
+reload. Clear the offset afterward with
+`localStorage.removeItem('ss_dev_clock_offset_ms')`.
 
 See `CLAUDE.md` and `AGENTS.md` for project conventions. Auth and translations
 were brought forward from the phased plan at the user's request.

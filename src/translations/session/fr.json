@@ -1,5 +1,7 @@
 {
   "session": {
+    "elapsed": "{time} écoulées",
+    "finishError": "Réessayez de terminer. Votre séance est toujours là.",
     "label": "Séance d’étude",
     "progress": "Progression de la séance",
     "remaining": "{time} restantes",

@@ -11,6 +11,7 @@ import { useEndSession, type EndSessionInput } from "./useEndSession";
 
 const mocks = vi.hoisted(() => ({ invalidate: vi.fn(), push: vi.fn() }));
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push: mocks.push }) }));
+vi.mock("react", async (original) => ({ ...await original<typeof import("react")>(), useEffect: vi.fn() }));
 vi.mock("@tanstack/react-query", () => ({
   useQueryClient: () => ({ invalidateQueries: mocks.invalidate }),
   useMutation: vi.fn(() => ({})), useQuery: vi.fn(() => ({})),
