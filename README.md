@@ -98,5 +98,19 @@ screens are not wired to it yet, so the Phase 2 timer checklist will become
 available after the session hooks and timer prompts. No new dependencies were
 needed; Vitest and TanStack Query were already configured.
 
+Phase 2.2 adds `useActiveSession`, `useStartSession`, `useEndSession` and
+`useSessionTimer`. The timer publishes its first tick before paint, derives
+each later tick from `now() - startedAt`, catches up immediately on visibility
+changes and sends a heartbeat every minute while visible. Hidden tabs pause
+their interval; elapsed time continues through timestamps. A completion guard
+prevents repeated automatic Finish requests, including Strict Mode effect
+restarts. The Zustand session store contains display values without persistence.
+
+Start and Finish hooks invalidate query keys before navigating. Finish sends
+the session ID and reason, and its URL contains no duration or totals. These
+hooks are ready for the next screen-wiring prompt; existing screens remain
+visual previews. Fake-timer tests exercise refresh, sleep, dev offsets,
+automatic completion and cleanup without adding dependencies.
+
 See `CLAUDE.md` and `AGENTS.md` for project conventions. Auth and translations
 were brought forward from the phased plan at the user's request.

@@ -1,0 +1,90 @@
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { repo } from "@/lib/repo";
+import { queryKeys } from "@/lib/queryKeys";
+import { useSessionStore } from "@/stores/sessionStore";
+import type { Session } from "@/types/domain";
+import type { EndSessionResult, StartSessionInput } from "@/lib/repo/types";
+import { useActiveSession } from "./useActiveSession";
+import { useStartSession } from "./useStartSession";
+import { useEndSession, type EndSessionInput } from "./useEndSession";
+
+const mocks = vi.hoisted(() => ({ invalidate: vi.fn(), push: vi.fn() }));
+vi.mock("next/navigation", () => ({ useRouter: () => ({ push: mocks.push }) }));
+vi.mock("@tanstack/react-query", () => ({
+  useQueryClient: () => ({ invalidateQueries: mocks.invalidate }),
+  useMutation: vi.fn(() => ({})), useQuery: vi.fn(() => ({})),
+}));
+vi.mock("@/lib/repo", () => ({ repo: { getActiveSession: vi.fn(), startSession: vi.fn(), endSession: vi.fn() } }));
+
+const session: Session = { id: "local-session", startedAt: "2026-10-13T12:00:00Z", endedAt: null,
+  plannedMinutes: 5, actualSeconds: 0, endedReason: null, characterSlug: "rain-desk", localDate: "2026-10-13", task: null };
+type MutationCallbacks<Input, Output> = {
+  mutationFn: (input: Input) => Promise<Output>;
+  onSuccess: (output: Output) => Promise<void>;
+  onMutate?: () => void;
+  onError?: () => void;
+};
+function callbacks<Input, Output>() {
+  // The mocked Query hook captures callbacks for invocation without a DOM.
+  return vi.mocked(useMutation).mock.calls.at(-1)![0] as MutationCallbacks<Input, Output>;
+}
+beforeEach(() => {
+  vi.clearAllMocks(); mocks.invalidate.mockResolvedValue(undefined);
+  useSessionStore.setState({ elapsedSeconds: 0, remainingSeconds: null, isFinishing: false });
+});
+
+describe("session query and mutation boundaries", () => {
+  it("fetches the active session through the shared key and repository", async () => {
+    vi.mocked(repo.getActiveSession).mockResolvedValue(session);
+    useActiveSession();
+    const options = vi.mocked(useQuery).mock.calls[0][0] as { queryKey: readonly string[]; queryFn: () => Promise<Session | null> };
+    expect(options.queryKey).toEqual(queryKeys.activeSession());
+    expect(await options.queryFn()).toEqual(session);
+    expect(repo.getActiveSession).toHaveBeenCalledWith();
+  });
+  it("starts with configuration only and invalidates before navigating", async () => {
+    vi.mocked(repo.startSession).mockResolvedValue(session);
+    useStartSession();
+    const options = callbacks<StartSessionInput, Session>();
+    const input = { plannedMinutes: 5, characterSlug: "rain-desk", task: null };
+    expect(await options.mutationFn(input)).toEqual(session);
+    expect(repo.startSession).toHaveBeenCalledWith(input);
+    let release!: () => void;
+    mocks.invalidate.mockReturnValue(new Promise<void>((resolve) => { release = resolve; }));
+    const completing = options.onSuccess(session);
+    expect(mocks.push).not.toHaveBeenCalled();
+    release(); await completing;
+    expect(mocks.invalidate).toHaveBeenCalledWith({ queryKey: queryKeys.activeSession() });
+    expect(mocks.push).toHaveBeenCalledWith("/session/local-session");
+    expect(useSessionStore.getState().isFinishing).toBe(false);
+  });
+  it("finishes with id/reason and refreshes active, stats and streak before routing", async () => {
+    const ended: EndSessionResult = { session: { ...session, endedAt: "2026-10-13T12:00:10Z", actualSeconds: 10, endedReason: "stopped_early" }, totalSecondsAllTime: 10, dayTotalSeconds: 10 };
+    vi.mocked(repo.endSession).mockResolvedValue(ended);
+    useEndSession();
+    const options = callbacks<EndSessionInput, EndSessionResult>();
+    options.onMutate!();
+    expect(useSessionStore.getState().isFinishing).toBe(true);
+    expect(await options.mutationFn({ id: session.id, reason: "stopped_early" })).toEqual(ended);
+    expect(repo.endSession).toHaveBeenCalledWith(session.id, "stopped_early");
+    let release!: () => void;
+    mocks.invalidate.mockReturnValue(new Promise<void>((resolve) => { release = resolve; }));
+    const completing = options.onSuccess(ended);
+    expect(mocks.push).not.toHaveBeenCalled();
+    expect(mocks.invalidate.mock.calls).toEqual([
+      [{ queryKey: queryKeys.activeSession() }], [{ queryKey: queryKeys.stats.all() }], [{ queryKey: queryKeys.streak() }],
+    ]);
+    release(); await completing;
+    expect(mocks.push).toHaveBeenCalledWith("/session/local-session/complete");
+    // Keep the guard up while navigation is committing.
+    expect(useSessionStore.getState().isFinishing).toBe(true);
+  });
+  it("allows a manual retry after an end mutation error without navigation", () => {
+    useEndSession();
+    const options = callbacks<EndSessionInput, EndSessionResult>();
+    options.onMutate!(); options.onError!();
+    expect(useSessionStore.getState().isFinishing).toBe(false);
+    expect(mocks.invalidate).not.toHaveBeenCalled(); expect(mocks.push).not.toHaveBeenCalled();
+  });
+});
