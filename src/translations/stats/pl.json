@@ -1,0 +1,28 @@
+{
+  "stats": {
+    "totalHours": "Godzin łącznie",
+    "acrossSessions": "w {count} sesjach",
+    "streakTitle": "Seria",
+    "currentStreak": "Obecna",
+    "bestStreak": "Najlepsza",
+    "freezesLeft": "Pozostałe ochrony",
+    "streakDays": "{count} dni",
+    "activityTitle": "Twój rok skupienia",
+    "activityGrid": "Codzienna aktywność w nauce. Użyj strzałek, aby przeglądać daty.",
+    "last14Days": "Ostatnie 14 dni",
+    "historyTitle": "Historia sesji",
+    "date": "Data",
+    "duration": "Czas",
+    "character": "Postać",
+    "noSessions": "Brak sesji: {date}",
+    "activityOn": "{duration} dnia {date}",
+    "futureDate": "Nadchodząca data: {date}",
+    "durationMinutes": "{minutes} min",
+    "durationHours": "{hours} godz.",
+    "durationHoursMinutes": "{hours} godz. {minutes} min",
+    "rainDesk": "Biurko w deszczu",
+    "nightShift": "Nocna zmiana",
+    "balconyDusk": "Balkon o zmierzchu",
+    "dormBunk": "Pokój w akademiku"
+  }
+}

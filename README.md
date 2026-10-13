@@ -24,11 +24,13 @@ Open http://localhost:3000. Only `src/app/(auth)/page.tsx` owns the root URL.
   controls and Finish/Escape navigation.
 - `/session/demo/complete`: calm completion summary with hardcoded totals and
   a 1.2-second count-up that respects reduced motion and pauses in hidden tabs.
-- `/stats` and `/settings`: protected placeholders.
+- `/stats`: deterministic 365-day mock dashboard with a keyboard-accessible
+  CSS heatmap, conditional streak card, 14-day bars and 20 recent sessions.
+- `/settings`: protected placeholder.
 - `/reset-password`: password update after a valid recovery link.
 
 English, German, French, Polish and Italian copy lives in separate JSON
-files under `src/translations/{common,login,register,recovery,home,study,session,complete}/`. The globe updates visible text, accessible
+files under `src/translations/{common,login,register,recovery,home,study,session,complete,stats}/`. The globe updates visible text, accessible
 labels, document language and metadata. A cookie saves the preference.
 
 ## Connect real authentication
@@ -72,6 +74,11 @@ Inter uses `next/font` and needs Google Fonts access during its initial compile.
 
 Clock reads use `now()` in `src/lib/clock.ts`. Development offsets and
 local scene gradients are available for future timer/progress work.
+
+Stats fixtures use a seeded generator and a fixed reference date of
+13 October 2026. They contain 365 consecutive dates, 91 zero days, a nine-day
+gap and a recent ramp-up. Totals, streaks and session history derive from
+the same daily fixture. These values do not write to Supabase.
 
 See `CLAUDE.md` and `AGENTS.md` for project conventions. Auth and translations
 were brought forward from the phased plan at the user's request.

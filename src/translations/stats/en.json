@@ -1,0 +1,28 @@
+{
+  "stats": {
+    "totalHours": "Total hours",
+    "acrossSessions": "across {count} sessions",
+    "streakTitle": "Streak",
+    "currentStreak": "Current",
+    "bestStreak": "Best",
+    "freezesLeft": "Freezes left",
+    "streakDays": "{count} days",
+    "activityTitle": "Your year in focus",
+    "activityGrid": "Daily study activity. Use arrow keys to explore dates.",
+    "last14Days": "Last 14 days",
+    "historyTitle": "Session history",
+    "date": "Date",
+    "duration": "Duration",
+    "character": "Character",
+    "noSessions": "No sessions on {date}",
+    "activityOn": "{duration} on {date}",
+    "futureDate": "Upcoming date: {date}",
+    "durationMinutes": "{minutes}m",
+    "durationHours": "{hours}h",
+    "durationHoursMinutes": "{hours}h {minutes}m",
+    "rainDesk": "Rainy Desk",
+    "nightShift": "Night Shift",
+    "balconyDusk": "Balcony Dusk",
+    "dormBunk": "Dorm Bunk"
+  }
+}
