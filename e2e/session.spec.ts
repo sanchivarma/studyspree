@@ -29,6 +29,7 @@ test("Study opens the static session with the task and Finish goes directly to C
   await page.getByRole("button", { name: "Finish", exact: true }).click();
   // A newly added route may need its first development compilation.
   await expect(page).toHaveURL(/\/session\/demo\/complete$/, { timeout: 15000 });
+  await expect(page.getByRole("heading", { name: "Solid session.", exact: true })).toBeVisible();
   expect(hasDialog).toBe(false);
 });
 

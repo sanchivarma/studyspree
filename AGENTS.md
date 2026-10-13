@@ -319,9 +319,9 @@ Rooms · other users · chat · AI conversation · webcam-driven avatars · cust
 > **Update this section at the end of every phase.**
 
 - **Current phase:** 1 — The Look
-- **Completed work:** scaffold, scenes, navigation, Home/Study, translated authentication and visual session screen
+- **Completed work:** scaffold, scenes, navigation, Home/Study, translated authentication, visual session and completion screens
 - **Repository in use:** `authRepository` (Supabase plus development preview login)
-- **Known issues:** session time/progress are static; Complete is a placeholder; live Supabase setup remains external
+- **Known issues:** session time/progress and completion totals are mock values; live Supabase setup remains external
 - **Next up:** continue the phased session implementation
 
 ---

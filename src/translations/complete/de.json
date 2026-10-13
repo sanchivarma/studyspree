@@ -1,0 +1,12 @@
+{
+  "complete": {
+    "label": "Sitzung abgeschlossen",
+    "affirmation": "Gut gelernt.",
+    "allTime": "Stunden insgesamt",
+    "totalLabel": "{hours} Stunden insgesamt",
+    "summary": "+25 Min. in dieser Sitzung · 1 Std. 10 Min. heute",
+    "streak": "{count} Tage in Folge",
+    "startAnother": "Neue Sitzung starten",
+    "done": "Für jetzt fertig"
+  }
+}

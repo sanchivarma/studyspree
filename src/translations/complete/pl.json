@@ -1,0 +1,12 @@
+{
+  "complete": {
+    "label": "Sesja zakończona",
+    "affirmation": "Dobra sesja.",
+    "allTime": "godzin łącznie",
+    "totalLabel": "{hours} godzin łącznie",
+    "summary": "+25 min w tej sesji · 1 godz. 10 min dziś",
+    "streak": "{count} dni z rzędu",
+    "startAnother": "Rozpocznij kolejną sesję",
+    "done": "Na dziś wystarczy"
+  }
+}
