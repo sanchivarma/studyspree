@@ -80,5 +80,23 @@ Stats fixtures use a seeded generator and a fixed reference date of
 gap and a recent ramp-up. Totals, streaks and session history derive from
 the same daily fixture. These values do not write to Supabase.
 
+## Local session repository (Phase 2.1)
+
+`src/lib/repo/index.ts` exports the session `repo`. `LocalRepository` stores
+validated JSON under `ss_profile`, `ss_sessions` and `ss_active`. Its profile
+is separate from authentication and starts with a blank display name and UTC
+timezone; later hooks will initialize it from the signed-in profile.
+
+Start is idempotent while a session is active. Finish derives banked seconds
+from `now()` timestamps, floors them and caps each session at six hours.
+Web Locks serialize mutations across tabs where supported. Corrupt keys are
+repaired, and denied storage or quota errors fall back to memory for that
+repository instance (memory cannot survive a reload).
+
+The repository contract tests cover this behavior. The visual Study/session
+screens are not wired to it yet, so the Phase 2 timer checklist will become
+available after the session hooks and timer prompts. No new dependencies were
+needed; Vitest and TanStack Query were already configured.
+
 See `CLAUDE.md` and `AGENTS.md` for project conventions. Auth and translations
 were brought forward from the phased plan at the user's request.
