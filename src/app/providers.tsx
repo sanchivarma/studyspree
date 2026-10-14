@@ -7,7 +7,7 @@ import { LanguageProvider } from "@/components/layout/LanguageProvider";
 import { AuthFeedbackProvider } from "@/components/auth/AuthFeedbackProvider";
 import type { Locale } from "@/translations";
 import { SceneMediaProvider } from "@/components/scene/SceneMediaProvider";
-import type { SceneMediaManifest } from "@/lib/characters/mediaTypes";
+import type { SceneMediaManifest } from "@/lib/themes/mediaTypes";
 
 export function Providers({ children, initialLocale, mediaManifest }: { children: React.ReactNode; initialLocale: Locale; mediaManifest: SceneMediaManifest }) {
   const [queryClient] = useState(() => new QueryClient({

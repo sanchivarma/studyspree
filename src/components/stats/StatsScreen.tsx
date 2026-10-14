@@ -2,7 +2,7 @@
 
 import { AccountControls } from "@/components/layout/AccountControls";
 import { useTranslation } from "@/hooks/useTranslation";
-import { getCharacter, type CharacterSlug } from "@/lib/characters/registry";
+import { getTheme, type ThemeSlug } from "@/lib/themes/registry";
 import { useTotalSeconds } from "@/hooks/useTotalSeconds";
 import { useDayStats } from "@/hooks/useDayStats";
 import { useSessions } from "@/hooks/useSessions";
@@ -19,7 +19,7 @@ import { Heatmap } from "./Heatmap";
 import { StreakCard } from "./StreakCard";
 
 const card = "rounded-2xl border border-border bg-surface p-5 md:p-6";
-const characterNames: Record<CharacterSlug, TranslationKey> = { "rain-desk": "stats.rainDesk", "night-shift": "stats.nightShift", "balcony-dusk": "stats.balconyDusk", "dorm-bunk": "stats.dormBunk" };
+const themeNames: Record<ThemeSlug, TranslationKey> = { "rain-desk": "stats.rainDesk", "night-shift": "stats.nightShift", "balcony-dusk": "stats.balconyDusk", "dorm-bunk": "stats.dormBunk" };
 
 export function StatsScreen() {
   const { locale, t } = useTranslation();
@@ -80,12 +80,12 @@ export function StatsScreen() {
             <thead className="text-text-muted"><tr>
               <th scope="col" className="py-3 pr-5 font-normal">{t("stats.date")}</th>
               <th scope="col" className="py-3 pr-5 font-normal">{t("stats.duration")}</th>
-              <th scope="col" className="py-3 font-normal">{t("stats.character")}</th>
+              <th scope="col" className="py-3 font-normal">{t("stats.theme")}</th>
             </tr></thead>
             <tbody>{sessions.map((session) => <tr key={session.id} data-session-id={session.id} className="border-t border-border">
               <td className="py-3 pr-5 whitespace-nowrap"><time dateTime={session.localDate}>{formatDate(session.localDate, locale, true)}</time></td>
               <td className="py-3 pr-5 whitespace-nowrap tabular-nums">{formatDuration(session.actualSeconds, locale)}</td>
-              <td className="py-3"><span className="inline-flex items-center gap-2 whitespace-nowrap"><span aria-hidden="true" className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: getCharacter(session.characterSlug).accentColor }} />{t(characterNames[getCharacter(session.characterSlug).slug])}</span></td>
+              <td className="py-3"><span className="inline-flex items-center gap-2 whitespace-nowrap"><span aria-hidden="true" className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: getTheme(session.themeSlug).accentColor }} />{t(themeNames[getTheme(session.themeSlug).slug])}</span></td>
             </tr>)}</tbody>
           </table>
         </div>

@@ -1,8 +1,8 @@
-import { characters, type CharacterSlug } from "@/lib/characters/registry";
+import { themes, type ThemeSlug } from "@/lib/themes/registry";
 import { shiftDate } from "@/lib/stats/dates";
 
 export type DayStat = { date: string; totalSeconds: number; sessionCount: number };
-export type MockSession = { id: string; date: string; totalSeconds: number; character: CharacterSlug };
+export type MockSession = { id: string; date: string; totalSeconds: number; theme: ThemeSlug };
 export type StatsSummary = { totalSeconds: number; sessionCount: number; currentStreak: number; bestStreak: number; freezesLeft: number };
 
 // A fixed calendar anchor keeps the mock page identical across reloads and machines.
@@ -62,7 +62,7 @@ for (const day of [...mockDayStats].reverse()) {
       id: `mock-${day.date}-${index}`,
       date: day.date,
       totalSeconds: base + (index === 0 ? day.totalSeconds % day.sessionCount : 0),
-      character: characters[mockSessions.length % characters.length].slug,
+      theme: themes[mockSessions.length % themes.length].slug,
     });
   }
   if (mockSessions.length === 20) break;

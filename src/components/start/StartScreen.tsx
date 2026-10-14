@@ -3,9 +3,9 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import { Shuffle } from "lucide-react";
-import { CharacterScene } from "@/components/scene/CharacterScene";
-import { CharacterSheet } from "@/components/scene/CharacterSheet";
-import { getCharacter } from "@/lib/characters/registry";
+import { ThemeScene } from "@/components/scene/ThemeScene";
+import { ThemeSheet } from "@/components/scene/ThemeSheet";
+import { getTheme } from "@/lib/themes/registry";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useCurrentHour } from "@/hooks/useCurrentHour";
@@ -31,7 +31,7 @@ export function StartScreen({ displayName, initialHour }: { displayName: string;
   const [chosenDuration, setChosenDuration] = useState<number | null | undefined>(undefined);
   const latest = recent.data?.[0];
   const selectedDuration = chosenDuration !== undefined ? chosenDuration : latest?.endedAt ? latest.plannedMinutes : 5;
-  const slug = getCharacter(profile.data?.selectedCharacter ?? "rain-desk").slug;
+  const slug = getTheme(profile.data?.selectedTheme ?? "rain-desk").slug;
   const mountedAt = useRef<number | null>(null);
   const { mutate, isPending, error } = useStartSession(() => {
     console.debug("time_to_start_ms", Math.max(0, now().getTime() - (mountedAt.current ?? now().getTime())));
@@ -42,13 +42,13 @@ export function StartScreen({ displayName, initialHour }: { displayName: string;
     if (starting.current || isPending) return;
     starting.current = true;
     const task = taskRef.current?.value.trim();
-    mutate({ plannedMinutes: selectedDuration, characterSlug: slug, task: task || null }, {
+    mutate({ plannedMinutes: selectedDuration, themeSlug: slug, task: task || null }, {
       onSettled: () => { starting.current = false; },
     });
   }, [mutate, isPending, selectedDuration, slug]);
   const hour = useCurrentHour(initialHour);
   const greeting = t(hour < 12 ? "home.morning" : hour < 18 ? "home.afternoon" : "home.evening", { username: profile.data?.displayName || displayName });
-  const style = { "--accent": getCharacter(slug).accentColor } as CSSProperties;
+  const style = { "--accent": getTheme(slug).accentColor } as CSSProperties;
 
   useEffect(() => {
     mountedAt.current ??= now().getTime();
@@ -85,7 +85,7 @@ export function StartScreen({ displayName, initialHour }: { displayName: string;
       className="relative isolate flex min-h-[calc(100dvh-3.5rem)] flex-col justify-end md:min-h-dvh"
       style={style}
     >
-      <CharacterScene slug={slug} priority />
+      <ThemeScene slug={slug} priority />
       <div aria-hidden="true" className="start-screen-scrim pointer-events-none absolute inset-0" />
       <AccountControls />
 
@@ -136,14 +136,14 @@ export function StartScreen({ displayName, initialHour }: { displayName: string;
         {error && <p role="alert" className="mt-3 text-small text-text-muted">{t("study.startError")}</p>}
       </div>
 
-      <CharacterSheet onOpenChange={setSheetOpen}><button
+      <ThemeSheet onOpenChange={setSheetOpen}><button
         type="button"
-        aria-label={t("study.switchCharacter")}
-        title={t("study.switchCharacter")}
+        aria-label={t("study.switchTheme")}
+        title={t("study.switchTheme")}
         className="absolute right-4 bottom-4 flex size-11 items-center justify-center rounded-xl text-text-muted hover:bg-background/30"
       >
         <Shuffle aria-hidden="true" className="size-4" strokeWidth={1.5} />
-      </button></CharacterSheet>
+      </button></ThemeSheet>
     </section>
   );
 }

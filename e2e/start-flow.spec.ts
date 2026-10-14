@@ -91,8 +91,8 @@ test("saved profile and previous duration are read without overriding a user cho
   await page.evaluate(() => {
     const endedAt = new Date().toISOString();
     const startedAt = new Date(Date.now() - 60_000).toISOString();
-    localStorage.setItem("ss_profile", JSON.stringify({ displayName: "Alex", selectedCharacter: "night-shift", timezone: "Europe/Berlin", showStreak: false, reduceMotion: false, webcamEnabled: false, ambienceEnabled: false }));
-    localStorage.setItem("ss_sessions", JSON.stringify([{ id: "previous", startedAt, endedAt, plannedMinutes: 15, actualSeconds: 60, endedReason: "completed", characterSlug: "rain-desk", localDate: startedAt.slice(0, 10), task: null }]));
+    localStorage.setItem("ss_profile", JSON.stringify({ displayName: "Alex", selectedTheme: "night-shift", timezone: "Europe/Berlin", showStreak: false, reduceMotion: false, webcamEnabled: false, ambienceEnabled: false }));
+    localStorage.setItem("ss_sessions", JSON.stringify([{ id: "previous", startedAt, endedAt, plannedMinutes: 15, actualSeconds: 60, endedReason: "completed", themeSlug: "rain-desk", localDate: startedAt.slice(0, 10), task: null }]));
   });
   await page.goto("/study");
   await expect(page.getByRole("button", { name: "15 min", exact: true })).toHaveAttribute("aria-pressed", "true");
@@ -104,7 +104,7 @@ test("saved profile and previous duration are read without overriding a user cho
   await page.getByRole("textbox").evaluate((input) => (input as HTMLInputElement).blur());
   await page.keyboard.press("Space");
   await expect(page.getByTestId("session-screen")).toBeVisible();
-  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("ss_sessions")!).at(-1))).toMatchObject({ plannedMinutes: 25, characterSlug: "night-shift", task: "Notes" });
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("ss_sessions")!).at(-1))).toMatchObject({ plannedMinutes: 25, themeSlug: "night-shift", task: "Notes" });
 });
 
 test("invalid session routes return through root", async ({ page }) => {

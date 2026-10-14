@@ -2,12 +2,12 @@
 
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { Shuffle } from "lucide-react";
-import { CharacterScene } from "@/components/scene/CharacterScene";
-import { CharacterSheet } from "@/components/scene/CharacterSheet";
+import { ThemeScene } from "@/components/scene/ThemeScene";
+import { ThemeSheet } from "@/components/scene/ThemeSheet";
 import { useProfile } from "@/hooks/useProfile";
 import { useIdleVisibility } from "@/hooks/useIdleVisibility";
 import { useTranslation } from "@/hooks/useTranslation";
-import { getCharacter } from "@/lib/characters/registry";
+import { getTheme } from "@/lib/themes/registry";
 import { useSessionTimer } from "@/hooks/useSessionTimer";
 import { useEndSession } from "@/hooks/useEndSession";
 import { formatTimer } from "@/lib/session/presentation";
@@ -33,14 +33,14 @@ export function SessionScreen({ session }: { session: Session }) {
     finishing.current = true;
     endSession({ id: session.id, reason: remainingSeconds !== null && remainingSeconds <= 0 ? "completed" : "stopped_early" }, { onError: () => { finishing.current = false; } });
   }, [isFinishing, endSession, session.id, remainingSeconds]);
-  const slug = getCharacter(profile.data?.selectedCharacter ?? session.characterSlug).slug;
+  const slug = getTheme(profile.data?.selectedTheme ?? session.themeSlug).slug;
   const task = session.task;
   const time = formatTimer(remainingSeconds ?? elapsedSeconds);
   useSessionTitle(time);
   const { t } = useTranslation();
   const idleVisible = useIdleVisibility();
   const isVisible = sheetOpen || soundOpen || idleVisible;
-  const style = { "--accent": getCharacter(slug).accentColor } as CSSProperties;
+  const style = { "--accent": getTheme(slug).accentColor } as CSSProperties;
   const fade = cn("transition-opacity duration-200 motion-reduce:transition-none", isVisible ? "opacity-100" : "pointer-events-none opacity-0");
 
   useEffect(() => {
@@ -55,7 +55,7 @@ export function SessionScreen({ session }: { session: Session }) {
 
   return <section aria-label={t("session.label")} data-testid="session-screen" data-controls-visible={isVisible} style={style}
     className={cn("relative isolate h-dvh w-full overflow-hidden", !isVisible && "cursor-none")}>
-    <CharacterScene slug={slug} priority />
+    <ThemeScene slug={slug} priority />
 
     <div className="absolute top-10 right-6 left-6 flex flex-col items-center md:top-12">
       <div className={cn("shrink-0 transition-opacity duration-200 motion-reduce:transition-none", isVisible ? "opacity-100" : "opacity-40")}>
@@ -73,13 +73,13 @@ export function SessionScreen({ session }: { session: Session }) {
         className="absolute bottom-6 left-1/2 min-h-11 -translate-x-1/2 rounded-xl border border-border px-4 text-body text-foreground/80 hover:bg-background/30 disabled:opacity-60 sm:px-6">
         {t("session.finish")}
       </button>
-      <AmbienceControl character={slug} onOpenChange={setSoundOpen} />
-      <CharacterSheet onOpenChange={setSheetOpen}>
-        <button type="button" aria-label={t("study.switchCharacter")} title={t("study.switchCharacter")}
+      <AmbienceControl theme={slug} onOpenChange={setSoundOpen} />
+      <ThemeSheet onOpenChange={setSheetOpen}>
+        <button type="button" aria-label={t("study.switchTheme")} title={t("study.switchTheme")}
           className="absolute bottom-20 left-4 flex size-11 items-center justify-center rounded-xl text-foreground/60 hover:bg-background/30 sm:left-6">
           <Shuffle aria-hidden="true" className="size-4" />
         </button>
-      </CharacterSheet>
+      </ThemeSheet>
     </div>
     <SelfView camera={camera} visible={isVisible} />
   </section>;

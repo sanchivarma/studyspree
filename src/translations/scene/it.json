@@ -1,7 +1,7 @@
 {
   "scene": {
-    "title": "Scegli il tuo personaggio",
-    "description": "Una presenza calma per concentrarti.",
+    "title": "Scegli il tuo tema",
+    "description": "Uno sfondo tranquillo per concentrarti.",
     "close": "Chiudi",
     "saveError": "Non è stato possibile salvare la scelta. Riprova.",
     "rainDeskDescription": "Una scrivania accogliente accanto alla pioggia.",

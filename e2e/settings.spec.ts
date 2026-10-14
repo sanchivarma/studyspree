@@ -18,7 +18,7 @@ test("every setting saves without a Save button and survives refresh without cha
   await page.evaluate(() => {
     localStorage.setItem("ss_sessions", JSON.stringify([{ id: "timezone-history", startedAt: "2026-10-12T23:30:00Z",
       endedAt: "2026-10-12T23:35:00Z", localDate: "2026-10-12", plannedMinutes: 5, actualSeconds: 300,
-      endedReason: "completed", characterSlug: "rain-desk", task: null }]));
+      endedReason: "completed", themeSlug: "rain-desk", task: null }]));
   });
   const history = await page.evaluate(() => localStorage.getItem("ss_sessions"));
   await page.getByLabel("Display name", { exact: true }).fill("Alex");
@@ -29,11 +29,11 @@ test("every setting saves without a Save button and survives refresh without cha
   await page.getByRole("switch", { name: "Show streak", exact: true }).click();
   await page.getByRole("combobox", { name: "Timezone", exact: true }).selectOption("Asia/Tokyo");
   await expect(page.getByRole("status")).toContainText("Future sessions use your new timezone. Your saved history stays unchanged.");
-  await page.getByRole("button", { name: "Character Rainy Desk", exact: true }).click();
-  await page.getByTestId("character-card-dorm-bunk").click();
+  await page.getByRole("button", { name: "Theme Rainy Desk", exact: true }).click();
+  await page.getByTestId("theme-card-dorm-bunk").click();
   await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("ss_profile")!))).toMatchObject({
     displayName: "Alex", reduceMotion: true, ambienceEnabled: true, musicVolume: .4, roomVolume: .6,
-    musicTrack: "silent", showStreak: false, timezone: "Asia/Tokyo", selectedCharacter: "dorm-bunk",
+    musicTrack: "silent", showStreak: false, timezone: "Asia/Tokyo", selectedTheme: "dorm-bunk",
   });
   expect(await page.evaluate(() => localStorage.getItem("ss_sessions"))).toBe(history);
   await expect(page.getByRole("button", { name: /save/i })).toHaveCount(0);

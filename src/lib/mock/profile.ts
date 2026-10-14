@@ -1,13 +1,13 @@
-import type { CharacterSlug } from "@/lib/characters/registry";
+import type { ThemeSlug } from "@/lib/themes/registry";
 
 export type MockProfile = {
   displayName: string;
-  selectedCharacter: CharacterSlug;
+  selectedTheme: ThemeSlug;
   showStreak: boolean;
 };
 
 export const mockProfile: MockProfile = {
   displayName: "Sanchi",
-  selectedCharacter: "rain-desk",
+  selectedTheme: "rain-desk",
   showStreak: true,
 };

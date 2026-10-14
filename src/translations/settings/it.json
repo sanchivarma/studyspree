@@ -1,7 +1,7 @@
 {
   "settings": {
     "appearance": "Aspetto",
-    "character": "Personaggio",
+    "theme": "Tema",
     "camera": "Videocamera",
     "selfView": "Anteprima personale",
     "cameraPrivacy": "L’anteprima resta sul tuo dispositivo.",

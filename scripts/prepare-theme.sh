@@ -27,11 +27,11 @@ fi
 # Absolute input paths also handle filenames beginning with a hyphen.
 source_file="$(cd -- "$(dirname -- "$source_file")" && pwd -P)/$(basename -- "$source_file")"
 repo_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
-output="$repo_root/public/characters/$slug"
+output="$repo_root/public/themes/$slug"
 mkdir -p -- "$output"
 output=$(cd -- "$output" && pwd -P)
-if [[ $output != "$repo_root/public/characters/"* ]]; then
-  printf 'Error: output directory must remain inside public/characters.\n' >&2
+if [[ $output != "$repo_root/public/themes/"* ]]; then
+  printf 'Error: output directory must remain inside public/themes.\n' >&2
   exit 1
 fi
 for filename in loop.mp4 loop.webm poster.jpg; do

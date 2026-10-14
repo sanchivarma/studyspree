@@ -1,13 +1,13 @@
-# Character assets
+# Theme assets
 
 Run the helper from Git Bash, WSL, macOS, or Linux with `ffmpeg` available on
 `PATH`. Its ffmpeg build needs the `libx264` and `libvpx-vp9` encoders. On Windows,
 open **Git Bash** to run the `.sh` file; PowerShell cannot execute it directly.
 
 ```bash
-./scripts/prepare-character.sh ~/Downloads/rain-desk.mp4 rain-desk
+./scripts/prepare-theme.sh ~/Downloads/rain-desk.mp4 rain-desk
 # A source path containing spaces must be quoted:
-./scripts/prepare-character.sh "$HOME/Downloads/Rainy Desk.mp4" rain-desk
+./scripts/prepare-theme.sh "$HOME/Downloads/Rainy Desk.mp4" rain-desk
 ```
 
 For a quoted home-directory path, use `"$HOME/Downloads/Rainy Desk.mp4"` rather
@@ -15,7 +15,7 @@ than quoting `~`, which Bash does not expand inside quotes.
 
 The script locates the repository through its own path, so output does not depend
 on your current directory. Slugs contain lowercase letters, digits, and single
-hyphens. Generated assets go in `public/characters/{slug}/`:
+hyphens. Generated assets go in `public/themes/{slug}/`:
 
 | Required filename | Output |
 | --- | --- |
@@ -29,7 +29,7 @@ so playback can start before the full download. The script stages all encodes
 before publishing them, refuses to overwrite existing assets, and removes its
 temporary files when it exits.
 
-The existing registry in `src/lib/characters/registry.ts` uses these names for
+The existing registry in `src/lib/themes/registry.ts` uses these names for
 `rain-desk`, `night-shift`, `balcony-dusk`, and `dorm-bunk`. A different output slug
 must be connected through the registry's media paths. Development discovers
 available assets when rendering a page; restart the dev server after adding files
@@ -38,7 +38,7 @@ running `npm run build`.
 
 ## Immutable URLs
 
-`/characters/:path*` and `/audio/:path*` send:
+`/themes/:path*` and `/audio/:path*` send:
 
 ```text
 Cache-Control: public, max-age=31536000, immutable
@@ -50,9 +50,9 @@ Every new asset version must use a new URL, and published files must remain
 unchanged.
 
 For a replacement, prepare into a fresh directory, for example `rain-desk-v2`,
-and update the character's `mp4`, `webm`, and `poster` paths in the registry to
-`/characters/rain-desk-v2/loop.mp4`, `/characters/rain-desk-v2/loop.webm`, and
-`/characters/rain-desk-v2/poster.jpg`. Keep the logical character slug `rain-desk`
+and update the theme's `mp4`, `webm`, and `poster` paths in the registry to
+`/themes/rain-desk-v2/loop.mp4`, `/themes/rain-desk-v2/loop.webm`, and
+`/themes/rain-desk-v2/poster.jpg`. Keep the logical theme slug `rain-desk`
 so saved selections still work. Alternatively, publish new filenames such as
 `loop-v2.mp4`, `loop-v2.webm`, and `poster-v2.jpg`, then update the registry paths.
 Retain the old published assets for existing cached pages.
@@ -69,7 +69,7 @@ a fresh version.
 ## Check the loop seam
 
 Play **each encoded video** with looping enabled for **three minutes**. Watch
-the transition from the last frame back to the first: the character's pose,
+the transition from the last frame back to the first: the theme's pose,
 lighting, camera position, and background movement should continue smoothly.
 Look for flashes, sudden jumps, pauses, or a visibly duplicated frame at the seam.
 Encoding does not create a seamless loop; fix the source and prepare a new
@@ -78,8 +78,8 @@ version if the transition is noticeable.
 With `ffplay` installed, these commands loop each file until you close its window:
 
 ```bash
-ffplay -stream_loop -1 -an public/characters/rain-desk/loop.mp4
-ffplay -stream_loop -1 -an public/characters/rain-desk/loop.webm
+ffplay -stream_loop -1 -an public/themes/rain-desk/loop.mp4
+ffplay -stream_loop -1 -an public/themes/rain-desk/loop.webm
 ```
 
 Check the poster matches the opening scene, then check the scene in StudySpree

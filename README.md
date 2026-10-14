@@ -4,7 +4,7 @@ Big goals start with showing up.
 
 **NEVER add audio without a recorded licence. NEVER use audio ripped from YouTube.**
 
-Session ambience uses Howler with independent music and character-matched room
+Session ambience uses Howler with independent music and theme-matched room
 buses. Both start off; saved preferences wait for a user gesture. The current
 four WebM assets and music preview are silent placeholders. Record every future
 asset in `public/audio/LICENCES.md`, and run `npm run check:audio-licences`.
@@ -94,7 +94,7 @@ the same daily fixture. These values do not write to Supabase.
 validated JSON under `ss_profile`, `ss_sessions` and `ss_active`. Its profile
 is separate from authentication and starts with a blank display name and UTC
 timezone. Study falls back to the authenticated username when its local display
-name is blank, and to Rainy Desk until the local character selection is loaded.
+name is blank, and to Rainy Desk until the local theme selection is loaded.
 
 Start is idempotent while a session is active. Finish derives banked seconds
 from `now()` timestamps, floors them and caps each session at six hours.
@@ -147,7 +147,7 @@ from the previous total. Today uses hours and minutes; sessions under a minute
 keep seconds visible. The streak row is a placeholder until Phase 4. Start
 another returns through `/`; Study still remembers the previous duration.
 
-## Character video scenes (Phase 3.1)
+## Theme video scenes (Phase 3.1)
 
 `SceneVideo` renders the CSS gradient immediately, then a loaded poster and
 a muted, inline looping video. Video fades in over 600ms when playback data is
@@ -156,13 +156,13 @@ OS reduced motion or the local profile's `reduceMotion` preference uses a static
 poster with no video element. A saved preference is read before video mounts.
 
 Add `loop.webm`, `loop.mp4` and `poster.jpg` under
-`public/characters/{slug}/`, then fully reload the page in development. Files
+`public/themes/{slug}/`, then fully reload the page in development. Files
 that are absent are not requested. The server checks availability during local
 page loads; production uses an availability snapshot embedded at build time so
 CDN-hosted assets work without runtime filesystem access. Rebuild to ship newly
-added production assets. The current repository contains no real character media.
+added production assets. The current repository contains no real theme media.
 
-Character and audio URLs use a one-year immutable cache. A new asset version
+Theme and audio URLs use a one-year immutable cache. A new asset version
 must use a new filename and updated registry path. Scene tests create tiny
 synthetic fixtures temporarily and remove only the files they created.
 

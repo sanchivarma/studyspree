@@ -3,7 +3,7 @@
 import { useState, type CSSProperties } from "react";
 import { Shuffle, X } from "lucide-react";
 import { AccountControls } from "@/components/layout/AccountControls";
-import { CharacterSheet, characterCopy } from "@/components/scene/CharacterSheet";
+import { ThemeSheet, themeCopy } from "@/components/scene/ThemeSheet";
 import { SceneVideo } from "@/components/scene/SceneVideo";
 import { useProfile } from "@/hooks/useProfile";
 import { useUpdateProfile } from "@/hooks/useUpdateProfile";
@@ -11,7 +11,7 @@ import { useSetWebcamEnabled } from "@/hooks/useSetWebcamEnabled";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useTimezones } from "@/hooks/useTimezones";
-import { getCharacter } from "@/lib/characters/registry";
+import { getTheme } from "@/lib/themes/registry";
 import { musicTracks } from "@/lib/audio/catalog";
 
 function PreferenceSwitch({ label, checked, disabled, reducedMotion, onChange }: {
@@ -39,12 +39,12 @@ export function SettingsScreen() {
   const [timezoneChanged, setTimezoneChanged] = useState(false);
   const preferences = profile.data;
   const disabled = profile.isPending || !preferences;
-  const character = getCharacter(preferences?.selectedCharacter ?? "rain-desk");
+  const theme = getTheme(preferences?.selectedTheme ?? "rain-desk");
   const timezones = useTimezones(preferences?.timezone);
   const toggleProps = { disabled, reducedMotion };
   const cameraSaveError = webcam.error && !["NotAllowedError", "NotFoundError", "AbortError"].includes(webcam.error.name);
 
-  return <section style={{ "--accent": character.accentColor } as CSSProperties} className="mx-auto w-full max-w-2xl px-6 pt-24 pb-8">
+  return <section style={{ "--accent": theme.accentColor } as CSSProperties} className="mx-auto w-full max-w-2xl px-6 pt-24 pb-8">
     <AccountControls />
     <h1 className="mb-6 text-title">{t("common.settings")}</h1>
     {(update.error || cameraSaveError) && <p role="alert" className="mb-4 text-small text-text-muted">{t("settings.saveError")}</p>}
@@ -64,13 +64,13 @@ export function SettingsScreen() {
     </section>
     <section className={cardClass}>
       <h2 className="text-body font-semibold">{t("settings.appearance")}</h2>
-      <CharacterSheet>
+      <ThemeSheet>
         <button type="button" disabled={disabled} className="mt-4 flex min-h-16 w-full items-center gap-4 rounded-xl border border-border p-3 text-left hover:bg-surface-2 disabled:opacity-60">
-          <span className="relative block aspect-video w-20 shrink-0 overflow-hidden rounded-lg"><SceneVideo slug={character.slug} posterOnly /></span>
-          <span className="min-w-0 flex-1 break-words"><span className="block text-small text-text-muted">{t("settings.character")}</span><span className="block text-body">{t(characterCopy[character.slug].name)}</span></span>
+          <span className="relative block aspect-video w-20 shrink-0 overflow-hidden rounded-lg"><SceneVideo slug={theme.slug} posterOnly /></span>
+          <span className="min-w-0 flex-1 break-words"><span className="block text-small text-text-muted">{t("settings.theme")}</span><span className="block text-body">{t(themeCopy[theme.slug].name)}</span></span>
           <Shuffle aria-hidden="true" className="size-5 shrink-0 text-text-muted" />
         </button>
-      </CharacterSheet>
+      </ThemeSheet>
       <PreferenceSwitch {...toggleProps} label={t("settings.reduceMotion")} checked={preferences?.reduceMotion ?? false}
         onChange={reduceMotion => update.mutate({ reduceMotion })} />
     </section>

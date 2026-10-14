@@ -24,7 +24,7 @@ describe("development preview authentication", () => {
   it("signs a cookie for the configured credentials and reads its profile", async () => {
     expect(await loginDevAdmin({ username: "ss_admin", password: "ss_password" })).toEqual({ status: "success", navigate: "/home" });
     expect(store.set).toHaveBeenCalledWith("ss_dev_admin", expect.any(String), expect.objectContaining({ httpOnly: true, sameSite: "lax", path: "/" }));
-    expect(await getDevAdminProfile()).toMatchObject({ username: "ss_admin", selected_character: "rain-desk", show_streak: false });
+    expect(await getDevAdminProfile()).toMatchObject({ username: "ss_admin", selected_theme: "rain-desk", show_streak: false });
   });
   it("rejects incorrect passwords without creating a cookie", async () => {
     expect(await loginDevAdmin({ username: "ss_admin", password: "incorrect" })).toEqual({ status: "error", message: "login.invalidCredentials" });

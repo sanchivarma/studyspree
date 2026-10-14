@@ -20,7 +20,7 @@ export const authRepository: AuthRepository = {
     const client = await createAuthClient();
     const { data, error } = await client.auth.getUser();
     if (error || !data.user) return null;
-    const profile = await client.from("profiles").select("id,username,first_name,last_name,selected_character,show_streak").eq("id", data.user.id).single();
+    const profile = await client.from("profiles").select("*").eq("id", data.user.id).single();
     const parsed = profileSchema.safeParse(profile.data);
     return parsed.success ? parsed.data : null;
   },

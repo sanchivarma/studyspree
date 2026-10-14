@@ -8,7 +8,8 @@ Read this fully before writing code. When this file conflicts with a task prompt
 ## 1. What this project is
 
 - **StudySpree** — a silent study-companion web app
-- User picks an illustrated character who studies beside them in a looping video scene
+- User picks a background theme rendered as a looping scene
+- Characters are reserved for future virtual study partners; the current scenes are themes
 - User runs a timer, banks hours, watches progress accumulate
 - Tagline: *"Big goals start with showing up"*
 - Built for people who struggle to **start** studying (ADHD, procrastination, camera-shy)
@@ -76,14 +77,14 @@ src/
     repo/                Repository interface + implementations
     streaks/             pure streak logic
     stats/               date bucketing helpers
-    characters/          registry
+    themes/          registry
     audio/
     mock/                Phase 1 mock data only
   hooks/                 React hooks that wrap the repository
   stores/                Zustand stores
   types/                 domain.ts (hand-written), database.ts (generated)
 public/
-  characters/{slug}/     loop.mp4, loop.webm, poster.jpg
+  themes/{slug}/     loop.mp4, loop.webm, poster.jpg
   audio/                 + LICENCES.md
 supabase/migrations/     numbered SQL migrations
 e2e/                     Playwright specs
@@ -235,7 +236,7 @@ A Playwright test greps the Complete screen for banned words. Don't work around 
 - Colours via tokens (`--bg`, `--surface`, `--accent`, `--grey-zero`…) — **no raw hex in components**
 - Tabular numerals (`tabular-nums`) on every number that changes
 - Dark theme only for now
-- One accent colour per character, from the registry
+- One accent colour per theme, from the registry
 
 ### Naming
 - Files: `PascalCase.tsx` for components, `camelCase.ts` for everything else
@@ -263,12 +264,12 @@ Never delete or skip a failing test to make a task pass. Fix the cause or ask.
 
 ## 10. Assets and licensing
 
-- Character assets: `public/characters/{slug}/loop.mp4`, `loop.webm`, `poster.jpg`
+- Theme assets: `public/themes/{slug}/loop.mp4`, `loop.webm`, `poster.jpg`
 - Assets are **immutable** (1-year cache). A new version ships under a **new filename** — never overwrite
-- Budget: ≤ 8 MB per video. Use `scripts/prepare-character.sh`
+- Budget: ≤ 8 MB per video. Use `scripts/prepare-theme.sh`
 - Audio: every file in `public/audio/` **must** be listed in `public/audio/LICENCES.md`
 - **Never** add audio from YouTube, streaming services, or unlicensed sources
-- **Never** add real-person likenesses or copyrighted characters (Marvel, DC, Disney, anime IP, etc.)
+- **Never** add real-person likenesses or copyrighted themes (Marvel, DC, Disney, anime IP, etc.)
 - Missing media files must fail **silently** to the gradient fallback — never crash, never show an error
 
 ---
@@ -320,16 +321,17 @@ Rooms · other users · chat · AI conversation · webcam-driven avatars · cust
 
 > **Update this section at the end of every phase.**
 
-- **Current phase:** 5.4 — Repository-backed Settings with optimistic updates
-- **Completed work:** scaffold, scenes, navigation, Home/Study, translated authentication, mock Stats dashboard, local repository and real timer, recent completion summaries with affirmations, early-stop coverage, cross-tab recovery, smooth depleting ring and live tab title, responsive character sheet in Study/Settings/session controls, optimistic character persistence, 400ms scene crossfades and keyboard navigation, ffmpeg asset preparation with immutable-file protection and an asset guide, pure streak activity engine with monthly freezes, shared JSON contract fixtures and DST/invariant coverage, session-derived day/summary totals, persisted streaks and idempotent freeze events, historical timezone buckets and repository conservation tests, repository-backed Stats with five-minute queries and paginated history, gap-filled calendar and bars, deterministic 40-hour development seed preserving existing history
+- **Current phase:** 6 — Local accounts setup in progress; theme naming completed
+- **Completed work:** scaffold, scenes, navigation, Home/Study, translated authentication, mock Stats dashboard, local repository and real timer, recent completion summaries with affirmations, early-stop coverage, cross-tab recovery, smooth depleting ring and live tab title, responsive theme sheet in Study/Settings/session controls, optimistic theme persistence, 400ms scene crossfades and keyboard navigation, ffmpeg asset preparation with immutable-file protection and an asset guide, pure streak activity engine with monthly freezes, shared JSON contract fixtures and DST/invariant coverage, session-derived day/summary totals, persisted streaks and idempotent freeze events, historical timezone buckets and repository conservation tests, repository-backed Stats with five-minute queries and paginated history, gap-filled calendar and bars, deterministic 40-hour development seed preserving existing history
 - **Repository in use:** `authRepository` for authentication; `repo` exports the tested `LocalRepository` for the session flow
-- **Known issues:** real character media and audible recordings have not been supplied; audio currently uses deliberate silent placeholders; live Supabase setup remains external
-- **Next up:** next planned phase; supply licensed character media and audible, versioned audio assets
+- **Known issues:** real theme media and audible recordings have not been supplied; audio currently uses deliberate silent placeholders; live Supabase setup remains external
+- **Next up:** next planned phase; supply licensed theme media and audible, versioned audio assets
 - **Phase 4.4–4.5:** completion uses a short-lived Finish receipt with persisted event recovery after refresh, conditional streak/Day 1/freeze notices, and the local profile visibility setting; Study has a translated comeback screen with timezone-aware eligibility, banked hours, five-minute Start, daily persistence and debug events. The agreed Home/Study split is preserved.
 - **Phase 5.1:** session camera stub replaced with an off-by-default local mirrored preview, explicit opt-in, transform-based expansion, drag/keyboard corner selection persisted in the profile, translated permission guidance, missing-device handling, cleanup on disable/Finish/unmount and late permission resolution, cross-tab disable propagation and webcam privacy browser guards. The original privacy contract stays at the top of SelfView.
 - **Phase 5.2:** the browser privacy suite includes 20 seconds of request inspection, constructor violation flags, external upload limits and WebRTC/STUN/TURN URL checks. GitHub Actions installs Chromium and enforces the suite on every push/pull request using generated development credentials and an automatically started local server.
-- **Phase 5.3:** independent Howler music/room buses, gesture-only context initialization, two-instance/two-second loop crossfades, character-matched room sound, visibility fades, translated speaker popover and 500ms debounced repository preferences; four original silent Opus/WebM assets with provenance, licence ledger/checker, and licence gates in builds and CI.
+- **Phase 5.3:** independent Howler music/room buses, gesture-only context initialization, two-instance/two-second loop crossfades, theme-matched room sound, visibility fades, translated speaker popover and 500ms debounced repository preferences; four original silent Opus/WebM assets with provenance, licence ledger/checker, and licence gates in builds and CI.
 - **Phase 5.4:** Settings controls use serialized optimistic profile mutations with field-level rollback and no Save button; new profiles use the device timezone while saved choices and historical local dates remain unchanged by agreement. Settings self-view opt-in now requests permission immediately and releases the probe stream; the permanent privacy regression retains its twenty-second network assertions. Appearance, sound, volumes, track choice, display name and streak visibility persist and are translated into all five languages.
+- **Theme naming:** scenes, registry, components, hooks, profile/session fields, audio matching, translations and asset paths use theme terminology. Legacy storage field names are normalized on read without writing over history; the next normal mutation persists the new names. Migration 0002 renames the profile column in place; the original applied migration stays unchanged.
 
 ---
 

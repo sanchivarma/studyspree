@@ -31,7 +31,7 @@ it("pages twenty ended sessions without gaps or duplicate rows when an active re
   const records: Session[] = Array.from({ length: 22 }, (_, index) => ({
     id: `session-${index}`, startedAt: "2026-10-14T12:00:00Z", endedAt: index === 0 ? null : "2026-10-14T12:01:00Z",
     plannedMinutes: 5, actualSeconds: index === 0 ? 0 : 60, endedReason: index === 0 ? null : "completed",
-    characterSlug: "rain-desk", localDate: "2026-10-14", task: null,
+    themeSlug: "rain-desk", localDate: "2026-10-14", task: null,
   }));
   vi.mocked(repo.getSessions).mockResolvedValue(records);
   useSessions();

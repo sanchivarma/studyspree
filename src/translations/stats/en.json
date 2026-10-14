@@ -18,7 +18,7 @@
     "historyTitle": "Session history",
     "date": "Date",
     "duration": "Duration",
-    "character": "Character",
+    "theme": "Theme",
     "noSessions": "No sessions on {date}",
     "activityOn": "{duration} on {date}",
     "futureDate": "Upcoming date: {date}",

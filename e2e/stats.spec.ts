@@ -127,7 +127,7 @@ test("Finish invalidates the five-minute cached stats and adds real banked time"
 
 test("real profile showStreak preference hides the card", async ({ page }) => {
   await prepare(page);
-  await page.evaluate(() => localStorage.setItem("ss_profile", JSON.stringify({ displayName: "", selectedCharacter: "rain-desk", timezone: "UTC", showStreak: false, reduceMotion: false, webcamEnabled: false, ambienceEnabled: false })));
+  await page.evaluate(() => localStorage.setItem("ss_profile", JSON.stringify({ displayName: "", selectedTheme: "rain-desk", timezone: "UTC", showStreak: false, reduceMotion: false, webcamEnabled: false, ambienceEnabled: false })));
   await page.reload();
   await expect(page.getByTestId("stats-total")).toHaveText("40.0");
   await expect(page.getByTestId("streak-card")).toHaveCount(0);

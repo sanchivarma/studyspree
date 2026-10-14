@@ -2,7 +2,7 @@
 
 import { useId, type CSSProperties } from "react";
 import { usePageVisibility } from "@/hooks/usePageVisibility";
-import { getCharacter } from "@/lib/characters/registry";
+import { getTheme } from "@/lib/themes/registry";
 import { cn } from "@/lib/utils";
 
 export type ScenePlaceholderProps = {
@@ -11,22 +11,22 @@ export type ScenePlaceholderProps = {
 };
 
 export function ScenePlaceholder({ slug, className }: ScenePlaceholderProps) {
-  const character = getCharacter(slug);
+  const theme = getTheme(slug);
   const grainId = useId();
   const isVisible = usePageVisibility();
-  const sceneStyle = { "--accent": character.accentColor } as CSSProperties;
+  const sceneStyle = { "--accent": theme.accentColor } as CSSProperties;
 
   return (
     <div
       aria-hidden="true"
       className={cn("pointer-events-none absolute inset-0 isolate overflow-hidden", className)}
       style={sceneStyle}
-      data-character={character.slug}
+      data-theme={theme.slug}
     >
       <div
         className="scene-placeholder-gradient"
         style={{
-          background: character.gradient,
+          background: theme.gradient,
           animationPlayState: isVisible ? "running" : "paused",
         }}
       />

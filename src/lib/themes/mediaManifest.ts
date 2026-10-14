@@ -2,7 +2,7 @@ import "server-only";
 import { stat } from "node:fs/promises";
 import { join } from "node:path";
 import { z } from "zod";
-import { characters } from "./registry";
+import { themes } from "./registry";
 import type { SceneMediaManifest } from "./mediaTypes";
 
 const media = z.object({ poster: z.boolean(), webm: z.boolean(), mp4: z.boolean() });
@@ -19,9 +19,9 @@ export async function getSceneMediaManifest(): Promise<SceneMediaManifest> {
   const exists = async (path: string) => {
     try { return (await stat(join(process.cwd(), "public", path))).isFile(); } catch { return false; }
   };
-  const entries = await Promise.all(characters.map(async (character) => {
-    const [poster, webm, mp4] = await Promise.all([exists(character.poster), exists(character.webm), exists(character.mp4)]);
-    return [character.slug, { poster, webm, mp4 }] as const;
+  const entries = await Promise.all(themes.map(async (theme) => {
+    const [poster, webm, mp4] = await Promise.all([exists(theme.poster), exists(theme.webm), exists(theme.mp4)]);
+    return [theme.slug, { poster, webm, mp4 }] as const;
   }));
   return Object.fromEntries(entries) as SceneMediaManifest;
 }

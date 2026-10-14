@@ -9,7 +9,7 @@ export type Session = {
   plannedMinutes: number | null;
   actualSeconds: number;
   endedReason: EndedReason | null;
-  characterSlug: string;
+  themeSlug: string;
   localDate: string;
   task: string | null;
 };
@@ -18,7 +18,7 @@ export type DayStat = { date: string; totalSeconds: number; sessionCount: number
 export type WebcamCorner = "top-left" | "top-right" | "bottom-left" | "bottom-right";
 export type Profile = {
   displayName: string;
-  selectedCharacter: string;
+  selectedTheme: string;
   timezone: string;
   showStreak: boolean;
   reduceMotion: boolean;

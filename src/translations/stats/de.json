@@ -18,7 +18,7 @@
     "historyTitle": "Sitzungsverlauf",
     "date": "Datum",
     "duration": "Dauer",
-    "character": "Charakter",
+    "theme": "Design",
     "noSessions": "Keine Sitzungen am {date}",
     "activityOn": "{duration} am {date}",
     "futureDate": "Zukünftiges Datum: {date}",

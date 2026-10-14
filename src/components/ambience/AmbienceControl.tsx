@@ -6,10 +6,10 @@ import type { CSSProperties } from "react";
 import { useAmbience } from "@/hooks/useAmbience";
 import { useTranslation } from "@/hooks/useTranslation";
 import { musicTracks } from "@/lib/audio/catalog";
-import { getCharacter } from "@/lib/characters/registry";
+import { getTheme } from "@/lib/themes/registry";
 
-export function AmbienceControl({ character, onOpenChange }: { character: string; onOpenChange: (open: boolean) => void }) {
-  const audio = useAmbience(character);
+export function AmbienceControl({ theme, onOpenChange }: { theme: string; onOpenChange: (open: boolean) => void }) {
+  const audio = useAmbience(theme);
   const { t } = useTranslation();
   const Icon = audio.isAudible ? Volume2 : VolumeX;
   return <Popover.Root onOpenChange={open => { if (open) audio.unlock(); onOpenChange(open); }}>
@@ -21,7 +21,7 @@ export function AmbienceControl({ character, onOpenChange }: { character: string
     </Popover.Trigger>
     <Popover.Portal>
       <Popover.Content aria-label={t("ambience.label")} data-testid="ambience-popover" side="top" align="start" sideOffset={8} collisionPadding={16}
-        style={{ "--accent": getCharacter(character).accentColor } as CSSProperties}
+        style={{ "--accent": getTheme(theme).accentColor } as CSSProperties}
         onKeyDown={event => event.stopPropagation()}
         className="z-50 max-h-[calc(100dvh-6rem)] w-72 max-w-[calc(100dvw-2rem)] overflow-y-auto rounded-2xl border border-border bg-surface p-5 text-foreground shadow-lg">
         <h2 className="text-body font-semibold">{t("ambience.label")}</h2>

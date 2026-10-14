@@ -1,7 +1,7 @@
 import type { DayStat, EndedReason, Profile, Session } from "@/types/domain";
 import type { StreakState } from "@/lib/streaks/computeStreak";
 
-export type StartSessionInput = { plannedMinutes: number | null; characterSlug: string; task: string | null };
+export type StartSessionInput = { plannedMinutes: number | null; themeSlug: string; task: string | null };
 export type SessionSummary = { totalSeconds: number; sessionCount: number; firstSessionDate: string | null };
 export type EndSessionStreak = Pick<StreakState, "current" | "best"> & { changed: boolean; freezeUsed: boolean };
 export type EndSessionResult = { session: Session; totalSecondsAllTime: number; dayTotalSeconds: number; streak: EndSessionStreak };

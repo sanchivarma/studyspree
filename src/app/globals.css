@@ -108,12 +108,12 @@
 }
 
 /* The shadcn overlay is a portal sibling: scope its motion preferences to
-   the open character sheet without changing the generated primitive. */
-body:has([data-character-picker][data-reduced-motion="true"]) [data-slot="sheet-overlay"] {
+   the open theme sheet without changing the generated primitive. */
+body:has([data-theme-picker][data-reduced-motion="true"]) [data-slot="sheet-overlay"] {
   animation: none !important;
   transition: none !important;
 }
-body:has([data-character-picker][data-page-visible="false"]) [data-slot="sheet-overlay"] {
+body:has([data-theme-picker][data-page-visible="false"]) [data-slot="sheet-overlay"] {
   animation-play-state: paused;
 }
 

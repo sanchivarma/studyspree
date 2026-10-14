@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { generateMockStats, mockDayStats, mockSessions, mockStatsSummary, summarizeStats, MOCK_REFERENCE_DATE } from "./stats";
 import { shiftDate } from "@/lib/stats/dates";
-import { characters } from "@/lib/characters/registry";
+import { themes } from "@/lib/themes/registry";
 
 afterEach(() => { vi.useRealTimers(); vi.restoreAllMocks(); });
 
@@ -45,7 +45,7 @@ describe("deterministic stats fixtures", () => {
     expect(new Set(mockSessions.map((session) => session.id)).size).toBe(20);
     mockSessions.forEach((session, index) => {
       expect(session.totalSeconds).toBeGreaterThan(0);
-      expect(characters.some((character) => character.slug === session.character)).toBe(true);
+      expect(themes.some((theme) => theme.slug === session.theme)).toBe(true);
       if (index > 0) expect(session.date <= mockSessions[index - 1].date).toBe(true);
     });
     for (const date of new Set(mockSessions.map((session) => session.date))) {

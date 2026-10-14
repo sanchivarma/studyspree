@@ -3,7 +3,7 @@ import { LocalRepository } from "./local";
 import type { Repository } from "./types";
 
 vi.mock("@/lib/clock", () => ({ now: () => new Date(Date.now()) }));
-const input = { plannedMinutes: 5, characterSlug: "rain-desk", task: "Read chapter one" };
+const input = { plannedMinutes: 5, themeSlug: "rain-desk", task: "Read chapter one" };
 
 // Keep this contract reusable when the remote implementation arrives.
 export function repositoryContract(name: string, create: () => Repository) {
@@ -60,7 +60,7 @@ export function repositoryContract(name: string, create: () => Repository) {
       expect(summary.totalSeconds).toBe(144000);
       const sessions = await repo.getSessions({ limit: 1000, offset: 0 });
       expect(summary.sessionCount).toBe(sessions.length);
-      expect(new Set(sessions.map((session) => session.characterSlug)).size).toBe(4);
+      expect(new Set(sessions.map((session) => session.themeSlug)).size).toBe(4);
       expect(new Set(sessions.map((session) => session.plannedMinutes))).toEqual(new Set([5, 15, 25, 50]));
       for (const session of sessions) expect(session.actualSeconds).toBe((new Date(session.endedAt!).getTime() - new Date(session.startedAt).getTime()) / 1000);
       expect(await repo.getStreak()).toMatchObject({ current: 6, lastActiveDate: "2026-10-11" });

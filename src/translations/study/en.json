@@ -6,7 +6,7 @@
     "open": "Open",
     "openHint": "just open it",
     "task": "What are you working on? (optional)",
-    "switchCharacter": "Switch character",
+    "switchTheme": "Switch theme",
     "sessionLabel": "Start a study session"
   }
 }

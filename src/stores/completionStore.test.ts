@@ -4,7 +4,7 @@ import type { EndSessionResult } from "@/lib/repo/types";
 
 const time = vi.hoisted(() => ({ ms: Date.parse("2026-10-14T12:00:00Z") }));
 vi.mock("@/lib/clock", () => ({ now: () => new Date(time.ms) }));
-const result: EndSessionResult = { session: { id: "receipt", startedAt: "2026-10-14T11:59:50Z", endedAt: "2026-10-14T12:00:00Z", localDate: "2026-10-14", actualSeconds: 10, plannedMinutes: 25, endedReason: "stopped_early", characterSlug: "rain-desk", task: null }, totalSecondsAllTime: 10, dayTotalSeconds: 10, streak: { current: 2, best: 4, changed: true, freezeUsed: true } };
+const result: EndSessionResult = { session: { id: "receipt", startedAt: "2026-10-14T11:59:50Z", endedAt: "2026-10-14T12:00:00Z", localDate: "2026-10-14", actualSeconds: 10, plannedMinutes: 25, endedReason: "stopped_early", themeSlug: "rain-desk", task: null }, totalSecondsAllTime: 10, dayTotalSeconds: 10, streak: { current: 2, best: 4, changed: true, freezeUsed: true } };
 afterEach(() => { useCompletionStore.getState().clear(); time.ms = Date.parse("2026-10-14T12:00:00Z"); });
 describe("short-lived completion receipts", () => {
   it("preserves Finish flags immediately and checks route identity", () => {

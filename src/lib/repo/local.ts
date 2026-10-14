@@ -8,6 +8,7 @@ import { aggregateSessions, summarizeSessions } from "@/lib/stats/aggregateSessi
 import { applyActivity, type StreakState } from "@/lib/streaks/computeStreak";
 import type { DayStat, EndedReason, Profile, Session } from "@/types/domain";
 import type { EndSessionResult, EndSessionStreak, Repository, SessionSummary, StartSessionInput } from "./types";
+import { upgradeThemeNames } from "./upgradeThemes";
 
 type StorageAccess = Pick<Storage, "getItem" | "setItem" | "removeItem">;
 const iso = z.iso.datetime();
@@ -16,7 +17,7 @@ const timezone = z.string().refine((value) => {
   try { new Intl.DateTimeFormat("en", { timeZone: value }); return true; } catch { return false; }
 });
 const profileSchema = z.object({
-  displayName: z.string(), selectedCharacter: z.string().min(1), timezone,
+  displayName: z.string(), selectedTheme: z.string().min(1), timezone,
   showStreak: z.boolean(), reduceMotion: z.boolean(), webcamEnabled: z.boolean(), ambienceEnabled: z.boolean(),
   // Older profiles upgrade without discarding preferences.
   comebackShownForDate: date.nullable().default(null),
@@ -25,7 +26,7 @@ const profileSchema = z.object({
   musicVolume: z.number().min(0).max(1).default(0),
   roomVolume: z.number().min(0).max(1).default(0),
 }).strict();
-const inputSchema = z.object({ plannedMinutes: z.number().finite().positive().nullable(), characterSlug: z.string().min(1), task: z.string().nullable() }).strict();
+const inputSchema = z.object({ plannedMinutes: z.number().finite().positive().nullable(), themeSlug: z.string().min(1), task: z.string().nullable() }).strict();
 const sessionSchema = z.object({
   id: z.string().min(1), startedAt: iso, endedAt: iso.nullable(),
   ...inputSchema.shape, actualSeconds: z.number().int().min(0).max(21600),
@@ -74,7 +75,8 @@ export class LocalRepository implements Repository {
     if (raw === null) return fallback();
     if (raw !== null) {
       try {
-        const parsed = schema.safeParse(JSON.parse(raw));
+        const value: unknown = JSON.parse(raw);
+        const parsed = schema.safeParse(key === "ss_profile" || key === "ss_sessions" ? upgradeThemeNames(value) : value);
         if (parsed.success) { this.memory.set(key, raw); return parsed.data; }
       } catch { /* Repair malformed JSON below. */ }
     }
@@ -92,7 +94,7 @@ export class LocalRepository implements Repository {
 
   private profile(): Profile {
     return this.read("ss_profile", profileSchema, () => ({
-      displayName: "", selectedCharacter: "rain-desk", timezone: defaultTimezone(), showStreak: true,
+      displayName: "", selectedTheme: "rain-desk", timezone: defaultTimezone(), showStreak: true,
       reduceMotion: false, webcamEnabled: false, ambienceEnabled: false,
       comebackShownForDate: null,
       webcamCorner: "bottom-right",

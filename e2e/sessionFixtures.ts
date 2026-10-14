@@ -48,7 +48,7 @@ export async function seedCompletion(page: Page) {
       const startedAt = new Date(startedMs).toISOString();
       return { id: index === 8 ? "complete-test" : `history-${index}`, startedAt,
         endedAt: new Date(startedMs + actualSeconds * 1000).toISOString(), plannedMinutes: 25, actualSeconds,
-        endedReason: "completed", characterSlug: "rain-desk", localDate: startedAt.slice(0, 10), task: null };
+        endedReason: "completed", themeSlug: "rain-desk", localDate: startedAt.slice(0, 10), task: null };
     });
     localStorage.setItem("ss_sessions", JSON.stringify(sessions));
     localStorage.setItem("ss_active", "null");

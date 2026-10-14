@@ -4,7 +4,7 @@ import { Providers } from "./providers";
 import "./globals.css";
 import { cookies } from "next/headers";
 import { isLocale, translate } from "@/translations";
-import { getSceneMediaManifest } from "@/lib/characters/mediaManifest";
+import { getSceneMediaManifest } from "@/lib/themes/mediaManifest";
 
 const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-inter" });
 

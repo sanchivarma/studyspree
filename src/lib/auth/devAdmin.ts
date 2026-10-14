@@ -48,7 +48,7 @@ export async function getDevAdminProfile(): Promise<AuthProfile | null> {
   try {
     const session = sessionSchema.safeParse(JSON.parse(Buffer.from(payload, "base64url").toString("utf8")));
     if (!session.success || session.data.expiresAt <= now().getTime() || session.data.username !== config.username) return null;
-    return { id: session.data.id, username: session.data.username, first_name: "", last_name: "", selected_character: "rain-desk", show_streak: false };
+    return { id: session.data.id, username: session.data.username, first_name: "", last_name: "", selected_theme: "rain-desk", show_streak: false };
   } catch { return null; }
 }
 

@@ -151,7 +151,7 @@ export class AmbienceEngine {
     this.musicSource = musicTracks.find(track => track.slug === slug)?.src ?? null;
     this.music.configure(this.musicSource, this.musicVolume);
   }
-  setRoomForCharacter(slug: string) {
+  setRoomForTheme(slug: string) {
     this.roomSource = roomSounds[slug as keyof typeof roomSounds] ?? null;
     this.room.configure(this.roomSource, this.roomVolume);
   }
@@ -172,7 +172,7 @@ export class AmbienceEngine {
 export const ambience = new AmbienceEngine();
 export const init = () => ambience.init();
 export const setMusicTrack = (slug: string | null) => ambience.setMusicTrack(slug);
-export const setRoomForCharacter = (slug: string) => ambience.setRoomForCharacter(slug);
+export const setRoomForTheme = (slug: string) => ambience.setRoomForTheme(slug);
 export const setMusicVolume = (volume: number) => ambience.setMusicVolume(volume);
 export const setRoomVolume = (volume: number) => ambience.setRoomVolume(volume);
 export const fadeOutAll = (ms: number) => ambience.fadeOutAll(ms);

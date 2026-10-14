@@ -18,7 +18,7 @@
     "historyTitle": "Historique des séances",
     "date": "Date",
     "duration": "Durée",
-    "character": "Personnage",
+    "theme": "Thème",
     "noSessions": "Aucune séance le {date}",
     "activityOn": "{duration} le {date}",
     "futureDate": "Date à venir : {date}",

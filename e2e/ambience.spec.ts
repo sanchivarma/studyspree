@@ -64,7 +64,7 @@ test("default off, gesture unlock, independent controls, debounced persistence a
   await expect(page.getByRole("slider", { name: "Room sound", exact: true })).toHaveValue("0.5");
 });
 
-test("room follows character, visibility fades and Finish releases gains without changing session data", async ({ page }) => {
+test("room follows theme, visibility fades and Finish releases gains without changing session data", async ({ page }) => {
   await instrument(page); await signIn(page); const path = await startSession(page);
   const initial = await page.evaluate(() => JSON.parse(localStorage.getItem("ss_sessions")!)[0].startedAt);
   const requests: string[] = []; page.on("request", request => { if (request.url().includes("/audio/")) requests.push(request.url()); });
@@ -72,7 +72,7 @@ test("room follows character, visibility fades and Finish releases gains without
   await expect.poll(() => page.evaluate(() => (window as unknown as { audioAudit: { fades: number[] } }).audioAudit.fades.includes(0.5))).toBe(true);
   await page.keyboard.press("Escape");
   const priorFades = await page.evaluate(() => (window as unknown as { audioAudit: { fades: number[] } }).audioAudit.fades.filter(value => value === 0.5).length);
-  await page.getByRole("button", { name: "Switch character", exact: true }).click();
+  await page.getByRole("button", { name: "Switch theme", exact: true }).click();
   await page.getByRole("button", { name: /Night Shift/ }).click();
   await expect.poll(() => requests.some(url => url.includes("city-night.webm"))).toBe(true);
   await expect.poll(() => page.evaluate(() => (window as unknown as { audioAudit: { fades: number[] } }).audioAudit.fades.filter(value => value === 0.5).length)).toBeGreaterThan(priorFades);

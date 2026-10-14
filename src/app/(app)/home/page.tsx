@@ -6,5 +6,5 @@ import { now } from "@/lib/clock";
 export default async function HomePage() {
   const profile = await authRepository.getProfile();
   if (!profile) redirect("/");
-  return <HomeScreen username={profile.username} slug={profile.selected_character} initialHour={now().getHours()} />;
+  return <HomeScreen username={profile.username} slug={profile.selected_theme} initialHour={now().getHours()} />;
 }

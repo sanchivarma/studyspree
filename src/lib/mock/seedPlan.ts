@@ -1,7 +1,7 @@
 import { fromZonedTime } from "date-fns-tz";
 import { toLocalDate } from "@/lib/stats/localDate";
 import { shiftDate } from "@/lib/stats/dates";
-import { characters } from "@/lib/characters/registry";
+import { themes } from "@/lib/themes/registry";
 import type { StartSessionInput } from "@/lib/repo/types";
 
 export type SeedPlan = StartSessionInput & { id: string; startedAt: string; endedAt: string };
@@ -43,6 +43,6 @@ export function generateSeedPlan(anchor: Date, timezone: string): SeedPlan[] {
     const start = noon + slot * 70 * 60_000;
     return { id: `${SEED_ID_PREFIX}${today}-${index}`, startedAt: new Date(start).toISOString(),
       endedAt: new Date(start + minutes * 60_000).toISOString(), plannedMinutes: minutes,
-      characterSlug: characters[index % characters.length].slug, task: null };
+      themeSlug: themes[index % themes.length].slug, task: null };
   });
 }

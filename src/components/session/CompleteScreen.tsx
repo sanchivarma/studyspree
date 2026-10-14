@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { SceneVideo } from "@/components/scene/SceneVideo";
 import { useCountUp } from "@/hooks/useCountUp";
 import { useTranslation } from "@/hooks/useTranslation";
-import { getCharacter } from "@/lib/characters/registry";
+import { getTheme } from "@/lib/themes/registry";
 import { formatBankedDuration } from "@/lib/session/presentation";
 import { useCompletionSummary, type CompletionSummary } from "@/hooks/useCompletionSummary";
 import { useSessionStore } from "@/stores/sessionStore";
@@ -31,12 +31,12 @@ export function CompleteScreen({ id }: { id: string }) {
 
 function CompletionContent({ summary }: { summary: CompletionSummary }) {
   const { locale, t } = useTranslation();
-  const slug = getCharacter(summary.session.characterSlug).slug;
+  const slug = getTheme(summary.session.themeSlug).slug;
   const totalHours = summary.totalSecondsAllTime / 3600;
   const hours = useCountUp(Math.max(0, summary.totalSecondsAllTime - summary.session.actualSeconds) / 3600, totalHours, 1200);
   const format = useMemo(() => new Intl.NumberFormat(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 }), [locale]);
   const number = useMemo(() => new Intl.NumberFormat(locale), [locale]);
-  const style = { "--accent": getCharacter(slug).accentColor } as CSSProperties;
+  const style = { "--accent": getTheme(slug).accentColor } as CSSProperties;
 
   return <section aria-label={t("complete.label")} data-testid="complete-screen" className="relative isolate flex min-h-dvh items-center justify-center overflow-hidden" style={style}>
     <SceneVideo slug={slug} className="opacity-30" />

@@ -3,7 +3,7 @@ import { LocalRepository } from "./local";
 
 const time = vi.hoisted(() => ({ milliseconds: 0 }));
 vi.mock("@/lib/clock", () => ({ now: () => new Date(time.milliseconds) }));
-const input = { plannedMinutes: 5, characterSlug: "rain-desk", task: null };
+const input = { plannedMinutes: 5, themeSlug: "rain-desk", task: null };
 function memoryStorage() {
   const values = new Map<string, string>();
   return { getItem: (key: string) => values.get(key) ?? null,
@@ -14,6 +14,34 @@ beforeEach(() => { time.milliseconds = new Date("2026-10-13T12:00:00Z").getTime(
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); vi.unstubAllEnvs(); });
 
 describe("local persistence and recovery", () => {
+  it("upgrades legacy theme names without losing saved preferences, active sessions, or banked time", async () => {
+    const storage = memoryStorage();
+    const repo = new LocalRepository(() => storage);
+    const preferences: Record<string, unknown> = { ...await repo.getProfile(), displayName: "Alex", selectedCharacter: "night-shift" };
+    delete preferences.selectedTheme;
+    storage.setItem("ss_profile", JSON.stringify(preferences));
+    const original = JSON.stringify([
+      { id: "legacy-ended", startedAt: new Date(time.milliseconds - 100000).toISOString(), endedAt: new Date(time.milliseconds - 10000).toISOString(),
+        actualSeconds: 90, plannedMinutes: 5, endedReason: "stopped_early", characterSlug: "dorm-bunk", localDate: "2026-10-13", task: "Read" },
+      { id: "legacy-active", startedAt: new Date(time.milliseconds - 5000).toISOString(), endedAt: null,
+        actualSeconds: 0, plannedMinutes: 5, endedReason: null, characterSlug: "night-shift", localDate: "2026-10-13", task: null },
+    ]);
+    storage.setItem("ss_sessions", original);
+    expect(await repo.getProfile()).toMatchObject({ displayName: "Alex", selectedTheme: "night-shift" });
+    expect(await repo.getTotalSecondsAllTime()).toBe(90);
+    expect(await repo.getActiveSession()).toMatchObject({ id: "legacy-active", themeSlug: "night-shift" });
+    expect(storage.getItem("ss_sessions")).toBe(original); // Reads never overwrite another tab's history.
+    time.milliseconds += 10000;
+    expect((await repo.endSession("legacy-active", "stopped_early")).session.actualSeconds).toBe(15);
+    expect(await repo.getTotalSecondsAllTime()).toBe(105);
+    expect(JSON.parse(storage.getItem("ss_sessions")!)).toEqual(expect.arrayContaining([
+      expect.objectContaining({ id: "legacy-ended", actualSeconds: 90, themeSlug: "dorm-bunk" }),
+    ]));
+    expect(storage.getItem("ss_sessions")).not.toContain("characterSlug");
+    await repo.updateProfile({ showStreak: false });
+    expect(JSON.parse(storage.getItem("ss_profile")!)).toMatchObject({ selectedTheme: "night-shift", displayName: "Alex", showStreak: false });
+    expect(storage.getItem("ss_profile")).not.toContain("selectedCharacter");
+  });
   it("uses the device timezone for a new profile and retains a saved choice on reload", async () => {
     const storage = memoryStorage();
     const resolved = Intl.DateTimeFormat().resolvedOptions();
@@ -39,7 +67,7 @@ describe("local persistence and recovery", () => {
   });
   it("upgrades older profiles without discarding preferences and persists the comeback marker", async () => {
     const storage = memoryStorage();
-    const original = { displayName: "Alex", selectedCharacter: "dorm-bunk", timezone: "Europe/Berlin", showStreak: false, reduceMotion: true, webcamEnabled: false, ambienceEnabled: true };
+    const original = { displayName: "Alex", selectedTheme: "dorm-bunk", timezone: "Europe/Berlin", showStreak: false, reduceMotion: true, webcamEnabled: false, ambienceEnabled: true };
     storage.setItem("ss_profile", JSON.stringify(original));
     const repo = new LocalRepository(() => storage);
     expect(await repo.getProfile()).toEqual({ ...original, musicTrack: null, musicVolume: 0, roomVolume: 0, webcamCorner: "bottom-right", comebackShownForDate: null });

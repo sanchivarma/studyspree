@@ -18,7 +18,7 @@
     "historyTitle": "Historia sesji",
     "date": "Data",
     "duration": "Czas",
-    "character": "Postać",
+    "theme": "Motyw",
     "noSessions": "Brak sesji: {date}",
     "activityOn": "{duration} dnia {date}",
     "futureDate": "Nadchodząca data: {date}",

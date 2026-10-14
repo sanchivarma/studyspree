@@ -6,8 +6,8 @@ const today = "2026-10-14";
 async function seed(page: Page, lastDate: string | null, current = 4, showStreak = true, marker: string | null = today) {
   await page.clock.setFixedTime(new Date(`${today}T12:00:00Z`));
   await page.evaluate(({ lastDate, current, showStreak, marker }) => {
-    localStorage.setItem("ss_profile", JSON.stringify({ displayName: "Alex", selectedCharacter: "balcony-dusk", timezone: "UTC", showStreak, reduceMotion: true, webcamEnabled: false, ambienceEnabled: false, comebackShownForDate: marker }));
-    localStorage.setItem("ss_sessions", JSON.stringify(lastDate ? [{ id: "prior", startedAt: `${lastDate}T10:00:00.000Z`, endedAt: `${lastDate}T11:00:00.000Z`, localDate: lastDate, actualSeconds: 3600, plannedMinutes: 50, endedReason: "completed", characterSlug: "rain-desk", task: null }] : []));
+    localStorage.setItem("ss_profile", JSON.stringify({ displayName: "Alex", selectedTheme: "balcony-dusk", timezone: "UTC", showStreak, reduceMotion: true, webcamEnabled: false, ambienceEnabled: false, comebackShownForDate: marker }));
+    localStorage.setItem("ss_sessions", JSON.stringify(lastDate ? [{ id: "prior", startedAt: `${lastDate}T10:00:00.000Z`, endedAt: `${lastDate}T11:00:00.000Z`, localDate: lastDate, actualSeconds: 3600, plannedMinutes: 50, endedReason: "completed", themeSlug: "rain-desk", task: null }] : []));
     localStorage.setItem("ss_streak", JSON.stringify({ current: lastDate ? current : 0, best: 12, lastActiveDate: lastDate, freezesRemaining: 2, freezesResetAt: "2026-11-01" }));
     localStorage.setItem("ss_active", "null"); localStorage.setItem("ss_streak_events", "{}");
   }, { lastDate, current, showStreak, marker });
@@ -67,7 +67,7 @@ test("comeback is welcoming, keeps banked hours, and dismisses for the day", asy
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem("ss_sessions")!)[0].actualSeconds)).toBe(3600);
 });
 
-test("comeback Start creates five minutes with the chosen character and records conversion", async ({ page }) => {
+test("comeback Start creates five minutes with the chosen theme and records conversion", async ({ page }) => {
   const debug: string[] = [];
   page.on("console", message => { if (message.type() === "debug") debug.push(message.text()); });
   await seed(page, "2026-10-11", 4, true, null);
@@ -77,7 +77,7 @@ test("comeback Start creates five minutes with the chosen character and records 
   await page.keyboard.press("Enter");
   await expect(page.getByTestId("session-screen")).toBeVisible({ timeout: 15000 });
   const active = await page.evaluate(() => JSON.parse(localStorage.getItem("ss_sessions")!).find((session: { endedAt: string | null }) => session.endedAt === null));
-  expect(active).toMatchObject({ plannedMinutes: 5, characterSlug: "balcony-dusk", task: null });
+  expect(active).toMatchObject({ plannedMinutes: 5, themeSlug: "balcony-dusk", task: null });
   expect(debug.some(text => text.startsWith("comeback_converted") && text.includes("3"))).toBe(true);
 });
 

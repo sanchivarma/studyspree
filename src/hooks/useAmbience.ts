@@ -11,7 +11,7 @@ import type { Profile } from "@/types/domain";
 type Preferences = Pick<Profile, "musicTrack" | "musicVolume" | "roomVolume">;
 const defaults: Preferences = { musicTrack: null, musicVolume: 0, roomVolume: 0 };
 
-export function useAmbience(character: string) {
+export function useAmbience(theme: string) {
   const profile = useProfile();
   const client = useQueryClient();
   const [changes, setChanges] = useState<Partial<Preferences>>({});
@@ -43,7 +43,7 @@ export function useAmbience(character: string) {
     // Configure and unlock within the input gesture, including mobile browsers
     // that require resume() to run before the event handler returns.
     ambience.setMusicTrack(next.musicTrack);
-    ambience.setRoomForCharacter(character);
+    ambience.setRoomForTheme(theme);
     ambience.setMusicVolume(next.musicVolume);
     ambience.setRoomVolume(next.roomVolume);
     ambience.init(); setUnlocked(true);
@@ -53,10 +53,10 @@ export function useAmbience(character: string) {
   };
   useEffect(() => {
     ambience.setMusicTrack(preferences.musicTrack);
-    ambience.setRoomForCharacter(character);
+    ambience.setRoomForTheme(theme);
     ambience.setMusicVolume(enabled ? preferences.musicVolume : 0);
     ambience.setRoomVolume(enabled ? preferences.roomVolume : 0);
-  }, [character, preferences.musicTrack, preferences.musicVolume, preferences.roomVolume, enabled]);
+  }, [theme, preferences.musicTrack, preferences.musicVolume, preferences.roomVolume, enabled]);
   useEffect(() => () => {
     if (debounce.current) clearTimeout(debounce.current);
     save(); ambience.destroy();

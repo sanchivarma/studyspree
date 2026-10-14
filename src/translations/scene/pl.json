@@ -1,7 +1,7 @@
 {
   "scene": {
-    "title": "Wybierz swoją postać",
-    "description": "Spokojny towarzysz skupienia.",
+    "title": "Wybierz motyw",
+    "description": "Spokojne tło sprzyjające skupieniu.",
     "close": "Zamknij",
     "saveError": "Nie udało się zapisać wyboru. Spróbuj ponownie.",
     "rainDeskDescription": "Ciepłe biurko przy oknie pełnym deszczu.",

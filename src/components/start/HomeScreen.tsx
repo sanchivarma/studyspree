@@ -5,14 +5,14 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useActiveSession } from "@/hooks/useActiveSession";
 import { BookOpen } from "lucide-react";
-import { CharacterScene } from "@/components/scene/CharacterScene";
+import { ThemeScene } from "@/components/scene/ThemeScene";
 import { useProfile } from "@/hooks/useProfile";
 import { AccountControls } from "@/components/layout/AccountControls";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useCurrentHour } from "@/hooks/useCurrentHour";
-import type { CharacterSlug } from "@/lib/characters/registry";
+import type { ThemeSlug } from "@/lib/themes/registry";
 
-export function HomeScreen({ username, slug, initialHour }: { username: string; slug: CharacterSlug; initialHour: number }) {
+export function HomeScreen({ username, slug, initialHour }: { username: string; slug: ThemeSlug; initialHour: number }) {
   const { t } = useTranslation();
   const router = useRouter();
   const active = useActiveSession();
@@ -22,7 +22,7 @@ export function HomeScreen({ username, slug, initialHour }: { username: string; 
   }, [active.data, router]);
   const hour = useCurrentHour(initialHour);
   return <section className="relative isolate flex min-h-[calc(100dvh-3.5rem)] items-center justify-center md:min-h-dvh">
-    <CharacterScene slug={profile.data?.selectedCharacter ?? slug} priority />
+    <ThemeScene slug={profile.data?.selectedTheme ?? slug} priority />
     <div aria-hidden="true" className="start-screen-scrim pointer-events-none absolute inset-0" />
     <AccountControls />
     <div className="relative w-full max-w-[480px] px-6 py-28">

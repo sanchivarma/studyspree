@@ -7,7 +7,7 @@ import { signIn } from "./sessionFixtures";
 let webm: Buffer;
 let poster: Buffer;
 const ownedFiles: string[] = [];
-const root = resolve("public/characters/rain-desk");
+const root = resolve("public/themes/rain-desk");
 
 test.beforeAll(async ({ browser }) => {
   // Synthetic canvas fixture only: no camera, microphone or user media.
@@ -43,8 +43,8 @@ test.afterAll(async () => {
   for (const path of ownedFiles) { if (resolve(path).startsWith(`${root}\\`) || resolve(path).startsWith(`${root}/`)) await unlink(path); }
 });
 test.beforeEach(async ({ page }) => {
-  await page.route("**/characters/rain-desk/loop.webm", (route) => route.fulfill({ status: 200, contentType: "video/webm", body: webm }));
-  await page.route("**/characters/rain-desk/poster.jpg", (route) => route.fulfill({ status: 200, contentType: "image/jpeg", body: poster }));
+  await page.route("**/themes/rain-desk/loop.webm", (route) => route.fulfill({ status: 200, contentType: "video/webm", body: webm }));
+  await page.route("**/themes/rain-desk/poster.jpg", (route) => route.fulfill({ status: 200, contentType: "image/jpeg", body: poster }));
 });
 
 test("poster and looping muted video paint, pause hidden, and retain the same node on rerender", async ({ page }) => {
@@ -62,7 +62,7 @@ test("poster and looping muted video paint, pause hidden, and retain the same no
   expect(await movie.evaluate((element: HTMLVideoElement) => element.paused)).toBe(true);
   await page.evaluate(() => { Object.defineProperty(document, "hidden", { configurable: true, value: false }); document.dispatchEvent(new Event("visibilitychange")); });
   await expect.poll(() => movie.evaluate((element: HTMLVideoElement) => element.paused)).toBe(false);
-  const response = await page.request.get("/characters/rain-desk/poster.jpg");
+  const response = await page.request.get("/themes/rain-desk/poster.jpg");
   expect(response.headers()["cache-control"]).toContain("max-age=31536000");
   expect(response.headers()["cache-control"]).toContain("immutable");
 });
@@ -76,25 +76,25 @@ test("OS and profile reduced motion show a static poster and never mount video",
   await expect(scene.locator("video")).toHaveCount(1);
   await page.emulateMedia({ reducedMotion: "reduce" });
   await expect(scene.locator("video")).toHaveCount(0);
-  await page.evaluate(() => localStorage.setItem("ss_profile", JSON.stringify({ displayName: "", selectedCharacter: "rain-desk", timezone: "UTC", showStreak: true, reduceMotion: true, webcamEnabled: false, ambienceEnabled: false })));
+  await page.evaluate(() => localStorage.setItem("ss_profile", JSON.stringify({ displayName: "", selectedTheme: "rain-desk", timezone: "UTC", showStreak: true, reduceMotion: true, webcamEnabled: false, ambienceEnabled: false })));
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.reload();
   await expect(scene.locator("img")).toHaveCSS("opacity", "1");
   await expect(scene.locator("video")).toHaveCount(0);
 });
 
-test("a missing character has an immediate gradient with no missing-media requests or console errors", async ({ page }) => {
+test("a missing theme has an immediate gradient with no missing-media requests or console errors", async ({ page }) => {
   const errors: string[] = []; const requests: string[] = [];
   page.on("console", (message) => { if (message.type() === "error") errors.push(message.text()); });
   page.on("pageerror", (error) => errors.push(error.message));
-  page.on("request", (request) => { if (request.url().includes("/characters/night-shift/")) requests.push(request.url()); });
+  page.on("request", (request) => { if (request.url().includes("/themes/night-shift/")) requests.push(request.url()); });
   await signIn(page);
-  await page.evaluate(() => localStorage.setItem("ss_profile", JSON.stringify({ displayName: "", selectedCharacter: "night-shift", timezone: "UTC", showStreak: false, reduceMotion: false, webcamEnabled: false, ambienceEnabled: false })));
+  await page.evaluate(() => localStorage.setItem("ss_profile", JSON.stringify({ displayName: "", selectedTheme: "night-shift", timezone: "UTC", showStreak: false, reduceMotion: false, webcamEnabled: false, ambienceEnabled: false })));
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.goto("/study");
-  const scene = page.getByTestId("character-scene").locator('[data-testid="scene-video"][data-character="night-shift"]');
-  await expect(scene).toHaveAttribute("data-character", "night-shift");
-  await expect(page.getByTestId("character-scene").locator('[data-character="rain-desk"]')).toHaveCount(0);
+  const scene = page.getByTestId("theme-scene").locator('[data-testid="scene-video"][data-theme="night-shift"]');
+  await expect(scene).toHaveAttribute("data-theme", "night-shift");
+  await expect(page.getByTestId("theme-scene").locator('[data-theme="rain-desk"]')).toHaveCount(0);
   await expect(scene.locator("img, video")).toHaveCount(0);
   expect(await scene.getByTestId("scene-gradient").evaluate((element) => getComputedStyle(element).backgroundImage)).not.toBe("none");
   expect(requests).toEqual([]); expect(errors).toEqual([]);
@@ -103,10 +103,10 @@ test("a missing character has an immediate gradient with no missing-media reques
 test("slow video leaves the poster and Start usable, and media errors leave the fallback visible", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await signIn(page);
-  await page.unroute("**/characters/rain-desk/loop.webm");
+  await page.unroute("**/themes/rain-desk/loop.webm");
   let release!: () => void;
   const blocked = new Promise<void>((resolve) => { release = resolve; });
-  await page.route("**/characters/rain-desk/loop.webm", async (route) => { await blocked; await route.fulfill({ status: 200, contentType: "video/webm", body: webm }).catch(() => {}); });
+  await page.route("**/themes/rain-desk/loop.webm", async (route) => { await blocked; await route.fulfill({ status: 200, contentType: "video/webm", body: webm }).catch(() => {}); });
   await page.goto("/study", { waitUntil: "domcontentloaded" });
   await expect(page.getByTestId("scene-video").locator("img")).toHaveCSS("opacity", "1");
   const start = page.getByRole("button", { name: "Start", exact: true });
@@ -128,21 +128,21 @@ test("slow video leaves the poster and Start usable, and media errors leave the 
 test("desktop card video plays on hover, releases on leave, and selection crossfades", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await signIn(page); await page.goto("/study");
-  await page.getByRole("button", { name: "Switch character", exact: true }).click();
-  const card = page.getByTestId("character-card-rain-desk");
+  await page.getByRole("button", { name: "Switch theme", exact: true }).click();
+  const card = page.getByTestId("theme-card-rain-desk");
   await expect(card.locator("img")).toHaveCSS("opacity", "1");
   await expect(card.locator("video")).toHaveCount(0);
   await card.hover();
   await expect(card.locator("video")).toHaveCSS("opacity", "1");
   await expect(card.locator("video")).toHaveAttribute("preload", "metadata");
   expect(await card.locator("video").evaluate((element: HTMLVideoElement) => element.muted && !element.paused)).toBe(true);
-  await page.getByTestId("character-sheet").getByRole("heading").hover();
+  await page.getByTestId("theme-sheet").getByRole("heading").hover();
   await expect(card.locator("video")).toHaveCount(0);
-  await page.getByTestId("character-card-night-shift").click();
-  const background = page.getByTestId("character-scene");
-  await expect(background.locator('[data-character="night-shift"]')).toBeVisible();
-  await expect(background.locator('[data-character="rain-desk"]')).toHaveCount(0);
-  await expect(background.locator('[data-character="night-shift"]').locator("..")).toHaveCSS("opacity", "1");
+  await page.getByTestId("theme-card-night-shift").click();
+  const background = page.getByTestId("theme-scene");
+  await expect(background.locator('[data-theme="night-shift"]')).toBeVisible();
+  await expect(background.locator('[data-theme="rain-desk"]')).toHaveCount(0);
+  await expect(background.locator('[data-theme="night-shift"]').locator("..")).toHaveCSS("opacity", "1");
 });
 
 test("mobile previews stay poster-only even on hover and request no video", async ({ page }) => {
@@ -150,10 +150,10 @@ test("mobile previews stay poster-only even on hover and request no video", asyn
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await signIn(page); await page.goto("/settings");
   const videoRequests: string[] = [];
-  page.on("request", (request) => { if (/\/characters\/.*\.(webm|mp4)/.test(request.url())) videoRequests.push(request.url()); });
-  await page.getByRole("button", { name: "Character Rainy Desk", exact: true }).click();
-  const sheet = page.getByTestId("character-sheet");
-  const card = page.getByTestId("character-card-rain-desk");
+  page.on("request", (request) => { if (/\/themes\/.*\.(webm|mp4)/.test(request.url())) videoRequests.push(request.url()); });
+  await page.getByRole("button", { name: "Theme Rainy Desk", exact: true }).click();
+  const sheet = page.getByTestId("theme-sheet");
+  const card = page.getByTestId("theme-card-rain-desk");
   await expect(card.locator("img")).toHaveCSS("opacity", "1");
   await card.hover();
   await expect(sheet.locator("video")).toHaveCount(0);

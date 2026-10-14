@@ -1,7 +1,7 @@
 {
   "settings": {
     "appearance": "Appearance",
-    "character": "Character",
+    "theme": "Theme",
     "camera": "Camera",
     "selfView": "Self-view",
     "cameraPrivacy": "Preview stays on your device.",

@@ -1,7 +1,7 @@
 {
   "scene": {
-    "title": "Choose your character",
-    "description": "A calm companion for your focus.",
+    "title": "Choose your theme",
+    "description": "A calm backdrop for your focus.",
     "close": "Close",
     "saveError": "We couldn’t save your choice. Please try once more.",
     "rainDeskDescription": "A warm desk beside a rain-filled window.",

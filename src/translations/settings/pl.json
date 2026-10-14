@@ -1,7 +1,7 @@
 {
   "settings": {
     "appearance": "Wygląd",
-    "character": "Postać",
+    "theme": "Motyw",
     "camera": "Kamera",
     "selfView": "Podgląd siebie",
     "cameraPrivacy": "Podgląd pozostaje na Twoim urządzeniu.",

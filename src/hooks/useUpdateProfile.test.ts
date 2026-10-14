@@ -15,7 +15,7 @@ vi.mock("@tanstack/react-query", async original => ({
 vi.mock("@/lib/repo", () => ({ repo: { updateProfile: vi.fn() } }));
 type Context = { previous: Profile | undefined; patch: Partial<Profile>; edit: symbol };
 type Options = UseMutationOptions<Profile, Error, Partial<Profile>, Context>;
-const original: Profile = { displayName: "Sanchi", selectedCharacter: "rain-desk", timezone: "Europe/Berlin", showStreak: true,
+const original: Profile = { displayName: "Sanchi", selectedTheme: "rain-desk", timezone: "Europe/Berlin", showStreak: true,
   reduceMotion: false, webcamEnabled: false, webcamCorner: "bottom-right", ambienceEnabled: false,
   musicTrack: null, musicVolume: 0, roomVolume: 0, comebackShownForDate: null };
 let options: Options;
@@ -26,7 +26,7 @@ beforeEach(() => {
 
 it.each<Partial<Profile>>([
   { displayName: "Alex" }, { timezone: "Asia/Tokyo" }, { reduceMotion: true }, { ambienceEnabled: true },
-  { musicVolume: .4 }, { roomVolume: .6 }, { webcamEnabled: true }, { showStreak: false }, { selectedCharacter: "dorm-bunk" },
+  { musicVolume: .4 }, { roomVolume: .6 }, { webcamEnabled: true }, { showStreak: false }, { selectedTheme: "dorm-bunk" },
 ])("optimistically updates and rolls back %j through the repository", async patch => {
   const context = await options.onMutate!(patch, {} as never);
   expect(state.client!.getQueryData(queryKeys.profile())).toEqual({ ...original, ...patch });
