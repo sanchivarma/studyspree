@@ -1,5 +1,10 @@
 {
   "complete": {
+    "sessionMinutes": "{minutes}m",
+    "todayDuration": "{hours}h {minutes}m",
+    "affirmationStarted": "You started. That was the hard part.",
+    "affirmationWork": "Real work, done.",
+    "affirmationLong": "That was a long one. Go and stretch.",
     "label": "Session complete",
     "affirmation": "Solid session.",
     "allTime": "hours, all time",

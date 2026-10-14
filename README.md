@@ -132,5 +132,12 @@ live timer and restores its previous value when the session screen unmounts.
 An invalid running-session ID returns through `/`; an ended session opens its
 completion summary. Finish/Escape select the reason from the remaining time.
 
+Phase 2.5 loads the latest saved session and shows completion when it ended
+within ten minutes. Missing, active or expired summaries return through `/`.
+The affirmation depends on actual seconds banked, and lifetime hours count up
+from the previous total. Today uses hours and minutes; sessions under a minute
+keep seconds visible. The streak row is a placeholder until Phase 4. Start
+another returns through `/`; Study still remembers the previous duration.
+
 See `CLAUDE.md` and `AGENTS.md` for project conventions. Auth and translations
 were brought forward from the phased plan at the user's request.

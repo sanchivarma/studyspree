@@ -22,8 +22,8 @@ test("Study starts a persisted timer with its task and Finish banks elapsed time
   // A newly added route may need its first development compilation.
   await settleClock(page, "complete-screen");
   await expect(page).toHaveURL(new RegExp(`${path}/complete$`), { timeout: 15000 });
-  await expect(page.getByRole("heading", { name: "Solid session.", exact: true })).toBeVisible();
-  await expect(page.getByTestId("banked-summary")).toHaveText("+10s this session · 10s today");
+  await expect(page.getByRole("heading", { name: "You started. That was the hard part.", exact: true })).toBeVisible();
+  await expect(page.getByTestId("banked-summary")).toHaveText("+10s this session · 0h 0m today");
   expect(hasDialog).toBe(false);
 });
 

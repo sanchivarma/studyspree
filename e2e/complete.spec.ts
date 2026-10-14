@@ -6,8 +6,10 @@ test("completion shows calm totals and both navigation destinations", async ({ p
   const pageErrors: string[] = [];
   page.on("pageerror", (error) => pageErrors.push(error.message));
   await signIn(page);
+  await freezeClock(page);
   await seedCompletion(page);
   await page.goto("/session/complete-test/complete");
+  await settleClock(page, "complete-screen");
   await expect(page.getByRole("heading", { name: "Solid session.", exact: true })).toBeVisible();
   await expect(page.getByTestId("all-time-hours")).toHaveText("42.5");
   await expect(page.getByText("hours, all time", { exact: true })).toBeVisible();
@@ -16,12 +18,15 @@ test("completion shows calm totals and both navigation destinations", async ({ p
   await expect(page.getByRole("navigation")).toHaveCount(0);
   await expect(page.getByTestId("auth-feedback")).toHaveCount(0);
   const start = page.getByRole("link", { name: "Start another", exact: true });
-  await expect(start).toHaveAttribute("href", "/study");
+  await expect(start).toHaveAttribute("href", "/");
   await start.click();
-  await expect(page).toHaveURL(/\/study$/);
+  await page.clock.runFor(100);
+  await expect.poll(async () => { await page.clock.runFor(1); return new URL(page.url()).pathname; }).toBe("/home");
   await page.goto("/session/complete-test/complete");
+  await settleClock(page, "complete-screen");
   await page.getByRole("link", { name: "Done for now", exact: true }).click();
-  await expect(page).toHaveURL(/\/stats$/);
+  await page.clock.runFor(100);
+  await expect.poll(async () => { await page.clock.runFor(1); return new URL(page.url()).pathname; }).toBe("/stats");
   expect(pageErrors).toEqual([]);
 });
 
@@ -53,12 +58,14 @@ test("total counts up over 1200ms with ease-out and pauses while the tab is hidd
 test("completion fits a phone, uses translated copy, and avoids forbidden wording", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 568 });
   await signIn(page);
+  await freezeClock(page);
   await seedCompletion(page);
   const forbidden = /\b(?:fail(?:ed|ure)?|quit|give up|gave up|abandon(?:ed)?|only|short|incomplete|missed|lost streak|broken streak|behind|lazy|finally|at last|again|we missed you|where have you been|you planned|you only|yesterday)\b|%/i;
   for (const locale of ["en", "de", "fr", "pl", "it"]) {
     const { complete } = JSON.parse(readFileSync(new URL(`../src/translations/complete/${locale}.json`, import.meta.url), "utf8")) as { complete: { affirmation: string; allTime: string; summary: string; startAnother: string; done: string } };
     await page.context().addCookies([{ name: "ss_locale", value: locale, url: "http://localhost:3000" }]);
     await page.goto("/session/complete-test/complete");
+    await settleClock(page, "complete-screen");
     await expect(page.getByRole("heading", { name: complete.affirmation, exact: true })).toBeVisible();
     await expect(page.getByTestId("all-time-hours")).toHaveText(new Intl.NumberFormat(locale, { minimumFractionDigits: 1 }).format(42.5));
     const { stats } = JSON.parse(readFileSync(new URL(`../src/translations/stats/${locale}.json`, import.meta.url), "utf8")) as { stats: { durationMinutes: string; durationHoursMinutes: string } };

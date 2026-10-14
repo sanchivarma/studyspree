@@ -1,5 +1,10 @@
 {
   "complete": {
+    "sessionMinutes": "{minutes} min",
+    "todayDuration": "{hours} godz. {minutes} min",
+    "affirmationStarted": "Masz za sobą początek. To był najtrudniejszy krok.",
+    "affirmationWork": "Dobra praca, zrobiona.",
+    "affirmationLong": "To była długa sesja. Pora się rozciągnąć.",
     "label": "Sesja zakończona",
     "affirmation": "Dobra sesja.",
     "allTime": "godzin łącznie",

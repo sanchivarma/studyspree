@@ -27,10 +27,10 @@ test("refresh resumes the countdown and Finish banks ten seconds without URL tot
   await page.keyboard.press("Escape");
   await settleClock(page, "complete-screen");
   await expect(page).toHaveURL(new RegExp(`${path}/complete$`));
-  await expect(page.getByTestId("banked-summary")).toHaveText("+10s this session · 10s today");
+  await expect(page.getByTestId("banked-summary")).toHaveText("+10s this session · 0h 0m today");
   await page.reload();
   await settleClock(page, "complete-screen");
-  await expect(page.getByTestId("banked-summary")).toHaveText("+10s this session · 10s today");
+  await expect(page.getByTestId("banked-summary")).toHaveText("+10s this session · 0h 0m today");
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem("ss_sessions")!)[0])).toMatchObject({ actualSeconds: 10, endedReason: "stopped_early" });
   expect(new URL(page.url()).search).toBe("");
 });
@@ -55,8 +55,9 @@ test("five-minute expiry completes once and a dev clock jump survives reload", a
   await page.clock.fastForward(300_000);
   await settleClock(page, "complete-screen");
   await expect(page).toHaveURL(new RegExp(`${first}/complete$`));
-  await expect(page.getByTestId("banked-summary")).toHaveText("+5m this session · 5m today");
+  await expect(page.getByTestId("banked-summary")).toHaveText("+5m this session · 0h 5m today");
   await page.getByRole("link", { name: "Start another", exact: true }).click();
+  await page.goto("/study");
   await page.getByRole("button", { name: "Start", exact: true }).click();
   await settleClock(page, "session-screen");
   const second = new URL(page.url()).pathname;
@@ -64,7 +65,7 @@ test("five-minute expiry completes once and a dev clock jump survives reload", a
   await page.reload();
   await settleClock(page, "complete-screen");
   await expect(page).toHaveURL(new RegExp(`${second}/complete$`));
-  await expect(page.getByTestId("banked-summary")).toHaveText("+10m this session · 15m today");
+  await expect(page.getByTestId("banked-summary")).toHaveText("+10m this session · 0h 15m today");
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem("ss_sessions")!).map((session: { actualSeconds: number; endedReason: string }) => [session.actualSeconds, session.endedReason]))).toEqual([[300, "completed"], [600, "completed"]]);
 });
 
@@ -76,8 +77,9 @@ test("Open counts up, stays active, and is remembered after Finish", async ({ pa
   await expect(page.getByTestId("session-time")).toHaveText("3:00:00 elapsed");
   await page.keyboard.press("Escape");
   await settleClock(page, "complete-screen");
-  await expect(page.getByTestId("banked-summary")).toHaveText("+3h this session · 3h today");
+  await expect(page.getByTestId("banked-summary")).toHaveText("+180m this session · 3h 0m today");
   await page.getByRole("link", { name: "Start another", exact: true }).click();
+  await page.goto("/study");
   await expect.poll(async () => {
     await page.clock.runFor(1);
     return page.getByRole("button", { name: "Open", exact: true }).getAttribute("aria-pressed");
@@ -105,10 +107,10 @@ test("saved profile and previous duration are read without overriding a user cho
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem("ss_sessions")!).at(-1))).toMatchObject({ plannedMinutes: 25, characterSlug: "night-shift", task: "Notes" });
 });
 
-test("invalid running routes return through root and invalid summaries return to Study", async ({ page }) => {
+test("invalid session routes return through root", async ({ page }) => {
   await signIn(page);
   await page.goto("/session/unknown");
   await expect(page).toHaveURL(/\/home$/);
   await page.goto("/session/unknown/complete");
-  await expect(page).toHaveURL(/\/study$/);
+  await expect(page).toHaveURL(/\/home$/);
 });
