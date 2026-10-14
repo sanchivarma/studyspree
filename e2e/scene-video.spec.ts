@@ -92,8 +92,9 @@ test("a missing character has an immediate gradient with no missing-media reques
   await page.evaluate(() => localStorage.setItem("ss_profile", JSON.stringify({ displayName: "", selectedCharacter: "night-shift", timezone: "UTC", showStreak: false, reduceMotion: false, webcamEnabled: false, ambienceEnabled: false })));
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.goto("/study");
-  const scene = page.getByTestId("scene-video");
+  const scene = page.getByTestId("character-scene").locator('[data-testid="scene-video"][data-character="night-shift"]');
   await expect(scene).toHaveAttribute("data-character", "night-shift");
+  await expect(page.getByTestId("character-scene").locator('[data-character="rain-desk"]')).toHaveCount(0);
   await expect(scene.locator("img, video")).toHaveCount(0);
   expect(await scene.getByTestId("scene-gradient").evaluate((element) => getComputedStyle(element).backgroundImage)).not.toBe("none");
   expect(requests).toEqual([]); expect(errors).toEqual([]);
@@ -122,4 +123,41 @@ test("slow video leaves the poster and Start usable, and media errors leave the 
   await scene.locator("img").dispatchEvent("error");
   await expect(scene.locator("img")).toHaveCSS("opacity", "0");
   expect(await scene.getByTestId("scene-gradient").evaluate((element) => getComputedStyle(element).backgroundImage)).not.toBe("none");
+});
+
+test("desktop card video plays on hover, releases on leave, and selection crossfades", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await signIn(page); await page.goto("/study");
+  await page.getByRole("button", { name: "Switch character", exact: true }).click();
+  const card = page.getByTestId("character-card-rain-desk");
+  await expect(card.locator("img")).toHaveCSS("opacity", "1");
+  await expect(card.locator("video")).toHaveCount(0);
+  await card.hover();
+  await expect(card.locator("video")).toHaveCSS("opacity", "1");
+  await expect(card.locator("video")).toHaveAttribute("preload", "metadata");
+  expect(await card.locator("video").evaluate((element: HTMLVideoElement) => element.muted && !element.paused)).toBe(true);
+  await page.getByTestId("character-sheet").getByRole("heading").hover();
+  await expect(card.locator("video")).toHaveCount(0);
+  await page.getByTestId("character-card-night-shift").click();
+  const background = page.getByTestId("character-scene");
+  await expect(background.locator('[data-character="night-shift"]')).toBeVisible();
+  await expect(background.locator('[data-character="rain-desk"]')).toHaveCount(0);
+  await expect(background.locator('[data-character="night-shift"]').locator("..")).toHaveCSS("opacity", "1");
+});
+
+test("mobile previews stay poster-only even on hover and request no video", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await signIn(page); await page.goto("/settings");
+  const videoRequests: string[] = [];
+  page.on("request", (request) => { if (/\/characters\/.*\.(webm|mp4)/.test(request.url())) videoRequests.push(request.url()); });
+  await page.getByRole("button", { name: "Character Rainy Desk", exact: true }).click();
+  const sheet = page.getByTestId("character-sheet");
+  const card = page.getByTestId("character-card-rain-desk");
+  await expect(card.locator("img")).toHaveCSS("opacity", "1");
+  await card.hover();
+  await expect(sheet.locator("video")).toHaveCount(0);
+  expect(videoRequests).toEqual([]);
+  await page.getByRole("button", { name: "Close", exact: true }).click();
+  await expect(sheet).toHaveCount(0);
 });

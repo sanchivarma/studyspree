@@ -100,6 +100,6 @@ test("session controls are translated in every supported language", async ({ pag
     await expect(page.getByRole("button", { name: session.finish, exact: true })).toBeVisible();
     await expect(page.getByTestId("session-time")).toHaveText(session.remaining.replace("{time}", "5:00"));
     await expect(page.getByText(session.camera, { exact: true })).toBeVisible();
-    await expect(page.getByRole("button", { name: session.sound })).toBeVisible();
+    await expect(page.getByRole("button", { name: session.sound, exact: true })).toBeVisible();
   }
 });

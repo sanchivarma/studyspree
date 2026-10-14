@@ -1,0 +1,12 @@
+{
+  "scene": {
+    "title": "Wähle deinen Charakter",
+    "description": "Ein ruhiger Begleiter für deine Konzentration.",
+    "close": "Schließen",
+    "saveError": "Deine Auswahl konnte nicht gespeichert werden. Bitte versuche es noch einmal.",
+    "rainDeskDescription": "Ein warmer Schreibtisch am Regenfenster.",
+    "nightShiftDescription": "Blaue Nacht und ferne warme Fenster.",
+    "balconyDuskDescription": "Goldenes Licht geht in die Dämmerung über.",
+    "dormBunkDescription": "Ein blauer Lichtschein im ruhigen Wohnheim."
+  }
+}

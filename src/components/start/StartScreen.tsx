@@ -3,7 +3,8 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import { Shuffle } from "lucide-react";
-import { SceneVideo } from "@/components/scene/SceneVideo";
+import { CharacterScene } from "@/components/scene/CharacterScene";
+import { CharacterSheet } from "@/components/scene/CharacterSheet";
 import { getCharacter } from "@/lib/characters/registry";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -23,6 +24,7 @@ export function StartScreen({ displayName, initialHour }: { displayName: string;
   const active = useActiveSession();
   const profile = useProfile();
   const recent = useRecentSession();
+  const [sheetOpen, setSheetOpen] = useState(false);
   const [chosenDuration, setChosenDuration] = useState<number | null | undefined>(undefined);
   const latest = recent.data?.[0];
   const selectedDuration = chosenDuration !== undefined ? chosenDuration : latest?.endedAt ? latest.plannedMinutes : 5;
@@ -55,7 +57,7 @@ export function StartScreen({ displayName, initialHour }: { displayName: string;
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (
-        event.defaultPrevented || event.repeat || event.isComposing ||
+        sheetOpen || event.defaultPrevented || event.repeat || event.isComposing ||
         event.altKey || event.ctrlKey || event.metaKey ||
         (event.key !== " " && event.key !== "Enter")
       ) return;
@@ -69,7 +71,7 @@ export function StartScreen({ displayName, initialHour }: { displayName: string;
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [startSession]);
+  }, [startSession, sheetOpen]);
 
   return (
     <section
@@ -77,7 +79,7 @@ export function StartScreen({ displayName, initialHour }: { displayName: string;
       className="relative isolate flex min-h-[calc(100dvh-3.5rem)] flex-col justify-end md:min-h-dvh"
       style={style}
     >
-      <SceneVideo slug={slug} priority />
+      <CharacterScene slug={slug} priority />
       <div aria-hidden="true" className="start-screen-scrim pointer-events-none absolute inset-0" />
       <AccountControls />
 
@@ -128,15 +130,14 @@ export function StartScreen({ displayName, initialHour }: { displayName: string;
         {error && <p role="alert" className="mt-3 text-small text-text-muted">{t("study.startError")}</p>}
       </div>
 
-      <button
+      <CharacterSheet onOpenChange={setSheetOpen}><button
         type="button"
         aria-label={t("study.switchCharacter")}
-        aria-disabled="true"
         title={t("study.switchCharacter")}
-        className="absolute right-4 bottom-4 flex size-11 items-center justify-center rounded-xl text-text-muted/60"
+        className="absolute right-4 bottom-4 flex size-11 items-center justify-center rounded-xl text-text-muted hover:bg-background/30"
       >
         <Shuffle aria-hidden="true" className="size-4" strokeWidth={1.5} />
-      </button>
+      </button></CharacterSheet>
     </section>
   );
 }

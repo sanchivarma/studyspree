@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useActiveSession } from "@/hooks/useActiveSession";
 import { BookOpen } from "lucide-react";
-import { SceneVideo } from "@/components/scene/SceneVideo";
+import { CharacterScene } from "@/components/scene/CharacterScene";
+import { useProfile } from "@/hooks/useProfile";
 import { AccountControls } from "@/components/layout/AccountControls";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useCurrentHour } from "@/hooks/useCurrentHour";
@@ -15,12 +16,13 @@ export function HomeScreen({ username, slug, initialHour }: { username: string; 
   const { t } = useTranslation();
   const router = useRouter();
   const active = useActiveSession();
+  const profile = useProfile();
   useEffect(() => {
     if (active.data) router.replace(`/session/${active.data.id}`);
   }, [active.data, router]);
   const hour = useCurrentHour(initialHour);
   return <section className="relative isolate flex min-h-[calc(100dvh-3.5rem)] items-center justify-center md:min-h-dvh">
-    <SceneVideo slug={slug} priority />
+    <CharacterScene slug={profile.data?.selectedCharacter ?? slug} priority />
     <div aria-hidden="true" className="start-screen-scrim pointer-events-none absolute inset-0" />
     <AccountControls />
     <div className="relative w-full max-w-[480px] px-6 py-28">

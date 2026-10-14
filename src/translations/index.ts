@@ -7,6 +7,8 @@ import enstudy from "./study/en.json";
 import ensession from "./session/en.json";
 import encomplete from "./complete/en.json";
 import enstats from "./stats/en.json";
+import enscene from "./scene/en.json";
+import ensettings from "./settings/en.json";
 import decommon from "./common/de.json";
 import delogin from "./login/de.json";
 import deregister from "./register/de.json";
@@ -16,6 +18,8 @@ import destudy from "./study/de.json";
 import desession from "./session/de.json";
 import decomplete from "./complete/de.json";
 import destats from "./stats/de.json";
+import descene from "./scene/de.json";
+import desettings from "./settings/de.json";
 import frcommon from "./common/fr.json";
 import frlogin from "./login/fr.json";
 import frregister from "./register/fr.json";
@@ -25,6 +29,8 @@ import frstudy from "./study/fr.json";
 import frsession from "./session/fr.json";
 import frcomplete from "./complete/fr.json";
 import frstats from "./stats/fr.json";
+import frscene from "./scene/fr.json";
+import frsettings from "./settings/fr.json";
 import plcommon from "./common/pl.json";
 import pllogin from "./login/pl.json";
 import plregister from "./register/pl.json";
@@ -34,6 +40,8 @@ import plstudy from "./study/pl.json";
 import plsession from "./session/pl.json";
 import plcomplete from "./complete/pl.json";
 import plstats from "./stats/pl.json";
+import plscene from "./scene/pl.json";
+import plsettings from "./settings/pl.json";
 import itcommon from "./common/it.json";
 import itlogin from "./login/it.json";
 import itregister from "./register/it.json";
@@ -43,21 +51,23 @@ import itstudy from "./study/it.json";
 import itsession from "./session/it.json";
 import itcomplete from "./complete/it.json";
 import itstats from "./stats/it.json";
+import itscene from "./scene/it.json";
+import itsettings from "./settings/it.json";
 
 export const locales = ["en", "de", "fr", "pl", "it"] as const;
 export type Locale = (typeof locales)[number];
 
-const en = { ...encommon, ...enlogin, ...enregister, ...enrecovery, ...enhome, ...enstudy, ...ensession, ...encomplete, ...enstats };
+const en = { ...encommon, ...enlogin, ...enregister, ...enrecovery, ...enhome, ...enstudy, ...ensession, ...encomplete, ...enstats, ...enscene, ...ensettings };
 export type Dictionary = typeof en;
 export type TranslationKey = {
   [Namespace in keyof Dictionary]: `${Namespace}.${keyof Dictionary[Namespace] & string}`
 }[keyof Dictionary];
 export const dictionaries = {
   en,
-  de: { ...decommon, ...delogin, ...deregister, ...derecovery, ...dehome, ...destudy, ...desession, ...decomplete, ...destats },
-  fr: { ...frcommon, ...frlogin, ...frregister, ...frrecovery, ...frhome, ...frstudy, ...frsession, ...frcomplete, ...frstats },
-  pl: { ...plcommon, ...pllogin, ...plregister, ...plrecovery, ...plhome, ...plstudy, ...plsession, ...plcomplete, ...plstats },
-  it: { ...itcommon, ...itlogin, ...itregister, ...itrecovery, ...ithome, ...itstudy, ...itsession, ...itcomplete, ...itstats },
+  de: { ...decommon, ...delogin, ...deregister, ...derecovery, ...dehome, ...destudy, ...desession, ...decomplete, ...destats, ...descene, ...desettings },
+  fr: { ...frcommon, ...frlogin, ...frregister, ...frrecovery, ...frhome, ...frstudy, ...frsession, ...frcomplete, ...frstats, ...frscene, ...frsettings },
+  pl: { ...plcommon, ...pllogin, ...plregister, ...plrecovery, ...plhome, ...plstudy, ...plsession, ...plcomplete, ...plstats, ...plscene, ...plsettings },
+  it: { ...itcommon, ...itlogin, ...itregister, ...itrecovery, ...ithome, ...itstudy, ...itsession, ...itcomplete, ...itstats, ...itscene, ...itsettings },
 } satisfies Record<Locale, Dictionary>;
 
 export const languageNames: Record<Locale, string> = { en: "English", de: "Deutsch", fr: "Français", pl: "Polski", it: "Italiano" };

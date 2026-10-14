@@ -1,0 +1,12 @@
+{
+  "scene": {
+    "title": "Choisissez votre personnage",
+    "description": "Une présence calme pour vous concentrer.",
+    "close": "Fermer",
+    "saveError": "Votre choix n’a pas pu être enregistré. Veuillez réessayer.",
+    "rainDeskDescription": "Un bureau chaleureux près d’une fenêtre pluvieuse.",
+    "nightShiftDescription": "Une nuit bleue et des fenêtres éclairées au loin.",
+    "balconyDuskDescription": "La lumière dorée se fond dans le crépuscule.",
+    "dormBunkDescription": "Une lueur bleue dans un dortoir paisible."
+  }
+}

@@ -107,6 +107,16 @@
   background: radial-gradient(ellipse at center, transparent 25%, rgba(0, 0, 0, 0.4) 100%);
 }
 
+/* The shadcn overlay is a portal sibling: scope its motion preferences to
+   the open character sheet without changing the generated primitive. */
+body:has([data-character-picker][data-reduced-motion="true"]) [data-slot="sheet-overlay"] {
+  animation: none !important;
+  transition: none !important;
+}
+body:has([data-character-picker][data-page-visible="false"]) [data-slot="sheet-overlay"] {
+  animation-play-state: paused;
+}
+
 @keyframes scene-breathe {
   0%, 100% { transform: translate3d(-1%, 0, 0) scale(1); opacity: 0.94; }
   50% { transform: translate3d(1%, -1%, 0) scale(1.025); opacity: 1; }

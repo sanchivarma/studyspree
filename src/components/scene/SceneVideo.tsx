@@ -9,16 +9,16 @@ import { useProfile } from "@/hooks/useProfile";
 import { SceneMediaContext } from "./SceneMediaProvider";
 import { cn } from "@/lib/utils";
 
-export type SceneVideoProps = { slug: string; className?: string; priority?: boolean };
+export type SceneVideoProps = { slug: string; className?: string; priority?: boolean; posterOnly?: boolean };
 
-export function SceneVideo({ slug, className, priority = false }: SceneVideoProps) {
+export function SceneVideo({ slug, className, priority = false, posterOnly = false }: SceneVideoProps) {
   const character = getCharacter(slug);
   const manifest = useContext(SceneMediaContext);
   const media = manifest?.[character.slug] ?? { poster: true, webm: true, mp4: true };
   const reducedMotion = useReducedMotion();
   const profile = useProfile();
   return <div aria-hidden="true" data-character={character.slug} data-testid="scene-video" style={{ containerType: "size" }} className={cn("pointer-events-none absolute inset-0 isolate overflow-hidden", className)}>
-    <SceneLayers key={character.slug} character={character} media={media} priority={priority} reducedMotion={reducedMotion || profile.isPending} />
+    <SceneLayers key={character.slug} character={character} media={media} priority={priority} reducedMotion={posterOnly || reducedMotion || profile.isPending} />
   </div>;
 }
 

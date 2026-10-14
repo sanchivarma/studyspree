@@ -1,0 +1,12 @@
+{
+  "scene": {
+    "title": "Choose your character",
+    "description": "A calm companion for your focus.",
+    "close": "Close",
+    "saveError": "We couldn’t save your choice. Please try once more.",
+    "rainDeskDescription": "A warm desk beside a rain-filled window.",
+    "nightShiftDescription": "Blue night and distant warm windows.",
+    "balconyDuskDescription": "Golden light settles into dusk.",
+    "dormBunkDescription": "A pale blue glow in a quiet dorm."
+  }
+}

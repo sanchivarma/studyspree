@@ -1,0 +1,12 @@
+{
+  "scene": {
+    "title": "Wybierz swoją postać",
+    "description": "Spokojny towarzysz skupienia.",
+    "close": "Zamknij",
+    "saveError": "Nie udało się zapisać wyboru. Spróbuj ponownie.",
+    "rainDeskDescription": "Ciepłe biurko przy oknie pełnym deszczu.",
+    "nightShiftDescription": "Błękitna noc i ciepłe okna w oddali.",
+    "balconyDuskDescription": "Złote światło przechodzi w zmierzch.",
+    "dormBunkDescription": "Błękitna poświata w spokojnym akademiku."
+  }
+}

@@ -1,8 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useRef, type CSSProperties } from "react";
-import { Volume2 } from "lucide-react";
-import { SceneVideo } from "@/components/scene/SceneVideo";
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
+import { Volume2, Shuffle } from "lucide-react";
+import { CharacterScene } from "@/components/scene/CharacterScene";
+import { CharacterSheet } from "@/components/scene/CharacterSheet";
+import { useProfile } from "@/hooks/useProfile";
 import { useIdleVisibility } from "@/hooks/useIdleVisibility";
 import { useTranslation } from "@/hooks/useTranslation";
 import { getCharacter } from "@/lib/characters/registry";
@@ -16,6 +18,8 @@ import { DepletingRing } from "@/components/timer/DepletingRing";
 import { useSessionTitle } from "@/hooks/useSessionTitle";
 
 export function SessionScreen({ session }: { session: Session }) {
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const profile = useProfile();
   const { elapsedSeconds, remainingSeconds, isFinishing } = useSessionTimer(session);
   const { mutate: endSession, error } = useEndSession();
   const finishing = useRef(false);
@@ -24,28 +28,29 @@ export function SessionScreen({ session }: { session: Session }) {
     finishing.current = true;
     endSession({ id: session.id, reason: remainingSeconds !== null && remainingSeconds <= 0 ? "completed" : "stopped_early" }, { onError: () => { finishing.current = false; } });
   }, [isFinishing, endSession, session.id, remainingSeconds]);
-  const slug = getCharacter(session.characterSlug).slug;
+  const slug = getCharacter(profile.data?.selectedCharacter ?? session.characterSlug).slug;
   const task = session.task;
   const time = formatTimer(remainingSeconds ?? elapsedSeconds);
   useSessionTitle(time);
   const { t } = useTranslation();
-  const isVisible = useIdleVisibility();
+  const idleVisible = useIdleVisibility();
+  const isVisible = sheetOpen || idleVisible;
   const style = { "--accent": getCharacter(slug).accentColor } as CSSProperties;
   const fade = cn("transition-opacity duration-200 motion-reduce:transition-none", isVisible ? "opacity-100" : "pointer-events-none opacity-0");
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== "Escape" || event.defaultPrevented || event.repeat) return;
+      if (sheetOpen || event.key !== "Escape" || event.defaultPrevented || event.repeat) return;
       event.preventDefault();
       finish();
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [finish]);
+  }, [finish, sheetOpen]);
 
   return <section aria-label={t("session.label")} data-testid="session-screen" data-controls-visible={isVisible} style={style}
     className={cn("relative isolate h-dvh w-full overflow-hidden", !isVisible && "cursor-none")}>
-    <SceneVideo slug={slug} priority />
+    <CharacterScene slug={slug} priority />
 
     <div className="absolute top-10 right-6 left-6 flex flex-col items-center md:top-12">
       <div className={cn("shrink-0 transition-opacity duration-200 motion-reduce:transition-none", isVisible ? "opacity-100" : "opacity-40")}>
@@ -70,6 +75,12 @@ export function SessionScreen({ session }: { session: Session }) {
         className="absolute bottom-6 left-4 flex size-11 items-center justify-center rounded-xl text-foreground/60 sm:left-6">
         <Volume2 aria-hidden="true" className="size-5" />
       </button>
+      <CharacterSheet onOpenChange={setSheetOpen}>
+        <button type="button" aria-label={t("study.switchCharacter")} title={t("study.switchCharacter")}
+          className="absolute bottom-20 left-4 flex size-11 items-center justify-center rounded-xl text-foreground/60 hover:bg-background/30 sm:left-6">
+          <Shuffle aria-hidden="true" className="size-4" />
+        </button>
+      </CharacterSheet>
     </div>
   </section>;
 }

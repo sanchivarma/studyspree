@@ -1,0 +1,12 @@
+{
+  "scene": {
+    "title": "Scegli il tuo personaggio",
+    "description": "Una presenza calma per concentrarti.",
+    "close": "Chiudi",
+    "saveError": "Non è stato possibile salvare la scelta. Riprova.",
+    "rainDeskDescription": "Una scrivania accogliente accanto alla pioggia.",
+    "nightShiftDescription": "Notte blu e finestre illuminate in lontananza.",
+    "balconyDuskDescription": "La luce dorata sfuma nel crepuscolo.",
+    "dormBunkDescription": "Un bagliore azzurro in un dormitorio tranquillo."
+  }
+}
