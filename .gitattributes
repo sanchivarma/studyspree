@@ -1,0 +1,2 @@
+# Shell helpers must retain Unix line endings for Bash, including Windows checkouts.
+*.sh text eol=lf
