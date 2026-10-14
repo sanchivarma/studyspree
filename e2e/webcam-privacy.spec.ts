@@ -14,7 +14,10 @@ async function instrument(page: Page) {
       audit.constraints.push(constraints!);
       const stream = await getUserMedia(constraints); audit.streams.push(stream); return stream;
     };
-    const block = (name: string) => { audit.violations.push(name); throw new Error(`Camera privacy boundary: ${name}`); };
+    const block = (name: string) => {
+      Object.assign(window, { __violation: true });
+      audit.violations.push(name); throw new Error(`Camera privacy boundary: ${name}`);
+    };
     const containsStream = (value: unknown, seen = new WeakSet<object>()): boolean => {
       if (value instanceof MediaStream || value instanceof MediaStreamTrack) return true;
       if (typeof value !== "object" || value === null || seen.has(value)) return false;
@@ -58,6 +61,53 @@ test("privacy contract stays at the file header and the stream code has no trans
   for (const file of [hook, source.slice(source.indexOf('"use client"'))]) {
     expect(file).not.toMatch(/\b(fetch|XMLHttpRequest|WebSocket|RTCPeerConnection|MediaRecorder|sendBeacon|captureStream|toBlob|drawImage)\b/);
   }
+});
+
+// Permanent privacy regression: CI runs this suite on every push and pull request.
+test("privacy constructor guards actually flag attempts to record or connect to a peer", async ({ page }) => {
+  await instrument(page); await page.goto("/");
+  expect(await page.evaluate(() => (window as unknown as { __violation?: boolean }).__violation)).toBeFalsy();
+  await page.evaluate(() => {
+    try { new RTCPeerConnection(); } catch { /* The guard deliberately blocks it. */ }
+    try { new MediaRecorder(new MediaStream()); } catch { /* No camera is acquired. */ }
+  });
+  expect(await page.evaluate(() => (window as unknown as { __violation?: boolean }).__violation)).toBe(true);
+  expect((await audit(page)).violations).toEqual(["RTCPeerConnection", "MediaRecorder"]);
+  expect((await audit(page)).constraints).toHaveLength(0);
+});
+
+test("Settings opt-in keeps the camera local throughout twenty seconds of requests", async ({ page }) => {
+  test.setTimeout(60_000);
+  await instrument(page);
+  const requests: { url: string; bodyBytes: number }[] = [];
+  const record = (request: import("@playwright/test").Request) => {
+    requests.push({ url: request.url(), bodyBytes: request.postDataBuffer()?.byteLength ?? 0 });
+  };
+  page.on("request", record);
+  try {
+    await signIn(page); await page.goto("/settings");
+    const toggle = page.getByRole("switch", { name: "Self-view", exact: true });
+    await expect(toggle).not.toBeChecked(); await toggle.click(); await expect(toggle).toBeChecked();
+    expect((await audit(page)).constraints).toHaveLength(0);
+    expect(await page.evaluate(() => (window as unknown as { __violation?: boolean }).__violation)).toBeFalsy();
+    await startSession(page);
+    const video = page.getByTestId("local-camera-video");
+    await expect(video).toBeVisible();
+    await expect.poll(() => video.evaluate(element => (element as HTMLVideoElement).readyState)).toBeGreaterThanOrEqual(2);
+    // Real elapsed time, independent of app/dev clocks; capture every request.
+    await page.waitForTimeout(20_000);
+    expect(await page.evaluate(() => (window as unknown as { __violation?: boolean }).__violation)).toBeFalsy();
+    expect((await audit(page)).violations).toEqual([]);
+    const captured = await audit(page);
+    // Strict Mode may acquire a cancelled mount's stream too. It must already
+    // be stopped; exactly one video track may remain live, with no audio ever.
+    expect(captured.tracks.filter(track => track.readyState === "live")).toEqual([{ kind: "video", readyState: "live" }]);
+    expect(captured.tracks.every(track => track.kind === "video")).toBe(true);
+    expect(captured.constraints.every(constraint => constraint.audio === false)).toBe(true);
+    const externalUploads = requests.filter(request => !["localhost", "127.0.0.1", "[::1]"].includes(new URL(request.url).hostname) && request.bodyBytes > 10_000);
+    expect(externalUploads).toEqual([]);
+    expect(requests.filter(request => /webrtc|stun|turn/i.test(request.url))).toEqual([]);
+  } finally { page.off("request", record); }
 });
 
 test("opt-in attaches video-only media locally, sends no requests, and stops every track on disable", async ({ page }) => {

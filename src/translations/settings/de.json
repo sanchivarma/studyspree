@@ -1,6 +1,10 @@
 {
   "settings": {
     "appearance": "Darstellung",
-    "character": "Charakter"
+    "character": "Charakter",
+    "camera": "Kamera",
+    "selfView": "Selbstansicht",
+    "cameraPrivacy": "Die Vorschau bleibt auf deinem Gerät.",
+    "cameraSaveError": "Bitte aktualisiere deine Kameraeinstellung noch einmal."
   }
 }

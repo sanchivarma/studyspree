@@ -1,6 +1,10 @@
 {
   "settings": {
     "appearance": "Aspetto",
-    "character": "Personaggio"
+    "character": "Personaggio",
+    "camera": "Videocamera",
+    "selfView": "Anteprima personale",
+    "cameraPrivacy": "L’anteprima resta sul tuo dispositivo.",
+    "cameraSaveError": "Prova a modificare ancora l’impostazione della videocamera."
   }
 }

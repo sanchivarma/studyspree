@@ -1,6 +1,10 @@
 {
   "settings": {
     "appearance": "Wygląd",
-    "character": "Postać"
+    "character": "Postać",
+    "camera": "Kamera",
+    "selfView": "Podgląd siebie",
+    "cameraPrivacy": "Podgląd pozostaje na Twoim urządzeniu.",
+    "cameraSaveError": "Spróbuj ponownie zmienić ustawienie kamery."
   }
 }

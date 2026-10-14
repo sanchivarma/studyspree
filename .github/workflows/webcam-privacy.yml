@@ -1,0 +1,46 @@
+name: Webcam privacy
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  webcam-privacy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Configure isolated development login
+        run: |
+          node --input-type=module <<'NODE'
+          import { writeFileSync } from 'node:fs';
+          import { randomBytes } from 'node:crypto';
+          writeFileSync('.env.local', [
+            'SITE_URL=http://localhost:3000',
+            'DEV_ADMIN_USERNAME=ss_ci_admin',
+            `DEV_ADMIN_PASSWORD=${randomBytes(24).toString('hex')}`,
+            `DEV_ADMIN_SESSION_SECRET=${randomBytes(32).toString('hex')}`,
+            '',
+          ].join('\n'));
+          NODE
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run test
+      - name: Enforce webcam privacy
+        run: npm run test:e2e -- e2e/webcam-privacy.spec.ts
+      - name: Save browser failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: webcam-privacy-failures
+          path: test-results/
+          retention-days: 7
