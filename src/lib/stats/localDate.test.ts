@@ -10,5 +10,5 @@ it.each([
   ["2026-10-25T01:30:00Z", "Europe/Berlin", "2026-10-25"],
   ["2026-12-31T23:30:00Z", "Asia/Kolkata", "2027-01-01"],
 ])("buckets %s in %s as %s", (instant, zone, expected) => {
-  expect(toLocalDate(instant, zone)).toBe(expected);
+  expect(toLocalDate(new Date(instant), zone)).toBe(expected);
 });

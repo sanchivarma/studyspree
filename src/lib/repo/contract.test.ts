@@ -66,6 +66,92 @@ export function repositoryContract(name: string, create: () => Repository) {
       expect(await repo.getTotalSecondsAllTime()).toBe(0);
       expect(await repo.getDayStats("2026-10-13", "2026-10-13")).toEqual([]);
     });
+    it("starts with empty session and streak summaries", async () => {
+      expect(await repo.getSessionSummary()).toEqual({ totalSeconds: 0, sessionCount: 0, firstSessionDate: null });
+      expect(await repo.getStreak()).toEqual({ current: 0, best: 0, lastActiveDate: null, freezesRemaining: 2, freezesResetAt: "2026-11-01" });
+    });
+    it("applies completed and early-stop activity once per saved date", async () => {
+      const first = await repo.startSession(input);
+      vi.advanceTimersByTime(10000);
+      expect((await repo.endSession(first.id, "completed")).streak).toEqual({ current: 1, best: 1, changed: true, freezeUsed: false });
+      const second = await repo.startSession(input);
+      vi.advanceTimersByTime(10000);
+      expect((await repo.endSession(second.id, "stopped_early")).streak).toEqual({ current: 1, best: 1, changed: false, freezeUsed: false });
+      vi.setSystemTime(new Date("2026-10-14T12:00:00Z"));
+      const third = await repo.startSession(input);
+      vi.advanceTimersByTime(10000);
+      expect((await repo.endSession(third.id, "stopped_early")).streak).toEqual({ current: 2, best: 2, changed: true, freezeUsed: false });
+      expect(await repo.getSessionSummary()).toEqual({ totalSeconds: 30, sessionCount: 3, firstSessionDate: "2026-10-13" });
+    });
+    it("uses a freeze for a two-day gap and returns the same event on retry", async () => {
+      const first = await repo.startSession(input);
+      vi.advanceTimersByTime(10000); await repo.endSession(first.id, "completed");
+      vi.setSystemTime(new Date("2026-10-15T12:00:00Z"));
+      const second = await repo.startSession(input);
+      vi.advanceTimersByTime(10000);
+      const result = await repo.endSession(second.id, "stopped_early");
+      expect(result.streak).toEqual({ current: 2, best: 2, changed: true, freezeUsed: true });
+      const state = await repo.getStreak();
+      expect(state.freezesRemaining).toBe(1);
+      vi.advanceTimersByTime(10000);
+      expect(await repo.endSession(second.id, "completed")).toEqual(result);
+      expect(await repo.getStreak()).toEqual(state);
+    });
+    it("abandoned sessions bank time but never change a streak", async () => {
+      const initial = await repo.getStreak();
+      const session = await repo.startSession(input);
+      vi.advanceTimersByTime(10000);
+      const result = await repo.endSession(session.id, "abandoned");
+      expect(result).toMatchObject({ totalSecondsAllTime: 10, streak: { current: 0, best: 0, changed: false, freezeUsed: false } });
+      expect(await repo.getStreak()).toEqual(initial);
+      expect((await repo.endSession(session.id, "completed")).session.endedReason).toBe("abandoned");
+      expect(await repo.getStreak()).toEqual(initial);
+    });
+    it("keeps historical day buckets after profile timezone changes", async () => {
+      await repo.updateProfile({ timezone: "America/Los_Angeles" });
+      vi.setSystemTime(new Date("2026-10-13T00:05:00Z"));
+      const first = await repo.startSession(input);
+      await repo.updateProfile({ timezone: "Asia/Tokyo" });
+      vi.advanceTimersByTime(10000); await repo.endSession(first.id, "completed");
+      const second = await repo.startSession(input);
+      vi.advanceTimersByTime(10000); await repo.endSession(second.id, "completed");
+      expect(first.localDate).toBe("2026-10-12");
+      expect(second.localDate).toBe("2026-10-13");
+      expect(await repo.getDayStats("2026-10-12", "2026-10-13")).toEqual([
+        { date: "2026-10-12", totalSeconds: 10, sessionCount: 1 },
+        { date: "2026-10-13", totalSeconds: 10, sessionCount: 1 },
+      ]);
+      expect((await repo.getStreak()).lastActiveDate).toBe("2026-10-13");
+    });
+    it("maintains lifetime totals and day-sum equality after every operation in a session sequence", async () => {
+      let previousTotal = 0;
+      const check = async () => {
+        const total = await repo.getTotalSecondsAllTime();
+        const days = await repo.getDayStats("2020-01-01", "2030-12-31");
+        const summary = await repo.getSessionSummary();
+        expect(total).toBeGreaterThanOrEqual(previousTotal);
+        expect(days.reduce((sum, day) => sum + day.totalSeconds, 0)).toBe(total);
+        expect(summary.totalSeconds).toBe(total);
+        expect(days.reduce((sum, day) => sum + day.sessionCount, 0)).toBe(summary.sessionCount);
+        previousTotal = total;
+      };
+      await check();
+      for (const [index, duration] of [0, 1, 10, 120, 36000, 60].entries()) {
+        vi.setSystemTime(new Date(`2026-10-${String(13 + index * 2).padStart(2, "0")}T12:00:00Z`));
+        const session = await repo.startSession(input); await check();
+        await repo.startSession(input); await check();
+        vi.advanceTimersByTime(duration * 1000);
+        await repo.heartbeat(session.id); await check();
+        const reason = index % 3 === 0 ? "completed" : index % 3 === 1 ? "stopped_early" : "abandoned";
+        await repo.endSession(session.id, reason); await check();
+        vi.advanceTimersByTime(10000);
+        await repo.endSession(session.id, "completed"); await check();
+        await repo.updateProfile({ timezone: index % 2 ? "Europe/Berlin" : "America/Los_Angeles", showStreak: false }); await check();
+        await repo.getStreak(); await check();
+        await repo.getSessions({ limit: 20, offset: 0 }); await check();
+      }
+      expect(previousTotal).toBe(21791);
+    });
   });
 }
 

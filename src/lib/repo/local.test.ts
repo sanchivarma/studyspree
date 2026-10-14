@@ -14,6 +14,94 @@ beforeEach(() => { time.milliseconds = new Date("2026-10-13T12:00:00Z").getTime(
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); });
 
 describe("local persistence and recovery", () => {
+  it("initializes freeze reset dates from the profile timezone at a month boundary", async () => {
+    const repo = new LocalRepository(() => null);
+    await repo.updateProfile({ timezone: "America/Los_Angeles" });
+    time.milliseconds = new Date("2026-11-01T00:05:00Z").getTime();
+    expect((await repo.getStreak()).freezesResetAt).toBe("2026-11-01");
+  });
+  it("repairs corrupt event flags without applying the session activity again", async () => {
+    const storage = memoryStorage();
+    const repo = new LocalRepository(() => storage);
+    const a = await repo.startSession(input); time.milliseconds += 10000; await repo.endSession(a.id, "completed");
+    time.milliseconds = new Date("2026-10-15T12:00:00Z").getTime();
+    const b = await repo.startSession(input); time.milliseconds += 10000; await repo.endSession(b.id, "completed");
+    const state = await repo.getStreak();
+    for (const corrupt of ["{broken", JSON.stringify({ [b.id]: { changed: "forged", freezeUsed: true } })]) {
+      storage.setItem("ss_streak_events", corrupt);
+      expect((await repo.endSession(b.id, "stopped_early")).streak).toMatchObject({ current: 2, best: 2, changed: false, freezeUsed: false });
+      expect(await repo.getStreak()).toEqual(state);
+      expect(JSON.parse(storage.getItem("ss_streak_events")!)).toEqual({});
+      expect(await repo.getTotalSecondsAllTime()).toBe(20);
+    }
+  });
+  it("persists streaks and freeze events across reloads without spending twice", async () => {
+    const storage = memoryStorage();
+    const first = new LocalRepository(() => storage);
+    const initial = await first.startSession(input);
+    time.milliseconds += 10000; await first.endSession(initial.id, "completed");
+    time.milliseconds = new Date("2026-10-15T12:00:00Z").getTime();
+    const session = await first.startSession(input);
+    time.milliseconds += 10000;
+    const ended = await first.endSession(session.id, "stopped_early");
+    const state = await first.getStreak();
+    expect(JSON.parse(storage.getItem("ss_streak")!)).toEqual(state);
+    expect(state).toMatchObject({ current: 2, best: 2, freezesRemaining: 1 });
+    const reloaded = new LocalRepository(() => storage);
+    expect(await reloaded.getStreak()).toEqual(state);
+    time.milliseconds += 10000;
+    expect(await reloaded.endSession(session.id, "completed")).toEqual(ended);
+    expect(await reloaded.getStreak()).toEqual(state);
+    expect(await reloaded.getSessionSummary()).toEqual({ totalSeconds: 20, sessionCount: 2, firstSessionDate: "2026-10-13" });
+  });
+  it("reconstructs missing or corrupt streak storage from eligible historical dates", async () => {
+    const storage = memoryStorage();
+    const first = new LocalRepository(() => storage);
+    const a = await first.startSession(input); time.milliseconds += 10000; await first.endSession(a.id, "completed");
+    time.milliseconds = new Date("2026-10-15T12:00:00Z").getTime();
+    const b = await first.startSession(input); time.milliseconds += 10000; await first.endSession(b.id, "stopped_early");
+    time.milliseconds = new Date("2026-10-17T12:00:00Z").getTime();
+    const c = await first.startSession(input); time.milliseconds += 10000; await first.endSession(c.id, "abandoned");
+    const expected = await first.getStreak();
+    for (const value of [null, "{broken", JSON.stringify({ current: -1 }), JSON.stringify({ ...expected, freezesRemaining: 9 })]) {
+      if (value === null) storage.removeItem("ss_streak"); else storage.setItem("ss_streak", value);
+      const repo = new LocalRepository(() => storage);
+      expect(await repo.getStreak()).toEqual(expected);
+      expect(await repo.getTotalSecondsAllTime()).toBe(30);
+      if (value !== null) expect(JSON.parse(storage.getItem("ss_streak")!)).toEqual(expected);
+    }
+  });
+  it("keeps an existing best on lapse and refills before consuming a new-month freeze", async () => {
+    const storage = memoryStorage();
+    storage.setItem("ss_streak", JSON.stringify({ current: 7, best: 40, lastActiveDate: "2026-10-31", freezesRemaining: 0, freezesResetAt: "2026-11-01" }));
+    const repo = new LocalRepository(() => storage);
+    time.milliseconds = new Date("2026-11-02T12:00:00Z").getTime();
+    const a = await repo.startSession(input); time.milliseconds += 10000;
+    expect((await repo.endSession(a.id, "completed")).streak).toEqual({ current: 8, best: 40, changed: true, freezeUsed: true });
+    expect(await repo.getStreak()).toMatchObject({ freezesRemaining: 1, freezesResetAt: "2026-12-01" });
+    time.milliseconds = new Date("2026-11-07T12:00:00Z").getTime();
+    const b = await repo.startSession(input); time.milliseconds += 10000;
+    expect((await repo.endSession(b.id, "stopped_early")).streak).toEqual({ current: 1, best: 40, changed: true, freezeUsed: false });
+    expect(await repo.getTotalSecondsAllTime()).toBe(20);
+  });
+  it("abandoned sessions leave the persisted streak bytes untouched", async () => {
+    const storage = memoryStorage();
+    const repo = new LocalRepository(() => storage);
+    const a = await repo.startSession(input); time.milliseconds += 10000; await repo.endSession(a.id, "completed");
+    const before = storage.getItem("ss_streak");
+    time.milliseconds = new Date("2026-10-17T12:00:00Z").getTime();
+    const b = await repo.startSession(input); time.milliseconds += 10000; await repo.endSession(b.id, "abandoned");
+    expect(storage.getItem("ss_streak")).toBe(before);
+  });
+  it("finishing after local midnight keeps the start-date bucket and streak activity date", async () => {
+    const repo = new LocalRepository(() => null);
+    await repo.updateProfile({ timezone: "Europe/Berlin" });
+    time.milliseconds = new Date("2026-10-13T21:59:50Z").getTime();
+    const session = await repo.startSession(input); time.milliseconds += 20000;
+    await repo.endSession(session.id, "completed");
+    expect(await repo.getDayStats("2026-10-13", "2026-10-14")).toEqual([{ date: "2026-10-13", totalSeconds: 20, sessionCount: 1 }]);
+    expect((await repo.getStreak()).lastActiveDate).toBe("2026-10-13");
+  });
   it("resumes persisted timestamps in a fresh repository after a long sleep", async () => {
     const storage = memoryStorage();
     const first = new LocalRepository(() => storage);
@@ -107,6 +195,8 @@ describe("local persistence and recovery", () => {
     await repo.endSession(session.id, "stopped_early");
     expect(await repo.getActiveSession()).toBeNull();
     expect(await repo.getTotalSecondsAllTime()).toBe(15);
+    expect(await repo.getStreak()).toMatchObject({ current: 1, best: 1 });
+    expect(await repo.getSessionSummary()).toMatchObject({ totalSeconds: 15, sessionCount: 1 });
     await repo.updateProfile({ displayName: "Alex" });
     expect((await repo.getProfile()).displayName).toBe("Alex");
   });

@@ -1,8 +1,11 @@
 import { z } from "zod";
+import { addMonths, format, parseISO, startOfMonth } from "date-fns";
 import { now } from "@/lib/clock";
 import { toLocalDate } from "@/lib/stats/localDate";
-import type { DayStat, Profile, Session } from "@/types/domain";
-import type { EndSessionResult, Repository, StartSessionInput } from "./types";
+import { aggregateSessions, summarizeSessions } from "@/lib/stats/aggregateSessions";
+import { applyActivity, type StreakState } from "@/lib/streaks/computeStreak";
+import type { DayStat, EndedReason, Profile, Session } from "@/types/domain";
+import type { EndSessionResult, EndSessionStreak, Repository, SessionSummary, StartSessionInput } from "./types";
 
 type StorageAccess = Pick<Storage, "getItem" | "setItem" | "removeItem">;
 const iso = z.iso.datetime();
@@ -24,6 +27,17 @@ const sessionSchema = z.object({
   : session.endedReason !== null && session.endedAt >= session.startedAt);
 const sessionsSchema = z.array(sessionSchema).refine((sessions) => new Set(sessions.map((session) => session.id)).size === sessions.length && sessions.filter((session) => session.endedAt === null).length <= 1);
 const activeSchema = z.object({ id: z.string().min(1), lastHeartbeatAt: iso }).strict().nullable();
+const streakSchema = z.object({
+  current: z.number().int().nonnegative(), best: z.number().int().nonnegative(),
+  lastActiveDate: date.nullable(), freezesRemaining: z.number().int().min(0).max(2), freezesResetAt: date,
+}).strict().refine((state) => state.best >= state.current);
+const streakEventSchema = z.object({ changed: z.boolean(), freezeUsed: z.boolean() }).strict();
+const streakEventsSchema = z.record(z.string(), streakEventSchema);
+
+function initialStreak(localDate: string): StreakState {
+  return { current: 0, best: 0, lastActiveDate: null, freezesRemaining: 2,
+    freezesResetAt: format(addMonths(startOfMonth(parseISO(localDate)), 1), "yyyy-MM-dd") };
+}
 
 export class LocalRepository implements Repository {
   private readonly memory = new Map<string, string>();
@@ -74,16 +88,30 @@ export class LocalRepository implements Repository {
     }));
   }
   private sessions(): Session[] { return this.read("ss_sessions", sessionsSchema, () => []); }
+  private streak(sessions: Session[]): StreakState {
+    return this.read("ss_streak", streakSchema, () => {
+      // Upgrade older local data and recover a damaged streak key from history.
+      // Replay each eligible calendar day once, in chronological order.
+      const dates = [...new Set(sessions.filter((session) => session.endedAt !== null && session.endedReason !== "abandoned").map((session) => session.localDate))].sort();
+      let state = initialStreak(dates[0] ?? toLocalDate(now(), this.profile().timezone));
+      for (const localDate of dates) state = applyActivity(state, localDate).state;
+      return state;
+    });
+  }
+  private streakEvents(): Record<string, { changed: boolean; freezeUsed: boolean }> {
+    // Event flags let duplicate Finish calls return the original activity event
+    // without replaying it or spending another freeze. Time stays in ss_sessions.
+    return this.read("ss_streak_events", streakEventsSchema, () => ({}));
+  }
   private active(sessions: Session[]): Session | null {
     const pointer = this.read("ss_active", activeSchema, () => null);
     // Recover a start interrupted between writing the session and its pointer.
     return sessions.find((session) => session.id === pointer?.id && session.endedAt === null)
       ?? sessions.find((session) => session.endedAt === null) ?? null;
   }
-  private totals(sessions: Session[], session: Session): EndSessionResult {
-    const ended = sessions.filter((value) => value.endedAt !== null);
-    return { session, totalSecondsAllTime: ended.reduce((sum, value) => sum + value.actualSeconds, 0),
-      dayTotalSeconds: ended.filter((value) => value.localDate === session.localDate).reduce((sum, value) => sum + value.actualSeconds, 0) };
+  private totals(sessions: Session[], session: Session, streak: EndSessionStreak): EndSessionResult {
+    return { session, totalSecondsAllTime: summarizeSessions(sessions).totalSeconds,
+      dayTotalSeconds: aggregateSessions(sessions).find((day) => day.date === session.localDate)?.totalSeconds ?? 0, streak };
   }
 
   async getProfile(): Promise<Profile> { return this.profile(); }
@@ -99,28 +127,39 @@ export class LocalRepository implements Repository {
       const validated = inputSchema.parse(input);
       const startedAt = now().toISOString();
       const session: Session = { ...validated, id: crypto.randomUUID(), startedAt, endedAt: null, actualSeconds: 0,
-        endedReason: null, localDate: toLocalDate(startedAt, this.profile().timezone) };
+        endedReason: null, localDate: toLocalDate(new Date(startedAt), this.profile().timezone) };
       this.write("ss_sessions", [...sessions, session]);
       this.write("ss_active", { id: session.id, lastHeartbeatAt: startedAt });
       return session;
     });
   }
-  endSession(id: string, reason: "completed" | "stopped_early"): Promise<EndSessionResult> {
+  endSession(id: string, reason: EndedReason): Promise<EndSessionResult> {
     return this.mutate(() => {
-      z.enum(["completed", "stopped_early"]).parse(reason);
+      z.enum(["completed", "stopped_early", "abandoned"]).parse(reason);
       const sessions = this.sessions();
       const session = sessions.find((value) => value.id === id);
       if (!session) throw new Error("Session not found");
-      if (session.endedAt !== null) return this.totals(sessions, session);
+      const previousStreak = this.streak(sessions);
+      if (session.endedAt !== null) {
+        const event = session.endedReason === "abandoned" ? undefined : this.streakEvents()[id];
+        return this.totals(sessions, session, { current: previousStreak.current, best: previousStreak.best,
+          changed: event?.changed ?? false, freezeUsed: event?.freezeUsed ?? false });
+      }
       const startedMs = new Date(session.startedAt).getTime();
       // Moving the development clock backwards must never produce negative time.
       const endedMs = Math.max(startedMs, now().getTime());
       const ended: Session = { ...session, endedAt: new Date(endedMs).toISOString(), endedReason: reason,
         actualSeconds: Math.min(Math.floor((endedMs - startedMs) / 1000), 21600) };
       const updated = sessions.map((value) => value.id === id ? ended : value);
+      const activity = reason === "abandoned" ? { state: previousStreak, changed: false, freezeUsed: false }
+        : applyActivity(previousStreak, ended.localDate);
       this.write("ss_sessions", updated);
+      if (reason !== "abandoned") {
+        this.write("ss_streak", activity.state);
+        this.write("ss_streak_events", { ...this.streakEvents(), [id]: { changed: activity.changed, freezeUsed: activity.freezeUsed } });
+      }
       this.write("ss_active", null);
-      return this.totals(updated, ended);
+      return this.totals(updated, ended, { current: activity.state.current, best: activity.state.best, changed: activity.changed, freezeUsed: activity.freezeUsed });
     });
   }
   heartbeat(id: string): Promise<void> {
@@ -136,16 +175,11 @@ export class LocalRepository implements Repository {
   async getDayStats(from: string, to: string): Promise<DayStat[]> {
     date.parse(from); date.parse(to);
     if (from > to) throw new Error("Invalid date range");
-    const days = new Map<string, DayStat>();
-    for (const session of this.sessions()) {
-      if (session.endedAt === null || session.localDate < from || session.localDate > to) continue;
-      const day = days.get(session.localDate) ?? { date: session.localDate, totalSeconds: 0, sessionCount: 0 };
-      day.totalSeconds += session.actualSeconds; day.sessionCount += 1;
-      days.set(day.date, day);
-    }
-    return [...days.values()].sort((a, b) => a.date.localeCompare(b.date));
+    return aggregateSessions(this.sessions()).filter((day) => day.date >= from && day.date <= to);
   }
   async getTotalSecondsAllTime(): Promise<number> {
-    return this.sessions().reduce((sum, session) => sum + (session.endedAt === null ? 0 : session.actualSeconds), 0);
+    return summarizeSessions(this.sessions()).totalSeconds;
   }
+  async getStreak(): Promise<StreakState> { return this.streak(this.sessions()); }
+  async getSessionSummary(): Promise<SessionSummary> { return summarizeSessions(this.sessions()); }
 }

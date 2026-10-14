@@ -1,16 +1,21 @@
-import type { DayStat, Profile, Session } from "@/types/domain";
+import type { DayStat, EndedReason, Profile, Session } from "@/types/domain";
+import type { StreakState } from "@/lib/streaks/computeStreak";
 
 export type StartSessionInput = { plannedMinutes: number | null; characterSlug: string; task: string | null };
-export type EndSessionResult = { session: Session; totalSecondsAllTime: number; dayTotalSeconds: number };
+export type SessionSummary = { totalSeconds: number; sessionCount: number; firstSessionDate: string | null };
+export type EndSessionStreak = Pick<StreakState, "current" | "best"> & { changed: boolean; freezeUsed: boolean };
+export type EndSessionResult = { session: Session; totalSecondsAllTime: number; dayTotalSeconds: number; streak: EndSessionStreak };
 
 export interface Repository {
   getProfile(): Promise<Profile>;
   updateProfile(patch: Partial<Profile>): Promise<Profile>;
   getActiveSession(): Promise<Session | null>;
   startSession(input: StartSessionInput): Promise<Session>;
-  endSession(id: string, reason: "completed" | "stopped_early"): Promise<EndSessionResult>;
+  endSession(id: string, reason: EndedReason): Promise<EndSessionResult>;
   heartbeat(id: string): Promise<void>;
   getSessions(opts: { limit: number; offset: number }): Promise<Session[]>;
   getDayStats(from: string, to: string): Promise<DayStat[]>;
   getTotalSecondsAllTime(): Promise<number>;
+  getStreak(): Promise<StreakState>;
+  getSessionSummary(): Promise<SessionSummary>;
 }

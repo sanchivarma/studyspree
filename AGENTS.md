@@ -319,11 +319,11 @@ Rooms · other users · chat · AI conversation · webcam-driven avatars · cust
 
 > **Update this section at the end of every phase.**
 
-- **Current phase:** 4.1 — Pure streak engine
-- **Completed work:** scaffold, scenes, navigation, Home/Study, translated authentication, mock Stats dashboard, local repository and real timer, recent completion summaries with affirmations, early-stop coverage, cross-tab recovery, smooth depleting ring and live tab title, responsive character sheet in Study/Settings/session controls, optimistic character persistence, 400ms scene crossfades and keyboard navigation, ffmpeg asset preparation with immutable-file protection and an asset guide, pure streak activity engine with monthly freezes, shared JSON contract fixtures and DST/invariant coverage
+- **Current phase:** 4.2 — Session aggregation and persisted streaks
+- **Completed work:** scaffold, scenes, navigation, Home/Study, translated authentication, mock Stats dashboard, local repository and real timer, recent completion summaries with affirmations, early-stop coverage, cross-tab recovery, smooth depleting ring and live tab title, responsive character sheet in Study/Settings/session controls, optimistic character persistence, 400ms scene crossfades and keyboard navigation, ffmpeg asset preparation with immutable-file protection and an asset guide, pure streak activity engine with monthly freezes, shared JSON contract fixtures and DST/invariant coverage, session-derived day/summary totals, persisted streaks and idempotent freeze events, historical timezone buckets and repository conservation tests
 - **Repository in use:** `authRepository` for authentication; `repo` exports the tested `LocalRepository` for the session flow
 - **Known issues:** real character media has not been supplied; Stats remains mock data; completion streak is a Phase 4 placeholder; local profile defaults to UTC; live Supabase setup remains external
-- **Next up:** Phase 4 repository and progress UI wiring; supply licensed character media
+- **Next up:** Phase 4 progress UI wiring; supply licensed character media
 
 ---
 

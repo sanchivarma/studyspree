@@ -19,11 +19,11 @@ export async function freezeClock(page: Page) {
   controlledPages.add(page);
 }
 
-export async function settleClock(page: Page, testId: string) {
-  // Query observer notifications use zero-delay browser timers. Flush those
-  // after navigation while advancing too little to change displayed seconds.
+export async function settleClock(page: Page, testId: string, stepMs = 1) {
+  // Query notifications need a small clock step. Start navigation also needs
+  // a browser frame; keep animation tests on 1ms steps for precise samples.
   await expect.poll(async () => {
-    await page.clock.runFor(1);
+    await page.clock.runFor(stepMs);
     return page.getByTestId(testId).isVisible();
   }, { timeout: 15000 }).toBe(true);
 }
@@ -33,7 +33,7 @@ export async function startSession(page: Page, task?: string, minutes: number | 
   if (minutes !== 5) await page.getByRole("button", { name: minutes === null ? "Open" : `${minutes} min`, exact: true }).click();
   if (task) await page.getByRole("textbox").fill(task);
   await page.getByRole("button", { name: "Start", exact: true }).click();
-  if (controlledPages.has(page)) await settleClock(page, "session-screen");
+  if (controlledPages.has(page)) await settleClock(page, "session-screen", 16);
   else await expect(page.getByTestId("session-screen")).toBeVisible({ timeout: 15000 });
   return new URL(page.url()).pathname;
 }

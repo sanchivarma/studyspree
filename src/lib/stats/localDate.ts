@@ -1,5 +1,6 @@
 import { formatInTimeZone } from "date-fns-tz";
 
-export function toLocalDate(date: Date | string, timezone: string): string {
+/** Bucket an instant in the profile's explicit timezone, never the host timezone. */
+export function toLocalDate(date: Date, timezone: string): string {
   return formatInTimeZone(date, timezone, "yyyy-MM-dd");
 }

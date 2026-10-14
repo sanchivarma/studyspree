@@ -61,7 +61,7 @@ describe("session query and mutation boundaries", () => {
     expect(useSessionStore.getState().isFinishing).toBe(false);
   });
   it("finishes with id/reason and refreshes active, stats and streak before routing", async () => {
-    const ended: EndSessionResult = { session: { ...session, endedAt: "2026-10-13T12:00:10Z", actualSeconds: 10, endedReason: "stopped_early" }, totalSecondsAllTime: 10, dayTotalSeconds: 10 };
+    const ended: EndSessionResult = { session: { ...session, endedAt: "2026-10-13T12:00:10Z", actualSeconds: 10, endedReason: "stopped_early" }, totalSecondsAllTime: 10, dayTotalSeconds: 10, streak: { current: 1, best: 1, changed: true, freezeUsed: false } };
     vi.mocked(repo.endSession).mockResolvedValue(ended);
     useEndSession();
     const options = callbacks<EndSessionInput, EndSessionResult>();
