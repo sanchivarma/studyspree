@@ -1,0 +1,11 @@
+{
+  "dev": {
+    "title": "Narzędzia deweloperskie",
+    "description": "Dodaj stałą historię przykładową. Twój dotychczasowy czas nauki pozostanie zapisany.",
+    "seed": "Dodaj 40 godzin",
+    "success": "Historia przykładowa jest gotowa.",
+    "activeSession": "Zakończ sesję przed dodaniem historii przykładowej.",
+    "error": "Nie udało się przygotować historii. Spróbuj ponownie.",
+    "viewStats": "Zobacz statystyki"
+  }
+}

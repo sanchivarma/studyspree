@@ -1,5 +1,10 @@
 {
   "stats": {
+    "loadMore": "Load more",
+    "emptyHistory": "Your sessions will appear here.",
+    "loading": "Loading your progress…",
+    "loadError": "We couldn’t load your progress. Please try once more.",
+    "retry": "Try once more",
     "totalHours": "Total hours",
     "acrossSessions": "across {count} sessions",
     "streakTitle": "Streak",

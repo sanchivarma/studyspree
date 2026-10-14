@@ -1,0 +1,11 @@
+{
+  "dev": {
+    "title": "Strumenti di sviluppo",
+    "description": "Aggiungi una cronologia dimostrativa fissa. Il tempo di studio esistente rimane salvato.",
+    "seed": "Aggiungi 40 ore",
+    "success": "La cronologia dimostrativa è pronta.",
+    "activeSession": "Termina la sessione prima di aggiungere la cronologia dimostrativa.",
+    "error": "Non è stato possibile preparare la cronologia. Riprova.",
+    "viewStats": "Visualizza statistiche"
+  }
+}

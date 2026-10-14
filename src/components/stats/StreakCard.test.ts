@@ -8,7 +8,7 @@ import { StreakCard } from "./StreakCard";
 it("shows Ready when you are for zero streaks without printing 0 days", () => {
   const html = renderToStaticMarkup(createElement(LanguageContext.Provider, { value: {
     locale: "en", setLocale: () => {}, t: (key: TranslationKey, params?: Record<string, string | number>) => translate("en", key, params),
-  } }, createElement(StreakCard, { summary: { totalSeconds: 0, sessionCount: 0, currentStreak: 0, bestStreak: 0, freezesLeft: 2 } })));
+  } }, createElement(StreakCard, { today: "2026-10-13", streak: { current: 0, best: 0, lastActiveDate: null, freezesRemaining: 2, freezesResetAt: "2026-11-01" } })));
   expect(html).toContain("Ready when you are");
   expect(html).not.toContain("0 days");
   expect(html).toContain("Freezes left");

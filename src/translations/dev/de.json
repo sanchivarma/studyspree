@@ -1,0 +1,11 @@
+{
+  "dev": {
+    "title": "Entwicklerwerkzeuge",
+    "description": "Füge einen festen Beispielverlauf hinzu. Deine bisherige Lernzeit bleibt gespeichert.",
+    "seed": "40 Stunden hinzufügen",
+    "success": "Der Beispielverlauf ist bereit.",
+    "activeSession": "Beende deine Sitzung, bevor du den Beispielverlauf hinzufügst.",
+    "error": "Der Beispielverlauf konnte nicht erstellt werden. Bitte versuche es noch einmal.",
+    "viewStats": "Statistik ansehen"
+  }
+}

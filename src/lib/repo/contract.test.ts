@@ -10,7 +10,7 @@ export function repositoryContract(name: string, create: () => Repository) {
   describe(`${name} repository contract`, () => {
     let repo: Repository;
     beforeEach(() => { vi.useFakeTimers(); vi.setSystemTime(new Date("2026-10-13T12:00:00Z")); repo = create(); });
-    afterEach(() => vi.useRealTimers());
+    afterEach(() => { vi.useRealTimers(); vi.unstubAllEnvs(); });
 
     it("returns the same active session for concurrent starts", async () => {
       const [first, second] = await Promise.all([repo.startSession(input), repo.startSession({ ...input, plannedMinutes: 25 })]);
@@ -18,6 +18,45 @@ export function repositoryContract(name: string, create: () => Repository) {
       expect(await repo.getSessions({ limit: 20, offset: 0 })).toHaveLength(1);
       expect(await repo.getActiveSession()).toEqual(first);
       expect(first.actualSeconds).toBe(0);
+    });
+    it("seeds internally consistent history once using the profile timezone", async () => {
+      vi.stubEnv("NODE_ENV", "development");
+      await repo.updateProfile({ timezone: "America/Los_Angeles" });
+      const summary = await repo.seedDemoSessions();
+      expect(summary.totalSeconds).toBe(144000);
+      const sessions = await repo.getSessions({ limit: 1000, offset: 0 });
+      expect(summary.sessionCount).toBe(sessions.length);
+      expect(new Set(sessions.map((session) => session.characterSlug)).size).toBe(4);
+      expect(new Set(sessions.map((session) => session.plannedMinutes))).toEqual(new Set([5, 15, 25, 50]));
+      for (const session of sessions) expect(session.actualSeconds).toBe((new Date(session.endedAt!).getTime() - new Date(session.startedAt).getTime()) / 1000);
+      expect(await repo.getStreak()).toMatchObject({ current: 6, lastActiveDate: "2026-10-11" });
+      const days = await repo.getDayStats("2026-07-01", "2026-10-13");
+      expect(days.reduce((sum, day) => sum + day.totalSeconds, 0)).toBe(summary.totalSeconds);
+      expect(await repo.seedDemoSessions()).toEqual(summary);
+      vi.setSystemTime(new Date("2026-10-14T12:00:00Z"));
+      expect(await repo.seedDemoSessions()).toEqual(summary);
+      expect(await repo.getSessions({ limit: 1000, offset: 0 })).toEqual(sessions);
+      expect(await repo.getActiveSession()).toBeNull();
+    });
+    it("seeding preserves existing sessions, time, and a larger best streak", async () => {
+      vi.stubEnv("NODE_ENV", "development");
+      const session = await repo.startSession(input);
+      vi.advanceTimersByTime(10000); await repo.endSession(session.id, "completed");
+      const before = await repo.getStreak();
+      const result = await repo.seedDemoSessions();
+      expect(result.totalSeconds).toBe(144010);
+      expect((await repo.getSessions({ limit: 1000, offset: 0 })).find((entry) => entry.id === session.id)).toMatchObject({ actualSeconds: 10, startedAt: session.startedAt });
+      expect((await repo.getStreak()).best).toBeGreaterThanOrEqual(before.best);
+    });
+    it("refuses development seeding in production or during a running session", async () => {
+      vi.stubEnv("NODE_ENV", "production");
+      await expect(repo.seedDemoSessions()).rejects.toThrow("Development seed is unavailable");
+      expect(await repo.getTotalSecondsAllTime()).toBe(0);
+      vi.stubEnv("NODE_ENV", "development");
+      const session = await repo.startSession(input);
+      await expect(repo.seedDemoSessions()).rejects.toThrow("Finish the active session");
+      expect(await repo.getActiveSession()).toEqual(session);
+      expect(await repo.getTotalSecondsAllTime()).toBe(0);
     });
     it("banks floored timestamp seconds and clears the active session", async () => {
       const session = await repo.startSession(input);

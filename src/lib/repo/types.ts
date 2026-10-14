@@ -18,4 +18,5 @@ export interface Repository {
   getTotalSecondsAllTime(): Promise<number>;
   getStreak(): Promise<StreakState>;
   getSessionSummary(): Promise<SessionSummary>;
+  seedDemoSessions(): Promise<SessionSummary>;
 }

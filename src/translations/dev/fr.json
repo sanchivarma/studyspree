@@ -1,0 +1,11 @@
+{
+  "dev": {
+    "title": "Outils de développement",
+    "description": "Ajoutez un historique de démonstration fixe. Votre temps d’étude reste enregistré.",
+    "seed": "Ajouter 40 heures",
+    "success": "L’historique de démonstration est prêt.",
+    "activeSession": "Terminez votre session avant d’ajouter l’historique de démonstration.",
+    "error": "L’historique n’a pas pu être préparé. Veuillez réessayer.",
+    "viewStats": "Voir les statistiques"
+  }
+}

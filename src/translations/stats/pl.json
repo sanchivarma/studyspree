@@ -1,5 +1,10 @@
 {
   "stats": {
+    "loadMore": "Wczytaj więcej",
+    "emptyHistory": "Twoje sesje pojawią się tutaj.",
+    "loading": "Wczytywanie postępów…",
+    "loadError": "Nie udało się wczytać postępów. Spróbuj ponownie.",
+    "retry": "Spróbuj ponownie",
     "totalHours": "Godzin łącznie",
     "acrossSessions": "w {count} sesjach",
     "streakTitle": "Seria",

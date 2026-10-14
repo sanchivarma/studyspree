@@ -1,5 +1,10 @@
 {
   "stats": {
+    "loadMore": "Charger plus",
+    "emptyHistory": "Vos sessions apparaîtront ici.",
+    "loading": "Chargement de votre progression…",
+    "loadError": "Votre progression n’a pas pu être chargée. Veuillez réessayer.",
+    "retry": "Réessayer",
     "totalHours": "Heures au total",
     "acrossSessions": "sur {count} séances",
     "streakTitle": "Série",

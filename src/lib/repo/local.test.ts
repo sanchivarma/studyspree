@@ -11,9 +11,26 @@ function memoryStorage() {
 }
 
 beforeEach(() => { time.milliseconds = new Date("2026-10-13T12:00:00Z").getTime(); });
-afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); });
+afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); vi.unstubAllEnvs(); });
 
 describe("local persistence and recovery", () => {
+  it("seed persists once, preserves a historic best, and survives a damaged seed marker", async () => {
+    vi.stubEnv("NODE_ENV", "development");
+    const storage = memoryStorage();
+    const repo = new LocalRepository(() => storage);
+    const original = await repo.startSession(input); time.milliseconds += 10000; await repo.endSession(original.id, "completed");
+    storage.setItem("ss_streak", JSON.stringify({ ...await repo.getStreak(), best: 500 }));
+    expect((await repo.seedDemoSessions()).totalSeconds).toBe(144010);
+    expect((await repo.getStreak()).best).toBe(500);
+    const stored = storage.getItem("ss_sessions");
+    const reloaded = new LocalRepository(() => storage);
+    expect((await reloaded.seedDemoSessions()).totalSeconds).toBe(144010);
+    expect(storage.getItem("ss_sessions")).toBe(stored);
+    storage.setItem("ss_dev_seed", "{broken");
+    expect((await new LocalRepository(() => storage).seedDemoSessions()).totalSeconds).toBe(144010);
+    expect(storage.getItem("ss_sessions")).toBe(stored);
+    expect((await reloaded.getStreak()).best).toBe(500);
+  });
   it("initializes freeze reset dates from the profile timezone at a month boundary", async () => {
     const repo = new LocalRepository(() => null);
     await repo.updateProfile({ timezone: "America/Los_Angeles" });

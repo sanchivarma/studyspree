@@ -1,0 +1,11 @@
+{
+  "dev": {
+    "title": "Developer tools",
+    "description": "Add a deterministic sample history. Your existing study time stays saved.",
+    "seed": "Seed 40 hours",
+    "success": "Sample history is ready.",
+    "activeSession": "Finish your session before adding sample history.",
+    "error": "We couldn’t prepare sample history. Please try once more.",
+    "viewStats": "View stats"
+  }
+}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
-import type { DayStat } from "@/lib/mock/stats";
+import type { DayStat } from "@/types/domain";
 import { buildHeatmap, getIntensity } from "@/lib/stats/heatmap";
 import { formatDate, formatDuration } from "@/lib/stats/presentation";
 import { useTranslation } from "@/hooks/useTranslation";

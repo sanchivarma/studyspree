@@ -33,6 +33,7 @@ const streakSchema = z.object({
 }).strict().refine((state) => state.best >= state.current);
 const streakEventSchema = z.object({ changed: z.boolean(), freezeUsed: z.boolean() }).strict();
 const streakEventsSchema = z.record(z.string(), streakEventSchema);
+const seedSchema = z.object({ version: z.literal(1), anchorDate: date }).strict().nullable();
 
 function initialStreak(localDate: string): StreakState {
   return { current: 0, best: 0, lastActiveDate: null, freezesRemaining: 2,
@@ -113,6 +114,18 @@ export class LocalRepository implements Repository {
     return { session, totalSecondsAllTime: summarizeSessions(sessions).totalSeconds,
       dayTotalSeconds: aggregateSessions(sessions).find((day) => day.date === session.localDate)?.totalSeconds ?? 0, streak };
   }
+  private createSession(input: StartSessionInput, startedAt: Date, id: string): Session {
+    const validated = inputSchema.parse(input);
+    return { ...validated, id, startedAt: startedAt.toISOString(), endedAt: null, actualSeconds: 0,
+      endedReason: null, localDate: toLocalDate(startedAt, this.profile().timezone) };
+  }
+  private finishSession(session: Session, reason: EndedReason, timestamp: Date): Session {
+    const startedMs = new Date(session.startedAt).getTime();
+    // Moving the development clock backwards must never produce negative time.
+    const endedMs = Math.max(startedMs, timestamp.getTime());
+    return { ...session, endedAt: new Date(endedMs).toISOString(), endedReason: reason,
+      actualSeconds: Math.min(Math.floor((endedMs - startedMs) / 1000), 21600) };
+  }
 
   async getProfile(): Promise<Profile> { return this.profile(); }
   updateProfile(patch: Partial<Profile>): Promise<Profile> {
@@ -124,12 +137,9 @@ export class LocalRepository implements Repository {
       const sessions = this.sessions();
       const active = this.active(sessions);
       if (active) return active;
-      const validated = inputSchema.parse(input);
-      const startedAt = now().toISOString();
-      const session: Session = { ...validated, id: crypto.randomUUID(), startedAt, endedAt: null, actualSeconds: 0,
-        endedReason: null, localDate: toLocalDate(new Date(startedAt), this.profile().timezone) };
+      const session = this.createSession(input, now(), crypto.randomUUID());
       this.write("ss_sessions", [...sessions, session]);
-      this.write("ss_active", { id: session.id, lastHeartbeatAt: startedAt });
+      this.write("ss_active", { id: session.id, lastHeartbeatAt: session.startedAt });
       return session;
     });
   }
@@ -145,11 +155,7 @@ export class LocalRepository implements Repository {
         return this.totals(sessions, session, { current: previousStreak.current, best: previousStreak.best,
           changed: event?.changed ?? false, freezeUsed: event?.freezeUsed ?? false });
       }
-      const startedMs = new Date(session.startedAt).getTime();
-      // Moving the development clock backwards must never produce negative time.
-      const endedMs = Math.max(startedMs, now().getTime());
-      const ended: Session = { ...session, endedAt: new Date(endedMs).toISOString(), endedReason: reason,
-        actualSeconds: Math.min(Math.floor((endedMs - startedMs) / 1000), 21600) };
+      const ended = this.finishSession(session, reason, now());
       const updated = sessions.map((value) => value.id === id ? ended : value);
       const activity = reason === "abandoned" ? { state: previousStreak, changed: false, freezeUsed: false }
         : applyActivity(previousStreak, ended.localDate);
@@ -182,4 +188,35 @@ export class LocalRepository implements Repository {
   }
   async getStreak(): Promise<StreakState> { return this.streak(this.sessions()); }
   async getSessionSummary(): Promise<SessionSummary> { return summarizeSessions(this.sessions()); }
+  async seedDemoSessions(): Promise<SessionSummary> {
+    if (process.env.NODE_ENV !== "development") throw new Error("Development seed is unavailable");
+    // Keep the development generator off the normal Start/session load path.
+    const { generateSeedPlan, SEED_ID_PREFIX } = await import("@/lib/mock/seedPlan");
+    return this.mutate(() => {
+      const existing = this.sessions();
+      if (this.active(existing)) throw new Error("Finish the active session before seeding");
+      const marker = this.read("ss_dev_seed", seedSchema, () => null);
+      if (marker || existing.some((session) => session.id.startsWith(SEED_ID_PREFIX))) return summarizeSessions(existing);
+      const timestamp = now();
+      const plan = generateSeedPlan(timestamp, this.profile().timezone);
+      const seeded = plan.map(({ id, startedAt, endedAt, ...input }) => this.finishSession(this.createSession(input, new Date(startedAt), id), "completed", new Date(endedAt)));
+      const combined = sessionsSchema.parse([...existing, ...seeded]);
+      const eligible = combined.filter((session) => session.endedAt !== null && session.endedReason !== "abandoned")
+        .sort((a, b) => a.localDate.localeCompare(b.localDate) || a.startedAt.localeCompare(b.startedAt) || a.id.localeCompare(b.id));
+      const previous = this.streak(existing);
+      let state = initialStreak(eligible[0].localDate);
+      const events = this.streakEvents();
+      for (const session of eligible) {
+        const activity = applyActivity(state, session.localDate);
+        state = activity.state;
+        if (session.id.startsWith(SEED_ID_PREFIX)) events[session.id] = { changed: activity.changed, freezeUsed: activity.freezeUsed };
+      }
+      state.best = Math.max(state.best, previous.best);
+      this.write("ss_sessions", combined);
+      this.write("ss_streak", state);
+      this.write("ss_streak_events", events);
+      this.write("ss_dev_seed", { version: 1, anchorDate: toLocalDate(timestamp, this.profile().timezone) });
+      return summarizeSessions(combined);
+    });
+  }
 }
