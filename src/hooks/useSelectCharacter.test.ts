@@ -13,7 +13,7 @@ vi.mock("@tanstack/react-query", async (original) => ({
   useMutation: vi.fn((options) => options),
 }));
 vi.mock("@/lib/repo", () => ({ repo: { updateProfile: vi.fn() } }));
-type Context = { previous: Profile | undefined; selectedCharacter: CharacterSlug };
+type Context = { previous: Profile | undefined; patch: Partial<Profile>; edit: symbol };
 type Options = UseMutationOptions<Profile, Error, CharacterSlug, Context>;
 const original: Profile = { displayName: "Sanchi", selectedCharacter: "rain-desk", timezone: "Europe/Berlin", showStreak: true, reduceMotion: false, webcamEnabled: false, webcamCorner: "bottom-right", ambienceEnabled: false, musicTrack: null, musicVolume: 0, roomVolume: 0, comebackShownForDate: null };
 let options: Options;

@@ -5,6 +5,15 @@
     "camera": "Kamera",
     "selfView": "Podgląd siebie",
     "cameraPrivacy": "Podgląd pozostaje na Twoim urządzeniu.",
-    "cameraSaveError": "Spróbuj ponownie zmienić ustawienie kamery."
+    "cameraSaveError": "Spróbuj ponownie zmienić ustawienie kamery.",
+    "profile": "Profil",
+    "displayName": "Wyświetlana nazwa",
+    "timezone": "Strefa czasowa",
+    "timezoneNote": "Nowe sesje będą używać nowej strefy czasowej. Zapisana historia pozostaje bez zmian.",
+    "reduceMotion": "Ogranicz animacje",
+    "sound": "Dźwięk",
+    "progress": "Postępy",
+    "showStreak": "Pokaż serię",
+    "saveError": "Nie udało się zapisać tego ustawienia. Spróbuj ponownie."
   }
 }

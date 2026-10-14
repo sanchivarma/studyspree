@@ -5,6 +5,15 @@
     "camera": "Kamera",
     "selfView": "Selbstansicht",
     "cameraPrivacy": "Die Vorschau bleibt auf deinem Gerät.",
-    "cameraSaveError": "Bitte aktualisiere deine Kameraeinstellung noch einmal."
+    "cameraSaveError": "Bitte aktualisiere deine Kameraeinstellung noch einmal.",
+    "profile": "Profil",
+    "displayName": "Anzeigename",
+    "timezone": "Zeitzone",
+    "timezoneNote": "Neue Sitzungen verwenden deine neue Zeitzone. Dein gespeicherter Verlauf bleibt unverändert.",
+    "reduceMotion": "Bewegung reduzieren",
+    "sound": "Ton",
+    "progress": "Fortschritt",
+    "showStreak": "Serie anzeigen",
+    "saveError": "Diese Einstellung konnte nicht gespeichert werden. Bitte versuche es noch einmal."
   }
 }

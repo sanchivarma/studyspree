@@ -5,6 +5,15 @@
     "camera": "Videocamera",
     "selfView": "Anteprima personale",
     "cameraPrivacy": "L’anteprima resta sul tuo dispositivo.",
-    "cameraSaveError": "Prova a modificare ancora l’impostazione della videocamera."
+    "cameraSaveError": "Prova a modificare ancora l’impostazione della videocamera.",
+    "profile": "Profilo",
+    "displayName": "Nome visualizzato",
+    "timezone": "Fuso orario",
+    "timezoneNote": "Le prossime sessioni useranno il nuovo fuso orario. La cronologia salvata rimane invariata.",
+    "reduceMotion": "Riduci le animazioni",
+    "sound": "Suono",
+    "progress": "Progressi",
+    "showStreak": "Mostra la serie",
+    "saveError": "Non è stato possibile salvare questa impostazione. Riprova."
   }
 }

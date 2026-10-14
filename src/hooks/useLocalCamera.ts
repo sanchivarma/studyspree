@@ -1,16 +1,16 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useProfile } from "@/hooks/useProfile";
+import { useUpdateProfile } from "@/hooks/useUpdateProfile";
 import { queryKeys } from "@/lib/queryKeys";
-import { repo } from "@/lib/repo";
-import type { Profile, WebcamCorner } from "@/types/domain";
+import type { WebcamCorner } from "@/types/domain";
 
-export function useLocalCamera() {
+export function useLocalCamera({ preview = true }: { preview?: boolean } = {}) {
   const profile = useProfile();
   const client = useQueryClient();
-  const enabled = profile.data?.webcamEnabled ?? false;
+  const enabled = preview && (profile.data?.webcamEnabled ?? false);
   const corner = profile.data?.webcamCorner ?? "bottom-right";
   const stream = useRef<MediaStream | null>(null);
   const video = useRef<HTMLVideoElement | null>(null);
@@ -18,27 +18,25 @@ export function useLocalCamera() {
   const [isPending, setPending] = useState(false);
   const [permissionNote, setPermissionNote] = useState(false);
   const [attempt, setAttempt] = useState(0);
-  const { mutate: save } = useMutation({
-    scope: { id: "local-camera-preferences" },
-    mutationFn: (patch: Partial<Pick<Profile, "webcamEnabled" | "webcamCorner">>) => repo.updateProfile(patch),
-    onMutate: async patch => {
-      await client.cancelQueries({ queryKey: queryKeys.profile() });
-      const previous = client.getQueryData<Profile>(queryKeys.profile());
-      if (previous) client.setQueryData(queryKeys.profile(), { ...previous, ...patch });
-      return { previous, patch };
-    },
-    onError: (_error, _patch, context) => {
-      const current = client.getQueryData<Profile>(queryKeys.profile());
-      if (context?.previous && current && Object.entries(context.patch).every(([key, value]) => current[key as keyof Profile] === value)) {
-        client.setQueryData(queryKeys.profile(), { ...current, webcamEnabled: context.previous.webcamEnabled, webcamCorner: context.previous.webcamCorner });
-      }
-    },
-    onSettled: () => {
-      if (client.isMutating({ predicate: mutation => mutation.options.scope?.id === "local-camera-preferences" }) === 1) {
-        void client.invalidateQueries({ queryKey: queryKeys.profile() });
-      }
-    },
-  });
+  const { mutate: save } = useUpdateProfile();
+  const mounted = useRef(false);
+  useEffect(() => { mounted.current = true; return () => { mounted.current = false; }; }, []);
+
+  // Settings verifies permission in context, then releases the camera. The live
+  // preview still has a single owner, and late permission responses are stopped.
+  const requestPermission = useCallback(async () => {
+    setPermissionNote(false);
+    let acquired: MediaStream | null = null;
+    try {
+      if (!navigator.mediaDevices?.getUserMedia) throw new DOMException("No camera", "NotFoundError");
+      acquired = await navigator.mediaDevices.getUserMedia({ video: { width: 320, facingMode: "user" }, audio: false });
+      if (!mounted.current) throw new DOMException("Consumer unmounted", "AbortError");
+    } catch (error) {
+      if (mounted.current && error instanceof Error && error.name === "NotAllowedError") setPermissionNote(true);
+      else if (mounted.current && error instanceof Error && !["NotFoundError", "AbortError"].includes(error.name)) console.warn("Local camera unavailable", error.name);
+      throw error;
+    } finally { acquired?.getTracks().forEach(track => track.stop()); }
+  }, []);
   const detach = useCallback(() => {
     stream.current?.getTracks().forEach(track => track.stop());
     stream.current = null;
@@ -98,7 +96,7 @@ export function useLocalCamera() {
     save({ webcamEnabled: false });
   }, [detach, save]);
   return {
-    videoRef, isReady, isPending, permissionNote, corner,
+    videoRef, isReady, isPending, permissionNote, corner, requestPermission,
     enable: () => { if (isPending) return; setPermissionNote(false); setAttempt(value => value + 1); save({ webcamEnabled: true }); },
     disable, dismissNote: () => setPermissionNote(false),
     moveTo: (webcamCorner: WebcamCorner) => save({ webcamCorner }),

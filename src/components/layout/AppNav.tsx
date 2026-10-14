@@ -5,6 +5,9 @@ import { usePathname } from "next/navigation";
 import { BarChart3, BookOpen, Flame, Home, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useProfile } from "@/hooks/useProfile";
+import { getCharacter } from "@/lib/characters/registry";
+import type { CSSProperties } from "react";
 
 const items = [
   { label: "common.start", href: "/home", icon: Home },
@@ -16,12 +19,14 @@ const items = [
 export function AppNav({ showStreak }: { showStreak: boolean }) {
   const pathname = usePathname();
   const { t } = useTranslation();
+  const profile = useProfile();
 
   if (pathname.startsWith("/session")) return null;
 
   return (
     <nav
       aria-label={t("common.navLabel")}
+      style={{ "--accent": getCharacter(profile.data?.selectedCharacter ?? "rain-desk").accentColor } as CSSProperties}
       className="fixed inset-x-0 bottom-0 z-50 h-14 border-t border-border bg-surface md:inset-y-0 md:right-auto md:h-dvh md:w-16 md:border-t-0 md:border-r"
     >
       <div className="grid h-full grid-cols-4 items-center gap-2 px-2 md:flex md:flex-col md:gap-3 md:pt-6">
@@ -52,7 +57,7 @@ export function AppNav({ showStreak }: { showStreak: boolean }) {
           );
         })}
       </div>
-      {showStreak && pathname !== "/home" && pathname !== "/study" && (
+      {(profile.data?.showStreak ?? showStreak) && pathname !== "/home" && pathname !== "/study" && (
         <div
           role="img"
           aria-label={t("common.ready")}

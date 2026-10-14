@@ -1,15 +1,12 @@
 "use client";
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { repo } from "@/lib/repo";
-import { queryKeys } from "@/lib/queryKeys";
+import { useProfileMutation } from "@/hooks/useProfileMutation";
+import { useLocalCamera } from "@/hooks/useLocalCamera";
 
-// Settings saves opt-in; camera acquisition belongs to the session consumer.
 export function useSetWebcamEnabled() {
-  const client = useQueryClient();
-  return useMutation({
-    scope: { id: "local-camera-preferences" },
-    mutationFn: (webcamEnabled: boolean) => repo.updateProfile({ webcamEnabled }),
-    onSuccess: profile => client.setQueryData(queryKeys.profile(), profile),
+  const camera = useLocalCamera({ preview: false });
+  const mutation = useProfileMutation((webcamEnabled: boolean) => ({ webcamEnabled }), async enabled => {
+    if (enabled) await camera.requestPermission();
   });
+  return { ...mutation, permissionNote: camera.permissionNote, dismissNote: camera.dismissNote };
 }

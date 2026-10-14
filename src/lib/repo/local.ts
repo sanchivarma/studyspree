@@ -3,6 +3,7 @@ import { addMonths, format, parseISO, startOfMonth } from "date-fns";
 import { now } from "@/lib/clock";
 import { musicTracks } from "@/lib/audio/catalog";
 import { toLocalDate } from "@/lib/stats/localDate";
+import { defaultTimezone } from "@/lib/stats/defaultTimezone";
 import { aggregateSessions, summarizeSessions } from "@/lib/stats/aggregateSessions";
 import { applyActivity, type StreakState } from "@/lib/streaks/computeStreak";
 import type { DayStat, EndedReason, Profile, Session } from "@/types/domain";
@@ -91,7 +92,7 @@ export class LocalRepository implements Repository {
 
   private profile(): Profile {
     return this.read("ss_profile", profileSchema, () => ({
-      displayName: "", selectedCharacter: "rain-desk", timezone: "UTC", showStreak: true,
+      displayName: "", selectedCharacter: "rain-desk", timezone: defaultTimezone(), showStreak: true,
       reduceMotion: false, webcamEnabled: false, ambienceEnabled: false,
       comebackShownForDate: null,
       webcamCorner: "bottom-right",

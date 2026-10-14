@@ -88,7 +88,10 @@ test("Settings opt-in keeps the camera local throughout twenty seconds of reques
     await signIn(page); await page.goto("/settings");
     const toggle = page.getByRole("switch", { name: "Self-view", exact: true });
     await expect(toggle).not.toBeChecked(); await toggle.click(); await expect(toggle).toBeChecked();
-    expect((await audit(page)).constraints).toHaveLength(0);
+    await expect.poll(async () => (await audit(page)).constraints.length).toBe(1);
+    expect((await audit(page)).constraints).toEqual([{ video: { width: 320, facingMode: "user" }, audio: false }]);
+    // Settings requests permission immediately and releases the probe stream.
+    await expect.poll(async () => (await audit(page)).tracks.every(track => track.readyState === "ended")).toBe(true);
     expect(await page.evaluate(() => (window as unknown as { __violation?: boolean }).__violation)).toBeFalsy();
     await startSession(page);
     const video = page.getByTestId("local-camera-video");
@@ -108,6 +111,26 @@ test("Settings opt-in keeps the camera local throughout twenty seconds of reques
     expect(externalUploads).toEqual([]);
     expect(requests.filter(request => /webrtc|stun|turn/i.test(request.url))).toEqual([]);
   } finally { page.off("request", record); }
+});
+
+test("Settings releases a late permission stream after navigating away", async ({ page }) => {
+  await instrument(page);
+  await page.addInitScript(() => {
+    const original = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
+    navigator.mediaDevices.getUserMedia = constraints => new Promise((resolve, reject) => {
+      Object.assign(window, { resolveCameraPermission: () => original(constraints).then(resolve, reject) });
+    });
+  });
+  await signIn(page); await page.goto("/settings");
+  await page.getByRole("switch", { name: "Self-view", exact: true }).click();
+  await expect.poll(() => page.evaluate(() => typeof (window as unknown as { resolveCameraPermission?: unknown }).resolveCameraPermission)).toBe("function");
+  await page.getByRole("link", { name: "Study", exact: true }).click();
+  await expect(page).toHaveURL(/\/study$/);
+  await page.evaluate(() => (window as unknown as { resolveCameraPermission: () => Promise<void> }).resolveCameraPermission());
+  await expect.poll(async () => (await audit(page)).tracks.every(track => track.readyState === "ended")).toBe(true);
+  expect((await audit(page)).tracks).toEqual([{ kind: "video", readyState: "ended" }]);
+  expect((await audit(page)).violations).toEqual([]);
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("ss_profile") ?? "{}").webcamEnabled ?? false)).toBe(false);
 });
 
 test("opt-in attaches video-only media locally, sends no requests, and stops every track on disable", async ({ page }) => {

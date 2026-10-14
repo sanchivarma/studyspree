@@ -5,6 +5,15 @@
     "camera": "Caméra",
     "selfView": "Votre aperçu",
     "cameraPrivacy": "L’aperçu reste sur votre appareil.",
-    "cameraSaveError": "Veuillez modifier le réglage de la caméra une nouvelle fois."
+    "cameraSaveError": "Veuillez modifier le réglage de la caméra une nouvelle fois.",
+    "profile": "Profil",
+    "displayName": "Nom affiché",
+    "timezone": "Fuseau horaire",
+    "timezoneNote": "Les prochaines séances utiliseront votre nouveau fuseau horaire. Votre historique enregistré reste inchangé.",
+    "reduceMotion": "Réduire les animations",
+    "sound": "Son",
+    "progress": "Progression",
+    "showStreak": "Afficher la série",
+    "saveError": "Ce réglage n’a pas pu être enregistré. Veuillez réessayer."
   }
 }

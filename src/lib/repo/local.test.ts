@@ -14,6 +14,18 @@ beforeEach(() => { time.milliseconds = new Date("2026-10-13T12:00:00Z").getTime(
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); vi.unstubAllEnvs(); });
 
 describe("local persistence and recovery", () => {
+  it("uses the device timezone for a new profile and retains a saved choice on reload", async () => {
+    const storage = memoryStorage();
+    const resolved = Intl.DateTimeFormat().resolvedOptions();
+    const options = vi.spyOn(Intl.DateTimeFormat.prototype, "resolvedOptions").mockReturnValue({ ...resolved, timeZone: "Asia/Tokyo" });
+    const repo = new LocalRepository(() => storage);
+    expect((await repo.getProfile()).timezone).toBe("Asia/Tokyo");
+    await repo.updateProfile({ displayName: "Alex" });
+    options.mockReturnValue({ ...resolved, timeZone: "Europe/Berlin" });
+    expect((await new LocalRepository(() => storage).getProfile()).timezone).toBe("Asia/Tokyo");
+    await repo.updateProfile({ timezone: "UTC" });
+    expect((await new LocalRepository(() => storage).getProfile()).timezone).toBe("UTC");
+  });
   it("persists camera corners, validates them, and preserves the preference without storage access", async () => {
     const storage = memoryStorage();
     const repo = new LocalRepository(() => storage);

@@ -5,6 +5,15 @@
     "camera": "Camera",
     "selfView": "Self-view",
     "cameraPrivacy": "Preview stays on your device.",
-    "cameraSaveError": "Please try updating your camera setting once more."
+    "cameraSaveError": "Please try updating your camera setting once more.",
+    "profile": "Profile",
+    "displayName": "Display name",
+    "timezone": "Timezone",
+    "timezoneNote": "Future sessions use your new timezone. Your saved history stays unchanged.",
+    "reduceMotion": "Reduce motion",
+    "sound": "Sound",
+    "progress": "Progress",
+    "showStreak": "Show streak",
+    "saveError": "We couldn’t save this setting. Please try once more."
   }
 }
