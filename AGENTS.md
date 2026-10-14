@@ -216,6 +216,7 @@ A Playwright test greps the Complete screen for banned words. Don't work around 
 
 ### Performance — the scene must hold 60fps on an old laptop
 - Animate **only** `transform` and `opacity`
+- Prompt 2.4 explicitly authorizes `stroke-dashoffset` animation for `DepletingRing`; this exception applies to that component only.
 - Never animate `width`, `height`, `top`, `left`, `margin`, `box-shadow`
 - One `requestAnimationFrame` loop per animated component, never one per element
 - Pause everything on `document.hidden`
@@ -318,8 +319,8 @@ Rooms · other users · chat · AI conversation · webcam-driven avatars · cust
 
 > **Update this section at the end of every phase.**
 
-- **Current phase:** 2.3 — Full local session flow
-- **Completed work:** scaffold, scenes, navigation, Home/Study, translated authentication, mock Stats dashboard, local session repository, hooks and real timer, persisted completion summary and cross-tab session recovery
+- **Current phase:** 2.4 — Depleting ring and session title
+- **Completed work:** scaffold, scenes, navigation, Home/Study, translated authentication, mock Stats dashboard, local session repository, hooks and real timer, persisted completion summary, cross-tab recovery, smooth depleting ring and live tab title
 - **Repository in use:** `authRepository` for authentication; `repo` exports the tested `LocalRepository` for the session flow
 - **Known issues:** Stats remains mock data; local profile defaults to UTC; live Supabase setup remains external
 - **Next up:** continue Phase 2 enhancements and replace mock Stats when requested

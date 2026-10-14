@@ -25,8 +25,8 @@ test("refresh resumes the countdown and Finish banks ten seconds without URL tot
   await settleClock(page, "session-screen");
   await expect(page.getByTestId("session-time")).toHaveText("4:50 left");
   await page.keyboard.press("Escape");
-  await expect(page).toHaveURL(new RegExp(`${path}/complete$`));
   await settleClock(page, "complete-screen");
+  await expect(page).toHaveURL(new RegExp(`${path}/complete$`));
   await expect(page.getByTestId("banked-summary")).toHaveText("+10s this session · 10s today");
   await page.reload();
   await settleClock(page, "complete-screen");
@@ -53,8 +53,8 @@ test("five-minute expiry completes once and a dev clock jump survives reload", a
   await signIn(page); await freezeClock(page);
   const first = await startSession(page);
   await page.clock.fastForward(300_000);
-  await expect(page).toHaveURL(new RegExp(`${first}/complete$`));
   await settleClock(page, "complete-screen");
+  await expect(page).toHaveURL(new RegExp(`${first}/complete$`));
   await expect(page.getByTestId("banked-summary")).toHaveText("+5m this session · 5m today");
   await page.getByRole("link", { name: "Start another", exact: true }).click();
   await page.getByRole("button", { name: "Start", exact: true }).click();
@@ -73,7 +73,7 @@ test("Open counts up, stays active, and is remembered after Finish", async ({ pa
   await startSession(page, undefined, null);
   await expect(page.getByTestId("session-time")).toHaveText("0:00 elapsed");
   await page.clock.fastForward(3 * 3600_000);
-  await expect(page.getByTestId("session-time")).toHaveText("180:00 elapsed");
+  await expect(page.getByTestId("session-time")).toHaveText("3:00:00 elapsed");
   await page.keyboard.press("Escape");
   await settleClock(page, "complete-screen");
   await expect(page.getByTestId("banked-summary")).toHaveText("+3h this session · 3h today");
@@ -105,10 +105,10 @@ test("saved profile and previous duration are read without overriding a user cho
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem("ss_sessions")!).at(-1))).toMatchObject({ plannedMinutes: 25, characterSlug: "night-shift", task: "Notes" });
 });
 
-test("invalid session routes safely return to Study", async ({ page }) => {
+test("invalid running routes return through root and invalid summaries return to Study", async ({ page }) => {
   await signIn(page);
   await page.goto("/session/unknown");
-  await expect(page).toHaveURL(/\/study$/);
+  await expect(page).toHaveURL(/\/home$/);
   await page.goto("/session/unknown/complete");
   await expect(page).toHaveURL(/\/study$/);
 });

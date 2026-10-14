@@ -124,5 +124,13 @@ opened on `/` resumes the same session. For accelerated expiry, run
 reload. Clear the offset afterward with
 `localStorage.removeItem('ss_dev_clock_offset_ms')`.
 
+Phase 2.4 adds a depleting SVG ring with one animation-frame loop between
+timer ticks. Open sessions use a slowly rotating quarter arc. The ring pauses
+in hidden tabs; reduced motion uses minute updates and a stationary Open arc.
+Timer digits switch to `h:mm:ss` at one hour. The document title shows the
+live timer and restores its previous value when the session screen unmounts.
+An invalid running-session ID returns through `/`; an ended session opens its
+completion summary. Finish/Escape select the reason from the remaining time.
+
 See `CLAUDE.md` and `AGENTS.md` for project conventions. Auth and translations
 were brought forward from the phased plan at the user's request.

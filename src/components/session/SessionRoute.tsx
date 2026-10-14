@@ -15,9 +15,8 @@ export function SessionRoute({ id }: { id: string }) {
   useEffect(() => {
     if ((isFinishing && !session?.endedAt) || active.isPending || saved.isPending) return;
     if (session?.endedAt) router.replace(`/session/${session.id}/complete`);
-    else if (active.data && active.data.id !== id) router.replace(`/session/${active.data.id}`);
-    else if (!session) router.replace("/study");
+    else if (!active.data || active.data.id !== id) router.replace("/");
   }, [active.data, active.isPending, saved.isPending, session, router, id, isFinishing]);
-  if (session && !session.endedAt) return <SessionScreen key={session.id} session={session} />;
+  if (active.data?.id === id && !active.data.endedAt) return <SessionScreen key={active.data.id} session={active.data} />;
   return null;
 }

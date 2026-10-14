@@ -1,7 +1,7 @@
 import { expect, it } from "vitest";
 import { formatTimer, formatBankedDuration } from "./presentation";
 
-it.each([[0, "0:00"], [5, "0:05"], [300, "5:00"], [10801, "180:01"], [-5, "0:00"]])("formats %i seconds as %s", (seconds, expected) => {
+it.each([[0, "0:00"], [5, "0:05"], [300, "5:00"], [3599, "59:59"], [3600, "1:00:00"], [10801, "3:00:01"], [-5, "0:00"]])("formats %i seconds as %s", (seconds, expected) => {
   expect(formatTimer(seconds)).toBe(expected);
 });
 it("keeps early Finish seconds visible instead of rounding to zero minutes", () => {

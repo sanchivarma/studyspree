@@ -9,7 +9,7 @@ test("Study starts a persisted timer with its task and Finish banks elapsed time
   await expect(page.getByTestId("session-screen")).toBeVisible();
   await expect(page.getByRole("navigation")).toHaveCount(0);
   await expect(page.getByTestId("auth-feedback")).toHaveCount(0);
-  await expect(page.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "0");
+  await expect(page.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "100");
   await expect(page.getByTestId("session-time")).toHaveText("5:00 left");
   await expect(page.getByText("Read chapter 3 & take notes", { exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "Sound" })).toHaveAttribute("aria-disabled", "true");
@@ -20,8 +20,8 @@ test("Study starts a persisted timer with its task and Finish banks elapsed time
   await page.mouse.move(10, 10);
   await page.getByRole("button", { name: "Finish", exact: true }).click();
   // A newly added route may need its first development compilation.
-  await expect(page).toHaveURL(new RegExp(`${path}/complete$`), { timeout: 15000 });
   await settleClock(page, "complete-screen");
+  await expect(page).toHaveURL(new RegExp(`${path}/complete$`), { timeout: 15000 });
   await expect(page.getByRole("heading", { name: "Solid session.", exact: true })).toBeVisible();
   await expect(page.getByTestId("banked-summary")).toHaveText("+10s this session · 10s today");
   expect(hasDialog).toBe(false);
@@ -43,12 +43,12 @@ test("five seconds of inactivity hides controls, dims the ring and input restore
   await expect(screen).toHaveAttribute("data-controls-visible", "false");
   await expect(controls).toHaveCSS("opacity", "0");
   await expect(details).toHaveCSS("opacity", "0");
-  await expect(ring).toHaveCSS("opacity", "0.4");
+  await expect(ring.locator("..")).toHaveCSS("opacity", "0.4");
   await expect(screen).toHaveCSS("cursor", "none");
 
   await page.mouse.move(20, 20);
   await expect(screen).toHaveAttribute("data-controls-visible", "true");
-  await expect(ring).toHaveCSS("opacity", "1");
+  await expect(ring.locator("..")).toHaveCSS("opacity", "1");
   await page.clock.fastForward(5000);
   await expect(screen).toHaveAttribute("data-controls-visible", "false");
   await screen.dispatchEvent("touchstart");
@@ -65,6 +65,7 @@ test("five seconds of inactivity hides controls, dims the ring and input restore
   await expect(page.getByTestId("session-time")).toHaveText("4:40 left");
   await page.clock.fastForward(5000);
   await page.keyboard.press("Escape");
+  await settleClock(page, "complete-screen");
   await expect(page).toHaveURL(new RegExp(`${path}/complete$`));
 });
 
