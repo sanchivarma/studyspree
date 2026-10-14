@@ -12,7 +12,7 @@ test("Study starts a persisted timer with its task and Finish banks elapsed time
   await expect(page.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "100");
   await expect(page.getByTestId("session-time")).toHaveText("5:00 left");
   await expect(page.getByText("Read chapter 3 & take notes", { exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Sound" })).toHaveAttribute("aria-disabled", "true");
+  await expect(page.getByRole("button", { name: "Sound" })).toBeEnabled();
   await page.screenshot({ path: "test-results/session-desktop.png" });
   let hasDialog = false;
   page.on("dialog", async (dialog) => { hasDialog = true; await dialog.dismiss(); });

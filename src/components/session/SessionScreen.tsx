@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
-import { Volume2, Shuffle } from "lucide-react";
+import { Shuffle } from "lucide-react";
 import { CharacterScene } from "@/components/scene/CharacterScene";
 import { CharacterSheet } from "@/components/scene/CharacterSheet";
 import { useProfile } from "@/hooks/useProfile";
@@ -18,9 +18,11 @@ import { DepletingRing } from "@/components/timer/DepletingRing";
 import { useSessionTitle } from "@/hooks/useSessionTitle";
 import { useLocalCamera } from "@/hooks/useLocalCamera";
 import { SelfView } from "@/components/webcam/SelfView";
+import { AmbienceControl } from "@/components/ambience/AmbienceControl";
 
 export function SessionScreen({ session }: { session: Session }) {
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [soundOpen, setSoundOpen] = useState(false);
   const profile = useProfile();
   const camera = useLocalCamera();
   const { elapsedSeconds, remainingSeconds, isFinishing } = useSessionTimer(session);
@@ -37,19 +39,19 @@ export function SessionScreen({ session }: { session: Session }) {
   useSessionTitle(time);
   const { t } = useTranslation();
   const idleVisible = useIdleVisibility();
-  const isVisible = sheetOpen || idleVisible;
+  const isVisible = sheetOpen || soundOpen || idleVisible;
   const style = { "--accent": getCharacter(slug).accentColor } as CSSProperties;
   const fade = cn("transition-opacity duration-200 motion-reduce:transition-none", isVisible ? "opacity-100" : "pointer-events-none opacity-0");
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (sheetOpen || event.key !== "Escape" || event.defaultPrevented || event.repeat) return;
+      if (sheetOpen || soundOpen || event.key !== "Escape" || event.defaultPrevented || event.repeat) return;
       event.preventDefault();
       finish();
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [finish, sheetOpen]);
+  }, [finish, sheetOpen, soundOpen]);
 
   return <section aria-label={t("session.label")} data-testid="session-screen" data-controls-visible={isVisible} style={style}
     className={cn("relative isolate h-dvh w-full overflow-hidden", !isVisible && "cursor-none")}>
@@ -71,10 +73,7 @@ export function SessionScreen({ session }: { session: Session }) {
         className="absolute bottom-6 left-1/2 min-h-11 -translate-x-1/2 rounded-xl border border-border px-4 text-body text-foreground/80 hover:bg-background/30 disabled:opacity-60 sm:px-6">
         {t("session.finish")}
       </button>
-      <button type="button" aria-label={t("session.sound")} aria-disabled="true" title={t("session.sound")}
-        className="absolute bottom-6 left-4 flex size-11 items-center justify-center rounded-xl text-foreground/60 sm:left-6">
-        <Volume2 aria-hidden="true" className="size-5" />
-      </button>
+      <AmbienceControl character={slug} onOpenChange={setSoundOpen} />
       <CharacterSheet onOpenChange={setSheetOpen}>
         <button type="button" aria-label={t("study.switchCharacter")} title={t("study.switchCharacter")}
           className="absolute bottom-20 left-4 flex size-11 items-center justify-center rounded-xl text-foreground/60 hover:bg-background/30 sm:left-6">

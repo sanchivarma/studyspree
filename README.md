@@ -2,6 +2,14 @@
 
 Big goals start with showing up.
 
+**NEVER add audio without a recorded licence. NEVER use audio ripped from YouTube.**
+
+Session ambience uses Howler with independent music and character-matched room
+buses. Both start off; saved preferences wait for a user gesture. The current
+four WebM assets and music preview are silent placeholders. Record every future
+asset in `public/audio/LICENCES.md`, and run `npm run check:audio-licences`.
+New audio versions need new filenames because `/audio/` is cached as immutable.
+
 ## Run locally
 
 Requires Node.js 22 and npm.

@@ -10,7 +10,9 @@
     "lint": "eslint . --max-warnings 0",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "check:audio-licences": "node --experimental-strip-types scripts/check-audio-licences.ts",
+    "prebuild": "npm run check:audio-licences"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
@@ -22,6 +24,7 @@
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0",
     "framer-motion": "^12.23.0",
+    "howler": "^2.2.4",
     "lucide-react": "^0.468.0",
     "next": "^15.5.0",
     "radix-ui": "^1.8.1",
@@ -37,6 +40,7 @@
     "@eslint/eslintrc": "^3.3.0",
     "@playwright/test": "^1.64.0",
     "@tailwindcss/postcss": "^4.1.0",
+    "@types/howler": "^2.2.13",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",

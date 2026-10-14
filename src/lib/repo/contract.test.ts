@@ -43,6 +43,16 @@ export function repositoryContract(name: string, create: () => Repository) {
       vi.advanceTimersByTime(10000);
       expect((await repo.endSession(session.id, "stopped_early")).session.actualSeconds).toBe(10);
     });
+    it("stores independent ambience preferences without changing session timestamps or totals", async () => {
+      expect(await repo.getProfile()).toMatchObject({ ambienceEnabled: false, musicTrack: null, musicVolume: 0, roomVolume: 0 });
+      const session = await repo.startSession(input);
+      await repo.updateProfile({ ambienceEnabled: true, musicTrack: "silent", musicVolume: 0.2, roomVolume: 0.7 });
+      expect(await repo.getProfile()).toMatchObject({ ambienceEnabled: true, musicTrack: "silent", musicVolume: 0.2, roomVolume: 0.7 });
+      expect(await repo.getActiveSession()).toEqual(session);
+      await expect(repo.updateProfile({ roomVolume: 2 })).rejects.toThrow();
+      expect((await repo.getProfile()).roomVolume).toBe(0.7);
+      expect(await repo.getTotalSecondsAllTime()).toBe(0);
+    });
     it("seeds internally consistent history once using the profile timezone", async () => {
       vi.stubEnv("NODE_ENV", "development");
       await repo.updateProfile({ timezone: "America/Los_Angeles" });

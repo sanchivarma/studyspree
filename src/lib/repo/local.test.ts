@@ -30,9 +30,9 @@ describe("local persistence and recovery", () => {
     const original = { displayName: "Alex", selectedCharacter: "dorm-bunk", timezone: "Europe/Berlin", showStreak: false, reduceMotion: true, webcamEnabled: false, ambienceEnabled: true };
     storage.setItem("ss_profile", JSON.stringify(original));
     const repo = new LocalRepository(() => storage);
-    expect(await repo.getProfile()).toEqual({ ...original, webcamCorner: "bottom-right", comebackShownForDate: null });
+    expect(await repo.getProfile()).toEqual({ ...original, musicTrack: null, musicVolume: 0, roomVolume: 0, webcamCorner: "bottom-right", comebackShownForDate: null });
     await repo.updateProfile({ comebackShownForDate: "2026-10-14" });
-    expect(await new LocalRepository(() => storage).getProfile()).toEqual({ ...original, webcamCorner: "bottom-right", comebackShownForDate: "2026-10-14" });
+    expect(await new LocalRepository(() => storage).getProfile()).toEqual({ ...original, musicTrack: null, musicVolume: 0, roomVolume: 0, webcamCorner: "bottom-right", comebackShownForDate: "2026-10-14" });
     await expect(repo.updateProfile({ comebackShownForDate: "not-a-date" })).rejects.toThrow();
     expect((await repo.getProfile()).comebackShownForDate).toBe("2026-10-14");
   });

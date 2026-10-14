@@ -1,0 +1,11 @@
+{
+  "ambience": {
+    "label": "Atmosfera",
+    "music": "Musica",
+    "room": "Suoni della stanza",
+    "tracks": "Brani musicali",
+    "off": "Disattivato",
+    "silentTrack": "Anteprima silenziosa",
+    "placeholderNote": "Le anteprime audio sono silenziose durante la preparazione delle registrazioni."
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "ambience": {
+    "label": "Ambiance",
+    "music": "Musique",
+    "room": "Sons de la pièce",
+    "tracks": "Pistes musicales",
+    "off": "Désactivé",
+    "silentTrack": "Aperçu silencieux",
+    "placeholderNote": "Les aperçus audio sont silencieux pendant la préparation des enregistrements."
+  }
+}

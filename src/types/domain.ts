@@ -1,3 +1,5 @@
+import type { MusicTrackSlug } from "@/lib/audio/catalog";
+
 export type EndedReason = "completed" | "stopped_early" | "abandoned";
 
 export type Session = {
@@ -23,5 +25,8 @@ export type Profile = {
   webcamEnabled: boolean;
   webcamCorner: WebcamCorner;
   ambienceEnabled: boolean;
+  musicTrack: MusicTrackSlug | null;
+  musicVolume: number;
+  roomVolume: number;
   comebackShownForDate: string | null;
 };

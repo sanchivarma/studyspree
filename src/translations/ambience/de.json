@@ -1,0 +1,11 @@
+{
+  "ambience": {
+    "label": "Atmosphäre",
+    "music": "Musik",
+    "room": "Raumklang",
+    "tracks": "Musiktitel",
+    "off": "Aus",
+    "silentTrack": "Stille Vorschau",
+    "placeholderNote": "Die Audiovorschau ist stumm, bis Aufnahmen bereitstehen."
+  }
+}

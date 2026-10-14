@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { addMonths, format, parseISO, startOfMonth } from "date-fns";
 import { now } from "@/lib/clock";
+import { musicTracks } from "@/lib/audio/catalog";
 import { toLocalDate } from "@/lib/stats/localDate";
 import { aggregateSessions, summarizeSessions } from "@/lib/stats/aggregateSessions";
 import { applyActivity, type StreakState } from "@/lib/streaks/computeStreak";
@@ -19,6 +20,9 @@ const profileSchema = z.object({
   // Older profiles upgrade without discarding preferences.
   comebackShownForDate: date.nullable().default(null),
   webcamCorner: z.enum(["top-left", "top-right", "bottom-left", "bottom-right"]).default("bottom-right"),
+  musicTrack: z.enum(musicTracks.map(track => track.slug)).nullable().default(null),
+  musicVolume: z.number().min(0).max(1).default(0),
+  roomVolume: z.number().min(0).max(1).default(0),
 }).strict();
 const inputSchema = z.object({ plannedMinutes: z.number().finite().positive().nullable(), characterSlug: z.string().min(1), task: z.string().nullable() }).strict();
 const sessionSchema = z.object({
@@ -91,6 +95,7 @@ export class LocalRepository implements Repository {
       reduceMotion: false, webcamEnabled: false, ambienceEnabled: false,
       comebackShownForDate: null,
       webcamCorner: "bottom-right",
+      musicTrack: null, musicVolume: 0, roomVolume: 0,
     }));
   }
   private sessions(): Session[] { return this.read("ss_sessions", sessionsSchema, () => []); }
