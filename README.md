@@ -139,5 +139,24 @@ from the previous total. Today uses hours and minutes; sessions under a minute
 keep seconds visible. The streak row is a placeholder until Phase 4. Start
 another returns through `/`; Study still remembers the previous duration.
 
+## Character video scenes (Phase 3.1)
+
+`SceneVideo` renders the CSS gradient immediately, then a loaded poster and
+a muted, inline looping video. Video fades in over 600ms when playback data is
+ready, pauses when the tab is hidden, and catches autoplay rejection silently.
+OS reduced motion or the local profile's `reduceMotion` preference uses a static
+poster with no video element. A saved preference is read before video mounts.
+
+Add `loop.webm`, `loop.mp4` and `poster.jpg` under
+`public/characters/{slug}/`, then fully reload the page in development. Files
+that are absent are not requested. The server checks availability during local
+page loads; production uses an availability snapshot embedded at build time so
+CDN-hosted assets work without runtime filesystem access. Rebuild to ship newly
+added production assets. The current repository contains no real character media.
+
+Character and audio URLs use a one-year immutable cache. A new asset version
+must use a new filename and updated registry path. Scene tests create tiny
+synthetic fixtures temporarily and remove only the files they created.
+
 See `CLAUDE.md` and `AGENTS.md` for project conventions. Auth and translations
 were brought forward from the phased plan at the user's request.

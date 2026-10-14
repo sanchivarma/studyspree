@@ -319,11 +319,11 @@ Rooms · other users · chat · AI conversation · webcam-driven avatars · cust
 
 > **Update this section at the end of every phase.**
 
-- **Current phase:** 2.5 — Recent completion summary and affirmations
+- **Current phase:** 3.1 — Layered character video scenes
 - **Completed work:** scaffold, scenes, navigation, Home/Study, translated authentication, mock Stats dashboard, local repository and real timer, recent completion summaries with affirmations, early-stop coverage, cross-tab recovery, smooth depleting ring and live tab title
 - **Repository in use:** `authRepository` for authentication; `repo` exports the tested `LocalRepository` for the session flow
-- **Known issues:** Stats remains mock data; completion streak is a Phase 4 placeholder; local profile defaults to UTC; live Supabase setup remains external
-- **Next up:** continue Phase 2 enhancements and replace mock Stats when requested
+- **Known issues:** real character media has not been supplied; Stats remains mock data; completion streak is a Phase 4 placeholder; local profile defaults to UTC; live Supabase setup remains external
+- **Next up:** character switcher and the remaining Phase 3 work
 
 ---
 

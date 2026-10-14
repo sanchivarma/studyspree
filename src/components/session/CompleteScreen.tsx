@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Flame } from "lucide-react";
 import { useEffect, useMemo, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
-import { ScenePlaceholder } from "@/components/scene/ScenePlaceholder";
+import { SceneVideo } from "@/components/scene/SceneVideo";
 import { useCountUp } from "@/hooks/useCountUp";
 import { useTranslation } from "@/hooks/useTranslation";
 import { getCharacter } from "@/lib/characters/registry";
@@ -39,7 +39,7 @@ function CompletionContent({ summary, showStreak }: { summary: CompletionSummary
   const style = { "--accent": getCharacter(slug).accentColor } as CSSProperties;
 
   return <section aria-label={t("complete.label")} data-testid="complete-screen" className="relative isolate flex min-h-dvh items-center justify-center overflow-hidden" style={style}>
-    <ScenePlaceholder slug={slug} className="opacity-30" />
+    <SceneVideo slug={slug} className="opacity-30" />
     <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-background/80" />
     <div className="relative w-full max-w-[480px] px-6 py-12 text-center">
       <h1 className="text-[20px] font-medium">{t(affirmationKey(summary.session.actualSeconds))}</h1>

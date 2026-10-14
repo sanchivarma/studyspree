@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, type CSSProperties } from "react";
 import { Volume2 } from "lucide-react";
-import { ScenePlaceholder } from "@/components/scene/ScenePlaceholder";
+import { SceneVideo } from "@/components/scene/SceneVideo";
 import { useIdleVisibility } from "@/hooks/useIdleVisibility";
 import { useTranslation } from "@/hooks/useTranslation";
 import { getCharacter } from "@/lib/characters/registry";
@@ -45,7 +45,7 @@ export function SessionScreen({ session }: { session: Session }) {
 
   return <section aria-label={t("session.label")} data-testid="session-screen" data-controls-visible={isVisible} style={style}
     className={cn("relative isolate h-dvh w-full overflow-hidden", !isVisible && "cursor-none")}>
-    <ScenePlaceholder slug={slug} />
+    <SceneVideo slug={slug} priority />
 
     <div className="absolute top-10 right-6 left-6 flex flex-col items-center md:top-12">
       <div className={cn("shrink-0 transition-opacity duration-200 motion-reduce:transition-none", isVisible ? "opacity-100" : "opacity-40")}>

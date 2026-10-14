@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { ScenePlaceholder } from "@/components/scene/ScenePlaceholder";
+import { SceneVideo } from "@/components/scene/SceneVideo";
 import { LanguageSelector } from "@/components/layout/LanguageSelector";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -39,7 +39,7 @@ export function AuthScreen({ isConfigured, hasDevLogin = false, hasCallbackError
 
   return (
     <main className="relative isolate min-h-dvh overflow-hidden">
-      <ScenePlaceholder slug="rain-desk" />
+      <SceneVideo slug="rain-desk" priority />
       <div aria-hidden="true" className="start-screen-scrim pointer-events-none absolute inset-0" />
       <header className="relative mx-auto flex max-w-6xl items-center justify-between gap-4 p-6">
         <span className="text-body font-semibold tracking-tight">StudySpree</span>

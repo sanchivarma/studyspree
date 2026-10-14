@@ -4,6 +4,7 @@ import { Providers } from "./providers";
 import "./globals.css";
 import { cookies } from "next/headers";
 import { isLocale, translate } from "@/translations";
+import { getSceneMediaManifest } from "@/lib/characters/mediaManifest";
 
 const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-inter" });
 
@@ -17,10 +18,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const locale = await getLocale();
+  const [locale, mediaManifest] = await Promise.all([getLocale(), getSceneMediaManifest()]);
   return (
     <html lang={locale} className={`dark ${inter.variable}`}>
-      <body><Providers initialLocale={locale}>{children}</Providers></body>
+      <body><Providers initialLocale={locale} mediaManifest={mediaManifest}>{children}</Providers></body>
     </html>
   );
 }

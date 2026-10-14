@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import { Shuffle } from "lucide-react";
-import { ScenePlaceholder } from "@/components/scene/ScenePlaceholder";
+import { SceneVideo } from "@/components/scene/SceneVideo";
 import { getCharacter } from "@/lib/characters/registry";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -77,7 +77,7 @@ export function StartScreen({ displayName, initialHour }: { displayName: string;
       className="relative isolate flex min-h-[calc(100dvh-3.5rem)] flex-col justify-end md:min-h-dvh"
       style={style}
     >
-      <ScenePlaceholder slug={slug} />
+      <SceneVideo slug={slug} priority />
       <div aria-hidden="true" className="start-screen-scrim pointer-events-none absolute inset-0" />
       <AccountControls />
 
