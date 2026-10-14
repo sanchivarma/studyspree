@@ -15,7 +15,7 @@ vi.mock("@tanstack/react-query", async (original) => ({
 vi.mock("@/lib/repo", () => ({ repo: { updateProfile: vi.fn() } }));
 type Context = { previous: Profile | undefined; selectedCharacter: CharacterSlug };
 type Options = UseMutationOptions<Profile, Error, CharacterSlug, Context>;
-const original: Profile = { displayName: "Sanchi", selectedCharacter: "rain-desk", timezone: "Europe/Berlin", showStreak: true, reduceMotion: false, webcamEnabled: false, ambienceEnabled: false };
+const original: Profile = { displayName: "Sanchi", selectedCharacter: "rain-desk", timezone: "Europe/Berlin", showStreak: true, reduceMotion: false, webcamEnabled: false, ambienceEnabled: false, comebackShownForDate: null };
 let options: Options;
 beforeEach(() => {
   vi.clearAllMocks(); state.client = new QueryClient();

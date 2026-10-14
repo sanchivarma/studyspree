@@ -15,6 +15,8 @@ import { useProfile } from "@/hooks/useProfile";
 import { useRecentSession } from "@/hooks/useRecentSession";
 import { useStartSession } from "@/hooks/useStartSession";
 import { now } from "@/lib/clock";
+import { useComeback } from "@/hooks/useComeback";
+import { ComebackScreen } from "@/components/start/ComebackScreen";
 
 const durations = [5, 15, 25, 50, "open"] as const;
 
@@ -24,6 +26,7 @@ export function StartScreen({ displayName, initialHour }: { displayName: string;
   const active = useActiveSession();
   const profile = useProfile();
   const recent = useRecentSession();
+  const comeback = useComeback(!active.isPending && !active.data);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [chosenDuration, setChosenDuration] = useState<number | null | undefined>(undefined);
   const latest = recent.data?.[0];
@@ -57,7 +60,7 @@ export function StartScreen({ displayName, initialHour }: { displayName: string;
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (
-        sheetOpen || event.defaultPrevented || event.repeat || event.isComposing ||
+        comeback.offer || sheetOpen || event.defaultPrevented || event.repeat || event.isComposing ||
         event.altKey || event.ctrlKey || event.metaKey ||
         (event.key !== " " && event.key !== "Enter")
       ) return;
@@ -71,7 +74,10 @@ export function StartScreen({ displayName, initialHour }: { displayName: string;
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [startSession, sheetOpen]);
+  }, [startSession, sheetOpen, comeback.offer]);
+
+  if (comeback.offer) return <ComebackScreen name={profile.data?.displayName || displayName} slug={slug}
+    totalSeconds={comeback.offer.totalSeconds} daysAway={comeback.offer.daysAway} onDismiss={comeback.dismiss} />;
 
   return (
     <section

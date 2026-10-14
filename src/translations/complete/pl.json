@@ -13,6 +13,8 @@
     "seconds": "{count}s",
     "streak": "{count} dni z rzędu",
     "startAnother": "Rozpocznij kolejną sesję",
-    "done": "Na dziś wystarczy"
+    "done": "Na dziś wystarczy",
+    "dayOne": "Dzień 1",
+    "freezeNotice": "Wykorzystaliśmy zamrożenie serii. Twoja seria jest zachowana."
   }
 }

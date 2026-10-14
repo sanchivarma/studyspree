@@ -14,7 +14,7 @@ import { useSessionStore } from "@/stores/sessionStore";
 import { affirmationKey, isRecentCompletion } from "@/lib/session/completion";
 import { now } from "@/lib/clock";
 
-export function CompleteScreen({ id, showStreak }: { id: string; showStreak: boolean }) {
+export function CompleteScreen({ id }: { id: string }) {
   const router = useRouter();
   const summary = useCompletionSummary(id);
   useEffect(() => {
@@ -26,10 +26,10 @@ export function CompleteScreen({ id, showStreak }: { id: string; showStreak: boo
     return () => clearTimeout(timeout);
   }, [summary.data, summary.isPending, summary.isError, router]);
   if (!summary.data || !isRecentCompletion(summary.data.session, now().getTime())) return null;
-  return <CompletionContent summary={summary.data} showStreak={showStreak} />;
+  return <CompletionContent summary={summary.data} />;
 }
 
-function CompletionContent({ summary, showStreak }: { summary: CompletionSummary; showStreak: boolean }) {
+function CompletionContent({ summary }: { summary: CompletionSummary }) {
   const { locale, t } = useTranslation();
   const slug = getCharacter(summary.session.characterSlug).slug;
   const totalHours = summary.totalSecondsAllTime / 3600;
@@ -51,9 +51,13 @@ function CompletionContent({ summary, showStreak }: { summary: CompletionSummary
         sessionDuration: summary.session.actualSeconds < 60 ? formatBankedDuration(summary.session.actualSeconds, locale) : t("complete.sessionMinutes", { minutes: number.format(Math.floor(summary.session.actualSeconds / 60)) }),
         todayDuration: t("complete.todayDuration", { hours: number.format(Math.floor(summary.dayTotalSeconds / 3600)), minutes: number.format(Math.floor(summary.dayTotalSeconds / 60) % 60) }),
       })}</p>
-      {showStreak && summary.profile.showStreak && <p className="mt-4 flex items-center justify-center gap-2 text-small text-text-muted tabular-nums">
-        <Flame aria-hidden="true" className="size-4 text-accent" /><span>—</span>
-      </p>}
+      {summary.profile.showStreak && summary.streak.changed && <div data-testid="completion-streak" className="mt-4 text-small text-text-muted">
+        <p className="flex items-center justify-center gap-2 tabular-nums">
+          <Flame aria-hidden="true" className="size-4 text-accent" />
+          <span>{summary.streak.current === 1 ? t("complete.dayOne") : t("complete.streak", { count: number.format(summary.streak.current) })}</span>
+        </p>
+        {summary.streak.freezeUsed && <p data-testid="freeze-notice" className="mt-2 text-[13px]">{t("complete.freezeNotice")}</p>}
+      </div>}
       <Link href="/" className="mt-9 flex h-14 w-full items-center justify-center rounded-2xl bg-accent px-6 text-body font-semibold text-background">{t("complete.startAnother")}</Link>
       <Link href="/stats" className="mt-3 inline-flex min-h-11 items-center rounded-lg px-3 text-small text-text-muted hover:text-foreground">{t("complete.done")}</Link>
     </div>

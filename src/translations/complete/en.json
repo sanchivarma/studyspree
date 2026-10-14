@@ -13,6 +13,8 @@
     "seconds": "{count}s",
     "streak": "{count} day streak",
     "startAnother": "Start another",
-    "done": "Done for now"
+    "done": "Done for now",
+    "dayOne": "Day 1",
+    "freezeNotice": "We used a streak freeze. Your streak is safe."
   }
 }

@@ -1,0 +1,8 @@
+{
+  "comeback": {
+    "welcome": "Witaj, {name}.",
+    "hours": "{count} godzin. Wciąż Twoje.",
+    "suggestion": "Zacznijmy od pięciu minut.",
+    "notNow": "Nie teraz"
+  }
+}

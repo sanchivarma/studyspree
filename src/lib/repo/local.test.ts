@@ -14,6 +14,17 @@ beforeEach(() => { time.milliseconds = new Date("2026-10-13T12:00:00Z").getTime(
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); vi.unstubAllEnvs(); });
 
 describe("local persistence and recovery", () => {
+  it("upgrades older profiles without discarding preferences and persists the comeback marker", async () => {
+    const storage = memoryStorage();
+    const original = { displayName: "Alex", selectedCharacter: "dorm-bunk", timezone: "Europe/Berlin", showStreak: false, reduceMotion: true, webcamEnabled: false, ambienceEnabled: true };
+    storage.setItem("ss_profile", JSON.stringify(original));
+    const repo = new LocalRepository(() => storage);
+    expect(await repo.getProfile()).toEqual({ ...original, comebackShownForDate: null });
+    await repo.updateProfile({ comebackShownForDate: "2026-10-14" });
+    expect(await new LocalRepository(() => storage).getProfile()).toEqual({ ...original, comebackShownForDate: "2026-10-14" });
+    await expect(repo.updateProfile({ comebackShownForDate: "not-a-date" })).rejects.toThrow();
+    expect((await repo.getProfile()).comebackShownForDate).toBe("2026-10-14");
+  });
   it("seed persists once, preserves a historic best, and survives a damaged seed marker", async () => {
     vi.stubEnv("NODE_ENV", "development");
     const storage = memoryStorage();

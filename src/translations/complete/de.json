@@ -13,6 +13,8 @@
     "seconds": "{count}s",
     "streak": "{count} Tage in Folge",
     "startAnother": "Neue Sitzung starten",
-    "done": "Für jetzt fertig"
+    "done": "Für jetzt fertig",
+    "dayOne": "Tag 1",
+    "freezeNotice": "Wir haben einen Serien-Puffer verwendet. Deine Serie bleibt erhalten."
   }
 }

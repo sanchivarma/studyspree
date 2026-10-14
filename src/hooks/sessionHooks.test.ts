@@ -3,20 +3,22 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { repo } from "@/lib/repo";
 import { queryKeys } from "@/lib/queryKeys";
 import { useSessionStore } from "@/stores/sessionStore";
+import { useCompletionStore } from "@/stores/completionStore";
 import type { Session } from "@/types/domain";
 import type { EndSessionResult, StartSessionInput } from "@/lib/repo/types";
 import { useActiveSession } from "./useActiveSession";
 import { useStartSession } from "./useStartSession";
 import { useEndSession, type EndSessionInput } from "./useEndSession";
 
-const mocks = vi.hoisted(() => ({ invalidate: vi.fn(), push: vi.fn() }));
+const mocks = vi.hoisted(() => ({ invalidate: vi.fn(), push: vi.fn(), getQueryData: vi.fn() }));
+vi.mock("@/lib/clock", () => ({ now: () => new Date("2026-10-13T12:00:10Z") }));
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push: mocks.push }) }));
 vi.mock("react", async (original) => ({ ...await original<typeof import("react")>(), useEffect: vi.fn() }));
 vi.mock("@tanstack/react-query", () => ({
-  useQueryClient: () => ({ invalidateQueries: mocks.invalidate }),
+  useQueryClient: () => ({ invalidateQueries: mocks.invalidate, getQueryData: mocks.getQueryData }),
   useMutation: vi.fn(() => ({})), useQuery: vi.fn(() => ({})),
 }));
-vi.mock("@/lib/repo", () => ({ repo: { getActiveSession: vi.fn(), startSession: vi.fn(), endSession: vi.fn() } }));
+vi.mock("@/lib/repo", () => ({ repo: { getActiveSession: vi.fn(), startSession: vi.fn(), endSession: vi.fn(), getProfile: vi.fn(), getDayStats: vi.fn() } }));
 
 const session: Session = { id: "local-session", startedAt: "2026-10-13T12:00:00Z", endedAt: null,
   plannedMinutes: 5, actualSeconds: 0, endedReason: null, characterSlug: "rain-desk", localDate: "2026-10-13", task: null };
@@ -31,7 +33,10 @@ function callbacks<Input, Output>() {
   return vi.mocked(useMutation).mock.calls.at(-1)![0] as MutationCallbacks<Input, Output>;
 }
 beforeEach(() => {
+  useCompletionStore.getState().clear();
   vi.clearAllMocks(); mocks.invalidate.mockResolvedValue(undefined);
+  mocks.getQueryData.mockReturnValue({ timezone: "UTC" });
+  vi.mocked(repo.getDayStats).mockResolvedValue([]);
   useSessionStore.setState({ elapsedSeconds: 0, remainingSeconds: null, isFinishing: false });
 });
 
@@ -72,6 +77,7 @@ describe("session query and mutation boundaries", () => {
     let release!: () => void;
     mocks.invalidate.mockReturnValue(new Promise<void>((resolve) => { release = resolve; }));
     const completing = options.onSuccess(ended);
+    expect(useCompletionStore.getState().result).toMatchObject(ended);
     expect(mocks.push).not.toHaveBeenCalled();
     expect(mocks.invalidate.mock.calls).toEqual([
       [{ queryKey: queryKeys.activeSession() }], [{ queryKey: queryKeys.stats.all() }], [{ queryKey: queryKeys.streak() }],

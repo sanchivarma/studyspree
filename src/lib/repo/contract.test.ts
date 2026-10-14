@@ -19,6 +19,18 @@ export function repositoryContract(name: string, create: () => Repository) {
       expect(await repo.getActiveSession()).toEqual(first);
       expect(first.actualSeconds).toBe(0);
     });
+    it("persists a daily comeback marker without changing hours, history, or streak", async () => {
+      expect((await repo.getProfile()).comebackShownForDate).toBeNull();
+      const session = await repo.startSession(input);
+      vi.advanceTimersByTime(10000); await repo.endSession(session.id, "completed");
+      const streak = await repo.getStreak();
+      const sessions = await repo.getSessions({ limit: 20, offset: 0 });
+      await repo.updateProfile({ comebackShownForDate: "2026-10-13" });
+      expect((await repo.getProfile()).comebackShownForDate).toBe("2026-10-13");
+      expect(await repo.getTotalSecondsAllTime()).toBe(10);
+      expect(await repo.getStreak()).toEqual(streak);
+      expect(await repo.getSessions({ limit: 20, offset: 0 })).toEqual(sessions);
+    });
     it("seeds internally consistent history once using the profile timezone", async () => {
       vi.stubEnv("NODE_ENV", "development");
       await repo.updateProfile({ timezone: "America/Los_Angeles" });

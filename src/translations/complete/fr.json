@@ -13,6 +13,8 @@
     "seconds": "{count}s",
     "streak": "{count} jours de suite",
     "startAnother": "Commencer une autre séance",
-    "done": "Terminé pour le moment"
+    "done": "Terminé pour le moment",
+    "dayOne": "Jour 1",
+    "freezeNotice": "Nous avons utilisé un gel de série. Votre série est préservée."
   }
 }

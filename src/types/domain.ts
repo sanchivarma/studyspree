@@ -21,4 +21,5 @@ export type Profile = {
   reduceMotion: boolean;
   webcamEnabled: boolean;
   ambienceEnabled: boolean;
+  comebackShownForDate: string | null;
 };

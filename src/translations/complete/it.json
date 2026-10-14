@@ -13,6 +13,8 @@
     "seconds": "{count}s",
     "streak": "{count} giorni consecutivi",
     "startAnother": "Inizia un’altra sessione",
-    "done": "Per ora ho finito"
+    "done": "Per ora ho finito",
+    "dayOne": "Giorno 1",
+    "freezeNotice": "Abbiamo usato un congelamento della serie. La tua serie è al sicuro."
   }
 }

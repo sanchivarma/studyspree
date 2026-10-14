@@ -16,6 +16,8 @@ const timezone = z.string().refine((value) => {
 const profileSchema = z.object({
   displayName: z.string(), selectedCharacter: z.string().min(1), timezone,
   showStreak: z.boolean(), reduceMotion: z.boolean(), webcamEnabled: z.boolean(), ambienceEnabled: z.boolean(),
+  // Older profiles upgrade without discarding preferences.
+  comebackShownForDate: date.nullable().default(null),
 }).strict();
 const inputSchema = z.object({ plannedMinutes: z.number().finite().positive().nullable(), characterSlug: z.string().min(1), task: z.string().nullable() }).strict();
 const sessionSchema = z.object({
@@ -86,6 +88,7 @@ export class LocalRepository implements Repository {
     return this.read("ss_profile", profileSchema, () => ({
       displayName: "", selectedCharacter: "rain-desk", timezone: "UTC", showStreak: true,
       reduceMotion: false, webcamEnabled: false, ambienceEnabled: false,
+      comebackShownForDate: null,
     }));
   }
   private sessions(): Session[] { return this.read("ss_sessions", sessionsSchema, () => []); }
