@@ -319,12 +319,13 @@ Rooms · other users · chat · AI conversation · webcam-driven avatars · cust
 
 > **Update this section at the end of every phase.**
 
-- **Current phase:** 4.5 — Completion streak notices and comeback flow
+- **Current phase:** 5.1 — Local self-view with verifiable camera privacy
 - **Completed work:** scaffold, scenes, navigation, Home/Study, translated authentication, mock Stats dashboard, local repository and real timer, recent completion summaries with affirmations, early-stop coverage, cross-tab recovery, smooth depleting ring and live tab title, responsive character sheet in Study/Settings/session controls, optimistic character persistence, 400ms scene crossfades and keyboard navigation, ffmpeg asset preparation with immutable-file protection and an asset guide, pure streak activity engine with monthly freezes, shared JSON contract fixtures and DST/invariant coverage, session-derived day/summary totals, persisted streaks and idempotent freeze events, historical timezone buckets and repository conservation tests, repository-backed Stats with five-minute queries and paginated history, gap-filled calendar and bars, deterministic 40-hour development seed preserving existing history
 - **Repository in use:** `authRepository` for authentication; `repo` exports the tested `LocalRepository` for the session flow
 - **Known issues:** real character media has not been supplied; local profile defaults to UTC; live Supabase setup remains external
-- **Next up:** next planned phase; supply licensed character media
+- **Next up:** Phase 5 ambience and licensed audio; supply licensed character media
 - **Phase 4.4–4.5:** completion uses a short-lived Finish receipt with persisted event recovery after refresh, conditional streak/Day 1/freeze notices, and the local profile visibility setting; Study has a translated comeback screen with timezone-aware eligibility, banked hours, five-minute Start, daily persistence and debug events. The agreed Home/Study split is preserved.
+- **Phase 5.1:** session camera stub replaced with an off-by-default local mirrored preview, explicit opt-in, transform-based expansion, drag/keyboard corner selection persisted in the profile, translated permission guidance, missing-device handling, cleanup on disable/Finish/unmount and late permission resolution, cross-tab disable propagation and webcam privacy browser guards. The original privacy contract stays at the top of SelfView.
 
 ---
 

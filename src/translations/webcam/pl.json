@@ -1,0 +1,13 @@
+{
+  "webcam": {
+    "enable": "Włącz kamerę",
+    "disable": "Wyłącz kamerę",
+    "preview": "Lokalny podgląd kamery",
+    "expand": "Powiększ podgląd",
+    "collapse": "Zmniejsz podgląd",
+    "move": "Przesuń podgląd",
+    "moveHint": "Przeciągnij do rogu lub użyj strzałek.",
+    "permissionNote": "Zezwól na kamerę w ustawieniach przeglądarki.",
+    "dismiss": "Zamknij komunikat kamery"
+  }
+}

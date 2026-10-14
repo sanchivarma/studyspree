@@ -1,0 +1,13 @@
+{
+  "webcam": {
+    "enable": "Enable camera",
+    "disable": "Turn camera off",
+    "preview": "Local camera preview",
+    "expand": "Expand self-view",
+    "collapse": "Collapse self-view",
+    "move": "Move self-view",
+    "moveHint": "Drag to a corner, or use arrow keys.",
+    "permissionNote": "Enable camera access in your browser settings.",
+    "dismiss": "Dismiss camera note"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "webcam": {
+    "enable": "Activer la caméra",
+    "disable": "Désactiver la caméra",
+    "preview": "Aperçu local de la caméra",
+    "expand": "Agrandir votre aperçu",
+    "collapse": "Réduire votre aperçu",
+    "move": "Déplacer votre aperçu",
+    "moveHint": "Glissez vers un coin ou utilisez les touches fléchées.",
+    "permissionNote": "Autorisez la caméra dans les paramètres du navigateur.",
+    "dismiss": "Fermer le message de la caméra"
+  }
+}

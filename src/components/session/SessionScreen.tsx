@@ -16,10 +16,13 @@ import { cn } from "@/lib/utils";
 
 import { DepletingRing } from "@/components/timer/DepletingRing";
 import { useSessionTitle } from "@/hooks/useSessionTitle";
+import { useLocalCamera } from "@/hooks/useLocalCamera";
+import { SelfView } from "@/components/webcam/SelfView";
 
 export function SessionScreen({ session }: { session: Session }) {
   const [sheetOpen, setSheetOpen] = useState(false);
   const profile = useProfile();
+  const camera = useLocalCamera();
   const { elapsedSeconds, remainingSeconds, isFinishing } = useSessionTimer(session);
   const { mutate: endSession, error } = useEndSession();
   const finishing = useRef(false);
@@ -68,9 +71,6 @@ export function SessionScreen({ session }: { session: Session }) {
         className="absolute bottom-6 left-1/2 min-h-11 -translate-x-1/2 rounded-xl border border-border px-4 text-body text-foreground/80 hover:bg-background/30 disabled:opacity-60 sm:px-6">
         {t("session.finish")}
       </button>
-      <div className="absolute right-4 bottom-20 flex h-[90px] w-[120px] items-center justify-center rounded-xl border border-border bg-surface/30 sm:right-6 sm:bottom-6">
-        <span className="text-small opacity-40">{t("session.camera")}</span>
-      </div>
       <button type="button" aria-label={t("session.sound")} aria-disabled="true" title={t("session.sound")}
         className="absolute bottom-6 left-4 flex size-11 items-center justify-center rounded-xl text-foreground/60 sm:left-6">
         <Volume2 aria-hidden="true" className="size-5" />
@@ -82,5 +82,6 @@ export function SessionScreen({ session }: { session: Session }) {
         </button>
       </CharacterSheet>
     </div>
+    <SelfView camera={camera} visible={isVisible} />
   </section>;
 }

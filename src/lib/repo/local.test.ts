@@ -14,14 +14,25 @@ beforeEach(() => { time.milliseconds = new Date("2026-10-13T12:00:00Z").getTime(
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); vi.unstubAllEnvs(); });
 
 describe("local persistence and recovery", () => {
+  it("persists camera corners, validates them, and preserves the preference without storage access", async () => {
+    const storage = memoryStorage();
+    const repo = new LocalRepository(() => storage);
+    await repo.updateProfile({ webcamEnabled: true, webcamCorner: "top-left" });
+    expect(await new LocalRepository(() => storage).getProfile()).toMatchObject({ webcamEnabled: true, webcamCorner: "top-left" });
+    await expect(repo.updateProfile({ webcamCorner: "invalid" as "top-left" })).rejects.toThrow();
+    expect((await repo.getProfile()).webcamCorner).toBe("top-left");
+    const blocked = new LocalRepository(() => { throw new Error("SecurityError"); });
+    await blocked.updateProfile({ webcamCorner: "bottom-left" });
+    expect((await blocked.getProfile()).webcamCorner).toBe("bottom-left");
+  });
   it("upgrades older profiles without discarding preferences and persists the comeback marker", async () => {
     const storage = memoryStorage();
     const original = { displayName: "Alex", selectedCharacter: "dorm-bunk", timezone: "Europe/Berlin", showStreak: false, reduceMotion: true, webcamEnabled: false, ambienceEnabled: true };
     storage.setItem("ss_profile", JSON.stringify(original));
     const repo = new LocalRepository(() => storage);
-    expect(await repo.getProfile()).toEqual({ ...original, comebackShownForDate: null });
+    expect(await repo.getProfile()).toEqual({ ...original, webcamCorner: "bottom-right", comebackShownForDate: null });
     await repo.updateProfile({ comebackShownForDate: "2026-10-14" });
-    expect(await new LocalRepository(() => storage).getProfile()).toEqual({ ...original, comebackShownForDate: "2026-10-14" });
+    expect(await new LocalRepository(() => storage).getProfile()).toEqual({ ...original, webcamCorner: "bottom-right", comebackShownForDate: "2026-10-14" });
     await expect(repo.updateProfile({ comebackShownForDate: "not-a-date" })).rejects.toThrow();
     expect((await repo.getProfile()).comebackShownForDate).toBe("2026-10-14");
   });

@@ -1,0 +1,13 @@
+{
+  "webcam": {
+    "enable": "Attiva la videocamera",
+    "disable": "Disattiva la videocamera",
+    "preview": "Anteprima locale della videocamera",
+    "expand": "Ingrandisci anteprima",
+    "collapse": "Riduci anteprima",
+    "move": "Sposta anteprima",
+    "moveHint": "Trascina in un angolo o usa i tasti freccia.",
+    "permissionNote": "Consenti la videocamera nelle impostazioni del browser.",
+    "dismiss": "Chiudi avviso videocamera"
+  }
+}

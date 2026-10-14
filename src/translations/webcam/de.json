@@ -1,0 +1,13 @@
+{
+  "webcam": {
+    "enable": "Kamera aktivieren",
+    "disable": "Kamera ausschalten",
+    "preview": "Lokale Kameravorschau",
+    "expand": "Selbstansicht vergrößern",
+    "collapse": "Selbstansicht verkleinern",
+    "move": "Selbstansicht verschieben",
+    "moveHint": "In eine Ecke ziehen oder Pfeiltasten verwenden.",
+    "permissionNote": "Erlaube den Kamerazugriff in deinen Browsereinstellungen.",
+    "dismiss": "Kamerahinweis schließen"
+  }
+}

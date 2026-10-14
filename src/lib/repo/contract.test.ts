@@ -31,6 +31,18 @@ export function repositoryContract(name: string, create: () => Repository) {
       expect(await repo.getStreak()).toEqual(streak);
       expect(await repo.getSessions({ limit: 20, offset: 0 })).toEqual(sessions);
     });
+    it("keeps camera opt-in and corner preferences separate from session time", async () => {
+      expect(await repo.getProfile()).toMatchObject({ webcamEnabled: false, webcamCorner: "bottom-right" });
+      const session = await repo.startSession(input);
+      await repo.updateProfile({ webcamEnabled: true, webcamCorner: "top-left" });
+      expect(await repo.getProfile()).toMatchObject({ webcamEnabled: true, webcamCorner: "top-left" });
+      expect(await repo.getActiveSession()).toEqual(session);
+      expect(await repo.getTotalSecondsAllTime()).toBe(0);
+      await repo.updateProfile({ webcamEnabled: false });
+      expect(await repo.getProfile()).toMatchObject({ webcamEnabled: false, webcamCorner: "top-left" });
+      vi.advanceTimersByTime(10000);
+      expect((await repo.endSession(session.id, "stopped_early")).session.actualSeconds).toBe(10);
+    });
     it("seeds internally consistent history once using the profile timezone", async () => {
       vi.stubEnv("NODE_ENV", "development");
       await repo.updateProfile({ timezone: "America/Los_Angeles" });

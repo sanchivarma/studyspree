@@ -18,6 +18,7 @@ const profileSchema = z.object({
   showStreak: z.boolean(), reduceMotion: z.boolean(), webcamEnabled: z.boolean(), ambienceEnabled: z.boolean(),
   // Older profiles upgrade without discarding preferences.
   comebackShownForDate: date.nullable().default(null),
+  webcamCorner: z.enum(["top-left", "top-right", "bottom-left", "bottom-right"]).default("bottom-right"),
 }).strict();
 const inputSchema = z.object({ plannedMinutes: z.number().finite().positive().nullable(), characterSlug: z.string().min(1), task: z.string().nullable() }).strict();
 const sessionSchema = z.object({
@@ -89,6 +90,7 @@ export class LocalRepository implements Repository {
       displayName: "", selectedCharacter: "rain-desk", timezone: "UTC", showStreak: true,
       reduceMotion: false, webcamEnabled: false, ambienceEnabled: false,
       comebackShownForDate: null,
+      webcamCorner: "bottom-right",
     }));
   }
   private sessions(): Session[] { return this.read("ss_sessions", sessionsSchema, () => []); }

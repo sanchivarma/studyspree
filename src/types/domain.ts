@@ -13,6 +13,7 @@ export type Session = {
 };
 
 export type DayStat = { date: string; totalSeconds: number; sessionCount: number };
+export type WebcamCorner = "top-left" | "top-right" | "bottom-left" | "bottom-right";
 export type Profile = {
   displayName: string;
   selectedCharacter: string;
@@ -20,6 +21,7 @@ export type Profile = {
   showStreak: boolean;
   reduceMotion: boolean;
   webcamEnabled: boolean;
+  webcamCorner: WebcamCorner;
   ambienceEnabled: boolean;
   comebackShownForDate: string | null;
 };
