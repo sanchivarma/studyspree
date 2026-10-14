@@ -1,0 +1,508 @@
+[
+  {
+    "name": "same day",
+    "state": {
+      "current": 7,
+      "best": 12,
+      "lastActiveDate": "2026-10-10",
+      "freezesRemaining": 2,
+      "freezesResetAt": "2026-11-01"
+    },
+    "localDate": "2026-10-10",
+    "expected": {
+      "state": {
+        "current": 7,
+        "best": 12,
+        "lastActiveDate": "2026-10-10",
+        "freezesRemaining": 2,
+        "freezesResetAt": "2026-11-01"
+      },
+      "changed": false,
+      "freezeUsed": false
+    }
+  },
+  {
+    "name": "consecutive day",
+    "state": {
+      "current": 7,
+      "best": 12,
+      "lastActiveDate": "2026-10-10",
+      "freezesRemaining": 2,
+      "freezesResetAt": "2026-11-01"
+    },
+    "localDate": "2026-10-11",
+    "expected": {
+      "state": {
+        "current": 8,
+        "best": 12,
+        "lastActiveDate": "2026-10-11",
+        "freezesRemaining": 2,
+        "freezesResetAt": "2026-11-01"
+      },
+      "changed": true,
+      "freezeUsed": false
+    }
+  },
+  {
+    "name": "two-day gap uses a freeze",
+    "state": {
+      "current": 7,
+      "best": 12,
+      "lastActiveDate": "2026-10-10",
+      "freezesRemaining": 2,
+      "freezesResetAt": "2026-11-01"
+    },
+    "localDate": "2026-10-12",
+    "expected": {
+      "state": {
+        "current": 8,
+        "best": 12,
+        "lastActiveDate": "2026-10-12",
+        "freezesRemaining": 1,
+        "freezesResetAt": "2026-11-01"
+      },
+      "changed": true,
+      "freezeUsed": true
+    }
+  },
+  {
+    "name": "two-day gap without a freeze",
+    "state": {
+      "current": 7,
+      "best": 12,
+      "lastActiveDate": "2026-10-10",
+      "freezesRemaining": 0,
+      "freezesResetAt": "2026-11-01"
+    },
+    "localDate": "2026-10-12",
+    "expected": {
+      "state": {
+        "current": 1,
+        "best": 12,
+        "lastActiveDate": "2026-10-12",
+        "freezesRemaining": 0,
+        "freezesResetAt": "2026-11-01"
+      },
+      "changed": true,
+      "freezeUsed": false
+    }
+  },
+  {
+    "name": "three-day gap does not spend a freeze",
+    "state": {
+      "current": 7,
+      "best": 12,
+      "lastActiveDate": "2026-10-10",
+      "freezesRemaining": 2,
+      "freezesResetAt": "2026-11-01"
+    },
+    "localDate": "2026-10-13",
+    "expected": {
+      "state": {
+        "current": 1,
+        "best": 12,
+        "lastActiveDate": "2026-10-13",
+        "freezesRemaining": 2,
+        "freezesResetAt": "2026-11-01"
+      },
+      "changed": true,
+      "freezeUsed": false
+    }
+  },
+  {
+    "name": "thirty-day gap",
+    "state": {
+      "current": 7,
+      "best": 12,
+      "lastActiveDate": "2026-10-01",
+      "freezesRemaining": 2,
+      "freezesResetAt": "2026-11-01"
+    },
+    "localDate": "2026-10-31",
+    "expected": {
+      "state": {
+        "current": 1,
+        "best": 12,
+        "lastActiveDate": "2026-10-31",
+        "freezesRemaining": 2,
+        "freezesResetAt": "2026-11-01"
+      },
+      "changed": true,
+      "freezeUsed": false
+    }
+  },
+  {
+    "name": "first activity",
+    "state": {
+      "current": 0,
+      "best": 0,
+      "lastActiveDate": null,
+      "freezesRemaining": 2,
+      "freezesResetAt": "2026-11-01"
+    },
+    "localDate": "2026-10-10",
+    "expected": {
+      "state": {
+        "current": 1,
+        "best": 1,
+        "lastActiveDate": "2026-10-10",
+        "freezesRemaining": 2,
+        "freezesResetAt": "2026-11-01"
+      },
+      "changed": true,
+      "freezeUsed": false
+    }
+  },
+  {
+    "name": "first activity retains a historic best",
+    "state": {
+      "current": 0,
+      "best": 12,
+      "lastActiveDate": null,
+      "freezesRemaining": 2,
+      "freezesResetAt": "2026-11-01"
+    },
+    "localDate": "2026-10-10",
+    "expected": {
+      "state": {
+        "current": 1,
+        "best": 12,
+        "lastActiveDate": "2026-10-10",
+        "freezesRemaining": 2,
+        "freezesResetAt": "2026-11-01"
+      },
+      "changed": true,
+      "freezeUsed": false
+    }
+  },
+  {
+    "name": "new personal best",
+    "state": {
+      "current": 12,
+      "best": 12,
+      "lastActiveDate": "2026-10-10",
+      "freezesRemaining": 2,
+      "freezesResetAt": "2026-11-01"
+    },
+    "localDate": "2026-10-11",
+    "expected": {
+      "state": {
+        "current": 13,
+        "best": 13,
+        "lastActiveDate": "2026-10-11",
+        "freezesRemaining": 2,
+        "freezesResetAt": "2026-11-01"
+      },
+      "changed": true,
+      "freezeUsed": false
+    }
+  },
+  {
+    "name": "month boundary refills before continuing",
+    "state": {
+      "current": 7,
+      "best": 12,
+      "lastActiveDate": "2026-10-31",
+      "freezesRemaining": 0,
+      "freezesResetAt": "2026-11-01"
+    },
+    "localDate": "2026-11-01",
+    "expected": {
+      "state": {
+        "current": 8,
+        "best": 12,
+        "lastActiveDate": "2026-11-01",
+        "freezesRemaining": 2,
+        "freezesResetAt": "2026-12-01"
+      },
+      "changed": true,
+      "freezeUsed": false
+    }
+  },
+  {
+    "name": "month boundary refills before using a freeze",
+    "state": {
+      "current": 7,
+      "best": 12,
+      "lastActiveDate": "2026-10-30",
+      "freezesRemaining": 0,
+      "freezesResetAt": "2026-11-01"
+    },
+    "localDate": "2026-11-01",
+    "expected": {
+      "state": {
+        "current": 8,
+        "best": 12,
+        "lastActiveDate": "2026-11-01",
+        "freezesRemaining": 1,
+        "freezesResetAt": "2026-12-01"
+      },
+      "changed": true,
+      "freezeUsed": true
+    }
+  },
+  {
+    "name": "refill precedes duplicate-date check",
+    "state": {
+      "current": 7,
+      "best": 12,
+      "lastActiveDate": "2026-11-01",
+      "freezesRemaining": 0,
+      "freezesResetAt": "2026-11-01"
+    },
+    "localDate": "2026-11-01",
+    "expected": {
+      "state": {
+        "current": 7,
+        "best": 12,
+        "lastActiveDate": "2026-11-01",
+        "freezesRemaining": 2,
+        "freezesResetAt": "2026-12-01"
+      },
+      "changed": false,
+      "freezeUsed": false
+    }
+  },
+  {
+    "name": "skipped months reset to two instead of accumulating",
+    "state": {
+      "current": 7,
+      "best": 12,
+      "lastActiveDate": "2026-10-10",
+      "freezesRemaining": 1,
+      "freezesResetAt": "2026-11-01"
+    },
+    "localDate": "2027-03-14",
+    "expected": {
+      "state": {
+        "current": 1,
+        "best": 12,
+        "lastActiveDate": "2027-03-14",
+        "freezesRemaining": 2,
+        "freezesResetAt": "2027-04-01"
+      },
+      "changed": true,
+      "freezeUsed": false
+    }
+  },
+  {
+    "name": "year boundary",
+    "state": {
+      "current": 7,
+      "best": 12,
+      "lastActiveDate": "2026-12-31",
+      "freezesRemaining": 0,
+      "freezesResetAt": "2027-01-01"
+    },
+    "localDate": "2027-01-01",
+    "expected": {
+      "state": {
+        "current": 8,
+        "best": 12,
+        "lastActiveDate": "2027-01-01",
+        "freezesRemaining": 2,
+        "freezesResetAt": "2027-02-01"
+      },
+      "changed": true,
+      "freezeUsed": false
+    }
+  },
+  {
+    "name": "December refill advances into next year",
+    "state": {
+      "current": 7,
+      "best": 12,
+      "lastActiveDate": "2026-11-30",
+      "freezesRemaining": 0,
+      "freezesResetAt": "2026-12-01"
+    },
+    "localDate": "2026-12-01",
+    "expected": {
+      "state": {
+        "current": 8,
+        "best": 12,
+        "lastActiveDate": "2026-12-01",
+        "freezesRemaining": 2,
+        "freezesResetAt": "2027-01-01"
+      },
+      "changed": true,
+      "freezeUsed": false
+    }
+  },
+  {
+    "name": "Berlin spring-forward calendar day",
+    "state": {
+      "current": 7,
+      "best": 12,
+      "lastActiveDate": "2026-03-29",
+      "freezesRemaining": 2,
+      "freezesResetAt": "2026-04-01"
+    },
+    "localDate": "2026-03-30",
+    "expected": {
+      "state": {
+        "current": 8,
+        "best": 12,
+        "lastActiveDate": "2026-03-30",
+        "freezesRemaining": 2,
+        "freezesResetAt": "2026-04-01"
+      },
+      "changed": true,
+      "freezeUsed": false
+    }
+  },
+  {
+    "name": "Berlin fall-back calendar day",
+    "state": {
+      "current": 7,
+      "best": 12,
+      "lastActiveDate": "2026-10-25",
+      "freezesRemaining": 2,
+      "freezesResetAt": "2026-11-01"
+    },
+    "localDate": "2026-10-26",
+    "expected": {
+      "state": {
+        "current": 8,
+        "best": 12,
+        "lastActiveDate": "2026-10-26",
+        "freezesRemaining": 2,
+        "freezesResetAt": "2026-11-01"
+      },
+      "changed": true,
+      "freezeUsed": false
+    }
+  },
+  {
+    "name": "New York spring-forward calendar day",
+    "state": {
+      "current": 7,
+      "best": 12,
+      "lastActiveDate": "2026-03-08",
+      "freezesRemaining": 2,
+      "freezesResetAt": "2026-04-01"
+    },
+    "localDate": "2026-03-09",
+    "expected": {
+      "state": {
+        "current": 8,
+        "best": 12,
+        "lastActiveDate": "2026-03-09",
+        "freezesRemaining": 2,
+        "freezesResetAt": "2026-04-01"
+      },
+      "changed": true,
+      "freezeUsed": false
+    }
+  },
+  {
+    "name": "New York fall-back calendar day",
+    "state": {
+      "current": 7,
+      "best": 12,
+      "lastActiveDate": "2026-11-01",
+      "freezesRemaining": 2,
+      "freezesResetAt": "2026-12-01"
+    },
+    "localDate": "2026-11-02",
+    "expected": {
+      "state": {
+        "current": 8,
+        "best": 12,
+        "lastActiveDate": "2026-11-02",
+        "freezesRemaining": 2,
+        "freezesResetAt": "2026-12-01"
+      },
+      "changed": true,
+      "freezeUsed": false
+    }
+  },
+  {
+    "name": "two-day gap across spring-forward",
+    "state": {
+      "current": 7,
+      "best": 12,
+      "lastActiveDate": "2026-03-28",
+      "freezesRemaining": 2,
+      "freezesResetAt": "2026-04-01"
+    },
+    "localDate": "2026-03-30",
+    "expected": {
+      "state": {
+        "current": 8,
+        "best": 12,
+        "lastActiveDate": "2026-03-30",
+        "freezesRemaining": 1,
+        "freezesResetAt": "2026-04-01"
+      },
+      "changed": true,
+      "freezeUsed": true
+    }
+  },
+  {
+    "name": "leap day",
+    "state": {
+      "current": 7,
+      "best": 12,
+      "lastActiveDate": "2028-02-28",
+      "freezesRemaining": 2,
+      "freezesResetAt": "2028-03-01"
+    },
+    "localDate": "2028-02-29",
+    "expected": {
+      "state": {
+        "current": 8,
+        "best": 12,
+        "lastActiveDate": "2028-02-29",
+        "freezesRemaining": 2,
+        "freezesResetAt": "2028-03-01"
+      },
+      "changed": true,
+      "freezeUsed": false
+    }
+  },
+  {
+    "name": "leap day into March",
+    "state": {
+      "current": 7,
+      "best": 12,
+      "lastActiveDate": "2028-02-29",
+      "freezesRemaining": 2,
+      "freezesResetAt": "2028-03-01"
+    },
+    "localDate": "2028-03-01",
+    "expected": {
+      "state": {
+        "current": 8,
+        "best": 12,
+        "lastActiveDate": "2028-03-01",
+        "freezesRemaining": 2,
+        "freezesResetAt": "2028-04-01"
+      },
+      "changed": true,
+      "freezeUsed": false
+    }
+  },
+  {
+    "name": "earlier date follows the otherwise rule",
+    "state": {
+      "current": 7,
+      "best": 12,
+      "lastActiveDate": "2026-10-10",
+      "freezesRemaining": 2,
+      "freezesResetAt": "2026-11-01"
+    },
+    "localDate": "2026-10-09",
+    "expected": {
+      "state": {
+        "current": 1,
+        "best": 12,
+        "lastActiveDate": "2026-10-09",
+        "freezesRemaining": 2,
+        "freezesResetAt": "2026-11-01"
+      },
+      "changed": true,
+      "freezeUsed": false
+    }
+  }
+]
