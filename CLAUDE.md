@@ -1,8 +1,9 @@
 # StudySpree — master context
 
 PROJECT: StudySpree — a silent study-companion web app.
-A user picks an illustrated character who studies beside them in a looping
-video scene. They run a timer, bank hours, and watch progress accumulate.
+A user picks a background theme rendered as a looping scene. Characters are
+reserved for future virtual study partners. Users run a timer, bank hours,
+and watch progress accumulate.
 Tagline: "Big goals start with showing up"
 
 STACK: Next.js 15 App Router, TypeScript strict, Tailwind, shadcn/ui,
@@ -25,9 +26,9 @@ NON-NEGOTIABLE RULES
 7. Animate only transform and opacity. Never layout properties.
 8. Respect prefers-reduced-motion everywhere.
 
-STYLE: calm, dark, unhurried. The character video is the hero; UI recedes.
+STYLE: calm, dark, unhurried. The theme video is the hero; UI recedes.
 Rounded corners, soft shadows, generous spacing, one accent colour per
-character. No gamified clutter.
+theme. No gamified clutter.
 
 When you finish a task, list: files created, files changed, and the exact
 steps for me to test it locally.
