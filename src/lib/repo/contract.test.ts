@@ -23,6 +23,17 @@ export function repositoryContract(name: string, create: () => Repository) {
       expect(await repo.getDashboard()).toEqual({ latestRoom: null, rooms: [], onlinePeople: [], capabilities: { humanRooms: false } });
       expect(await repo.getActiveSession()).toBeNull();
     });
+    it("filters ended session history by companion mode and saved dates", async () => {
+      const first = await repo.startSession(input);
+      await repo.endSession(first.id, "completed");
+      const second = await repo.startSession({ ...input, companions: { mode: "characters", characterSlugs: ["female-04"] } });
+      vi.advanceTimersByTime(10000); await repo.endSession(second.id, "stopped_early");
+      await repo.startSession(input);
+      const history = await repo.getSessionHistory({ from: first.localDate, to: first.localDate, companionMode: "characters", limit: 20 });
+      expect(history.items.map(session => session.id)).toEqual([second.id]);
+      expect(history.nextCursor).toBeNull();
+      expect((await repo.getSessionHistory({ limit: 20 })).items).toHaveLength(2);
+    });
     it("persists companion preferences and snapshots without changing timer accounting", async () => {
       expect((await repo.getProfile()).companionPreferences).toEqual({ mode: "solo", characterSlugs: [] });
       const companions = { mode: "characters" as const, characterSlugs: ["male-01", "female-04"] as ("male-01" | "female-04")[] };

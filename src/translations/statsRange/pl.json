@@ -1,0 +1,16 @@
+{
+  "statsRange": {
+    "title": "Czas nauki według dat",
+    "range": "Zakres dat",
+    "all": "Cały okres",
+    "days": "Ostatnie {count} dni",
+    "custom": "Własny zakres",
+    "from": "Od",
+    "to": "Do",
+    "invalid": "Wybierz prawidłową datę początkową i końcową.",
+    "table": "Pokaż tabelę danych",
+    "sessions": "Sesje",
+    "companionFilter": "Towarzysze nauki",
+    "allCompanions": "Wszyscy towarzysze"
+  }
+}

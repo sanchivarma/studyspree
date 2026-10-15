@@ -239,7 +239,7 @@ test("Finish releases live tracks and a late permission response is stopped afte
   await expect(page).toHaveURL(`${path}/complete`, { timeout: 15000 });
   expect((await audit(page)).tracks.every(track => track.readyState === "ended")).toBe(true);
   await page.getByRole("link", { name: "Start another", exact: true }).click();
-  await expect(page).toHaveURL(/\/home$/);
+  await expect(page).toHaveURL(/\/$/);
   await page.goto("/study");
   await page.evaluate(() => {
     const getUserMedia = navigator.mediaDevices.getUserMedia;

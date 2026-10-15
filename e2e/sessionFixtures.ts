@@ -10,7 +10,7 @@ export async function signIn(page: Page) {
   await page.getByLabel("Password", { exact: true }).fill(value("DEV_ADMIN_PASSWORD"));
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
   // The development server may compile the authenticated route on sign-in.
-  await expect(page).toHaveURL(/\/home$/, { timeout: 15000 });
+  await expect(page).toHaveURL(/\/$/, { timeout: 15000 });
 }
 
 export async function freezeClock(page: Page) {

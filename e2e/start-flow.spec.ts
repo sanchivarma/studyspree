@@ -110,7 +110,7 @@ test("saved profile and previous duration are read without overriding a user cho
 test("invalid session routes return through root", async ({ page }) => {
   await signIn(page);
   await page.goto("/session/unknown");
-  await expect(page).toHaveURL(/\/home$/);
+  await expect(page).toHaveURL(/\/$/);
   await page.goto("/session/unknown/complete");
-  await expect(page).toHaveURL(/\/home$/);
+  await expect(page).toHaveURL(/\/$/);
 });

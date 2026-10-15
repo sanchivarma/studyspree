@@ -12,6 +12,8 @@ import { upgradeThemeNames } from "./upgradeThemes";
 import { companionSchema, localCompanionSchema, soloCompanions } from "@/lib/characters/schemas";
 import type { CompanionPreferences } from "@/types/characters";
 import type { DashboardData } from "@/types/dashboard";
+import { paginateHistory } from "@/lib/stats/history";
+import type { SessionHistoryQuery, SessionHistoryPage } from "@/types/stats";
 
 type StorageAccess = Pick<Storage, "getItem" | "setItem" | "removeItem">;
 const iso = z.iso.datetime();
@@ -215,6 +217,9 @@ export class LocalRepository implements Repository {
     date.parse(from); date.parse(to);
     if (from > to) throw new Error("Invalid date range");
     return aggregateSessions(this.sessions()).filter((day) => day.date >= from && day.date <= to);
+  }
+  async getSessionHistory(query: SessionHistoryQuery): Promise<SessionHistoryPage> {
+    return paginateHistory(this.sessions(), query);
   }
   async getTotalSecondsAllTime(): Promise<number> {
     return summarizeSessions(this.sessions()).totalSeconds;

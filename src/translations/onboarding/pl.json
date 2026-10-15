@@ -1,0 +1,12 @@
+{
+  "onboarding": {
+    "step": "Krok {step} z 3",
+    "aboutYou": "Rozgość się.",
+    "preferences": "Twoja przestrzeń, twoje ustawienia.",
+    "privacy": "Kamera i dźwięk są początkowo wyłączone. Podgląd kamery pozostaje na twoim urządzeniu.",
+    "back": "Wstecz",
+    "next": "Dalej",
+    "finish": "Przejdź do StudySpree",
+    "saveError": "Nie udało się zapisać ustawień. Spróbuj ponownie."
+  }
+}

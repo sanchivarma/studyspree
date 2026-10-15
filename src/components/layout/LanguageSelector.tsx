@@ -15,7 +15,7 @@ export function LanguageSelector() {
         className="flex size-11 shrink-0 items-center justify-center rounded-xl text-accent">
         <Globe aria-hidden="true" data-testid="language-globe" className="size-5 shrink-0" strokeWidth={2} />
       </button>
-      <select ref={selectRef} aria-label={t("common.language")} value={locale} onChange={(event) => { if (isLocale(event.target.value)) setLocale(event.target.value); }} className="min-h-11 max-w-[112px] min-w-0 rounded-lg bg-transparent pr-2 text-foreground">
+      <select ref={selectRef} data-testid="language-selector" aria-label={t("common.language")} value={locale} onChange={(event) => { if (isLocale(event.target.value)) setLocale(event.target.value); }} className="min-h-11 max-w-[112px] min-w-0 rounded-lg bg-transparent pr-2 text-foreground">
         {locales.map((language) => <option key={language} value={language} className="bg-surface">{languageNames[language]}</option>)}
       </select>
     </div>

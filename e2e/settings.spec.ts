@@ -46,7 +46,7 @@ test("every setting saves without a Save button and survives refresh without cha
   await expect(page.getByTestId("stats-total")).toHaveText("0.1");
   await expect(page.getByTestId("streak-card")).toHaveCount(0);
   await expect(page.getByTestId("heatmap-grid").locator('[data-date="2026-10-12"]')).toHaveAttribute("data-level", "1");
-  await page.goto("/home");
+  await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toContainText("Alex");
   expect(errors).toEqual([]);
 });

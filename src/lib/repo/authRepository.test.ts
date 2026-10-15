@@ -1,14 +1,14 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
-  config: vi.fn(), rpc: vi.fn(), getUser: vi.fn(), signIn: vi.fn(), signUp: vi.fn(), oauth: vi.fn(), reset: vi.fn(), update: vi.fn(), logout: vi.fn(), single: vi.fn(), from: vi.fn(),
+  config: vi.fn(), rpc: vi.fn(), getUser: vi.fn(), signIn: vi.fn(), signUp: vi.fn(), oauth: vi.fn(), reset: vi.fn(), update: vi.fn(), logout: vi.fn(), single: vi.fn(), from: vi.fn(), magic: vi.fn(), profileUpdate: vi.fn(),
 }));
 vi.mock("server-only", () => ({}));
 vi.mock("@/lib/auth/devAdmin", () => ({ getDevAdminProfile: async () => null, loginDevAdmin: async () => null, clearDevAdminSession: async () => false }));
 vi.mock("@/lib/auth/config", () => ({ getAuthConfig: mocks.config, getSiteUrl: () => "http://localhost:3000" }));
 vi.mock("@/lib/auth/server", () => ({ createAuthClient: async () => ({
   rpc: mocks.rpc, from: mocks.from,
-  auth: { getUser: mocks.getUser, signInWithPassword: mocks.signIn, signUp: mocks.signUp, signInWithOAuth: mocks.oauth, resetPasswordForEmail: mocks.reset, updateUser: mocks.update, signOut: mocks.logout },
+  auth: { getUser: mocks.getUser, signInWithPassword: mocks.signIn, signUp: mocks.signUp, signInWithOAuth: mocks.oauth, resetPasswordForEmail: mocks.reset, updateUser: mocks.update, signOut: mocks.logout, signInWithOtp: mocks.magic },
 }) }));
 import { authRepository } from "./authRepository";
 
@@ -18,7 +18,10 @@ describe("Supabase auth repository", () => {
     mocks.config.mockReturnValue({ url: "https://example.supabase.co", key: "test-key" });
     vi.stubEnv("SUPABASE_USERNAME_LOOKUP_SECRET", "test-secret-not-a-real-key-0000000000");
     mocks.signIn.mockResolvedValue({ error: null });
-    mocks.from.mockReturnValue({ select: () => ({ eq: () => ({ single: mocks.single }) }) });
+    mocks.getUser.mockResolvedValue({ data: { user: { id: "00000000-0000-4000-8000-000000000001" } }, error: null });
+    mocks.single.mockResolvedValue({ data: { id: "00000000-0000-4000-8000-000000000001", username: "alex", first_name: "Alex", last_name: "", selected_theme: "rain-desk", show_streak: true, onboarding_complete: true }, error: null });
+    mocks.from.mockReturnValue({ select: () => ({ eq: () => ({ single: mocks.single }) }), update: mocks.profileUpdate });
+    mocks.profileUpdate.mockReturnValue({ eq: () => ({ select: () => ({ single: mocks.single }) }) });
   });
   afterEach(() => vi.unstubAllEnvs());
 
@@ -37,7 +40,7 @@ describe("Supabase auth repository", () => {
     const result = await authRepository.execute("login", { username: "ALEX_123", password: "secret" });
     expect(mocks.rpc).toHaveBeenCalledWith("lookup_login_email", { p_username: "alex_123", p_lookup_secret: "test-secret-not-a-real-key-0000000000" });
     expect(mocks.signIn).toHaveBeenCalledWith({ email: "alex@example.com", password: "secret" });
-    expect(result).toEqual({ status: "success", navigate: "/home" });
+    expect(result).toEqual({ status: "success", navigate: "/" });
   });
   it("uses a generic response for unknown usernames and wrong passwords", async () => {
     mocks.rpc.mockResolvedValue({ data: null, error: null });
@@ -84,4 +87,19 @@ describe("Supabase auth repository", () => {
     expect((await authRepository.execute("reset", "alex@example.com")).message).toBe("recovery.sent");
     expect(mocks.reset).toHaveBeenCalledWith("alex@example.com", { redirectTo: "http://localhost:3000/auth/callback?next=/reset-password" });
   });
+  it("requests PKCE magic mail without inventing a signed-in session", async () => {
+    mocks.magic.mockResolvedValue({ error: null });
+    expect(await authRepository.execute("magicLink", "alex@example.test")).toEqual({ status: "success", message: "login.linkSent" });
+    expect(mocks.magic).toHaveBeenCalledWith({ email: "alex@example.test", options: { shouldCreateUser: true, emailRedirectTo: "http://localhost:3000/auth/callback" } });
+    expect((await authRepository.execute("magicLink", "invalid")).status).toBe("error");
+    expect(mocks.magic).toHaveBeenCalledTimes(1);
+  });
+  it("validates onboarding and saves preferences for the verified user", async () => {
+    const input = { displayName: "Sanchi", timezone: "Europe/Berlin", selectedTheme: "night-shift", showStreak: true, reduceMotion: false };
+    expect(await authRepository.execute("onboard", input)).toEqual({ status: "success", navigate: "/" });
+    expect(mocks.profileUpdate).toHaveBeenCalledWith(expect.objectContaining({ display_name: "Sanchi", selected_theme: "night-shift", onboarding_complete: true, webcam_enabled: false, ambience_enabled: false }));
+    expect((await authRepository.execute("onboard", { ...input, actualSeconds: 600 })).status).toBe("error");
+    expect(mocks.profileUpdate).toHaveBeenCalledTimes(1);
+  });
+
 });

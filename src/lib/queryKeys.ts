@@ -9,6 +9,7 @@ export const queryKeys = {
     days: (from: string, to: string) => ["stats", "days", from, to] as const,
     sessions: (opts: { limit: number; offset: number }) => ["stats", "sessions", opts] as const,
     history: (pageSize: number) => ["stats", "history", pageSize] as const,
+    filteredHistory: (filters: { from?: string; to?: string; companionMode?: string }) => ["stats", "history", "filtered", filters] as const,
     completion: (id: string) => ["stats", "completion", id] as const,
   },
   streak: () => ["streak"] as const,

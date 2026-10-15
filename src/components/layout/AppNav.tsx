@@ -10,7 +10,7 @@ import { getTheme } from "@/lib/themes/registry";
 import type { CSSProperties } from "react";
 
 const items = [
-  { label: "common.start", href: "/home", icon: Home },
+  { label: "common.start", href: "/", icon: Home },
   { label: "common.study", href: "/study", icon: BookOpen },
   { label: "common.stats", href: "/stats", icon: BarChart3 },
   { label: "common.settings", href: "/settings", icon: Settings },
@@ -57,7 +57,7 @@ export function AppNav({ showStreak }: { showStreak: boolean }) {
           );
         })}
       </div>
-      {(profile.data?.showStreak ?? showStreak) && pathname !== "/home" && pathname !== "/study" && (
+      {(profile.data?.showStreak ?? showStreak) && pathname !== "/" && pathname !== "/home" && pathname !== "/study" && (
         <div
           role="img"
           aria-label={t("common.ready")}

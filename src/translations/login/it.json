@@ -1,5 +1,7 @@
 {
   "login": {
+    "sendLink": "Invia un link di accesso",
+    "linkSent": "Controlla la tua email per trovare il link di accesso.",
     "title": "Accedi",
     "forgotPassword": "Password dimenticata?",
     "submit": "Accedi",

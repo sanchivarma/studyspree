@@ -2,10 +2,11 @@ import "server-only";
 import { z } from "zod";
 import { getAuthConfig, getSiteUrl } from "@/lib/auth/config";
 import { createAuthClient } from "@/lib/auth/server";
-import { loginSchema, passwordSchema, profileSchema, registrationSchema } from "@/lib/auth/schemas";
+import { loginSchema, passwordSchema, registrationSchema, magicLinkSchema, onboardingSchema } from "@/lib/auth/schemas";
 import type { AuthProfile } from "@/lib/auth/schemas";
 import type { AuthOperation, AuthResult } from "@/lib/auth/types";
 import { getDevAdminProfile, loginDevAdmin, clearDevAdminSession } from "@/lib/auth/devAdmin";
+import { readAccount, completeOnboarding } from "@/lib/db/accounts";
 
 export interface AuthRepository {
   getProfile(): Promise<AuthProfile | null>;
@@ -18,11 +19,7 @@ export const authRepository: AuthRepository = {
     if (preview) return preview;
     if (!getAuthConfig()) return null;
     const client = await createAuthClient();
-    const { data, error } = await client.auth.getUser();
-    if (error || !data.user) return null;
-    const profile = await client.from("profiles").select("*").eq("id", data.user.id).single();
-    const parsed = profileSchema.safeParse(profile.data);
-    return parsed.success ? parsed.data : null;
+    return readAccount(client);
   },
 
   async execute(operation, input) {
@@ -30,10 +27,23 @@ export const authRepository: AuthRepository = {
       const preview = await loginDevAdmin(input);
       if (preview) return preview;
     }
-    if (operation === "logout" && await clearDevAdminSession()) return { status: "success", navigate: "/" };
+    if (operation === "logout" && await clearDevAdminSession()) return { status: "success", navigate: "/login" };
     if (!getAuthConfig()) return { status: "error", message: "common.authUnavailable" };
     const client = await createAuthClient();
     switch (operation) {
+      case "magicLink": {
+        const email = magicLinkSchema.safeParse(input);
+        if (!email.success) return { status: "error", message: "common.invalidFields" };
+        const response = await client.auth.signInWithOtp({ email: email.data, options: {
+          shouldCreateUser: true, emailRedirectTo: `${getSiteUrl()}/auth/callback`,
+        } });
+        return response.error ? { status: "error", message: "common.authError" } : { status: "success", message: "login.linkSent" };
+      }
+      case "onboard": {
+        const parsed = onboardingSchema.safeParse(input);
+        if (!parsed.success) return { status: "error", message: "common.invalidFields" };
+        return await completeOnboarding(client, parsed.data) ? { status: "success", navigate: "/" } : { status: "error", message: "common.authError" };
+      }
       case "login": {
         const parsed = loginSchema.safeParse(input);
         if (!parsed.success) return { status: "error", message: "common.invalidFields" };
@@ -44,7 +54,9 @@ export const authRepository: AuthRepository = {
         // Unknown usernames receive the same auth attempt and response as bad passwords.
         const email = z.email().safeParse(lookup.data);
         const result = await client.auth.signInWithPassword({ email: email.success ? email.data : "unknown@invalid.example", password: parsed.data.password });
-        return result.error ? { status: "error", message: result.error.code === "invalid_credentials" ? "login.invalidCredentials" : "common.authError" } : { status: "success", navigate: "/home" };
+        if (result.error) return { status: "error", message: result.error.code === "invalid_credentials" ? "login.invalidCredentials" : "common.authError" };
+        const profile = await readAccount(client);
+        return profile ? { status: "success", navigate: profile.onboarding_complete ? "/" : "/onboarding" } : { status: "error", message: "common.authError" };
       }
       case "register": {
         const parsed = registrationSchema.safeParse(input);
@@ -55,7 +67,7 @@ export const authRepository: AuthRepository = {
           emailRedirectTo: `${getSiteUrl()}/auth/callback`,
         } });
         if (result.error) return { status: "error", message: "common.authError" };
-        return result.data.session ? { status: "success", navigate: "/home" } : { status: "success", message: "register.checkEmail" };
+        return result.data.session ? { status: "success", navigate: "/onboarding" } : { status: "success", message: "register.checkEmail" };
       }
       case "google":
       case "facebook": {
@@ -74,11 +86,11 @@ export const authRepository: AuthRepository = {
         const identity = await client.auth.getUser();
         if (identity.error || !identity.data.user) return { status: "error", message: "common.authError" };
         const result = await client.auth.updateUser({ password: password.data });
-        return result.error ? { status: "error", message: "common.authError" } : { status: "success", message: "recovery.saved", navigate: "/home" };
+        return result.error ? { status: "error", message: "common.authError" } : { status: "success", message: "recovery.saved", navigate: "/" };
       }
       case "logout": {
         const result = await client.auth.signOut();
-        return result.error ? { status: "error", message: "common.authError" } : { status: "success", navigate: "/" };
+        return result.error ? { status: "error", message: "common.authError" } : { status: "success", navigate: "/login" };
       }
       default: {
         const exhaustive: never = operation;

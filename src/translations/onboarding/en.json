@@ -1,0 +1,12 @@
+{
+  "onboarding": {
+    "step": "Step {step} of 3",
+    "aboutYou": "Make yourself at home.",
+    "preferences": "Your space, your preferences.",
+    "privacy": "Camera and sound start off. Your camera preview stays on your device.",
+    "back": "Back",
+    "next": "Continue",
+    "finish": "Continue to StudySpree",
+    "saveError": "We couldn’t save your preferences. Please try once more."
+  }
+}

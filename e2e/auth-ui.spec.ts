@@ -3,12 +3,12 @@ import { readFileSync } from "node:fs";
 import type { Dictionary } from "../src/translations";
 
 const locales = ["en", "de", "fr", "pl", "it"] as const;
-const namespaces = ["common", "login", "register", "recovery", "home", "study", "session", "complete", "stats", "scene", "settings", "dev", "comeback", "webcam", "ambience"];
+const namespaces = ["common", "login", "register", "recovery", "home", "study", "session", "complete", "stats", "scene", "settings", "dev", "comeback", "webcam", "ambience", "onboarding"];
 const dictionaries = Object.fromEntries(locales.map((locale) => [locale,
   Object.assign({}, ...namespaces.map((namespace) => JSON.parse(readFileSync(new URL(`../src/translations/${namespace}/${locale}.json`, import.meta.url), "utf8")))),
 ])) as Record<(typeof locales)[number], Dictionary>;
 
-test("the root loads account access without session controls", async ({ page }) => {
+test("signed-out root redirects to Login without session controls", async ({ page }) => {
   const response = await page.goto("/");
   expect(response?.status()).toBe(200);
   await expect(page.getByTestId("language-globe")).toBeVisible();
@@ -29,7 +29,7 @@ test("all five languages update forms, accessibility labels and saved preference
     for (const label of [text.common.firstName, text.common.lastName, text.common.email, text.common.username, text.common.password]) {
       await expect(page.getByLabel(label, { exact: true })).toBeVisible();
     }
-    await expect(page.getByRole("button", { name: text.common.google })).toBeVisible();
+    await expect(page.getByRole("button", { name: text.common.google })).toHaveCount(0);
     await expect(page.getByRole("button", { name: text.common.facebook })).toBeVisible();
     await page.getByRole("tab", { name: text.login.title, exact: true }).click();
     await page.getByRole("button", { name: text.login.forgotPassword }).click();
@@ -52,7 +52,7 @@ test("tabs support keyboard navigation", async ({ page }) => {
 });
 
 test("signed-out sessions cannot access Home or Study", async ({ page }) => {
-  for (const path of ["/home", "/study", "/session/demo"]) {
+  for (const path of ["/", "/study", "/session/demo"]) {
     await page.goto(path);
     await expect(page).toHaveURL(/\/$/);
     await expect(page.getByRole("tab", { name: dictionaries.en.login.title, exact: true })).toBeVisible();
@@ -80,7 +80,7 @@ test("development login opens Home and keeps session controls on Study", async (
   await page.getByLabel(dictionaries.en.common.username, { exact: true }).fill(username);
   await page.getByLabel(dictionaries.en.common.password, { exact: true }).fill(value("DEV_ADMIN_PASSWORD"));
   await page.getByRole("button", { name: dictionaries.en.login.submit, exact: true }).click();
-  await expect(page).toHaveURL(/\/home$/);
+  await expect(page).toHaveURL(/\/$/);
   await expect(page.getByTestId("auth-feedback").getByRole("status")).toHaveText(dictionaries.en.login.success);
   await expect(page.getByRole("heading")).toContainText(username);
   await expect(page.getByRole("button", { name: /^5 min/ })).toHaveCount(0);
@@ -89,7 +89,7 @@ test("development login opens Home and keeps session controls on Study", async (
   await expect(page.getByRole("button", { name: /^5 min/ })).toHaveAttribute("aria-pressed", "true");
   await page.getByRole("button", { name: "25 min", exact: true }).click();
   await expect(page.getByRole("button", { name: "25 min", exact: true })).toHaveAttribute("aria-pressed", "true");
-  await page.goto("/home");
+  await page.goto("/");
   await page.getByRole("button", { name: dictionaries.en.common.logout, exact: true }).click();
   await expect(page).toHaveURL(/\/$/);
   await page.goto("/study");

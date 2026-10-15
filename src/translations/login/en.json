@@ -1,5 +1,7 @@
 {
   "login": {
+    "sendLink": "Email a sign-in link",
+    "linkSent": "Check your email for your sign-in link.",
     "title": "Login",
     "forgotPassword": "Forgot password?",
     "submit": "Sign in",

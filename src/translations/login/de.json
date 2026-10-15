@@ -1,5 +1,7 @@
 {
   "login": {
+    "sendLink": "Anmeldelink per E-Mail senden",
+    "linkSent": "Dein Anmeldelink liegt in deinem E-Mail-Postfach.",
     "title": "Anmelden",
     "forgotPassword": "Passwort vergessen?",
     "submit": "Anmelden",

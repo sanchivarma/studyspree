@@ -1,12 +1,12 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { getPublicAuthConfig } from "@/lib/auth/publicConfig";
 
 export async function middleware(request: NextRequest) {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  const authConfig = getPublicAuthConfig();
   let response = NextResponse.next({ request });
-  if (!url || !key) return response;
-  const client = createServerClient(url, key, {
+  if (!authConfig) return response; // Server page guards still protect offline preview.
+  const client = createServerClient(authConfig.url, authConfig.key, {
     cookies: {
       getAll: () => request.cookies.getAll(),
       setAll: (values) => {
@@ -16,7 +16,17 @@ export async function middleware(request: NextRequest) {
       },
     },
   });
-  await client.auth.getClaims();
+  const identity = await client.auth.getClaims();
+  const path = request.nextUrl.pathname;
+  const publicPage = path === "/login" || path.startsWith("/auth/") || path === "/reset-password" || path.startsWith("/api/")
+    || (process.env.NODE_ENV === "development" && path === "/dev");
+  const offlinePreview = process.env.NODE_ENV === "development" && process.env.NEXT_PUBLIC_USE_LOCAL_REPO !== "false" && request.cookies.has("ss_dev_admin");
+  if (!publicPage && !offlinePreview && (identity.error || !identity.data?.claims)) {
+    const redirect = NextResponse.redirect(new URL("/login", request.url));
+    response.cookies.getAll().forEach(cookie => redirect.cookies.set(cookie));
+    redirect.headers.set("Cache-Control", "private, no-store");
+    return redirect;
+  }
   response.headers.set("Cache-Control", "private, no-store");
   return response;
 }

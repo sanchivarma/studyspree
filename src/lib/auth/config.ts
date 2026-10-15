@@ -1,9 +1,13 @@
 import "server-only";
+import { getPublicAuthConfig } from "./publicConfig";
 
 export function getAuthConfig() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-  return url && key ? { url, key } : null;
+  return getPublicAuthConfig();
+}
+
+export function isLocalAuth() {
+  const config = getAuthConfig();
+  return config ? ["localhost", "127.0.0.1", "[::1]"].includes(new URL(config.url).hostname) : process.env.NODE_ENV === "development";
 }
 
 export function getSiteUrl() {

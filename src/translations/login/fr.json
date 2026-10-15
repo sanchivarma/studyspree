@@ -1,5 +1,7 @@
 {
   "login": {
+    "sendLink": "Recevoir un lien de connexion",
+    "linkSent": "Consultez votre messagerie pour retrouver votre lien de connexion.",
     "title": "Connexion",
     "forgotPassword": "Mot de passe oublié ?",
     "submit": "Se connecter",

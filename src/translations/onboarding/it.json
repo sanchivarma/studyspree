@@ -1,0 +1,12 @@
+{
+  "onboarding": {
+    "step": "Passaggio {step} di 3",
+    "aboutYou": "Mettiti a tuo agio.",
+    "preferences": "Il tuo spazio, le tue preferenze.",
+    "privacy": "La videocamera e il suono sono inizialmente disattivati. L’anteprima della videocamera rimane sul tuo dispositivo.",
+    "back": "Indietro",
+    "next": "Continua",
+    "finish": "Continua su StudySpree",
+    "saveError": "Non è stato possibile salvare le preferenze. Riprova."
+  }
+}

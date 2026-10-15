@@ -1,11 +1,15 @@
 "use client";
+import { useState } from "react";
 
 import { AccountControls } from "@/components/layout/AccountControls";
 import { useTranslation } from "@/hooks/useTranslation";
 import { getTheme, type ThemeSlug } from "@/lib/themes/registry";
 import { useTotalSeconds } from "@/hooks/useTotalSeconds";
 import { useDayStats } from "@/hooks/useDayStats";
-import { useSessions } from "@/hooks/useSessions";
+import { useSessionHistory } from "@/hooks/useSessionHistory";
+import type { CompanionMode } from "@/types/characters";
+import { statsRangeSchema } from "@/lib/stats/ranges";
+import { StudyTimeChart } from "./StudyTimeChart";
 import { useStreak } from "@/hooks/useStreak";
 import { useSessionSummary } from "@/hooks/useSessionSummary";
 import { useProfile } from "@/hooks/useProfile";
@@ -30,15 +34,26 @@ export function StatsScreen() {
   const from = referenceDate ? shiftDate(referenceDate, -364) : "1970-01-01";
   const total = useTotalSeconds();
   const dayStats = useDayStats(from, referenceDate ?? from, referenceDate !== null);
-  const history = useSessions();
+  const [preset, setPreset] = useState("all");
+  const [customFrom, setCustomFrom] = useState("");
+  const [customTo, setCustomTo] = useState("");
+  const [companionMode, setCompanionMode] = useState<CompanionMode | "all">("all");
   const streak = useStreak();
   const summary = useSessionSummary();
+  const proposedRange = {
+    from: preset === "custom" ? customFrom : preset === "all" ? summary.data?.firstSessionDate ?? from : shiftDate(referenceDate ?? from, 1 - Number(preset)),
+    to: preset === "custom" ? customTo : referenceDate ?? from,
+  };
+  const rangeResult = statsRangeSchema.safeParse(proposedRange);
+  const selectedRange = rangeResult.success ? rangeResult.data : { from: referenceDate ?? from, to: referenceDate ?? from };
+  const rangeDays = useDayStats(selectedRange.from, selectedRange.to, referenceDate !== null && rangeResult.success);
+  const history = useSessionHistory({ ...(preset !== "all" && rangeResult.success ? selectedRange : {}), companionMode: companionMode === "all" ? undefined : companionMode });
   const days = referenceDate ? fillDays(dayStats.data ?? [], from, referenceDate) : [];
-  const sessions = history.data?.pages.flatMap((page) => page.sessions) ?? [];
+  const sessions = history.data?.pages.flatMap((page) => page.items) ?? [];
   const queries = [profile, total, dayStats, history, streak, summary];
-  const hasError = [profile, total, dayStats, streak, summary].some((query) => query.isError) || (history.isError && !history.data);
+  const hasError = [profile, total, dayStats, streak, summary].some((query) => query.isError);
   // Invalidated totals must be reread before the hero can show cached hours.
-  const isLoading = referenceDate === null || queries.some((query) => query.isPending)
+  const isLoading = referenceDate === null || [profile, total, dayStats, streak, summary].some((query) => query.isPending)
     || (total.isStale && total.isFetching) || (summary.isStale && summary.isFetching);
   const number = new Intl.NumberFormat(locale);
   const recent = days.slice(-14);
@@ -61,6 +76,28 @@ export function StatsScreen() {
         {referenceDate && <Heatmap key={referenceDate} days={days} referenceDate={referenceDate} />}
       </section>
       <section className={card}>
+        <h2 className="text-body font-semibold">{t("statsRange.title")}</h2>
+        <div className="mt-4 flex flex-wrap items-end gap-3">
+          <label className="text-small text-text-muted">{t("statsRange.range")}
+            <select aria-label={t("statsRange.range")} value={preset} onChange={event => {
+              const value = event.target.value;
+              if (value === "custom") { setCustomFrom(shiftDate(referenceDate ?? from, -29)); setCustomTo(referenceDate ?? from); }
+              setPreset(value);
+            }} className="mt-1 block min-h-11 rounded-xl border border-border bg-surface px-3 text-foreground">
+              <option value="all">{t("statsRange.all")}</option><option value="7">{t("statsRange.days", { count: 7 })}</option><option value="30">{t("statsRange.days", { count: 30 })}</option><option value="90">{t("statsRange.days", { count: 90 })}</option><option value="custom">{t("statsRange.custom")}</option>
+            </select>
+          </label>
+          {preset === "custom" && <>
+            <label className="text-small text-text-muted">{t("statsRange.from")}<input type="date" value={customFrom} max={referenceDate ?? undefined} onChange={event => setCustomFrom(event.target.value)} className="mt-1 block min-h-11 rounded-xl border border-border bg-surface px-3 text-foreground" /></label>
+            <label className="text-small text-text-muted">{t("statsRange.to")}<input type="date" value={customTo} max={referenceDate ?? undefined} onChange={event => setCustomTo(event.target.value)} className="mt-1 block min-h-11 rounded-xl border border-border bg-surface px-3 text-foreground" /></label>
+          </>}
+        </div>
+        {!rangeResult.success ? <p role="alert" className="mt-4 text-small">{t("statsRange.invalid")}</p>
+          : rangeDays.isError ? <p role="alert" className="mt-4 text-small">{t("stats.loadError")}</p>
+          : rangeDays.isPending ? <p role="status" className="mt-4 text-small">{t("stats.loading")}</p>
+          : <StudyTimeChart days={rangeDays.data ?? []} range={selectedRange} />}
+      </section>
+      <section className={card}>
         <h2 className="text-body font-semibold">{t("stats.last14Days")}</h2>
         <div data-testid="recent-bars" className="mt-6 grid grid-cols-[repeat(14,minmax(0,1fr))] items-end gap-1">
           {recent.map((day) => {
@@ -72,8 +109,13 @@ export function StatsScreen() {
           })}
         </div>
       </section>
-      <section className={card}>
+      {rangeResult.success && <section className={card}>
         <h2 className="text-body font-semibold">{t("stats.historyTitle")}</h2>
+        <label className="mt-4 block text-small text-text-muted">{t("statsRange.companionFilter")}
+          <select aria-label={t("statsRange.companionFilter")} value={companionMode} onChange={event => setCompanionMode(event.target.value as CompanionMode | "all")} className="ml-3 min-h-11 rounded-xl border border-border bg-surface px-3 text-foreground">
+            <option value="all">{t("statsRange.allCompanions")}</option><option value="solo">{t("characters.solo")}</option><option value="characters">{t("characters.characters")}</option>
+          </select>
+        </label>
         <div className="mt-4 overflow-x-auto">
           <table data-testid="session-history" className="w-full text-left text-small">
             <caption className="sr-only">{t("stats.historyTitle")}</caption>
@@ -81,19 +123,23 @@ export function StatsScreen() {
               <th scope="col" className="py-3 pr-5 font-normal">{t("stats.date")}</th>
               <th scope="col" className="py-3 pr-5 font-normal">{t("stats.duration")}</th>
               <th scope="col" className="py-3 font-normal">{t("stats.theme")}</th>
+              <th scope="col" className="py-3 pl-5 font-normal">{t("characters.title")}</th>
             </tr></thead>
             <tbody>{sessions.map((session) => <tr key={session.id} data-session-id={session.id} className="border-t border-border">
               <td className="py-3 pr-5 whitespace-nowrap"><time dateTime={session.localDate}>{formatDate(session.localDate, locale, true)}</time></td>
               <td className="py-3 pr-5 whitespace-nowrap tabular-nums">{formatDuration(session.actualSeconds, locale)}</td>
               <td className="py-3"><span className="inline-flex items-center gap-2 whitespace-nowrap"><span aria-hidden="true" className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: getTheme(session.themeSlug).accentColor }} />{t(themeNames[getTheme(session.themeSlug).slug])}</span></td>
+              <td className="py-3 pl-5 whitespace-nowrap">{t(session.companions.mode === "characters" || session.companions.mode === "mixed" ? "characters.characters" : session.companions.mode === "people" ? "characters.people" : "characters.solo")}</td>
             </tr>)}</tbody>
           </table>
         </div>
-        {sessions.length === 0 && <p className="mt-4 text-small text-text-muted">{t("stats.emptyHistory")}</p>}
+        {history.isPending ? <p role="status" className="mt-4 text-small text-text-muted">{t("stats.loading")}</p>
+          : history.isError && !history.data ? <p role="alert" className="mt-4 text-small text-text-muted">{t("stats.loadError")}</p>
+          : sessions.length === 0 && <p className="mt-4 text-small text-text-muted">{t("stats.emptyHistory")}</p>}
         {history.hasNextPage && <button type="button" disabled={history.isFetchingNextPage} onClick={() => void history.fetchNextPage()}
           className="mt-4 min-h-11 rounded-xl border border-border px-4 text-small disabled:opacity-60">{t("stats.loadMore")}</button>}
         {history.isFetchNextPageError && <p role="alert" className="mt-3 text-small text-text-muted">{t("stats.loadError")}</p>}
-      </section>
+      </section>}
     </div>}
   </section>;
 }

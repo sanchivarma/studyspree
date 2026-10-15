@@ -10,7 +10,7 @@ import type { TranslationKey } from "@/translations";
 
 const inputClass = "h-12 w-full rounded-xl border border-border bg-background/50 px-4 text-body text-foreground";
 
-export function AuthScreen({ isConfigured, hasDevLogin = false, hasCallbackError = false }: { isConfigured: boolean; hasDevLogin?: boolean; hasCallbackError?: boolean }) {
+export function AuthScreen({ isConfigured, allowOAuth = true, hasDevLogin = false, hasCallbackError = false }: { isConfigured: boolean; allowOAuth?: boolean; hasDevLogin?: boolean; hasCallbackError?: boolean }) {
   const { t } = useTranslation();
   const { execute, isPending, result, clearResult } = useAuth();
   const [mode, setMode] = useState<"login" | "register" | "reset">("login");
@@ -66,7 +66,7 @@ export function AuthScreen({ isConfigured, hasDevLogin = false, hasCallbackError
           ) : <h2 className="mb-3 text-title">{t("recovery.title")}</h2>}
 
           <div id="auth-panel" role={mode === "reset" ? undefined : "tabpanel"} aria-labelledby={mode === "reset" ? undefined : `${mode}-tab`}>
-            {mode !== "reset" ? <>
+            {mode !== "reset" && allowOAuth ? <>
               <div className="grid gap-3">
                 <button disabled={!isConfigured || isPending} type="button" onClick={() => void execute("google")} className="min-h-12 rounded-xl border border-border bg-background/30 px-4 text-small disabled:opacity-50">{t("common.google")}</button>
                 <button disabled={!isConfigured || isPending} type="button" onClick={() => void execute("facebook")} className="min-h-12 rounded-xl border border-border bg-background/30 px-4 text-small disabled:opacity-50">{t("common.facebook")}</button>
@@ -74,6 +74,13 @@ export function AuthScreen({ isConfigured, hasDevLogin = false, hasCallbackError
               <div className="my-5 flex items-center gap-3 text-small text-text-muted"><span className="h-px flex-1 bg-border" /><span>{t("common.or")}</span><span className="h-px flex-1 bg-border" /></div>
             </> : <p className="mb-6 text-small text-text-muted">{t("recovery.help")}</p>}
 
+            {mode === "login" && <form noValidate onSubmit={event => {
+              event.preventDefault(); void execute("magicLink", new FormData(event.currentTarget).get("email"));
+            }} className="mb-6 space-y-3 border-b border-border pb-6">
+              <label htmlFor="magic-email" className="block text-small text-text-muted">{t("common.email")}</label>
+              <input id="magic-email" name="email" type="email" autoComplete="email" required maxLength={254} className={inputClass} />
+              <button type="submit" disabled={!isConfigured || isPending} className="min-h-12 w-full rounded-xl border border-border px-4 text-small disabled:opacity-50">{t("login.sendLink")}</button>
+            </form>}
             <form key={mode} noValidate onSubmit={submit} className="space-y-4">
               {mode === "register" && <div className="grid gap-4 sm:grid-cols-2">{field("firstName", "common.firstName", "text", "given-name")}{field("lastName", "common.lastName", "text", "family-name")}</div>}
               {mode !== "login" && field("email", "common.email", "email", "email")}

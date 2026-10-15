@@ -3,7 +3,7 @@ import { dirname, join, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { expect, it } from "vitest";
 
-it("has one page per URL, including exactly one public root page", () => {
+it("has one page per URL, including one protected root and one public login page", () => {
   const root = dirname(fileURLToPath(import.meta.url));
   const routes = new Map<string, string[]>();
   function visit(directory: string) {
@@ -19,5 +19,6 @@ it("has one page per URL, including exactly one public root page", () => {
   }
   visit(root);
   expect([...routes.entries()].filter(([, pages]) => pages.length > 1)).toEqual([]);
-  expect(routes.get("/")).toEqual([join("(auth)", "page.tsx")]);
+  expect(routes.get("/")).toEqual([join("(app)", "page.tsx")]);
+  expect(routes.get("/login")).toEqual([join("(auth)", "login", "page.tsx")]);
 });

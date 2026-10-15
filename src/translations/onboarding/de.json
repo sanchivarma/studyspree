@@ -1,0 +1,12 @@
+{
+  "onboarding": {
+    "step": "Schritt {step} von 3",
+    "aboutYou": "Mach es dir gemütlich.",
+    "preferences": "Dein Raum, deine Einstellungen.",
+    "privacy": "Kamera und Ton sind zunächst ausgeschaltet. Deine Kameravorschau bleibt auf deinem Gerät.",
+    "back": "Zurück",
+    "next": "Weiter",
+    "finish": "Weiter zu StudySpree",
+    "saveError": "Deine Einstellungen konnten nicht gespeichert werden. Bitte versuche es noch einmal."
+  }
+}

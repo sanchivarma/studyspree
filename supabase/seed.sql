@@ -1,0 +1,3 @@
+-- Create accounts through /login so Supabase Auth owns credentials and the
+-- auth-user trigger creates profiles/streaks. No passwords are seeded.
+-- Phase 6 study sessions remain in the existing LocalRepository.

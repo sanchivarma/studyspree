@@ -7,7 +7,8 @@ import { redirect } from "next/navigation";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const profile = await authRepository.getProfile();
-  if (!profile) redirect("/");
+  if (!profile) redirect("/login");
+  if (!profile.onboarding_complete) redirect("/onboarding");
   const theme = getTheme(profile.selected_theme);
   const style = { "--accent": theme.accentColor } as CSSProperties;
 

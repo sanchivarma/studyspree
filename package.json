@@ -13,6 +13,10 @@
     "test:e2e": "playwright test",
     "check:audio-licences": "node --experimental-strip-types scripts/check-audio-licences.ts",
     "prebuild": "npm run check:audio-licences && npm run check:character-assets",
+    "db:start": "supabase start",
+    "db:reset": "supabase db reset",
+    "db:types": "node scripts/generate-db-types.mjs",
+    "db:test": "supabase test db",
     "check:character-assets": "node scripts/check-character-assets.mjs"
   },
   "dependencies": {
@@ -47,6 +51,7 @@
     "@types/react-dom": "^19.0.0",
     "eslint": "^9.0.0",
     "eslint-config-next": "^15.5.0",
+    "supabase": "^2.121.0",
     "tailwindcss": "^4.1.0",
     "typescript": "^5.9.0",
     "vitest": "^5.0.4"

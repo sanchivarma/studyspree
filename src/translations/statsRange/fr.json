@@ -1,0 +1,16 @@
+{
+  "statsRange": {
+    "title": "Temps d’étude par date",
+    "range": "Période",
+    "all": "Depuis le début",
+    "days": "Les {count} derniers jours",
+    "custom": "Personnalisée",
+    "from": "Du",
+    "to": "Au",
+    "invalid": "Choisissez des dates de début et de fin valides.",
+    "table": "Afficher le tableau",
+    "sessions": "Séances",
+    "companionFilter": "Compagnons d’étude",
+    "allCompanions": "Tous les compagnons"
+  }
+}

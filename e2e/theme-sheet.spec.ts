@@ -28,7 +28,7 @@ test("Study picker supports arrows, selection, focus return and persistence into
   await page.getByTestId("theme-card-balcony-dusk").click();
   await expect(page.getByRole("button", { name: "Theme Balcony Dusk", exact: true })).toBeVisible();
   await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("ss_profile")!).selectedTheme)).toBe("balcony-dusk");
-  await page.goto("/home");
+  await page.goto("/");
   await expect(page.getByTestId("theme-scene").getByTestId("scene-video")).toHaveAttribute("data-theme", "balcony-dusk");
 });
 

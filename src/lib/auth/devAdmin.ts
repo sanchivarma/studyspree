@@ -3,7 +3,7 @@ import { createHash, createHmac, randomUUID, timingSafeEqual } from "node:crypto
 import { cookies } from "next/headers";
 import { z } from "zod";
 import { now } from "@/lib/clock";
-import { loginSchema, usernameSchema, type AuthProfile } from "./schemas";
+import { loginSchema, usernameSchema, profileSchema, type AuthProfile } from "./schemas";
 import type { AuthResult } from "./types";
 
 const COOKIE_NAME = "ss_dev_admin";
@@ -32,7 +32,7 @@ export async function loginDevAdmin(input: unknown): Promise<AuthResult | null> 
   const payload = Buffer.from(JSON.stringify({ id: randomUUID(), username: config.username, expiresAt: now().getTime() + 86400000 })).toString("base64url");
   const signature = createHmac("sha256", config.secret).update(payload).digest("base64url");
   (await cookies()).set(COOKIE_NAME, `${payload}.${signature}`, { httpOnly: true, sameSite: "lax", path: "/", maxAge: 86400 });
-  return { status: "success", navigate: "/home" };
+  return { status: "success", navigate: "/" };
 }
 
 export async function getDevAdminProfile(): Promise<AuthProfile | null> {
@@ -48,7 +48,7 @@ export async function getDevAdminProfile(): Promise<AuthProfile | null> {
   try {
     const session = sessionSchema.safeParse(JSON.parse(Buffer.from(payload, "base64url").toString("utf8")));
     if (!session.success || session.data.expiresAt <= now().getTime() || session.data.username !== config.username) return null;
-    return { id: session.data.id, username: session.data.username, first_name: "", last_name: "", selected_theme: "rain-desk", show_streak: false };
+    return profileSchema.parse({ id: session.data.id, username: session.data.username, first_name: "", last_name: "", selected_theme: "rain-desk", show_streak: false, onboarding_complete: true });
   } catch { return null; }
 }
 

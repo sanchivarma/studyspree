@@ -21,7 +21,7 @@ test("completion shows calm totals and both navigation destinations", async ({ p
   await expect(start).toHaveAttribute("href", "/");
   await start.click();
   await page.clock.runFor(100);
-  await expect.poll(async () => { await page.clock.runFor(1); return new URL(page.url()).pathname; }).toBe("/home");
+  await expect.poll(async () => { await page.clock.runFor(1); return new URL(page.url()).pathname; }).toBe("/");
   await page.goto("/session/complete-test/complete");
   await settleClock(page, "complete-screen");
   await page.getByRole("link", { name: "Done for now", exact: true }).click();

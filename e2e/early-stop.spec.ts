@@ -20,8 +20,8 @@ test("expired completion summaries return through root", async ({ page }) => {
   await page.keyboard.press("Escape");
   await settleClock(page, "complete-screen");
   await page.clock.runFor(600_000);
-  await expect.poll(async () => { await page.clock.runFor(100); return new URL(page.url()).pathname; }).toBe("/home");
+  await expect.poll(async () => { await page.clock.runFor(100); return new URL(page.url()).pathname; }).toBe("/");
   await page.goto(`${path}/complete`);
   await page.clock.runFor(100);
-  await expect.poll(async () => { await page.clock.runFor(100); return new URL(page.url()).pathname; }).toBe("/home");
+  await expect.poll(async () => { await page.clock.runFor(100); return new URL(page.url()).pathname; }).toBe("/");
 });

@@ -1,0 +1,16 @@
+{
+  "statsRange": {
+    "title": "Tempo di studio per data",
+    "range": "Intervallo",
+    "all": "Dall’inizio",
+    "days": "Ultimi {count} giorni",
+    "custom": "Personalizzato",
+    "from": "Da",
+    "to": "A",
+    "invalid": "Scegli date di inizio e fine valide.",
+    "table": "Mostra tabella dati",
+    "sessions": "Sessioni",
+    "companionFilter": "Compagni di studio",
+    "allCompanions": "Tutti i compagni"
+  }
+}

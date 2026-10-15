@@ -1,0 +1,16 @@
+{
+  "statsRange": {
+    "title": "Lernzeit nach Datum",
+    "range": "Zeitraum",
+    "all": "Gesamte Zeit",
+    "days": "Letzte {count} Tage",
+    "custom": "Benutzerdefiniert",
+    "from": "Von",
+    "to": "Bis",
+    "invalid": "Wähle ein gültiges Anfangs- und Schlussdatum.",
+    "table": "Datentabelle anzeigen",
+    "sessions": "Sitzungen",
+    "companionFilter": "Lernbegleitung",
+    "allCompanions": "Alle Begleitungen"
+  }
+}

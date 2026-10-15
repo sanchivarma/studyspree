@@ -4,7 +4,7 @@ import { z } from "zod";
 import { authRepository } from "@/lib/repo/authRepository";
 import type { AuthResult } from "@/lib/auth/types";
 
-const operationSchema = z.enum(["login", "register", "reset", "updatePassword", "logout", "google", "facebook"]);
+const operationSchema = z.enum(["login", "register", "reset", "updatePassword", "logout", "google", "facebook", "magicLink", "onboard"]);
 
 export async function authenticate(operation: unknown, input: unknown): Promise<AuthResult> {
   const parsed = operationSchema.safeParse(operation);

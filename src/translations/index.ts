@@ -1,3 +1,8 @@
+import itstatsRange from "./statsRange/it.json";
+import plstatsRange from "./statsRange/pl.json";
+import frstatsRange from "./statsRange/fr.json";
+import destatsRange from "./statsRange/de.json";
+import enstatsRange from "./statsRange/en.json";
 import itdashboard from "./dashboard/it.json";
 import pldashboard from "./dashboard/pl.json";
 import frdashboard from "./dashboard/fr.json";
@@ -8,6 +13,11 @@ import plcharacters from "./characters/pl.json";
 import frcharacters from "./characters/fr.json";
 import decharacters from "./characters/de.json";
 import encharacters from "./characters/en.json";
+import itonboarding from "./onboarding/it.json";
+import plonboarding from "./onboarding/pl.json";
+import fronboarding from "./onboarding/fr.json";
+import deonboarding from "./onboarding/de.json";
+import enonboarding from "./onboarding/en.json";
 import itambience from "./ambience/it.json";
 import plambience from "./ambience/pl.json";
 import frambience from "./ambience/fr.json";
@@ -87,17 +97,17 @@ import itdev from "./dev/it.json";
 export const locales = ["en", "de", "fr", "pl", "it"] as const;
 export type Locale = (typeof locales)[number];
 
-const en = { ...encommon, ...enlogin, ...enregister, ...enrecovery, ...enhome, ...enstudy, ...ensession, ...encomplete, ...enstats, ...enscene, ...ensettings, ...endev, ...encomeback, ...enwebcam, ...enambience, ...encharacters, ...endashboard };
+const en = { ...encommon, ...enlogin, ...enregister, ...enrecovery, ...enhome, ...enstudy, ...ensession, ...encomplete, ...enstats, ...enscene, ...ensettings, ...endev, ...encomeback, ...enwebcam, ...enambience, ...enonboarding, ...encharacters, ...endashboard, ...enstatsRange };
 export type Dictionary = typeof en;
 export type TranslationKey = {
   [Namespace in keyof Dictionary]: `${Namespace}.${keyof Dictionary[Namespace] & string}`
 }[keyof Dictionary];
 export const dictionaries = {
   en,
-  de: { ...decommon, ...delogin, ...deregister, ...derecovery, ...dehome, ...destudy, ...desession, ...decomplete, ...destats, ...descene, ...desettings, ...dedev, ...decomeback, ...dewebcam, ...deambience, ...decharacters, ...dedashboard },
-  fr: { ...frcommon, ...frlogin, ...frregister, ...frrecovery, ...frhome, ...frstudy, ...frsession, ...frcomplete, ...frstats, ...frscene, ...frsettings, ...frdev, ...frcomeback, ...frwebcam, ...frambience, ...frcharacters, ...frdashboard },
-  pl: { ...plcommon, ...pllogin, ...plregister, ...plrecovery, ...plhome, ...plstudy, ...plsession, ...plcomplete, ...plstats, ...plscene, ...plsettings, ...pldev, ...plcomeback, ...plwebcam, ...plambience, ...plcharacters, ...pldashboard },
-  it: { ...itcommon, ...itlogin, ...itregister, ...itrecovery, ...ithome, ...itstudy, ...itsession, ...itcomplete, ...itstats, ...itscene, ...itsettings, ...itdev, ...itcomeback, ...itwebcam, ...itambience, ...itcharacters, ...itdashboard },
+  de: { ...decommon, ...delogin, ...deregister, ...derecovery, ...dehome, ...destudy, ...desession, ...decomplete, ...destats, ...descene, ...desettings, ...dedev, ...decomeback, ...dewebcam, ...deambience, ...deonboarding, ...decharacters, ...dedashboard, ...destatsRange },
+  fr: { ...frcommon, ...frlogin, ...frregister, ...frrecovery, ...frhome, ...frstudy, ...frsession, ...frcomplete, ...frstats, ...frscene, ...frsettings, ...frdev, ...frcomeback, ...frwebcam, ...frambience, ...fronboarding, ...frcharacters, ...frdashboard, ...frstatsRange },
+  pl: { ...plcommon, ...pllogin, ...plregister, ...plrecovery, ...plhome, ...plstudy, ...plsession, ...plcomplete, ...plstats, ...plscene, ...plsettings, ...pldev, ...plcomeback, ...plwebcam, ...plambience, ...plonboarding, ...plcharacters, ...pldashboard, ...plstatsRange },
+  it: { ...itcommon, ...itlogin, ...itregister, ...itrecovery, ...ithome, ...itstudy, ...itsession, ...itcomplete, ...itstats, ...itscene, ...itsettings, ...itdev, ...itcomeback, ...itwebcam, ...itambience, ...itonboarding, ...itcharacters, ...itdashboard, ...itstatsRange },
 } satisfies Record<Locale, Dictionary>;
 
 export const languageNames: Record<Locale, string> = { en: "English", de: "Deutsch", fr: "Français", pl: "Polski", it: "Italiano" };

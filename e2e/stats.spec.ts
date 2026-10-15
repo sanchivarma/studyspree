@@ -2,11 +2,10 @@ import { readFileSync } from "node:fs";
 import { expect, test, type Page } from "@playwright/test";
 import { signIn, startSession } from "./sessionFixtures";
 
-test("development seed tools require a signed-in profile", async ({ page }) => {
+test("development tools are accessible signed out in development", async ({ page }) => {
   await page.goto("/dev");
-  await expect(page).toHaveURL(/\/$/);
-  await expect(page.getByRole("tab", { name: "Login", exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Seed 40 hours", exact: true })).toHaveCount(0);
+  await expect(page).toHaveURL(/\/dev$/);
+  await expect(page.getByRole("button", { name: "Seed 40 hours", exact: true })).toBeVisible();
 });
 
 async function prepare(page: Page, seed = true) {
@@ -105,7 +104,7 @@ test("stats and pagination copy switch across all five languages", async ({ page
   await prepare(page);
   for (const locale of ["en", "de", "fr", "pl", "it"]) {
     const { stats } = JSON.parse(readFileSync(new URL(`../src/translations/stats/${locale}.json`, import.meta.url), "utf8")) as { stats: Record<string, string> };
-    await page.getByRole("combobox").selectOption(locale);
+    await page.getByTestId("language-selector").selectOption(locale);
     for (const name of [stats.totalHours, stats.activityTitle, stats.last14Days, stats.historyTitle]) await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: stats.loadMore, exact: true })).toBeVisible();
     await page.getByTestId("heatmap-grid").locator('[data-date="2026-09-20"]').hover();

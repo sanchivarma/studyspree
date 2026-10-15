@@ -1,0 +1,12 @@
+{
+  "onboarding": {
+    "step": "Étape {step} sur 3",
+    "aboutYou": "Installez-vous confortablement.",
+    "preferences": "Votre espace, vos préférences.",
+    "privacy": "La caméra et le son sont désactivés au départ. L’aperçu de votre caméra reste sur votre appareil.",
+    "back": "Retour",
+    "next": "Continuer",
+    "finish": "Continuer vers StudySpree",
+    "saveError": "Vos préférences n’ont pas pu être enregistrées. Veuillez réessayer."
+  }
+}

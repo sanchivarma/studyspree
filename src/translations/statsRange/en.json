@@ -1,0 +1,16 @@
+{
+  "statsRange": {
+    "title": "Study time by date",
+    "range": "Date range",
+    "all": "All time",
+    "days": "Last {count} days",
+    "custom": "Custom",
+    "from": "From",
+    "to": "To",
+    "invalid": "Choose a valid start and finish date.",
+    "table": "Show data table",
+    "sessions": "Sessions",
+    "companionFilter": "Study companions",
+    "allCompanions": "All companions"
+  }
+}

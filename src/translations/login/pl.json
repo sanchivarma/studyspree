@@ -1,5 +1,7 @@
 {
   "login": {
+    "sendLink": "Wyślij link do logowania",
+    "linkSent": "Sprawdź pocztę, aby znaleźć link do logowania.",
     "title": "Logowanie",
     "forgotPassword": "Nie pamiętasz hasła?",
     "submit": "Zaloguj się",
