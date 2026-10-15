@@ -22,7 +22,13 @@ Checkboxes mean implemented and verified, not merely scaffolded. Existing featur
   - [x] Saved-date grouping, tied-timestamp pagination, invalid-range and DST tests.
   - [x] Browser checks for filters, all five languages, seed conservation, pagination, mobile heatmap, streak visibility and completion-to-Stats updates.
   - [ ] Implement/verify equivalent filtered-history endpoints in the server repository rollout.
-- [ ] **5. Profile** — private/public DTOs, editing, uploads, follow relationships and access controls.
+- [x] **5. Profile** — private/public DTOs, editing, uploads, follow relationships and access controls verified.
+  - [x] Private-by-default account cards, narrow public DTOs and owner editing.
+  - [x] Profile/cover uploads to a private bucket; owner paths, size/MIME/signature validation and no-store authenticated delivery.
+  - [x] Real follow/unfollow, unique relationships, counts and cross-user access rules.
+  - [x] Five-language mobile UI, persisted development preview and two-account Supabase browser verification.
+  - [x] Migration 0005 applied; generated types updated; 22 profile pgTAP assertions passed.
+  - [x] Start and permanent webcam privacy regressions; profile transport isolated from the session import graph.
 - [ ] **7. Achievements** — pure eligibility, persisted idempotent awards and profile badges.
 - [ ] **4. Camera/personal tile** — mirror preference, tile visibility, status/history and explicit sharing boundary.
 - [ ] **15. Navigation/utilities** — feature-aware routes, tasks, notifications, search and feedback.
@@ -56,3 +62,4 @@ Checkboxes mean implemented and verified, not merely scaffolded. Existing featur
 - LiveKit Cloud selected for feature 2; pricing/self-hosting notes and server-only environment placeholders are recorded in docs/LIVEKIT.md. No subscription was activated.
 - Local Supabase is healthy after excluding unused analytics/edge services. Database verification: 27 pgTAP assertions passed across auth, progress/RLS and companions; generated src/types/database.ts from the live local schema. Ended companion immutability and cross-user session isolation are verified.
 - Local accounts: seven authentication UI browser tests passed, including wrong-password feedback and all five languages. A separate real-backend test passed for local magic-link delivery, session exchange, exactly three onboarding steps and authenticated refresh. Run `npm run test:e2e:supabase` with the local stack running; this does not replace the offline UI/privacy suites.
+- Profile: local editing/refresh, all five languages and mobile layout passed; two real local accounts verified uploads, private/public/private visibility and follow/unfollow. Database suite: 49 assertions passed, including 22 new profile checks. Unit suite: 304 tests passed. Start/privacy regression run passed 17 cases initially; the four affected cases passed unchanged after removing the profile transport from the session import graph and allowing compilation to settle. Cold Start retained its 20-second deadline. No webcam privacy assertions were changed.

@@ -23,6 +23,15 @@ export function repositoryContract(name: string, create: () => Repository) {
       expect(await repo.getDashboard()).toEqual({ latestRoom: null, rooms: [], onlinePeople: [], capabilities: { humanRooms: false } });
       expect(await repo.getActiveSession()).toBeNull();
     });
+    it("edits a preview profile without publishing or changing banked time", async () => {
+      const initial = await repo.getDirectoryProfile();
+      const saved = await repo.updateDirectoryProfile({ displayName: "Reader", bio: "Books", countryCode: "DE", occupation: "Student", interests: ["Math"], lookingFor: [], socials: [], isPublic: true });
+      expect(saved.displayName).toBe("Reader");
+      expect(saved.isPublic).toBe(false);
+      expect(saved.joinedAt).toBe(initial.joinedAt);
+      expect((await repo.getProfile()).displayName).toBe("Reader");
+      expect(await repo.getTotalSecondsAllTime()).toBe(0);
+    });
     it("filters ended session history by companion mode and saved dates", async () => {
       const first = await repo.startSession(input);
       await repo.endSession(first.id, "completed");

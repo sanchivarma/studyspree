@@ -7,6 +7,7 @@ import { themes } from "./src/lib/themes/registry";
 export default function nextConfig(phase: string): NextConfig {
   return {
     devIndicators: false,
+    experimental: { serverActions: { bodySizeLimit: "6mb" } },
     // Keep production builds separate; route-group changes require fresh route discovery.
     distDir: phase === PHASE_DEVELOPMENT_SERVER ? ".next-dev" : ".next",
     outputFileTracingRoot: process.cwd(),

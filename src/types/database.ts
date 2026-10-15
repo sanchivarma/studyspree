@@ -38,6 +38,103 @@ export type Database = {
                     }
                 ];
             };
+            "profile_cards": {
+                Row: {
+                    "avatar_path": string | null;
+                    "banner_path": string | null;
+                    "bio": string;
+                    "country_code": string;
+                    "display_name": string;
+                    "interests": (string)[];
+                    "is_public": boolean;
+                    "looking_for": (string)[];
+                    "occupation": string;
+                    "socials": NonNullable<Json>;
+                    "user_id": string;
+                };
+                ComputedFields: never;
+                Insert: {
+                    "avatar_path"?: string | null;
+                    "banner_path"?: string | null;
+                    "bio"?: string;
+                    "country_code"?: string;
+                    "display_name"?: string;
+                    "interests"?: (string)[];
+                    "is_public"?: boolean;
+                    "looking_for"?: (string)[];
+                    "occupation"?: string;
+                    "socials"?: NonNullable<Json>;
+                    "user_id": string;
+                };
+                Update: {
+                    "avatar_path"?: string | null;
+                    "banner_path"?: string | null;
+                    "bio"?: string;
+                    "country_code"?: string;
+                    "display_name"?: string;
+                    "interests"?: (string)[];
+                    "is_public"?: boolean;
+                    "looking_for"?: (string)[];
+                    "occupation"?: string;
+                    "socials"?: NonNullable<Json>;
+                    "user_id"?: string;
+                };
+                Relationships: [
+                    {
+                        foreignKeyName: "profile_cards_user_id_fkey";
+                        columns: [
+                            "user_id"
+                        ];
+                        isOneToOne: true;
+                        referencedRelation: "profiles";
+                        referencedColumns: [
+                            "id"
+                        ];
+                    }
+                ];
+            };
+            "profile_follows": {
+                Row: {
+                    "created_at": string;
+                    "follower_id": string;
+                    "following_id": string;
+                };
+                ComputedFields: never;
+                Insert: {
+                    "created_at"?: string;
+                    "follower_id": string;
+                    "following_id": string;
+                };
+                Update: {
+                    "created_at"?: string;
+                    "follower_id"?: string;
+                    "following_id"?: string;
+                };
+                Relationships: [
+                    {
+                        foreignKeyName: "profile_follows_follower_id_fkey";
+                        columns: [
+                            "follower_id"
+                        ];
+                        isOneToOne: false;
+                        referencedRelation: "profiles";
+                        referencedColumns: [
+                            "id"
+                        ];
+                    },
+                    {
+                        foreignKeyName: "profile_follows_following_id_fkey";
+                        columns: [
+                            "following_id"
+                        ];
+                        isOneToOne: false;
+                        referencedRelation: "profiles";
+                        referencedColumns: [
+                            "id"
+                        ];
+                    }
+                ];
+            };
             "profiles": {
                 Row: {
                     "ambience_enabled": boolean;
@@ -221,6 +318,12 @@ export type Database = {
                     "p_username": string;
                 };
                 Returns: string;
+            };
+            "read_visible_profile": {
+                Args: {
+                    "p_username": string;
+                };
+                Returns: Json;
             };
             "valid_companion_selection": {
                 Args: {

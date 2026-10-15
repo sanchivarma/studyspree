@@ -14,6 +14,7 @@ import type { CompanionPreferences } from "@/types/characters";
 import type { DashboardData } from "@/types/dashboard";
 import { paginateHistory } from "@/lib/stats/history";
 import type { SessionHistoryQuery, SessionHistoryPage } from "@/types/stats";
+import { profileEditSchema, type ProfileEdit, type OwnProfile } from "@/lib/profiles/schemas";
 
 type StorageAccess = Pick<Storage, "getItem" | "setItem" | "removeItem">;
 const iso = z.iso.datetime();
@@ -148,6 +149,28 @@ export class LocalRepository implements Repository {
   }
 
   async getProfile(): Promise<Profile> { return this.profile(); }
+  private directoryProfile(): OwnProfile {
+    const joinedAt = this.read("ss_directory_joined_at", iso, () => now().toISOString());
+    this.write("ss_directory_joined_at", joinedAt);
+    const fields = this.read("ss_directory_profile", profileEditSchema, () => ({
+      displayName: this.profile().displayName || "ss_admin", bio: "", countryCode: "", occupation: "",
+      interests: [], lookingFor: [], socials: [], isPublic: false,
+    }));
+    return { ...fields, displayName: this.profile().displayName || fields.displayName,
+      id: "00000000-0000-4000-8000-000000000001", username: "ss_admin", joinedAt,
+      avatarPath: null, bannerPath: null, followers: 0, following: 0, isFollowing: false, isSelf: true, isLocal: true };
+  }
+  async getDirectoryProfile(): Promise<OwnProfile> { return this.directoryProfile(); }
+  updateDirectoryProfile(input: ProfileEdit): Promise<OwnProfile> {
+    return this.mutate(() => {
+      const fields = profileEditSchema.parse(input);
+      // Preview profiles never publish, even if callers bypass the disabled UI.
+      fields.isPublic = false;
+      this.write("ss_directory_profile", fields);
+      this.write("ss_profile", { ...this.profile(), displayName: fields.displayName });
+      return this.directoryProfile();
+    });
+  }
   async getDashboard(): Promise<DashboardData> {
     // Local study has no live transport or remote directory. Never invent people.
     return { latestRoom: null, rooms: [], onlinePeople: [], capabilities: { humanRooms: false } };

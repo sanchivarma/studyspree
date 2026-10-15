@@ -1,4 +1,9 @@
 export const queryKeys = {
+  directory: {
+    all: () => ["directory"] as const,
+    own: () => ["directory", "own"] as const,
+    public: (username: string) => ["directory", "public", username] as const,
+  },
   dashboard: () => ["dashboard"] as const,
   profile: () => ["profile"] as const,
   activeSession: () => ["activeSession"] as const,

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, BookOpen, Flame, Home, Settings } from "lucide-react";
+import { BarChart3, BookOpen, Flame, Home, Settings, UserRound } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useProfile } from "@/hooks/useProfile";
@@ -13,6 +13,7 @@ const items = [
   { label: "common.start", href: "/", icon: Home },
   { label: "common.study", href: "/study", icon: BookOpen },
   { label: "common.stats", href: "/stats", icon: BarChart3 },
+  { label: "profile.title", href: "/profile", icon: UserRound },
   { label: "common.settings", href: "/settings", icon: Settings },
 ] as const;
 
@@ -29,7 +30,7 @@ export function AppNav({ showStreak }: { showStreak: boolean }) {
       style={{ "--accent": getTheme(profile.data?.selectedTheme ?? "rain-desk").accentColor } as CSSProperties}
       className="fixed inset-x-0 bottom-0 z-50 h-14 border-t border-border bg-surface md:inset-y-0 md:right-auto md:h-dvh md:w-16 md:border-t-0 md:border-r"
     >
-      <div className="grid h-full grid-cols-4 items-center gap-2 px-2 md:flex md:flex-col md:gap-3 md:pt-6">
+      <div className="grid h-full grid-cols-5 items-center gap-1 px-2 md:flex md:flex-col md:gap-3 md:pt-6">
         {items.map(({ label, href, icon: Icon }) => {
           const isActive = pathname === href || pathname.startsWith(`${href}/`);
 
