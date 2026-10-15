@@ -11,6 +11,7 @@ import type { EndSessionResult, EndSessionStreak, Repository, SessionSummary, St
 import { upgradeThemeNames } from "./upgradeThemes";
 import { companionSchema, localCompanionSchema, soloCompanions } from "@/lib/characters/schemas";
 import type { CompanionPreferences } from "@/types/characters";
+import type { DashboardData } from "@/types/dashboard";
 
 type StorageAccess = Pick<Storage, "getItem" | "setItem" | "removeItem">;
 const iso = z.iso.datetime();
@@ -145,6 +146,10 @@ export class LocalRepository implements Repository {
   }
 
   async getProfile(): Promise<Profile> { return this.profile(); }
+  async getDashboard(): Promise<DashboardData> {
+    // Local study has no live transport or remote directory. Never invent people.
+    return { latestRoom: null, rooms: [], onlinePeople: [], capabilities: { humanRooms: false } };
+  }
   updateProfile(patch: Partial<Profile>): Promise<Profile> {
     return this.mutate(() => { const profile = profileSchema.parse({ ...this.profile(), ...patch }); this.write("ss_profile", profile); return profile; });
   }

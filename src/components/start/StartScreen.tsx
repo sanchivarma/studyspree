@@ -1,11 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import { Shuffle, Users, X } from "lucide-react";
 import { CompanionModePicker } from "@/components/characters/CompanionModePicker";
 import { useCompanionPreferences } from "@/hooks/useCompanionPreferences";
 import type { CompanionPreferences } from "@/types/characters";
+import { soloCompanions } from "@/lib/characters/schemas";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetClose, SheetTrigger } from "@/components/ui/sheet";
 import { ThemeScene } from "@/components/scene/ThemeScene";
 import { ThemeSheet } from "@/components/scene/ThemeSheet";
@@ -24,7 +25,7 @@ import { ComebackScreen } from "@/components/start/ComebackScreen";
 
 const durations = [5, 15, 25, 50, "open"] as const;
 
-export function StartScreen({ displayName, initialHour }: { displayName: string; initialHour: number }) {
+export function StartScreen({ displayName, initialHour, initialMode }: { displayName: string; initialHour: number; initialMode?: "solo" | "characters" }) {
   const router = useRouter();
   const { t } = useTranslation();
   const active = useActiveSession();
@@ -35,7 +36,9 @@ export function StartScreen({ displayName, initialHour }: { displayName: string;
   const [companionOpen, setCompanionOpen] = useState(false);
   const companionPreferences = useCompanionPreferences();
   const [chosenCompanions, setChosenCompanions] = useState<CompanionPreferences | null>(null);
-  const companions = chosenCompanions ?? companionPreferences.value;
+  const companions = useMemo<CompanionPreferences>(() => chosenCompanions ?? (initialMode === "solo" ? soloCompanions()
+    : initialMode === "characters" ? { mode: "characters", characterSlugs: companionPreferences.value.characterSlugs.length ? companionPreferences.value.characterSlugs : ["male-01"] }
+    : companionPreferences.value), [chosenCompanions, initialMode, companionPreferences.value]);
   const [chosenDuration, setChosenDuration] = useState<number | null | undefined>(undefined);
   const latest = recent.data?.[0];
   const selectedDuration = chosenDuration !== undefined ? chosenDuration : latest?.endedAt ? latest.plannedMinutes : 5;

@@ -11,7 +11,11 @@ Checkboxes mean implemented and verified, not merely scaffolded. Existing featur
   - [x] Persist local profile preferences and session snapshots independently from themes.
   - [x] Character-only sessions, refresh recovery and timer continuity browser tests.
   - [ ] Apply migration 0004, run pgTAP and generate database types when Docker/Supabase is available.
-- [ ] **1. Home/dashboard** — mode shortcuts, real room directory, honest offline state.
+- [ ] **1. Home/dashboard** — local dashboard verified; real room discovery awaits feature 2
+  - [x] Solo/Virtual Partners shortcuts, preserved preferences and immediate personal Start.
+  - [x] Typed repository query, latest-room/directory/online components and honest unavailable human mode.
+  - [x] Five-language copy, unit coverage and two passing browser journeys.
+  - [ ] Connect authorised remote room discovery and presence when real room infrastructure is implemented.
 - [ ] **6. Stats/history** — date ranges, accessible charts, filtered history and companion information.
 - [ ] **5. Profile** — private/public DTOs, editing, uploads, follow relationships and access controls.
 - [ ] **7. Achievements** — pure eligibility, persisted idempotent awards and profile badges.
@@ -41,4 +45,5 @@ Checkboxes mean implemented and verified, not merely scaffolded. Existing featur
 - Feature 17: eight distinct GIFs validated (32 frames each, infinite loop, 106–141 KB); all 284 unit tests passed in the first implementation check.
 - Character browser coverage: selection, independent themes, refresh, switching without resetting timestamps, zero camera requests, reduced motion, missing media, keyboard navigation, and tab visibility.
 - Start/privacy regressions: 20 cases passed in the combined run; the four affected cases passed after correcting companion-control overlap with the self-view/permission note. The permanent 20-second camera request audit passed.
-- Docker engine check: unavailable (dockerDesktopLinuxEngine pipe absent). Database migration/tests/type generation are not claimed as verified.
+- Docker initially unavailable; starting Docker Desktop brought the engine up (29.8.2). Local Supabase startup and database verification are now in progress.
+- Home: both browser journeys passed; local dashboard contract is covered by the 285-test unit suite. Real room discovery remains a dependency on feature 2, with no fabricated users/rooms in local mode.

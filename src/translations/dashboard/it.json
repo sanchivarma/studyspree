@@ -1,0 +1,14 @@
+{
+  "dashboard": {
+    "chooseCompany": "Come vuoi studiare?",
+    "soloDescription": "Una sessione tranquilla nel tema che preferisci.",
+    "characterDescription": "Scegli tra otto partner di studio illustrati.",
+    "rooms": "Stanze di studio condivise",
+    "noRooms": "Al momento non ci sono stanze disponibili.",
+    "humansOnline": "{count} persone online",
+    "join": "Partecipa",
+    "latestRoom": "Ultima stanza",
+    "onlinePeople": "Chi è online?",
+    "unavailable": "La ricerca delle stanze non è disponibile. La tua sessione personale è pronta."
+  }
+}

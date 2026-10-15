@@ -1,6 +1,7 @@
 import type { DayStat, EndedReason, Profile, Session } from "@/types/domain";
 import type { StreakState } from "@/lib/streaks/computeStreak";
 import type { CompanionPreferences } from "@/types/characters";
+import type { DashboardData } from "@/types/dashboard";
 
 export type StartSessionInput = { plannedMinutes: number | null; themeSlug: string; task: string | null; companions?: CompanionPreferences };
 export type SessionSummary = { totalSeconds: number; sessionCount: number; firstSessionDate: string | null };
@@ -8,6 +9,7 @@ export type EndSessionStreak = Pick<StreakState, "current" | "best"> & { changed
 export type EndSessionResult = { session: Session; totalSecondsAllTime: number; dayTotalSeconds: number; streak: EndSessionStreak };
 
 export interface Repository {
+  getDashboard(): Promise<DashboardData>;
   getProfile(): Promise<Profile>;
   updateProfile(patch: Partial<Profile>): Promise<Profile>;
   getActiveSession(): Promise<Session | null>;

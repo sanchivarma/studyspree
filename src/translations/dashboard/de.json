@@ -1,0 +1,14 @@
+{
+  "dashboard": {
+    "chooseCompany": "Wie möchtest du lernen?",
+    "soloDescription": "Eine ruhige Sitzung in deinem gewählten Design.",
+    "characterDescription": "Wähle aus acht illustrierten Lernpartnern.",
+    "rooms": "Gemeinsame Lernräume",
+    "noRooms": "Zurzeit sind keine Räume verfügbar.",
+    "humansOnline": "{count} Menschen online",
+    "join": "Beitreten",
+    "latestRoom": "Letzter Raum",
+    "onlinePeople": "Wer ist online?",
+    "unavailable": "Die Raumsuche ist nicht verfügbar. Deine persönliche Lernsitzung ist bereit."
+  }
+}

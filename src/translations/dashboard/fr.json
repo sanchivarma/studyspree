@@ -1,0 +1,14 @@
+{
+  "dashboard": {
+    "chooseCompany": "Comment souhaitez-vous étudier ?",
+    "soloDescription": "Une séance calme dans le thème de votre choix.",
+    "characterDescription": "Choisissez parmi huit partenaires d’étude illustrés.",
+    "rooms": "Salles d’étude partagées",
+    "noRooms": "Aucune salle n’est disponible pour le moment.",
+    "humansOnline": "{count} personnes en ligne",
+    "join": "Rejoindre",
+    "latestRoom": "Dernière salle",
+    "onlinePeople": "Qui est en ligne ?",
+    "unavailable": "La recherche de salles est indisponible. Votre séance personnelle est prête."
+  }
+}

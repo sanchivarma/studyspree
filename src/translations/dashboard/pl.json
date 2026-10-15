@@ -1,0 +1,14 @@
+{
+  "dashboard": {
+    "chooseCompany": "Jak chcesz się uczyć?",
+    "soloDescription": "Spokojna sesja w wybranym motywie.",
+    "characterDescription": "Wybierz spośród ośmiu ilustrowanych partnerów.",
+    "rooms": "Wspólne pokoje nauki",
+    "noRooms": "Obecnie nie ma dostępnych pokoi.",
+    "humansOnline": "{count} osób online",
+    "join": "Dołącz",
+    "latestRoom": "Ostatni pokój",
+    "onlinePeople": "Kto jest online?",
+    "unavailable": "Wyszukiwanie pokoi jest niedostępne. Twoja sesja nauki jest gotowa."
+  }
+}

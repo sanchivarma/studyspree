@@ -19,6 +19,10 @@ export function repositoryContract(name: string, create: () => Repository) {
       expect(await repo.getActiveSession()).toEqual(first);
       expect(first.actualSeconds).toBe(0);
     });
+    it("exposes an honest local dashboard without fictitious live participants", async () => {
+      expect(await repo.getDashboard()).toEqual({ latestRoom: null, rooms: [], onlinePeople: [], capabilities: { humanRooms: false } });
+      expect(await repo.getActiveSession()).toBeNull();
+    });
     it("persists companion preferences and snapshots without changing timer accounting", async () => {
       expect((await repo.getProfile()).companionPreferences).toEqual({ mode: "solo", characterSlugs: [] });
       const companions = { mode: "characters" as const, characterSlugs: ["male-01", "female-04"] as ("male-01" | "female-04")[] };

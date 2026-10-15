@@ -1,0 +1,14 @@
+{
+  "dashboard": {
+    "chooseCompany": "How would you like to study?",
+    "soloDescription": "A quiet session in your chosen theme.",
+    "characterDescription": "Choose from eight illustrated study partners.",
+    "rooms": "Shared study rooms",
+    "noRooms": "There are no rooms to join right now.",
+    "humansOnline": "{count} people online",
+    "join": "Join",
+    "latestRoom": "Latest room",
+    "onlinePeople": "Who's online",
+    "unavailable": "Room discovery is unavailable. Your personal study session is ready."
+  }
+}
