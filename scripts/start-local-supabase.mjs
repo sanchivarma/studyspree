@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const dockerBin = process.platform === "win32" ? "C:\\Program Files\\Docker\\Docker\\resources\\bin" : "";
-const child = spawn(process.execPath, [join(root, "node_modules/supabase/dist/supabase.js"), "start"], {
+const child = spawn(process.execPath, [join(root, "node_modules/supabase/dist/supabase.js"), "start", "--exclude", "logflare,vector,edge-runtime,supavisor"], {
   cwd: root, env: { ...process.env, PATH: [dockerBin, process.env.PATH].filter(Boolean).join(delimiter) },
   stdio: ["ignore", "pipe", "pipe"],
 });

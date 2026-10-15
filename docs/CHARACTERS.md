@@ -30,4 +30,4 @@ Picker previews animate for the hovered/focused desktop card. Session animations
 
 `Profile.companionPreferences` stores future-session defaults. `Session.companions` snapshots the selection for that session. Missing legacy values read as Solo without resetting history. Editing a running session changes its companion metadata through the repository, preserving every accounting field. Ended session selections are immutable.
 
-The current session implementation is LocalRepository. Migration `0004_virtual_companions.sql` prepares equivalent database columns, validation and ended-session protection. Its SQL tests and generated database types must be run when local Supabase/Docker is available; this document does not claim the server storage adapter is active.
+The current session implementation is LocalRepository. Migration `0004_virtual_companions.sql` provides equivalent database columns, validation and ended-session protection. It has been applied to local Supabase, its pgTAP checks pass, and database types have been generated. The server storage adapter is not yet active.

@@ -30,7 +30,7 @@ test("all five languages update forms, accessibility labels and saved preference
       await expect(page.getByLabel(label, { exact: true })).toBeVisible();
     }
     await expect(page.getByRole("button", { name: text.common.google })).toHaveCount(0);
-    await expect(page.getByRole("button", { name: text.common.facebook })).toBeVisible();
+    await expect(page.getByRole("button", { name: text.common.facebook })).toHaveCount(0);
     await page.getByRole("tab", { name: text.login.title, exact: true }).click();
     await page.getByRole("button", { name: text.login.forgotPassword }).click();
     await expect(page.getByRole("heading", { name: text.recovery.title })).toBeVisible();
@@ -54,7 +54,7 @@ test("tabs support keyboard navigation", async ({ page }) => {
 test("signed-out sessions cannot access Home or Study", async ({ page }) => {
   for (const path of ["/", "/study", "/session/demo"]) {
     await page.goto(path);
-    await expect(page).toHaveURL(/\/$/);
+    await expect(page).toHaveURL(/\/login$/);
     await expect(page.getByRole("tab", { name: dictionaries.en.login.title, exact: true })).toBeVisible();
   }
 });
@@ -82,7 +82,7 @@ test("development login opens Home and keeps session controls on Study", async (
   await page.getByRole("button", { name: dictionaries.en.login.submit, exact: true }).click();
   await expect(page).toHaveURL(/\/$/);
   await expect(page.getByTestId("auth-feedback").getByRole("status")).toHaveText(dictionaries.en.login.success);
-  await expect(page.getByRole("heading")).toContainText(username);
+  await expect(page.getByRole("heading", { level: 1 })).toContainText(username);
   await expect(page.getByRole("button", { name: /^5 min/ })).toHaveCount(0);
   await page.getByRole("link", { name: dictionaries.en.home.studyLink }).click();
   await expect(page).toHaveURL(/\/study$/);
@@ -91,9 +91,9 @@ test("development login opens Home and keeps session controls on Study", async (
   await expect(page.getByRole("button", { name: "25 min", exact: true })).toHaveAttribute("aria-pressed", "true");
   await page.goto("/");
   await page.getByRole("button", { name: dictionaries.en.common.logout, exact: true }).click();
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page).toHaveURL(/\/login$/);
   await page.goto("/study");
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page).toHaveURL(/\/login$/);
 });
 
 test("wrong passwords show a visible localized error without signing in", async ({ page }) => {
@@ -110,7 +110,7 @@ test("wrong passwords show a visible localized error without signing in", async 
     await page.getByRole("button", { name: text.login.submit, exact: true }).click();
     const feedback = page.getByTestId("auth-feedback");
     await expect(feedback.getByRole("alert")).toHaveText(text.login.invalidCredentials);
-    await expect(page).toHaveURL(/\/$/);
+    await expect(page).toHaveURL(/\/login$/);
     expect((await page.context().cookies()).some((cookie) => cookie.name === "ss_dev_admin")).toBe(false);
     const box = await feedback.boundingBox();
     expect(box).not.toBeNull();

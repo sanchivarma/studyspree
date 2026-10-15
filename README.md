@@ -168,3 +168,18 @@ synthetic fixtures temporarily and remove only the files they created.
 
 See `CLAUDE.md` and `AGENTS.md` for project conventions. Auth and translations
 were brought forward from the phased plan at the user's request.
+
+## Local development
+
+1. Install and start Docker Desktop with its WSL 2 backend on Windows.
+2. Run `npm install` (Supabase CLI is already a development dependency; a new project would install it with `npm install supabase --save-dev`).
+3. This repository is already initialised. Use `npx supabase init` when initialising a new project, not to overwrite this configuration.
+4. Run `node scripts/start-local-supabase.mjs`. This starts the required local services and suppresses credentials in terminal output. Unused analytics and edge-function services are disabled to keep local resource usage down.
+5. Run `node scripts/configure-local-supabase.mjs` to copy local connection values into `.env.local` without printing them. Existing environment values are backed up to the ignored `.env.local.before-local`; development preview credentials are preserved. Alternatively obtain values from `npx supabase status` and configure them manually.
+6. For a deliberate fresh local database, `npx supabase db reset` reapplies migrations and `supabase/seed.sql`. This erases local database accounts/records; it is not a routine startup command. Run the configuration helper afterwards to restore the local username-lookup hash.
+7. Studio: `http://localhost:54323`. Local email inbox: `http://localhost:54324` (Mailpit in this CLI version; the plan calls this Inbucket). Magic-link emails stay in this local inbox.
+8. Run `npm run db:types` after schema changes and `npm run db:test` for pgTAP. Then run `npm run dev` on port 3000. Restart an existing app server if it has not picked up environment changes. `npm run test:e2e:supabase` verifies real local magic-link login and onboarding; regular UI/privacy tests remain a separate command and do not require a database.
+
+Session storage remains LocalRepository until the server-repository rollout is complete. Do not interpret local Supabase availability as an automatic migration of banked local history.
+
+See [the feature checklist](docs/FEATURE_CHECKLIST.md), [virtual characters](docs/CHARACTERS.md), and [the LiveKit Cloud decision](docs/LIVEKIT.md) for current implementation and verification status.

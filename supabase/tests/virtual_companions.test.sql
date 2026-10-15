@@ -1,4 +1,6 @@
 begin;
+create extension if not exists pgtap with schema extensions;
+set local search_path = public, extensions;
 select plan(6);
 select ok(public.valid_companion_selection('{"mode":"solo","characterSlugs":[]}'), 'Legacy solo defaults are valid');
 select ok(public.valid_companion_selection('{"mode":"characters","characterSlugs":["male-01","female-04"]}'), 'Virtual companions accepted');

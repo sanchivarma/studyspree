@@ -2,6 +2,7 @@ import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
   testDir: "./e2e",
+  testIgnore: ["**/supabase/**"], // Dedicated integration command requires the local database/email stack.
   fullyParallel: false,
   workers: 1,
   forbidOnly: Boolean(process.env.CI),
