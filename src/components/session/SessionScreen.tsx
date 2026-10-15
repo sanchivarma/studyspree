@@ -19,10 +19,12 @@ import { useSessionTitle } from "@/hooks/useSessionTitle";
 import { useLocalCamera } from "@/hooks/useLocalCamera";
 import { SelfView } from "@/components/webcam/SelfView";
 import { AmbienceControl } from "@/components/ambience/AmbienceControl";
+import { SessionCompanions } from "@/components/characters/SessionCompanions";
 
 export function SessionScreen({ session }: { session: Session }) {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [soundOpen, setSoundOpen] = useState(false);
+  const [companionOpen, setCompanionOpen] = useState(false);
   const profile = useProfile();
   const camera = useLocalCamera();
   const { elapsedSeconds, remainingSeconds, isFinishing } = useSessionTimer(session);
@@ -39,23 +41,24 @@ export function SessionScreen({ session }: { session: Session }) {
   useSessionTitle(time);
   const { t } = useTranslation();
   const idleVisible = useIdleVisibility();
-  const isVisible = sheetOpen || soundOpen || idleVisible;
+  const isVisible = sheetOpen || soundOpen || companionOpen || idleVisible;
   const style = { "--accent": getTheme(slug).accentColor } as CSSProperties;
   const fade = cn("transition-opacity duration-200 motion-reduce:transition-none", isVisible ? "opacity-100" : "pointer-events-none opacity-0");
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (sheetOpen || soundOpen || event.key !== "Escape" || event.defaultPrevented || event.repeat) return;
+      if (sheetOpen || soundOpen || companionOpen || event.key !== "Escape" || event.defaultPrevented || event.repeat) return;
       event.preventDefault();
       finish();
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [finish, sheetOpen, soundOpen]);
+  }, [finish, sheetOpen, soundOpen, companionOpen]);
 
   return <section aria-label={t("session.label")} data-testid="session-screen" data-controls-visible={isVisible} style={style}
     className={cn("relative isolate h-dvh w-full overflow-hidden", !isVisible && "cursor-none")}>
     <ThemeScene slug={slug} priority />
+    <SessionCompanions session={session} visible={isVisible} onOpenChange={setCompanionOpen} />
 
     <div className="absolute top-10 right-6 left-6 flex flex-col items-center md:top-12">
       <div className={cn("shrink-0 transition-opacity duration-200 motion-reduce:transition-none", isVisible ? "opacity-100" : "opacity-40")}>

@@ -5,11 +5,13 @@ import { ThemeScene } from "@/components/scene/ThemeScene";
 import { getTheme } from "@/lib/themes/registry";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useStartSession } from "@/hooks/useStartSession";
+import { useProfile } from "@/hooks/useProfile";
 
 export function ComebackScreen({ name, slug, totalSeconds, daysAway, onDismiss }: {
   name: string; slug: string; totalSeconds: number; daysAway: number; onDismiss: () => void;
 }) {
   const { locale, t } = useTranslation();
+  const profile = useProfile();
   const starting = useRef(false);
   const startButton = useRef<HTMLButtonElement>(null);
   const { mutate, isPending, error } = useStartSession(() => console.debug("comeback_converted", { days_away: daysAway }));
@@ -35,7 +37,7 @@ export function ComebackScreen({ name, slug, totalSeconds, daysAway, onDismiss }
       <button ref={startButton} type="button" aria-keyshortcuts="Enter Space" disabled={isPending} onClick={() => {
         if (starting.current || isPending) return;
         starting.current = true;
-        mutate({ plannedMinutes: 5, themeSlug: slug, task: null }, { onSettled: () => { starting.current = false; } });
+        mutate({ plannedMinutes: 5, themeSlug: slug, task: null, companions: profile.data?.companionPreferences }, { onSettled: () => { starting.current = false; } });
       }} className="mt-8 h-14 w-full rounded-2xl bg-accent text-[18px] font-semibold text-background disabled:opacity-60">{t("common.start")}</button>
       {error && <p role="alert" className="mt-3 text-small text-text-muted">{t("study.startError")}</p>}
       <button type="button" onClick={onDismiss} className="mt-3 min-h-11 rounded-lg px-4 text-small text-foreground/70 hover:text-foreground">{t("comeback.notNow")}</button>

@@ -19,6 +19,30 @@ export function repositoryContract(name: string, create: () => Repository) {
       expect(await repo.getActiveSession()).toEqual(first);
       expect(first.actualSeconds).toBe(0);
     });
+    it("persists companion preferences and snapshots without changing timer accounting", async () => {
+      expect((await repo.getProfile()).companionPreferences).toEqual({ mode: "solo", characterSlugs: [] });
+      const companions = { mode: "characters" as const, characterSlugs: ["male-01", "female-04"] as ("male-01" | "female-04")[] };
+      await repo.updateProfile({ companionPreferences: companions });
+      const session = await repo.startSession({ ...input, companions });
+      await repo.updateProfile({ companionPreferences: { mode: "solo", characterSlugs: [] } });
+      expect((await repo.getActiveSession())?.companions).toEqual(companions);
+      vi.advanceTimersByTime(10000);
+      const changed = await repo.updateSessionCompanions(session.id, { mode: "characters", characterSlugs: ["female-02"] });
+      expect(changed.startedAt).toBe(session.startedAt);
+      expect(changed.actualSeconds).toBe(0);
+      expect(await repo.getTotalSecondsAllTime()).toBe(0);
+      const ended = await repo.endSession(session.id, "stopped_early");
+      expect(ended.session.actualSeconds).toBe(10);
+      expect(ended.session.companions.characterSlugs).toEqual(["female-02"]);
+      await expect(repo.updateSessionCompanions(session.id, { mode: "solo", characterSlugs: [] })).rejects.toThrow();
+    });
+    it("rejects invalid companion input without overwriting existing history", async () => {
+      const first = await repo.startSession(input);
+      await repo.endSession(first.id, "completed");
+      const history = await repo.getSessions({ limit: 20, offset: 0 });
+      await expect(repo.startSession({ ...input, companions: { mode: "characters", characterSlugs: [] } })).rejects.toThrow();
+      expect(await repo.getSessions({ limit: 20, offset: 0 })).toEqual(history);
+    });
     it("persists a daily comeback marker without changing hours, history, or streak", async () => {
       expect((await repo.getProfile()).comebackShownForDate).toBeNull();
       const session = await repo.startSession(input);

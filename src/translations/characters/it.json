@@ -1,0 +1,27 @@
+{
+  "characters": {
+    "title": "Compagni di studio",
+    "description": "Un po’ di compagnia, al tuo ritmo.",
+    "solo": "Da solo",
+    "characters": "Partner virtuali",
+    "people": "Persone",
+    "peopleUnavailable": "Le stanze condivise arriveranno più avanti.",
+    "virtualLabel": "Partner di studio virtuale",
+    "reading": "Legge con calma",
+    "writing": "Lavora sugli appunti",
+    "selected": "{count} selezionati",
+    "choose": "Scegli almeno un partner.",
+    "saveError": "Non è stato possibile salvare la selezione.",
+    "change": "Scegli i compagni",
+    "hide": "Nascondi i compagni",
+    "show": "Mostra i compagni",
+    "male-01": "Noah",
+    "male-02": "Amir",
+    "male-03": "Leo",
+    "male-04": "Kai",
+    "female-01": "Maya",
+    "female-02": "Zara",
+    "female-03": "Mei",
+    "female-04": "Eva"
+  }
+}

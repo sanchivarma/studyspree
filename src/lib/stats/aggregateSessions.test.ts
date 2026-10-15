@@ -4,7 +4,7 @@ import type { Session } from "@/types/domain";
 
 function session(id: string, localDate: string, actualSeconds: number, endedReason: Session["endedReason"] = "completed"): Session {
   return { id, localDate, actualSeconds, endedReason, startedAt: "2026-10-13T00:00:00Z",
-    endedAt: endedReason === null ? null : "2026-10-13T01:00:00Z", plannedMinutes: 25, themeSlug: "rain-desk", task: null };
+    endedAt: endedReason === null ? null : "2026-10-13T01:00:00Z", plannedMinutes: 25, themeSlug: "rain-desk", task: null, companions: { mode: "solo", characterSlugs: [] } };
 }
 
 it("returns empty aggregates and a nullable first date for empty or active history", () => {

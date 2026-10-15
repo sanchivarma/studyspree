@@ -2,7 +2,11 @@
 
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
-import { Shuffle } from "lucide-react";
+import { Shuffle, Users, X } from "lucide-react";
+import { CompanionModePicker } from "@/components/characters/CompanionModePicker";
+import { useCompanionPreferences } from "@/hooks/useCompanionPreferences";
+import type { CompanionPreferences } from "@/types/characters";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetClose, SheetTrigger } from "@/components/ui/sheet";
 import { ThemeScene } from "@/components/scene/ThemeScene";
 import { ThemeSheet } from "@/components/scene/ThemeSheet";
 import { getTheme } from "@/lib/themes/registry";
@@ -28,6 +32,10 @@ export function StartScreen({ displayName, initialHour }: { displayName: string;
   const recent = useRecentSession();
   const comeback = useComeback(!active.isPending && !active.data);
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [companionOpen, setCompanionOpen] = useState(false);
+  const companionPreferences = useCompanionPreferences();
+  const [chosenCompanions, setChosenCompanions] = useState<CompanionPreferences | null>(null);
+  const companions = chosenCompanions ?? companionPreferences.value;
   const [chosenDuration, setChosenDuration] = useState<number | null | undefined>(undefined);
   const latest = recent.data?.[0];
   const selectedDuration = chosenDuration !== undefined ? chosenDuration : latest?.endedAt ? latest.plannedMinutes : 5;
@@ -42,10 +50,10 @@ export function StartScreen({ displayName, initialHour }: { displayName: string;
     if (starting.current || isPending) return;
     starting.current = true;
     const task = taskRef.current?.value.trim();
-    mutate({ plannedMinutes: selectedDuration, themeSlug: slug, task: task || null }, {
+    mutate({ plannedMinutes: selectedDuration, themeSlug: slug, task: task || null, companions }, {
       onSettled: () => { starting.current = false; },
     });
-  }, [mutate, isPending, selectedDuration, slug]);
+  }, [mutate, isPending, selectedDuration, slug, companions]);
   const hour = useCurrentHour(initialHour);
   const greeting = t(hour < 12 ? "home.morning" : hour < 18 ? "home.afternoon" : "home.evening", { username: profile.data?.displayName || displayName });
   const style = { "--accent": getTheme(slug).accentColor } as CSSProperties;
@@ -60,7 +68,7 @@ export function StartScreen({ displayName, initialHour }: { displayName: string;
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (
-        comeback.offer || sheetOpen || event.defaultPrevented || event.repeat || event.isComposing ||
+        comeback.offer || sheetOpen || companionOpen || event.defaultPrevented || event.repeat || event.isComposing ||
         event.altKey || event.ctrlKey || event.metaKey ||
         (event.key !== " " && event.key !== "Enter")
       ) return;
@@ -74,7 +82,7 @@ export function StartScreen({ displayName, initialHour }: { displayName: string;
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [startSession, sheetOpen, comeback.offer]);
+  }, [startSession, sheetOpen, companionOpen, comeback.offer]);
 
   if (comeback.offer) return <ComebackScreen name={profile.data?.displayName || displayName} slug={slug}
     totalSeconds={comeback.offer.totalSeconds} daysAway={comeback.offer.daysAway} onDismiss={comeback.dismiss} />;
@@ -91,6 +99,18 @@ export function StartScreen({ displayName, initialHour }: { displayName: string;
 
       <div className="relative mx-auto w-full max-w-[480px] px-6 pt-24 pb-20 md:pb-6">
         <p className="mb-6 text-small text-text-muted">{greeting}</p>
+        <Sheet open={companionOpen} onOpenChange={setCompanionOpen}>
+          <SheetTrigger asChild><button type="button" aria-label={t("characters.change")} className="mb-4 flex min-h-11 w-full items-center gap-3 rounded-xl border border-border bg-background/40 px-4 text-small">
+            <Users aria-hidden="true" className="size-4" />{t(companions.mode === "characters" ? "characters.characters" : "characters.solo")}
+            {companions.characterSlugs.length > 0 && <span className="ml-auto text-text-muted">{t("characters.selected", { count: companions.characterSlugs.length })}</span>}
+          </button></SheetTrigger>
+          <SheetContent side="right" showCloseButton={false} className="w-full overflow-y-auto bg-background p-5 sm:max-w-[440px]">
+            <SheetHeader className="mb-5 p-0 pr-11"><SheetTitle>{t("characters.title")}</SheetTitle><SheetDescription>{t("characters.description")}</SheetDescription></SheetHeader>
+            <SheetClose asChild><button type="button" aria-label={t("scene.close")} className="absolute top-2 right-2 flex size-11 items-center justify-center"><X className="size-5" /></button></SheetClose>
+            <CompanionModePicker value={companions} onChange={value => { setChosenCompanions(value); companionPreferences.mutation.mutate(value); }} />
+            {companionPreferences.mutation.error && <p role="alert" className="mt-4 text-small">{t("characters.saveError")}</p>}
+          </SheetContent>
+        </Sheet>
 
         <fieldset className="mb-4">
           <legend className="sr-only">{t("study.duration")}</legend>

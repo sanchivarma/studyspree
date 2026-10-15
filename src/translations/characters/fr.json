@@ -1,0 +1,27 @@
+{
+  "characters": {
+    "title": "Compagnons d’étude",
+    "description": "Un peu de compagnie, à votre rythme.",
+    "solo": "En solo",
+    "characters": "Partenaires virtuels",
+    "people": "Personnes",
+    "peopleUnavailable": "Les salles partagées arriveront plus tard.",
+    "virtualLabel": "Partenaire d’étude virtuel",
+    "reading": "Lit tranquillement",
+    "writing": "Travaille sur ses notes",
+    "selected": "{count} sélectionnés",
+    "choose": "Choisissez au moins un partenaire.",
+    "saveError": "Votre sélection n’a pas pu être enregistrée.",
+    "change": "Choisir des compagnons",
+    "hide": "Masquer les compagnons",
+    "show": "Afficher les compagnons",
+    "male-01": "Noah",
+    "male-02": "Amir",
+    "male-03": "Leo",
+    "male-04": "Kai",
+    "female-01": "Maya",
+    "female-02": "Zara",
+    "female-03": "Mei",
+    "female-04": "Eva"
+  }
+}

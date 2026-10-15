@@ -5,7 +5,7 @@ import type { Session } from "@/types/domain";
 
 const start = new Date("2026-10-13T12:00:00Z");
 const session: Session = { id: "session-one", startedAt: start.toISOString(), endedAt: null, plannedMinutes: 5,
-  actualSeconds: 0, endedReason: null, themeSlug: "rain-desk", localDate: "2026-10-13", task: null };
+  actualSeconds: 0, endedReason: null, themeSlug: "rain-desk", localDate: "2026-10-13", task: null, companions: { mode: "solo", characterSlugs: [] } };
 let documentStub: EventTarget & { hidden: boolean };
 let cleanups: Array<() => void>;
 

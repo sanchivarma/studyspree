@@ -1,0 +1,27 @@
+{
+  "characters": {
+    "title": "Towarzysze nauki",
+    "description": "Trochę towarzystwa, we własnym tempie.",
+    "solo": "Samodzielnie",
+    "characters": "Wirtualni partnerzy",
+    "people": "Ludzie",
+    "peopleUnavailable": "Wspólne pokoje pojawią się później.",
+    "virtualLabel": "Wirtualny partner do nauki",
+    "reading": "Spokojnie czyta",
+    "writing": "Pracuje nad notatkami",
+    "selected": "Wybrano: {count}",
+    "choose": "Wybierz przynajmniej jednego partnera.",
+    "saveError": "Nie udało się zapisać wyboru.",
+    "change": "Wybierz towarzyszy",
+    "hide": "Ukryj towarzyszy",
+    "show": "Pokaż towarzyszy",
+    "male-01": "Noah",
+    "male-02": "Amir",
+    "male-03": "Leo",
+    "male-04": "Kai",
+    "female-01": "Maya",
+    "female-02": "Zara",
+    "female-03": "Mei",
+    "female-04": "Eva"
+  }
+}

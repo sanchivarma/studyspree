@@ -36,6 +36,9 @@ jobs:
       - run: npm run lint
       - run: npm run test
       - run: npm run check:audio-licences
+      - run: npm run check:character-assets
+      - name: Verify virtual study companions
+        run: npm run test:e2e -- e2e/characters.spec.ts
       - name: Enforce webcam privacy
         run: npm run test:e2e -- e2e/webcam-privacy.spec.ts
       - name: Save browser failure artifacts

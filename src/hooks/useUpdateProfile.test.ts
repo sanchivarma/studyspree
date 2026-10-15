@@ -17,7 +17,7 @@ type Context = { previous: Profile | undefined; patch: Partial<Profile>; edit: s
 type Options = UseMutationOptions<Profile, Error, Partial<Profile>, Context>;
 const original: Profile = { displayName: "Sanchi", selectedTheme: "rain-desk", timezone: "Europe/Berlin", showStreak: true,
   reduceMotion: false, webcamEnabled: false, webcamCorner: "bottom-right", ambienceEnabled: false,
-  musicTrack: null, musicVolume: 0, roomVolume: 0, comebackShownForDate: null };
+  musicTrack: null, musicVolume: 0, roomVolume: 0, comebackShownForDate: null, companionPreferences: { mode: "solo", characterSlugs: [] } };
 let options: Options;
 beforeEach(() => {
   vi.clearAllMocks(); state.client = new QueryClient(); state.client.setQueryData(queryKeys.profile(), original);

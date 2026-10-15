@@ -9,6 +9,8 @@ import { applyActivity, type StreakState } from "@/lib/streaks/computeStreak";
 import type { DayStat, EndedReason, Profile, Session } from "@/types/domain";
 import type { EndSessionResult, EndSessionStreak, Repository, SessionSummary, StartSessionInput } from "./types";
 import { upgradeThemeNames } from "./upgradeThemes";
+import { companionSchema, localCompanionSchema, soloCompanions } from "@/lib/characters/schemas";
+import type { CompanionPreferences } from "@/types/characters";
 
 type StorageAccess = Pick<Storage, "getItem" | "setItem" | "removeItem">;
 const iso = z.iso.datetime();
@@ -25,11 +27,12 @@ const profileSchema = z.object({
   musicTrack: z.enum(musicTracks.map(track => track.slug)).nullable().default(null),
   musicVolume: z.number().min(0).max(1).default(0),
   roomVolume: z.number().min(0).max(1).default(0),
+  companionPreferences: localCompanionSchema.default(soloCompanions),
 }).strict();
-const inputSchema = z.object({ plannedMinutes: z.number().finite().positive().nullable(), themeSlug: z.string().min(1), task: z.string().nullable() }).strict();
+const inputSchema = z.object({ plannedMinutes: z.number().finite().positive().nullable(), themeSlug: z.string().min(1), task: z.string().nullable(), companions: localCompanionSchema.default(soloCompanions) }).strict();
 const sessionSchema = z.object({
   id: z.string().min(1), startedAt: iso, endedAt: iso.nullable(),
-  ...inputSchema.shape, actualSeconds: z.number().int().min(0).max(21600),
+  ...inputSchema.shape, companions: companionSchema.default(soloCompanions), actualSeconds: z.number().int().min(0).max(21600),
   endedReason: z.enum(["completed", "stopped_early", "abandoned"]).nullable(), localDate: date,
 }).strict().refine((session) => session.endedAt === null
   ? session.endedReason === null && session.actualSeconds === 0
@@ -99,6 +102,7 @@ export class LocalRepository implements Repository {
       comebackShownForDate: null,
       webcamCorner: "bottom-right",
       musicTrack: null, musicVolume: 0, roomVolume: 0,
+      companionPreferences: soloCompanions(),
     }));
   }
   private sessions(): Session[] { return this.read("ss_sessions", sessionsSchema, () => []); }
@@ -185,6 +189,17 @@ export class LocalRepository implements Repository {
     return this.mutate(() => {
       const active = this.active(this.sessions());
       if (active?.id === id) this.write("ss_active", { id, lastHeartbeatAt: now().toISOString() });
+    });
+  }
+  updateSessionCompanions(id: string, companions: CompanionPreferences): Promise<Session> {
+    return this.mutate(() => {
+      const validated = localCompanionSchema.parse(companions);
+      const sessions = this.sessions();
+      const session = sessions.find(value => value.id === id);
+      if (!session || session.endedAt !== null) throw new Error("An active session is required");
+      const updated = { ...session, companions: validated };
+      this.write("ss_sessions", sessions.map(value => value.id === id ? updated : value));
+      return updated;
     });
   }
   async getSessions(opts: { limit: number; offset: number }): Promise<Session[]> {

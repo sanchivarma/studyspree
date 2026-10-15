@@ -37,7 +37,7 @@ describe("local persistence and recovery", () => {
     expect(JSON.parse(storage.getItem("ss_sessions")!)).toEqual(expect.arrayContaining([
       expect.objectContaining({ id: "legacy-ended", actualSeconds: 90, themeSlug: "dorm-bunk" }),
     ]));
-    expect(storage.getItem("ss_sessions")).not.toContain("characterSlug");
+    expect(storage.getItem("ss_sessions")).not.toContain('"characterSlug":');
     await repo.updateProfile({ showStreak: false });
     expect(JSON.parse(storage.getItem("ss_profile")!)).toMatchObject({ selectedTheme: "night-shift", displayName: "Alex", showStreak: false });
     expect(storage.getItem("ss_profile")).not.toContain("selectedCharacter");
@@ -70,9 +70,9 @@ describe("local persistence and recovery", () => {
     const original = { displayName: "Alex", selectedTheme: "dorm-bunk", timezone: "Europe/Berlin", showStreak: false, reduceMotion: true, webcamEnabled: false, ambienceEnabled: true };
     storage.setItem("ss_profile", JSON.stringify(original));
     const repo = new LocalRepository(() => storage);
-    expect(await repo.getProfile()).toEqual({ ...original, musicTrack: null, musicVolume: 0, roomVolume: 0, webcamCorner: "bottom-right", comebackShownForDate: null });
+    expect(await repo.getProfile()).toEqual({ ...original, musicTrack: null, musicVolume: 0, roomVolume: 0, webcamCorner: "bottom-right", comebackShownForDate: null, companionPreferences: { mode: "solo", characterSlugs: [] } });
     await repo.updateProfile({ comebackShownForDate: "2026-10-14" });
-    expect(await new LocalRepository(() => storage).getProfile()).toEqual({ ...original, musicTrack: null, musicVolume: 0, roomVolume: 0, webcamCorner: "bottom-right", comebackShownForDate: "2026-10-14" });
+    expect(await new LocalRepository(() => storage).getProfile()).toEqual({ ...original, musicTrack: null, musicVolume: 0, roomVolume: 0, webcamCorner: "bottom-right", comebackShownForDate: "2026-10-14", companionPreferences: { mode: "solo", characterSlugs: [] } });
     await expect(repo.updateProfile({ comebackShownForDate: "not-a-date" })).rejects.toThrow();
     expect((await repo.getProfile()).comebackShownForDate).toBe("2026-10-14");
   });

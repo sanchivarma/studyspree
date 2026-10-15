@@ -21,7 +21,7 @@ vi.mock("@tanstack/react-query", () => ({
 vi.mock("@/lib/repo", () => ({ repo: { getActiveSession: vi.fn(), startSession: vi.fn(), endSession: vi.fn(), getProfile: vi.fn(), getDayStats: vi.fn() } }));
 
 const session: Session = { id: "local-session", startedAt: "2026-10-13T12:00:00Z", endedAt: null,
-  plannedMinutes: 5, actualSeconds: 0, endedReason: null, themeSlug: "rain-desk", localDate: "2026-10-13", task: null };
+  plannedMinutes: 5, actualSeconds: 0, endedReason: null, themeSlug: "rain-desk", localDate: "2026-10-13", task: null, companions: { mode: "solo" as const, characterSlugs: [] } };
 type MutationCallbacks<Input, Output> = {
   mutationFn: (input: Input) => Promise<Output>;
   onSuccess: (output: Output) => Promise<void>;
@@ -53,7 +53,7 @@ describe("session query and mutation boundaries", () => {
     vi.mocked(repo.startSession).mockResolvedValue(session);
     useStartSession();
     const options = callbacks<StartSessionInput, Session>();
-    const input = { plannedMinutes: 5, themeSlug: "rain-desk", task: null };
+    const input: StartSessionInput = { plannedMinutes: 5, themeSlug: "rain-desk", task: null, companions: { mode: "solo", characterSlugs: [] } };
     expect(await options.mutationFn(input)).toEqual(session);
     expect(repo.startSession).toHaveBeenCalledWith(input);
     let release!: () => void;

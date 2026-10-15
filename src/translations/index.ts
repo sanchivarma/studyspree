@@ -1,3 +1,8 @@
+import itcharacters from "./characters/it.json";
+import plcharacters from "./characters/pl.json";
+import frcharacters from "./characters/fr.json";
+import decharacters from "./characters/de.json";
+import encharacters from "./characters/en.json";
 import itambience from "./ambience/it.json";
 import plambience from "./ambience/pl.json";
 import frambience from "./ambience/fr.json";
@@ -77,17 +82,17 @@ import itdev from "./dev/it.json";
 export const locales = ["en", "de", "fr", "pl", "it"] as const;
 export type Locale = (typeof locales)[number];
 
-const en = { ...encommon, ...enlogin, ...enregister, ...enrecovery, ...enhome, ...enstudy, ...ensession, ...encomplete, ...enstats, ...enscene, ...ensettings, ...endev, ...encomeback, ...enwebcam, ...enambience };
+const en = { ...encommon, ...enlogin, ...enregister, ...enrecovery, ...enhome, ...enstudy, ...ensession, ...encomplete, ...enstats, ...enscene, ...ensettings, ...endev, ...encomeback, ...enwebcam, ...enambience, ...encharacters };
 export type Dictionary = typeof en;
 export type TranslationKey = {
   [Namespace in keyof Dictionary]: `${Namespace}.${keyof Dictionary[Namespace] & string}`
 }[keyof Dictionary];
 export const dictionaries = {
   en,
-  de: { ...decommon, ...delogin, ...deregister, ...derecovery, ...dehome, ...destudy, ...desession, ...decomplete, ...destats, ...descene, ...desettings, ...dedev, ...decomeback, ...dewebcam, ...deambience },
-  fr: { ...frcommon, ...frlogin, ...frregister, ...frrecovery, ...frhome, ...frstudy, ...frsession, ...frcomplete, ...frstats, ...frscene, ...frsettings, ...frdev, ...frcomeback, ...frwebcam, ...frambience },
-  pl: { ...plcommon, ...pllogin, ...plregister, ...plrecovery, ...plhome, ...plstudy, ...plsession, ...plcomplete, ...plstats, ...plscene, ...plsettings, ...pldev, ...plcomeback, ...plwebcam, ...plambience },
-  it: { ...itcommon, ...itlogin, ...itregister, ...itrecovery, ...ithome, ...itstudy, ...itsession, ...itcomplete, ...itstats, ...itscene, ...itsettings, ...itdev, ...itcomeback, ...itwebcam, ...itambience },
+  de: { ...decommon, ...delogin, ...deregister, ...derecovery, ...dehome, ...destudy, ...desession, ...decomplete, ...destats, ...descene, ...desettings, ...dedev, ...decomeback, ...dewebcam, ...deambience, ...decharacters },
+  fr: { ...frcommon, ...frlogin, ...frregister, ...frrecovery, ...frhome, ...frstudy, ...frsession, ...frcomplete, ...frstats, ...frscene, ...frsettings, ...frdev, ...frcomeback, ...frwebcam, ...frambience, ...frcharacters },
+  pl: { ...plcommon, ...pllogin, ...plregister, ...plrecovery, ...plhome, ...plstudy, ...plsession, ...plcomplete, ...plstats, ...plscene, ...plsettings, ...pldev, ...plcomeback, ...plwebcam, ...plambience, ...plcharacters },
+  it: { ...itcommon, ...itlogin, ...itregister, ...itrecovery, ...ithome, ...itstudy, ...itsession, ...itcomplete, ...itstats, ...itscene, ...itsettings, ...itdev, ...itcomeback, ...itwebcam, ...itambience, ...itcharacters },
 } satisfies Record<Locale, Dictionary>;
 
 export const languageNames: Record<Locale, string> = { en: "English", de: "Deutsch", fr: "Français", pl: "Polski", it: "Italiano" };

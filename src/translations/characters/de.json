@@ -1,0 +1,27 @@
+{
+  "characters": {
+    "title": "Lernbegleitung",
+    "description": "Etwas Gesellschaft, in deinem Tempo.",
+    "solo": "Allein",
+    "characters": "Virtuelle Lernpartner",
+    "people": "Menschen",
+    "peopleUnavailable": "Gemeinsame Räume kommen später.",
+    "virtualLabel": "Virtueller Lernpartner",
+    "reading": "Liest in Ruhe",
+    "writing": "Arbeitet an Notizen",
+    "selected": "{count} ausgewählt",
+    "choose": "Wähle mindestens eine Begleitung.",
+    "saveError": "Deine Auswahl konnte nicht gespeichert werden.",
+    "change": "Lernbegleitung wählen",
+    "hide": "Lernbegleitung ausblenden",
+    "show": "Lernbegleitung anzeigen",
+    "male-01": "Noah",
+    "male-02": "Amir",
+    "male-03": "Leo",
+    "male-04": "Kai",
+    "female-01": "Maya",
+    "female-02": "Zara",
+    "female-03": "Mei",
+    "female-04": "Eva"
+  }
+}

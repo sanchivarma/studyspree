@@ -1,0 +1,27 @@
+{
+  "characters": {
+    "title": "Study companions",
+    "description": "A little company, at your own pace.",
+    "solo": "Solo",
+    "characters": "Virtual partners",
+    "people": "People",
+    "peopleUnavailable": "Shared rooms are coming later.",
+    "virtualLabel": "Virtual study partner",
+    "reading": "Quietly reading",
+    "writing": "Working through notes",
+    "selected": "{count} selected",
+    "choose": "Choose at least one partner.",
+    "saveError": "Your companion selection could not be saved.",
+    "change": "Choose companions",
+    "hide": "Hide companions",
+    "show": "Show companions",
+    "male-01": "Noah",
+    "male-02": "Amir",
+    "male-03": "Leo",
+    "male-04": "Kai",
+    "female-01": "Maya",
+    "female-02": "Zara",
+    "female-03": "Mei",
+    "female-04": "Eva"
+  }
+}

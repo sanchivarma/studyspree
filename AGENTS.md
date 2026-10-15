@@ -9,7 +9,7 @@ Read this fully before writing code. When this file conflicts with a task prompt
 
 - **StudySpree** — a silent study-companion web app
 - User picks a background theme rendered as a looping scene
-- Characters are reserved for future virtual study partners; the current scenes are themes
+- Characters are virtual study partners; backgrounds remain themes. The new feature roadmap is in docs/FEATURE_CHECKLIST.md.
 - User runs a timer, banks hours, watches progress accumulate
 - Tagline: *"Big goals start with showing up"*
 - Built for people who struggle to **start** studying (ADHD, procrastination, camera-shy)
@@ -305,8 +305,8 @@ Never delete or skip a failing test to make a task pass. Fix the cause or ask.
 - Don't "improve" copy — copy rules are deliberate
 - If you spot something worth doing, **list it under "Suggestions" in your report**; don't do it
 
-### Out of scope for V1 — do not build
-Rooms · other users · chat · AI conversation · webcam-driven avatars · custom avatar builder · forum · leaderboards · payments · task lists · roadmap generator · push notifications · native apps · ads of any kind
+### Original V1 scope and subsequent authorisation
+The user subsequently authorised the 17-feature roadmap in docs/FEATURE_CHECKLIST.md, including rooms, human participants, conversations, groups, tasks, leaderboards, and entitlement infrastructure. Implement these in the recorded order. This supersedes the original exclusion of those features. AI conversation, webcam-driven avatars, a custom avatar builder, a roadmap generator, native apps, ads, and unconfigured payment collection remain outside this roadmap.
 
 ### Ask before
 - Adding any dependency over 50 KB

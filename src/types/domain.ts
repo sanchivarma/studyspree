@@ -1,4 +1,5 @@
 import type { MusicTrackSlug } from "@/lib/audio/catalog";
+import type { CompanionPreferences } from "./characters";
 
 export type EndedReason = "completed" | "stopped_early" | "abandoned";
 
@@ -12,6 +13,7 @@ export type Session = {
   themeSlug: string;
   localDate: string;
   task: string | null;
+  companions: CompanionPreferences;
 };
 
 export type DayStat = { date: string; totalSeconds: number; sessionCount: number };
@@ -29,4 +31,5 @@ export type Profile = {
   musicVolume: number;
   roomVolume: number;
   comebackShownForDate: string | null;
+  companionPreferences: CompanionPreferences;
 };
