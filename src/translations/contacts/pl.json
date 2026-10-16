@@ -1,0 +1,17 @@
+{
+  "contacts": {
+    "title": "Kontakty",
+    "description": "Dodaj osoby przez nazwę użytkownika. Muszą zaakceptować prośbę przed otrzymaniem zaproszeń.",
+    "add": "Dodaj kontakt",
+    "sent": "Wysłano prośbę o kontakt.",
+    "error": "Nie można zaktualizować kontaktów. Sprawdź nazwę użytkownika i zaloguj się na konto.",
+    "accepted": "Połączono",
+    "incoming": "Prośba o kontakt",
+    "pending": "Oczekuje na akceptację",
+    "accept": "Akceptuj",
+    "list": "Lista kontaktów",
+    "createList": "Utwórz listę kontaktów",
+    "listName": "Nazwa listy",
+    "acceptedHint": "Tutaj pojawią się zaakceptowane kontakty. Najpierw dodaj osoby w Kontaktach."
+  }
+}

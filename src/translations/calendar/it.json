@@ -1,0 +1,27 @@
+{
+  "calendar": {
+    "title": "Calendario",
+    "previous": "Mese precedente",
+    "next": "Mese successivo",
+    "today": "Oggi",
+    "reading": "Lettura completata",
+    "scheduled": "In programma",
+    "sessions": "{n} sessioni programmate",
+    "monthReading": "{time} di lettura questo mese",
+    "create": "Programma una sessione",
+    "endsAt": "Data e ora di fine",
+    "inviteContacts": "Invita contatti o liste",
+    "sessionId": "ID sessione",
+    "openSession": "Apri sessione",
+    "decline": "Rifiuta invito",
+    "shareLink": "Condividi link della sessione",
+    "invalidDates": "Scegli un inizio futuro e una fine successiva, distanti al massimo 31 giorni.",
+    "saved": "Sessione programmata. I contatti vedranno gli inviti nel calendario.",
+    "pinSelf": "Fissa il mio video per primo",
+    "unpinSelf": "Sblocca il mio video",
+    "shareSession": "Condividi sessione",
+    "shareHint": "Gli invitati accedono prima di partecipare. La condivisione della videocamera resta facoltativa.",
+    "copy": "Copia link",
+    "copied": "Link copiato."
+  }
+}

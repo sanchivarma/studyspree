@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { Users, X, Eye, EyeOff } from "lucide-react";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -12,17 +12,18 @@ import { soloCompanions } from "@/lib/characters/schemas";
 import { CharacterLoop } from "./CharacterLoop";
 import { CompanionModePicker } from "./CompanionModePicker";
 
-export function SessionCompanions({ session, visible, onOpenChange }: { session: Session; visible: boolean; onOpenChange: (open: boolean) => void }) {
+export function SessionCompanions({ session, visible, onOpenChange, leading }: { session: Session; visible: boolean; onOpenChange: (open: boolean) => void; leading?: ReactNode }) {
   const [hidden, setHidden] = useState(false);
   const desktop = useMediaQuery("(min-width: 768px)");
   const { t } = useTranslation();
   const selection = useSessionCompanions(session.id);
   const companions = session.companions ?? soloCompanions();
   return <>
-    {!hidden && companions.characterSlugs.length > 0 && <div data-testid="session-companions" className="absolute inset-x-4 top-[35%] mx-auto grid max-h-[42dvh] max-w-4xl grid-cols-2 gap-3 overflow-y-auto md:grid-cols-4">
-      {companions.characterSlugs.map(slug => <figure key={slug} className="min-w-0">
-        <CharacterLoop slug={slug} priority />
-        <figcaption className="mt-1 truncate text-center text-[11px] text-foreground/70">{t(getCharacter(slug)!.nameKey)} · {t("characters.virtualLabel")}</figcaption>
+    {((!hidden && companions.characterSlugs.length > 0) || leading) && <div data-testid="session-companions" className="absolute inset-x-1 top-[200px] bottom-20 grid auto-rows-fr gap-1 overflow-y-auto" style={{ gridTemplateColumns: `repeat(${Math.min(desktop ? 4 : 2, (hidden ? 0 : companions.characterSlugs.length) + (leading ? 1 : 0))}, minmax(0, 1fr))` }}>
+      {leading}
+      {!hidden && companions.characterSlugs.map(slug => <figure key={slug} className="relative min-h-40 min-w-0">
+        <CharacterLoop slug={slug} priority className="h-full !aspect-auto !rounded-lg"/>
+        <figcaption className="absolute right-1 bottom-1 left-1 truncate rounded bg-background/70 p-1 text-center text-[11px] text-foreground/70">{t(getCharacter(slug)!.nameKey)} · {t("characters.virtualLabel")}</figcaption>
       </figure>)}
     </div>}
     <div className={visible ? "absolute top-64 left-1/2 z-10 flex -translate-x-1/2 flex-col gap-1 sm:flex-row" : "hidden"}>

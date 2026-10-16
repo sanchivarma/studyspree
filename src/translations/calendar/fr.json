@@ -1,0 +1,27 @@
+{
+  "calendar": {
+    "title": "Calendrier",
+    "previous": "Mois précédent",
+    "next": "Mois suivant",
+    "today": "Aujourd’hui",
+    "reading": "Lecture effectuée",
+    "scheduled": "Prévu",
+    "sessions": "{n} séances prévues",
+    "monthReading": "{time} de lecture ce mois-ci",
+    "create": "Planifier une séance",
+    "endsAt": "Date et heure de fin",
+    "inviteContacts": "Inviter des contacts ou des listes",
+    "sessionId": "Identifiant de séance",
+    "openSession": "Ouvrir la séance",
+    "decline": "Décliner l’invitation",
+    "shareLink": "Partager le lien de séance",
+    "invalidDates": "Choisissez un début futur et une fin ultérieure, espacés de 31 jours maximum.",
+    "saved": "Séance planifiée. Vos contacts verront leurs invitations dans le calendrier.",
+    "pinSelf": "Épingler ma vidéo en premier",
+    "unpinSelf": "Détacher ma vidéo",
+    "shareSession": "Partager la séance",
+    "shareHint": "Les invités se connectent avant de rejoindre. Le partage de caméra reste facultatif.",
+    "copy": "Copier le lien",
+    "copied": "Lien copié."
+  }
+}

@@ -2,7 +2,7 @@ import { z } from "zod";
 const id = z.uuid();
 const title = z.string().trim().min(1).max(100);
 const body = z.string().trim().min(1).max(4000);
-export const areas = ["tasks", "notifications", "feedback", "groups", "spaces", "room", "buddies", "conversations", "messages", "feed", "schedule", "partners", "search", "recipients", "plans", "preferences", "awards", "leaderboards"] as const;
+export const areas = ["calendar", "contacts", "tasks", "notifications", "feedback", "groups", "spaces", "room", "buddies", "conversations", "messages", "feed", "schedule", "partners", "search", "recipients", "plans", "preferences", "awards", "leaderboards"] as const;
 export const areaSchema = z.enum(areas);
 export type CommunityArea = z.infer<typeof areaSchema>;
 export const communityQuerySchema = z.object({ id: id.optional(), groupId: id.optional(), q: z.string().trim().max(100).optional(), filter: z.string().max(30).optional(), cursor: z.string().max(2048).nullable().optional(), date: z.iso.date().optional(), from: z.iso.datetime({ offset: true }).optional(), to: z.iso.datetime({ offset: true }).optional(), metric: z.enum(["time", "streak"]).optional(), period: z.enum(["week", "all"]).optional() }).strict();
@@ -13,6 +13,11 @@ const command = <T extends string, S extends z.ZodRawShape>(action: T, data: S) 
 const member = { id, targetId: id };
 const toggle = { id, value: z.boolean() };
 export const communityCommandSchema = z.discriminatedUnion("action", [
+    command("contact.request", { username: z.string().trim().min(1).max(30) }),
+    command("contact.accept", { id }), command("contact.remove", { id }),
+    command("contact.list.create", { title, members: z.array(id).max(100) }), command("contact.list.remove", { id }),
+    command("calendar.create", { title, startsAt: z.iso.datetime({ offset: true }), endsAt: z.iso.datetime({ offset: true }), contacts: z.array(id).max(100), lists: z.array(id).max(20) }),
+    command("calendar.respond", { id, accept: z.boolean() }), command("session.share", { id }),
     command("room.kick",{id,targetId:id}),
     command("task.create", { title: z.string().trim().min(1).max(300), date: z.iso.date() }), command("task.update", { id, done: z.boolean() }), command("task.delete", { id }),
     command("notification.read", { id: id.optional() }), command("feedback.create", { kind: z.enum(["issue", "idea"]), body }),

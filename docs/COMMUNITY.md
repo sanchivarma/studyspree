@@ -4,6 +4,8 @@ Use a real local Supabase account for shared features. The development test logi
 
 The navigation's More menu opens Spaces, Focus partners, Buddy discovery, Conversations, Groups, Feed, Schedule, Leaderboards, Tasks, Notifications, Search, Feedback, Plans and Preferences. Profiles, Settings, Study and Stats remain on the main navigation.
 
+Calendar and Contacts also have primary navigation icons. [Calendar guide](CALENDAR.md) covers monthly reading history, dated sessions, contact lists, invitations, shareable session links and pinned self-video.
+
 ## Data boundaries
 
 Real account sessions now use the server repository. Starts and finishes run atomic Postgres RPCs: timestamps, capped actual seconds, day totals, streaks and achievements are server-owned. Saved session dates remain fixed when the profile timezone changes. The development preview retains LocalRepository. A page refresh does not create a new timer.

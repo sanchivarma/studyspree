@@ -15,6 +15,11 @@ export async function executeCommunity(input: z.infer<typeof communityRequestSch
     if (identity.error || !identity.data.user)
         throw new CommunityServerError(401, "accountRequired");
     if (input.operation === "mutate") {
+        if (/^(contact\.|calendar\.|session\.share$)/.test(input.command.action)) {
+            const response = await client.rpc("calendar_mutate", { p_action: input.command.action, p_data: input.command.data });
+            if (response.error) throw new CommunityServerError(response.error.code === "42501" ? 403 : 400, response.error.code === "42501" ? "forbidden" : "invalid");
+            return response.data;
+        }
         if(input.command.action==="room.kick"){
             const response=await client.rpc("moderate_room",{p_room:input.command.data.id,p_target:input.command.data.targetId});
             if(response.error)throw new CommunityServerError(403,"forbidden");
@@ -31,6 +36,12 @@ export async function executeCommunity(input: z.infer<typeof communityRequestSch
         return response.data;
     }
     const { area, query } = input;
+    if (area === "calendar" || area === "contacts") {
+        if (query.cursor && !/^\d{1,6}$/.test(query.cursor)) throw new CommunityServerError(400, "invalid");
+        const response = await client.rpc("calendar_read", { p_area: area, p_query: query });
+        if (response.error) throw new CommunityServerError(response.error.code === "42501" ? 403 : 400, "unavailable");
+        return communityStateSchema.parse(response.data);
+    }
     if (area === "recipients") {
         const response = await client.rpc("community_recipients", { p_term: query.q ?? "" });
         if (response.error)

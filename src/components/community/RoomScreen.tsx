@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { z } from "zod";
 import { useCommunity } from "@/hooks/useCommunity";
 import { useCommunityMutation } from "@/hooks/useCommunityMutation";
@@ -22,6 +22,8 @@ import { buttonClass } from "./CommunityComposer";
 import { formatTimer } from "@/lib/session/presentation";
 import { useSessionTitle } from "@/hooks/useSessionTitle";
 import { formatDuration } from "@/lib/stats/presentation";
+import { ShareSessionControl } from "./ShareSessionControl";
+import { orderRoomPeople } from "@/lib/community/roomGrid";
 const peopleSchema = z.array(z.object({ person: personSchema.nullable(), sharing: z.boolean(), status: z.string() }));
 const pinsSchema = z.array(z.object({ targetId: z.uuid(), reason: z.string() }));
 function RoomTimer({ session, leave }: {
@@ -72,9 +74,11 @@ export function RoomScreen({ id }: {
             selection.mutate({ mode: next.length ? "mixed" : "people", characterSlugs: next });
         else setPrejoinCharacters(next);
     };
-    const shown = people.filter(p => !pinned || pins.some(pin => pin.targetId === p.person!.id));
-    return <section data-testid="room-screen" className="min-h-dvh space-y-6 bg-background p-5 md:p-8">
-    <header className="flex flex-wrap items-center justify-between gap-4"><h1 className="text-title">{state?.resource?.title ?? t("room.title")}</h1>{joined && active.data && <RoomTimer session={active.data} leave={leave}/>}<Link className={buttonClass} href="/spaces">{t("spaces.title")}</Link></header>
+    const shown = orderRoomPeople(people, state?.viewerId ?? "", pins.map(pin => pin.targetId), pinned);
+    const tileCount = Math.min(12, shown.length) + characters.length;
+    const gridStyle = { "--room-columns": tileCount <= 1 ? 1 : tileCount <= 4 ? 2 : 3 } as CSSProperties;
+    return <section data-testid="room-screen" className="flex min-h-dvh flex-col gap-2 bg-background p-1 md:h-dvh md:overflow-hidden md:p-2">
+    <header className="flex flex-wrap items-center justify-between gap-4"><h1 className="text-title">{state?.resource?.title ?? t("room.title")}</h1>{joined && active.data && <RoomTimer session={active.data} leave={leave}/>}<ShareSessionControl roomId={id}/><Link className={buttonClass} href="/spaces">{t("spaces.title")}</Link></header>
     {result.isError ? <p role="alert">{t("community.forbidden")}</p> : !state ? <p role="status">{t("community.loading")}</p> : <>
       <p className="max-w-3xl text-small text-text-muted">{t("community.sharingNotice")}</p>
       {quota.success&&<p className="text-small text-text-muted tabular-nums">{t(quota.data.remainingSeconds===null?"community.used":"community.remaining")}: {formatDuration(quota.data.remainingSeconds??quota.data.usedSeconds,locale)}</p>}
@@ -89,10 +93,10 @@ export function RoomScreen({ id }: {
         {invite && <label className="block">{t("community.inviteLink")}<input readOnly value={invite} onFocus={e => e.currentTarget.select()} className="block min-h-11 w-full rounded-lg border border-border bg-surface px-3"/></label>}
         {media.unavailable && <p role="status" className="text-small text-text-muted">{t("community.mediaUnavailable")}</p>}
         <p>{t("community.peopleOnline", { n: people.length })}</p>
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{shown.slice(page * 12, page * 12 + 12).map(p => { const person = p.person!; const track = media.tracks.get(person.id); const pin = pins.find(pin => pin.targetId === person.id); return <article key={person.id} className="overflow-hidden rounded-2xl border border-border bg-surface"><div className="relative flex aspect-[4/3] items-center justify-center bg-surface-2">{track ? <RoomVideo track={track} mirrored={person.id === state.viewerId && (tile.data?.mirrored ?? true)}/> : <span className="text-xl">{person.displayName}</span>}</div><div className="space-y-2 p-4"><p className="font-semibold">{person.displayName}</p><p className="break-words text-small">{p.status}</p><button className={buttonClass} aria-pressed={Boolean(pin)} onClick={() => mutation.mutate({ action: "room.pin", data: { id, targetId: person.id, value: !pin } })}>{t(pin ? "community.unpin" : "community.pin")}</button>{state.context.manager===true && person.id!==state.viewerId && <button className={buttonClass} onClick={()=>mutation.mutate({action:"room.kick",data:{id,targetId:person.id}})}>{t("community.remove")}</button>}{pin && <label className="block text-small">{t("community.pinReason")}<input maxLength={200} defaultValue={pin.reason} onBlur={event => mutation.mutate({ action: "room.pin", data: { id, targetId: person.id, value: true, reason: event.target.value } })} className="min-h-11 w-full rounded-lg bg-background px-3"/></label>}</div></article>; })}{characters.map(slug => <CharacterLoop key={slug} slug={slug}/>)}</div>
+        <div data-testid="room-video-grid" style={gridStyle} className="grid min-h-[50dvh] md:min-h-0 flex-1 auto-rows-fr grid-cols-1 gap-1 sm:grid-cols-[repeat(var(--room-columns),minmax(0,1fr))]">{shown.slice(page * 12, page * 12 + 12).map(p => { const person = p.person!; const track = media.tracks.get(person.id); const pin = pins.find(pin => pin.targetId === person.id); return <article key={person.id} data-person-id={person.id} className="relative min-h-48 md:min-h-0 overflow-hidden rounded-lg bg-surface"><div className="absolute inset-0 flex items-center justify-center bg-surface-2">{track ? <RoomVideo track={track} mirrored={person.id === state.viewerId && (tile.data?.mirrored ?? true)}/> : <span className="text-xl">{person.displayName}</span>}</div><div className="absolute right-1 bottom-1 left-1 space-y-1 rounded-lg bg-background/75 p-2"><p className="font-semibold">{person.displayName}</p><p className="break-words text-small">{p.status}</p><button className={buttonClass} aria-pressed={Boolean(pin)} onClick={() => mutation.mutate({ action: "room.pin", data: { id, targetId: person.id, value: !pin } })}>{t(person.id === state.viewerId ? pin ? "calendar.unpinSelf" : "calendar.pinSelf" : pin ? "community.unpin" : "community.pin")}</button>{state.context.manager===true && person.id!==state.viewerId && <button className={buttonClass} onClick={()=>mutation.mutate({action:"room.kick",data:{id,targetId:person.id}})}>{t("community.remove")}</button>}{pin && <label className="block text-small">{t("community.pinReason")}<input maxLength={200} defaultValue={pin.reason} onBlur={event => mutation.mutate({ action: "room.pin", data: { id, targetId: person.id, value: true, reason: event.target.value } })} className="min-h-11 w-full rounded-lg bg-background px-3"/></label>}</div></article>; })}{characters.map(slug => <CharacterLoop key={slug} slug={slug} className="h-full min-h-48 md:min-h-0 !aspect-auto !rounded-lg"/>)}</div>
         {shown.length > 12 && <div className="flex gap-4"><button className={buttonClass} disabled={page === 0} onClick={() => setPage(p => p - 1)}>{t("community.previousPage")}</button><span className="tabular-nums">{page + 1} / {Math.ceil(shown.length / 12)}</span><button className={buttonClass} disabled={(page + 1) * 12 >= shown.length} onClick={() => setPage(p => p + 1)}>{t("community.nextPage")}</button></div>}
       </>}
-      <fieldset className="rounded-xl border border-border p-4"><legend>{t("characters.characters")}</legend><div className="flex flex-wrap gap-3">{characterSlugs.map(slug => <label key={slug} className="flex min-h-11 items-center gap-2"><input type="checkbox" checked={characters.includes(slug)} onChange={() => choose(slug)}/>{t(`characters.${slug}`)}</label>)}</div></fieldset>
+      <details className="shrink-0 rounded-xl border border-border p-2" open={!joined}><summary className="min-h-11 cursor-pointer py-2">{t("characters.characters")}</summary><fieldset><legend className="sr-only">{t("characters.characters")}</legend><div className="flex flex-wrap gap-3">{characterSlugs.map(slug => <label key={slug} className="flex min-h-11 items-center gap-2"><input type="checkbox" checked={characters.includes(slug)} onChange={() => choose(slug)}/>{t(`characters.${slug}`)}</label>)}</div></fieldset></details>
     </>}
     {(mutation.isError || join.isError) && <p role="alert">{t("community.unavailable")}</p>}
   </section>;

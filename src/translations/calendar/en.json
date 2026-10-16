@@ -1,0 +1,27 @@
+{
+  "calendar": {
+    "title": "Calendar",
+    "previous": "Previous month",
+    "next": "Next month",
+    "today": "Today",
+    "reading": "Reading completed",
+    "scheduled": "Scheduled",
+    "sessions": "{n} scheduled sessions",
+    "monthReading": "{time} read this month",
+    "create": "Schedule a session",
+    "endsAt": "End date and time",
+    "inviteContacts": "Invite contacts or lists",
+    "sessionId": "Session ID",
+    "openSession": "Open session",
+    "decline": "Decline invitation",
+    "shareLink": "Share session link",
+    "invalidDates": "Choose a future start and a later end, up to 31 days apart.",
+    "saved": "Session scheduled. Your contacts will see their invitations in Calendar.",
+    "pinSelf": "Pin my video first",
+    "unpinSelf": "Unpin my video",
+    "shareSession": "Share session",
+    "shareHint": "Invited people sign in before joining. Camera sharing stays optional.",
+    "copy": "Copy link",
+    "copied": "Link copied."
+  }
+}

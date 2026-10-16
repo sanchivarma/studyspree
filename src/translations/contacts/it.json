@@ -1,0 +1,17 @@
+{
+  "contacts": {
+    "title": "Contatti",
+    "description": "Aggiungi persone tramite nome utente. Accettano la richiesta prima degli inviti.",
+    "add": "Aggiungi contatto",
+    "sent": "Richiesta di contatto inviata.",
+    "error": "Impossibile aggiornare i contatti. Controlla il nome utente e accedi con un account.",
+    "accepted": "Collegati",
+    "incoming": "Richiesta di contatto",
+    "pending": "In attesa di accettazione",
+    "accept": "Accetta",
+    "list": "Lista di contatti",
+    "createList": "Crea lista di contatti",
+    "listName": "Nome della lista",
+    "acceptedHint": "I contatti accettati compaiono qui. Aggiungi prima le persone in Contatti."
+  }
+}

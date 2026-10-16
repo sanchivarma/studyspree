@@ -21,11 +21,14 @@ import { SelfView } from "@/components/webcam/SelfView";
 import { AmbienceControl } from "@/components/ambience/AmbienceControl";
 import { SessionCompanions } from "@/components/characters/SessionCompanions";
 import { usePersonalTile } from "@/hooks/usePersonalTile";
+import { ShareSessionControl } from "@/components/community/ShareSessionControl";
 
 export function SessionScreen({ session }: { session: Session }) {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [soundOpen, setSoundOpen] = useState(false);
   const [companionOpen, setCompanionOpen] = useState(false);
+  const [selfPinned, setSelfPinned] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
   const profile = useProfile();
   const tile = usePersonalTile();
   const camera = useLocalCamera();
@@ -44,30 +47,32 @@ export function SessionScreen({ session }: { session: Session }) {
   useSessionTitle(time);
   const { t } = useTranslation();
   const { isVisible: idleVisible, visibleRef: idleVisibleRef } = useIdleVisibility();
-  const isVisible = sheetOpen || soundOpen || companionOpen || idleVisible;
+  const isVisible = sheetOpen || soundOpen || companionOpen || shareOpen || idleVisible;
+  const isSelfInStage = selfPinned && camera.isReady && tile.data?.isVisible !== false;
   const style = { "--accent": getTheme(slug).accentColor } as CSSProperties;
   const fade = cn("transition-opacity duration-200 motion-reduce:transition-none", isVisible ? "opacity-100" : "pointer-events-none opacity-0");
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Tab" && !idleVisibleRef.current && !sheetOpen && !soundOpen && !companionOpen && !event.defaultPrevented) {
+      if (event.key === "Tab" && !idleVisibleRef.current && !sheetOpen && !soundOpen && !companionOpen && !shareOpen && !event.defaultPrevented) {
         event.preventDefault();
         finishButton.current?.focus();
         return;
       }
-      if (sheetOpen || soundOpen || companionOpen || event.key !== "Escape" || event.defaultPrevented || event.repeat) return;
+      if (sheetOpen || soundOpen || companionOpen || shareOpen || event.key !== "Escape" || event.defaultPrevented || event.repeat) return;
       event.preventDefault();
       finish();
     };
     // Capture the revealing Tab before idle restoration changes the tab order.
     window.addEventListener("keydown", handleKeyDown, true);
     return () => window.removeEventListener("keydown", handleKeyDown, true);
-  }, [finish, sheetOpen, soundOpen, companionOpen, idleVisibleRef]);
+  }, [finish, sheetOpen, soundOpen, companionOpen, shareOpen, idleVisibleRef]);
 
   return <section aria-label={t("session.label")} data-testid="session-screen" data-controls-visible={isVisible} style={style}
     className={cn("relative isolate h-dvh w-full overflow-hidden", !isVisible && "cursor-none")}>
     <ThemeScene slug={slug} priority />
-    <SessionCompanions session={session} visible={isVisible} onOpenChange={setCompanionOpen} />
+    <SessionCompanions session={session} visible={isVisible} onOpenChange={setCompanionOpen} leading={isSelfInStage ? <SelfView camera={camera} visible={isVisible} mirrored={tile.data?.mirrored ?? true} stage onTogglePin={() => setSelfPinned(false)}/> : undefined}/>
+    <div className={cn("absolute top-4 right-4 z-30", fade)}><ShareSessionControl sessionId={session.id} onOpenChange={setShareOpen}/></div>
 
     <div className="absolute top-10 right-6 left-6 flex flex-col items-center md:top-12">
       <div className={cn("shrink-0 transition-opacity duration-200 motion-reduce:transition-none", isVisible ? "opacity-100" : "opacity-40")}>
@@ -93,6 +98,6 @@ export function SessionScreen({ session }: { session: Session }) {
         </button>
       </ThemeSheet>
     </div>
-    <SelfView camera={camera} visible={isVisible && (tile.data?.isVisible ?? true)} mirrored={tile.data?.mirrored ?? true} status={tile.data?.status ?? ""} />
+    {!isSelfInStage && <SelfView camera={camera} visible={isVisible && (tile.data?.isVisible ?? true)} mirrored={tile.data?.mirrored ?? true} status={tile.data?.status ?? ""} onTogglePin={() => setSelfPinned(true)}/>}
   </section>;
 }

@@ -24,6 +24,11 @@ test("explicit room camera reaches a second real account and turns off", async (
         await viewer.goto(`/rooms/${id}`);
         await viewer.getByRole("button", { name: "Join", exact: true }).click();
         await expect(viewer.getByText("2 in the room", { exact: true })).toBeVisible();
+        const identity = await page.request.post("/api/community", { data: { operation: "read", area: "preferences", query: {} } });
+        const { viewerId } = await identity.json();
+        await page.getByRole("button", { name: "Pin my video first", exact: true }).click();
+        await expect(page.getByTestId("room-video-grid").locator(":scope > article").first()).toHaveAttribute("data-person-id", viewerId);
+        expect((await page.getByTestId("room-video-grid").boundingBox())!.width).toBeGreaterThanOrEqual((await page.evaluate(() => innerWidth)) - 16);
         expect(await page.locator("video").count()).toBe(0);
         await page.getByRole("button", { name: "Share camera in this room", exact: true }).click();
         await expect.poll(() => viewer.locator("video").evaluateAll(elements => elements.some(element => element instanceof HTMLVideoElement && element.videoWidth > 0)), { timeout: 20000 }).toBe(true);

@@ -1,0 +1,17 @@
+{
+  "contacts": {
+    "title": "Contacts",
+    "description": "Add people by username. They accept your request before you can invite them.",
+    "add": "Add contact",
+    "sent": "Contact request sent.",
+    "error": "We could not update your contacts. Check the username and sign in with a real account.",
+    "accepted": "Connected",
+    "incoming": "Contact request",
+    "pending": "Waiting for acceptance",
+    "accept": "Accept",
+    "list": "Contact list",
+    "createList": "Create contact list",
+    "listName": "List name",
+    "acceptedHint": "Accepted contacts appear here. Add people in Contacts first."
+  }
+}

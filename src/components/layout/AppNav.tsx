@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, BookOpen, Flame, Home, Settings, UserRound } from "lucide-react";
+import { BarChart3, BookOpen, CalendarDays, ContactRound, Flame, Home, Settings, UserRound } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useProfile } from "@/hooks/useProfile";
@@ -13,6 +13,8 @@ import { MoreNav } from "./MoreNav";
 const items = [
   { label: "common.start", href: "/", icon: Home },
   { label: "common.study", href: "/study", icon: BookOpen },
+  { label: "calendar.title", href: "/calendar", icon: CalendarDays },
+  { label: "contacts.title", href: "/contacts", icon: ContactRound },
   { label: "common.stats", href: "/stats", icon: BarChart3 },
   { label: "profile.title", href: "/profile", icon: UserRound },
   { label: "common.settings", href: "/settings", icon: Settings },
@@ -31,7 +33,7 @@ export function AppNav({ showStreak }: { showStreak: boolean }) {
       style={{ "--accent": getTheme(profile.data?.selectedTheme ?? "rain-desk").accentColor } as CSSProperties}
       className="fixed inset-x-0 bottom-0 z-50 h-14 border-t border-border bg-surface md:inset-y-0 md:right-auto md:h-dvh md:w-16 md:border-t-0 md:border-r"
     >
-      <div className="grid h-full grid-cols-6 items-center gap-1 px-2 md:flex md:flex-col md:gap-3 md:pt-6">
+      <div className="flex h-full items-center gap-1 overflow-x-auto px-2 md:flex-col md:gap-2 md:overflow-x-visible md:overflow-y-auto md:pb-16 md:pt-6">
         {items.map(({ label, href, icon: Icon }) => {
           const isActive = pathname === href || pathname.startsWith(`${href}/`);
 
@@ -41,7 +43,7 @@ export function AppNav({ showStreak }: { showStreak: boolean }) {
               href={href}
               aria-current={isActive ? "page" : undefined}
               className={cn(
-                "group relative flex h-11 min-w-11 flex-col items-center justify-center gap-0.5 rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:w-11 md:shrink-0 md:gap-0",
+                "group relative flex h-11 min-w-11 flex-1 shrink-0 flex-col items-center justify-center gap-0.5 rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:w-11 md:flex-none md:gap-0",
                 isActive
                   ? "bg-accent/10 text-accent"
                   : "text-text-muted hover:bg-surface-2 hover:text-foreground",

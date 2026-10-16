@@ -1,0 +1,17 @@
+{
+  "contacts": {
+    "title": "Kontakte",
+    "description": "Füge Personen über ihren Benutzernamen hinzu. Vor Einladungen bestätigen sie deine Anfrage.",
+    "add": "Kontakt hinzufügen",
+    "sent": "Kontaktanfrage gesendet.",
+    "error": "Kontakte konnten nicht aktualisiert werden. Prüfe den Benutzernamen und melde dich mit einem echten Konto an.",
+    "accepted": "Verbunden",
+    "incoming": "Kontaktanfrage",
+    "pending": "Bestätigung ausstehend",
+    "accept": "Annehmen",
+    "list": "Kontaktliste",
+    "createList": "Kontaktliste erstellen",
+    "listName": "Listenname",
+    "acceptedHint": "Bestätigte Kontakte erscheinen hier. Füge zuerst Personen unter Kontakte hinzu."
+  }
+}

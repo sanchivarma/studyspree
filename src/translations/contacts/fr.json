@@ -1,0 +1,17 @@
+{
+  "contacts": {
+    "title": "Contacts",
+    "description": "Ajoutez des personnes par nom d’utilisateur. Elles acceptent votre demande avant vos invitations.",
+    "add": "Ajouter un contact",
+    "sent": "Demande de contact envoyée.",
+    "error": "Impossible de modifier les contacts. Vérifiez le nom d’utilisateur et connectez-vous avec un compte.",
+    "accepted": "Connectés",
+    "incoming": "Demande de contact",
+    "pending": "En attente d’acceptation",
+    "accept": "Accepter",
+    "list": "Liste de contacts",
+    "createList": "Créer une liste",
+    "listName": "Nom de la liste",
+    "acceptedHint": "Les contacts acceptés apparaissent ici. Ajoutez des personnes dans Contacts."
+  }
+}

@@ -185,3 +185,5 @@ were brought forward from the phased plan at the user's request.
 Real Supabase accounts use the server repository for sessions and progress. The development test login retains LocalRepository for offline previews. Existing local history is preserved locally; signing in does not automatically import it into an account.
 
 See [the feature checklist](docs/FEATURE_CHECKLIST.md), [virtual characters](docs/CHARACTERS.md), and [the LiveKit Cloud decision](docs/LIVEKIT.md) for current implementation and verification status.
+
+See [Calendar and contacts](docs/CALENDAR.md) for monthly reading charts, scheduling, contact lists, invitations, session sharing and mixed video grids.

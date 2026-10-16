@@ -1,0 +1,27 @@
+{
+  "calendar": {
+    "title": "Kalendarz",
+    "previous": "Poprzedni miesiąc",
+    "next": "Następny miesiąc",
+    "today": "Dzisiaj",
+    "reading": "Ukończona nauka",
+    "scheduled": "Zaplanowane",
+    "sessions": "Zaplanowane sesje: {n}",
+    "monthReading": "Czas nauki w tym miesiącu: {time}",
+    "create": "Zaplanuj sesję",
+    "endsAt": "Data i godzina zakończenia",
+    "inviteContacts": "Zaproś kontakty lub listy",
+    "sessionId": "Identyfikator sesji",
+    "openSession": "Otwórz sesję",
+    "decline": "Odrzuć zaproszenie",
+    "shareLink": "Udostępnij link do sesji",
+    "invalidDates": "Wybierz przyszły początek i późniejszy koniec, maksymalnie 31 dni odstępu.",
+    "saved": "Sesja zaplanowana. Kontakty zobaczą zaproszenia w kalendarzu.",
+    "pinSelf": "Przypnij moje wideo jako pierwsze",
+    "unpinSelf": "Odepnij moje wideo",
+    "shareSession": "Udostępnij sesję",
+    "shareHint": "Zaproszone osoby logują się przed dołączeniem. Kamera pozostaje opcjonalna.",
+    "copy": "Kopiuj link",
+    "copied": "Link skopiowany."
+  }
+}

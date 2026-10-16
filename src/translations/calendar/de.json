@@ -1,0 +1,27 @@
+{
+  "calendar": {
+    "title": "Kalender",
+    "previous": "Vorheriger Monat",
+    "next": "Nächster Monat",
+    "today": "Heute",
+    "reading": "Gelesene Zeit",
+    "scheduled": "Geplant",
+    "sessions": "{n} geplante Sitzungen",
+    "monthReading": "Diesen Monat {time} gelesen",
+    "create": "Sitzung planen",
+    "endsAt": "Enddatum und Uhrzeit",
+    "inviteContacts": "Kontakte oder Listen einladen",
+    "sessionId": "Sitzungs-ID",
+    "openSession": "Sitzung öffnen",
+    "decline": "Einladung ablehnen",
+    "shareLink": "Sitzungslink teilen",
+    "invalidDates": "Wähle einen zukünftigen Beginn und ein späteres Ende, höchstens 31 Tage auseinander.",
+    "saved": "Sitzung geplant. Deine Kontakte sehen die Einladung im Kalender.",
+    "pinSelf": "Mein Video zuerst anheften",
+    "unpinSelf": "Mein Video lösen",
+    "shareSession": "Sitzung teilen",
+    "shareHint": "Eingeladene Personen melden sich vor dem Beitritt an. Die Kamera bleibt optional.",
+    "copy": "Link kopieren",
+    "copied": "Link kopiert."
+  }
+}
