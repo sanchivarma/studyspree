@@ -33,7 +33,7 @@ export function AppNav({ showStreak }: { showStreak: boolean }) {
       style={{ "--accent": getTheme(profile.data?.selectedTheme ?? "rain-desk").accentColor } as CSSProperties}
       className="fixed inset-x-0 bottom-0 z-50 h-14 border-t border-border bg-surface md:inset-y-0 md:right-auto md:h-dvh md:w-16 md:border-t-0 md:border-r"
     >
-      <div className="flex h-full items-center gap-1 overflow-x-auto px-2 md:flex-col md:gap-2 md:overflow-x-visible md:overflow-y-auto md:pb-16 md:pt-6">
+      <div className="flex h-full items-center gap-1 overflow-x-auto px-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:flex-col md:gap-2 md:overflow-x-visible md:overflow-y-auto md:pb-16 md:pt-6">
         {items.map(({ label, href, icon: Icon }) => {
           const isActive = pathname === href || pathname.startsWith(`${href}/`);
 
