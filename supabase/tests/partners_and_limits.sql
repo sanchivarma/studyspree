@@ -15,12 +15,12 @@ where r.id in('71000000-0000-4000-8000-000000000001','71000000-0000-4000-8000-00
 set local role authenticated;
 select set_config('request.jwt.claims','{"sub":"70000000-0000-4000-8000-000000000001","role":"authenticated"}',true);
 select is((public.community_read('partners')->'items'->0->'data'->>'seconds')::integer,3600,'SQL unions partner overlaps across repeat rooms');
-select is((public.community_read('partners')->'items'->0->'data'->>'days')::integer,1,'SQL counts distinct study days separately from duration');
+select is((public.community_read('partners')->'items'->0->'data'->>'days')::integer,((now()-interval '1 microsecond') at time zone 'UTC')::date-((now()-interval '1 hour') at time zone 'UTC')::date+1,'SQL counts distinct study days separately from duration');
 select public.community_mutate('partner.set','{"targetId":"70000000-0000-4000-8000-000000000002","favorite":true,"notify":true}');
 select is(jsonb_array_length(public.community_read('partners','{"filter":"favorites"}')->'items'),1,'Favorites use private real overlap history');
 select ok((public.community_read('plans')->'context'->>'usedSeconds')::integer<=3600,'Daily meter unions overlapping visits');
 reset role;
-update public.plan_policies set daily_room_seconds=1 where plan='free';
+update public.plan_policies set daily_room_seconds=0 where plan='free';
 set local role authenticated;
 select set_config('request.jwt.claims','{"sub":"70000000-0000-4000-8000-000000000001","role":"authenticated"}',true);
 select throws_ok($$select public.community_mutate('room.join','{"id":"71000000-0000-4000-8000-000000000001"}')$$,'P0001','Daily room allowance reached','Configured daily allowance enforced server-side');

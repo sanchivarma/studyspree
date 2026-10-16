@@ -1,0 +1,17 @@
+{
+  "achievements": {
+    "title": "Achievements",
+    "description": "Your earned milestones stay yours.",
+    "earned": "{n} day milestone earned",
+    "available": "{n} day milestone"
+  },
+  "personalTile": {
+    "title": "Personal tile",
+    "mirrored": "Mirror my preview",
+    "isVisible": "Show my tile",
+    "status": "Tile message",
+    "post": "Update message",
+    "privacy": "Your preview stays on this device. Sharing a camera or message in a room requires a separate choice.",
+    "history": "Message history"
+  }
+}

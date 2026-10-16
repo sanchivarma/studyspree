@@ -24,8 +24,11 @@ export function HomeScreen({ username, slug, initialHour }: { username: string; 
   const profile = useProfile();
   const dashboard = useDashboard();
   useEffect(() => {
-    if (active.data) router.replace(`/session/${active.data.id}`);
-  }, [active.data, router]);
+    if (active.data) {
+      if(["people","mixed"].includes(active.data.companions.mode)&&dashboard.isPending)return;
+      router.replace(dashboard.data?.activeRoomId?`/rooms/${dashboard.data.activeRoomId}`:`/session/${active.data.id}`);
+    }
+  }, [active.data, dashboard.data, dashboard.isPending, router]);
   const hour = useCurrentHour(initialHour);
   return <section className="relative isolate flex min-h-[calc(100dvh-3.5rem)] items-center justify-center md:min-h-dvh">
     <ThemeScene slug={profile.data?.selectedTheme ?? slug} priority />

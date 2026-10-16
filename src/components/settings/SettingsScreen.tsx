@@ -13,6 +13,7 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { useTimezones } from "@/hooks/useTimezones";
 import { getTheme } from "@/lib/themes/registry";
 import { musicTracks } from "@/lib/audio/catalog";
+import { PersonalTileSettings } from "./PersonalTileSettings";
 
 function PreferenceSwitch({ label, checked, disabled, reducedMotion, onChange }: {
   label: string; checked: boolean; disabled: boolean; reducedMotion: boolean; onChange: (value: boolean) => void;
@@ -47,6 +48,7 @@ export function SettingsScreen() {
   return <section style={{ "--accent": theme.accentColor } as CSSProperties} className="mx-auto w-full max-w-2xl px-6 pt-24 pb-8">
     <AccountControls />
     <h1 className="mb-6 text-title">{t("common.settings")}</h1>
+    <PersonalTileSettings />
     {(update.error || cameraSaveError) && <p role="alert" className="mb-4 text-small text-text-muted">{t("settings.saveError")}</p>}
     <section className={cardClass}>
       <h2 className="text-body font-semibold">{t("settings.profile")}</h2>

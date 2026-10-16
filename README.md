@@ -1,5 +1,7 @@
 # StudySpree
 
+Shared feature routes, real account storage, camera boundaries and local maintenance are documented in [docs/COMMUNITY.md](docs/COMMUNITY.md). The development test login is an offline preview; use a local Supabase account for shared rooms, groups and messages.
+
 Big goals start with showing up.
 
 **NEVER add audio without a recorded licence. NEVER use audio ripped from YouTube.**
@@ -180,6 +182,6 @@ were brought forward from the phased plan at the user's request.
 7. Studio: `http://localhost:54323`. Local email inbox: `http://localhost:54324` (Mailpit in this CLI version; the plan calls this Inbucket). Magic-link emails stay in this local inbox.
 8. Run `npm run db:types` after schema changes and `npm run db:test` for pgTAP. Then run `npm run dev` on port 3000. Restart an existing app server if it has not picked up environment changes. `npm run test:e2e:supabase` verifies real local magic-link login and onboarding; regular UI/privacy tests remain a separate command and do not require a database.
 
-Session storage remains LocalRepository until the server-repository rollout is complete. Do not interpret local Supabase availability as an automatic migration of banked local history.
+Real Supabase accounts use the server repository for sessions and progress. The development test login retains LocalRepository for offline previews. Existing local history is preserved locally; signing in does not automatically import it into an account.
 
 See [the feature checklist](docs/FEATURE_CHECKLIST.md), [virtual characters](docs/CHARACTERS.md), and [the LiveKit Cloud decision](docs/LIVEKIT.md) for current implementation and verification status.

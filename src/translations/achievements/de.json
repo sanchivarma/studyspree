@@ -1,0 +1,17 @@
+{
+  "achievements": {
+    "title": "Erfolge",
+    "description": "Erreichte Meilensteine bleiben dir erhalten.",
+    "earned": "Meilenstein von {n} Tagen erreicht",
+    "available": "Meilenstein von {n} Tagen"
+  },
+  "personalTile": {
+    "title": "Eigene Kachel",
+    "mirrored": "Vorschau spiegeln",
+    "isVisible": "Meine Kachel anzeigen",
+    "status": "Kachelnachricht",
+    "post": "Nachricht aktualisieren",
+    "privacy": "Deine Vorschau bleibt auf diesem Ger?t. Kamera oder Nachricht werden in einem Raum erst nach deiner gesonderten Auswahl geteilt.",
+    "history": "Nachrichtenverlauf"
+  }
+}

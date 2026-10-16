@@ -10,7 +10,7 @@ Sources: [pricing](https://livekit.com/pricing), [quotas](https://docs.livekit.i
 
 The eight GIF study partners must render as application assets. They must never join a LiveKit room, appear as fabricated online humans, or consume LiveKit participant minutes. Personal timers and local self-view must work without LiveKit credentials.
 
-## Required configuration for the future room feature
+## Room configuration
 
 Server environment variables:
 
@@ -20,9 +20,11 @@ LIVEKIT_API_KEY=
 LIVEKIT_API_SECRET=
 ```
 
-Obtain these from the user's LiveKit Cloud project. Never commit credentials or expose the API secret to browser code. An authorised room-token endpoint may return the connection URL and a short-lived participant token after checking Supabase identity and room membership. Do not trust browser-supplied participant identities, publishing permissions, or room names.
+These are configured locally and have been verified with two real accounts and Chromium fake cameras. Never commit credentials or expose the API secret to browser code. The room-token endpoint checks Supabase identity, active membership, publishing consent and room allowances before returning a five-minute participant token. Participant identities and room names are server-owned.
 
 Use a separate opt-in publisher for shared camera video. The existing `useLocalCamera` and `SelfView` stay local-only. No microphone capture, recording, or automatic camera publication is implied by joining a room.
+
+Run the protected maintenance endpoint every minute in production to revoke expired media leases. See [shared features](COMMUNITY.md) for the scheduler and local verification commands.
 
 ## Self-hosting later
 

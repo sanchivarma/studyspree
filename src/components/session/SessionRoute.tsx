@@ -13,7 +13,9 @@ export function SessionRoute({ id }: { id: string }) {
   const isFinishing = useSessionStore((state) => state.isFinishing);
   const session = active.data?.id === id ? active.data : saved.data;
   useEffect(() => {
-    if ((isFinishing && !session?.endedAt) || active.isPending || saved.isPending) return;
+    // The Finish mutation owns this navigation until CompleteScreen mounts.
+    // A saved-query refresh must not start a competing replace to the same URL.
+    if (isFinishing || active.isPending || saved.isPending) return;
     if (session?.endedAt) router.replace(`/session/${session.id}/complete`);
     else if (!active.data || active.data.id !== id) router.replace("/");
   }, [active.data, active.isPending, saved.isPending, session, router, id, isFinishing]);

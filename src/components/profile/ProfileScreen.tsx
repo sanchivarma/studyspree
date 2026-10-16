@@ -8,6 +8,7 @@ import { useProfileImageUpload } from "@/hooks/useProfileImageUpload";
 import { useTranslation } from "@/hooks/useTranslation";
 import { profileEditSchema, type OwnProfile } from "@/lib/profiles/schemas";
 import { ProfileCard } from "./ProfileCard";
+import { Achievements } from "./Achievements";
 
 const fieldClass = "mt-2 min-h-11 w-full rounded-xl border border-border bg-background px-3 py-2";
 function ProfileEditor({ profile }: { profile: OwnProfile }) {
@@ -58,6 +59,7 @@ export function ProfileScreen({ initialProfile, isLocal }: { initialProfile?: Ow
     {profile.isError && <p role="alert">{t("profile.error")}</p>}
     {profile.data && <div className="grid items-start gap-6 lg:grid-cols-2"><div className="space-y-4">
       <ProfileCard profile={profile.data} />
+      <Achievements />
       {!profile.data.isLocal && <Link href={`/people/${profile.data.username}`} className="inline-flex min-h-11 items-center text-accent underline">{t("profile.view")}</Link>}
       <Link href="/stats" className="ml-5 inline-flex min-h-11 items-center text-accent underline">{t("common.stats")}</Link>
     </div><ProfileEditor profile={profile.data} /></div>}

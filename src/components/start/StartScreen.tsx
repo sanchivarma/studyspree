@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useCurrentHour } from "@/hooks/useCurrentHour";
 import { AccountControls } from "@/components/layout/AccountControls";
+import { useDashboard } from "@/hooks/useDashboard";
 import { useActiveSession } from "@/hooks/useActiveSession";
 import { useProfile } from "@/hooks/useProfile";
 import { useRecentSession } from "@/hooks/useRecentSession";
@@ -29,6 +30,8 @@ export function StartScreen({ displayName, initialHour, initialMode }: { display
   const router = useRouter();
   const { t } = useTranslation();
   const active = useActiveSession();
+  const roomSession=Boolean(active.data&&["people","mixed"].includes(active.data.companions.mode));
+  const dashboard=useDashboard(roomSession);
   const profile = useProfile();
   const recent = useRecentSession();
   const comeback = useComeback(!active.isPending && !active.data);
@@ -65,8 +68,11 @@ export function StartScreen({ displayName, initialHour, initialMode }: { display
     mountedAt.current ??= now().getTime();
   }, []);
   useEffect(() => {
-    if (active.data && !starting.current) router.replace(`/session/${active.data.id}`);
-  }, [active.data, router]);
+    if (active.data && !starting.current) {
+      if(roomSession&&dashboard.isPending)return;
+      router.replace(dashboard.data?.activeRoomId?`/rooms/${dashboard.data.activeRoomId}`:`/session/${active.data.id}`);
+    }
+  }, [active.data, dashboard.data, dashboard.isPending, roomSession, router]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {

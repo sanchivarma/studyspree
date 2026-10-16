@@ -1,0 +1,17 @@
+{
+  "achievements": {
+    "title": "Osiągnięcia",
+    "description": "Zdobyte osiągnięcia pozostają Twoje.",
+    "earned": "Osiągnięto etap {n} dni",
+    "available": "Etap {n} dni"
+  },
+  "personalTile": {
+    "title": "Mój kafelek",
+    "mirrored": "Odbij podgląd",
+    "isVisible": "Pokaż mój kafelek",
+    "status": "Wiadomość na kafelku",
+    "post": "Aktualizuj wiadomość",
+    "privacy": "Podgl?d pozostaje na tym urz?dzeniu. Udost?pnienie kamery lub wiadomo?ci w pokoju wymaga osobnego wyboru.",
+    "history": "Historia wiadomości"
+  }
+}

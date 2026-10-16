@@ -1,0 +1,17 @@
+{
+  "achievements": {
+    "title": "Traguardi",
+    "description": "I traguardi raggiunti restano tuoi.",
+    "earned": "Traguardo di {n} giorni raggiunto",
+    "available": "Traguardo di {n} giorni"
+  },
+  "personalTile": {
+    "title": "Il mio riquadro",
+    "mirrored": "Specchia l’anteprima",
+    "isVisible": "Mostra il mio riquadro",
+    "status": "Messaggio del riquadro",
+    "post": "Aggiorna messaggio",
+    "privacy": "L?anteprima rimane su questo dispositivo. Condividere la videocamera o il messaggio in una stanza richiede una scelta separata.",
+    "history": "Cronologia messaggi"
+  }
+}

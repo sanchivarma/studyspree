@@ -30,6 +30,7 @@ export function useEndSession() {
         queryClient.invalidateQueries({ queryKey: queryKeys.activeSession() }),
         queryClient.invalidateQueries({ queryKey: queryKeys.stats.all() }),
         queryClient.invalidateQueries({ queryKey: queryKeys.streak() }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.achievements() }),
       ]);
       router.push(`/session/${session.id}/complete`);
     },

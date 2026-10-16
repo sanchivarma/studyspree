@@ -1,0 +1,45 @@
+name: Community and database contracts
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  community:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npx supabase start --exclude analytics,edge-runtime,logflare,vector,supavisor
+      - name: Configure local test account environment
+        run: |
+          node --input-type=module <<'NODE'
+          import {execFileSync} from 'node:child_process';
+          import {writeFileSync} from 'node:fs';
+          import {randomBytes} from 'node:crypto';
+          const local=JSON.parse(execFileSync('npx',['supabase','status','--output','json'],{encoding:'utf8'}));
+          writeFileSync('.env.local',[
+            'SITE_URL=http://localhost:3000',
+            `NEXT_PUBLIC_SUPABASE_URL=${local.API_URL}`,
+            `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=${local.ANON_KEY}`,
+            `SUPABASE_SERVICE_ROLE_KEY=${local.SERVICE_ROLE_KEY}`,
+            `CRON_SECRET=${randomBytes(32).toString('hex')}`,
+            '',
+          ].join('\n'));
+          NODE
+      - run: npm run db:test
+      - name: Verify shared account journeys
+        run: npm run test:e2e:supabase -- community.spec.ts
+      - name: Save browser failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: community-failures
+          path: test-results/
+          retention-days: 7

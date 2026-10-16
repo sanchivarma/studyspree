@@ -8,6 +8,7 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { useProfile } from "@/hooks/useProfile";
 import { getTheme } from "@/lib/themes/registry";
 import type { CSSProperties } from "react";
+import { MoreNav } from "./MoreNav";
 
 const items = [
   { label: "common.start", href: "/", icon: Home },
@@ -22,7 +23,7 @@ export function AppNav({ showStreak }: { showStreak: boolean }) {
   const { t } = useTranslation();
   const profile = useProfile();
 
-  if (pathname.startsWith("/session")) return null;
+  if (pathname.startsWith("/session") || pathname.startsWith("/rooms/")) return null;
 
   return (
     <nav
@@ -30,7 +31,7 @@ export function AppNav({ showStreak }: { showStreak: boolean }) {
       style={{ "--accent": getTheme(profile.data?.selectedTheme ?? "rain-desk").accentColor } as CSSProperties}
       className="fixed inset-x-0 bottom-0 z-50 h-14 border-t border-border bg-surface md:inset-y-0 md:right-auto md:h-dvh md:w-16 md:border-t-0 md:border-r"
     >
-      <div className="grid h-full grid-cols-5 items-center gap-1 px-2 md:flex md:flex-col md:gap-3 md:pt-6">
+      <div className="grid h-full grid-cols-6 items-center gap-1 px-2 md:flex md:flex-col md:gap-3 md:pt-6">
         {items.map(({ label, href, icon: Icon }) => {
           const isActive = pathname === href || pathname.startsWith(`${href}/`);
 
@@ -57,6 +58,7 @@ export function AppNav({ showStreak }: { showStreak: boolean }) {
             </Link>
           );
         })}
+        <MoreNav />
       </div>
       {(profile.data?.showStreak ?? showStreak) && pathname !== "/" && pathname !== "/home" && pathname !== "/study" && (
         <div

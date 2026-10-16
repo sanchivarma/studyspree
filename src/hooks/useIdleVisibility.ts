@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function useIdleVisibility(delay = 5000) {
   const [isVisible, setIsVisible] = useState(true);
+  // Input handlers need the timeout's value even before React commits a render.
+  const visibleRef = useRef(true);
 
   useEffect(() => {
     let timeout: number | undefined;
@@ -11,8 +13,12 @@ export function useIdleVisibility(delay = 5000) {
     const restore = () => {
       clear();
       if (document.hidden) return;
+      visibleRef.current = true;
       setIsVisible(true);
-      timeout = window.setTimeout(() => setIsVisible(false), delay);
+      timeout = window.setTimeout(() => {
+        visibleRef.current = false;
+        setIsVisible(false);
+      }, delay);
     };
     const handleVisibility = () => { if (document.hidden) clear(); else restore(); };
 
@@ -33,5 +39,5 @@ export function useIdleVisibility(delay = 5000) {
     };
   }, [delay]);
 
-  return isVisible;
+  return { isVisible, visibleRef };
 }

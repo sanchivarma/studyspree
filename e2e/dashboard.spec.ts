@@ -4,7 +4,7 @@ import { signIn } from "./sessionFixtures";
 test("Home opens character setup and keeps theme selection independent", async ({ page }) => {
   await signIn(page);
   await expect(page.getByRole("heading", { name: "How would you like to study?" })).toBeVisible();
-  await expect(page.getByText("Shared rooms are coming later.", { exact: true })).toHaveCount(2);
+  await expect(page.getByText("Sign in with an account to join shared rooms.", { exact: true })).toHaveCount(2);
   await expect(page.getByRole("link", { name: "Join", exact: true })).toHaveCount(0);
   await page.getByRole("link", { name: /Virtual partners/ }).click();
   await expect(page).toHaveURL(/\/study\?mode=characters$/);

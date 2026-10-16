@@ -1,0 +1,17 @@
+{
+  "achievements": {
+    "title": "Réussites",
+    "description": "Vos étapes atteintes vous appartiennent.",
+    "earned": "Étape de {n} jours atteinte",
+    "available": "Étape de {n} jours"
+  },
+  "personalTile": {
+    "title": "Ma vignette",
+    "mirrored": "Inverser mon aperçu",
+    "isVisible": "Afficher ma vignette",
+    "status": "Message de vignette",
+    "post": "Actualiser le message",
+    "privacy": "Votre aper?u reste sur cet appareil. Le partage de la cam?ra ou du message dans un salon n?cessite un choix distinct.",
+    "history": "Historique des messages"
+  }
+}

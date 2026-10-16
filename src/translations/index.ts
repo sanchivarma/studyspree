@@ -1,3 +1,93 @@
+import itcommunity_preferences from "./preferences/it.json";
+import itcommunity_room from "./room/it.json";
+import itcommunity_search from "./search/it.json";
+import itcommunity_feedback from "./feedback/it.json";
+import itcommunity_notifications from "./notifications/it.json";
+import itcommunity_tasks from "./tasks/it.json";
+import itcommunity_plans from "./plans/it.json";
+import itcommunity_leaderboards from "./leaderboards/it.json";
+import itcommunity_partners from "./partners/it.json";
+import itcommunity_schedule from "./schedule/it.json";
+import itcommunity_feed from "./feed/it.json";
+import itcommunity_messages from "./messages/it.json";
+import itcommunity_conversations from "./conversations/it.json";
+import itcommunity_buddies from "./buddies/it.json";
+import itcommunity_groups from "./groups/it.json";
+import itcommunity_spaces from "./spaces/it.json";
+import itcommunity_community from "./community/it.json";
+import plcommunity_preferences from "./preferences/pl.json";
+import plcommunity_room from "./room/pl.json";
+import plcommunity_search from "./search/pl.json";
+import plcommunity_feedback from "./feedback/pl.json";
+import plcommunity_notifications from "./notifications/pl.json";
+import plcommunity_tasks from "./tasks/pl.json";
+import plcommunity_plans from "./plans/pl.json";
+import plcommunity_leaderboards from "./leaderboards/pl.json";
+import plcommunity_partners from "./partners/pl.json";
+import plcommunity_schedule from "./schedule/pl.json";
+import plcommunity_feed from "./feed/pl.json";
+import plcommunity_messages from "./messages/pl.json";
+import plcommunity_conversations from "./conversations/pl.json";
+import plcommunity_buddies from "./buddies/pl.json";
+import plcommunity_groups from "./groups/pl.json";
+import plcommunity_spaces from "./spaces/pl.json";
+import plcommunity_community from "./community/pl.json";
+import frcommunity_preferences from "./preferences/fr.json";
+import frcommunity_room from "./room/fr.json";
+import frcommunity_search from "./search/fr.json";
+import frcommunity_feedback from "./feedback/fr.json";
+import frcommunity_notifications from "./notifications/fr.json";
+import frcommunity_tasks from "./tasks/fr.json";
+import frcommunity_plans from "./plans/fr.json";
+import frcommunity_leaderboards from "./leaderboards/fr.json";
+import frcommunity_partners from "./partners/fr.json";
+import frcommunity_schedule from "./schedule/fr.json";
+import frcommunity_feed from "./feed/fr.json";
+import frcommunity_messages from "./messages/fr.json";
+import frcommunity_conversations from "./conversations/fr.json";
+import frcommunity_buddies from "./buddies/fr.json";
+import frcommunity_groups from "./groups/fr.json";
+import frcommunity_spaces from "./spaces/fr.json";
+import frcommunity_community from "./community/fr.json";
+import decommunity_preferences from "./preferences/de.json";
+import decommunity_room from "./room/de.json";
+import decommunity_search from "./search/de.json";
+import decommunity_feedback from "./feedback/de.json";
+import decommunity_notifications from "./notifications/de.json";
+import decommunity_tasks from "./tasks/de.json";
+import decommunity_plans from "./plans/de.json";
+import decommunity_leaderboards from "./leaderboards/de.json";
+import decommunity_partners from "./partners/de.json";
+import decommunity_schedule from "./schedule/de.json";
+import decommunity_feed from "./feed/de.json";
+import decommunity_messages from "./messages/de.json";
+import decommunity_conversations from "./conversations/de.json";
+import decommunity_buddies from "./buddies/de.json";
+import decommunity_groups from "./groups/de.json";
+import decommunity_spaces from "./spaces/de.json";
+import decommunity_community from "./community/de.json";
+import encommunity_preferences from "./preferences/en.json";
+import encommunity_room from "./room/en.json";
+import encommunity_search from "./search/en.json";
+import encommunity_feedback from "./feedback/en.json";
+import encommunity_notifications from "./notifications/en.json";
+import encommunity_tasks from "./tasks/en.json";
+import encommunity_plans from "./plans/en.json";
+import encommunity_leaderboards from "./leaderboards/en.json";
+import encommunity_partners from "./partners/en.json";
+import encommunity_schedule from "./schedule/en.json";
+import encommunity_feed from "./feed/en.json";
+import encommunity_messages from "./messages/en.json";
+import encommunity_conversations from "./conversations/en.json";
+import encommunity_buddies from "./buddies/en.json";
+import encommunity_groups from "./groups/en.json";
+import encommunity_spaces from "./spaces/en.json";
+import encommunity_community from "./community/en.json";
+import itachievements from "./achievements/it.json";
+import plachievements from "./achievements/pl.json";
+import frachievements from "./achievements/fr.json";
+import deachievements from "./achievements/de.json";
+import enachievements from "./achievements/en.json";
 import enprofile from "./profile/en.json";
 import deprofile from "./profile/de.json";
 import frprofile from "./profile/fr.json";
@@ -102,17 +192,17 @@ import itdev from "./dev/it.json";
 export const locales = ["en", "de", "fr", "pl", "it"] as const;
 export type Locale = (typeof locales)[number];
 
-const en = { ...encommon, ...enlogin, ...enregister, ...enrecovery, ...enhome, ...enstudy, ...ensession, ...encomplete, ...enstats, ...enscene, ...ensettings, ...endev, ...encomeback, ...enwebcam, ...enambience, ...enonboarding, ...encharacters, ...endashboard, ...enstatsRange, ...enprofile };
+const en = { ...encommon, ...enlogin, ...enregister, ...enrecovery, ...enhome, ...enstudy, ...ensession, ...encomplete, ...enstats, ...enscene, ...ensettings, ...endev, ...encomeback, ...enwebcam, ...enambience, ...enonboarding, ...encharacters, ...endashboard, ...enstatsRange, ...enprofile, ...encommunity_community, ...encommunity_spaces, ...encommunity_groups, ...encommunity_buddies, ...encommunity_conversations, ...encommunity_messages, ...encommunity_feed, ...encommunity_schedule, ...encommunity_partners, ...encommunity_leaderboards, ...encommunity_plans, ...encommunity_tasks, ...encommunity_notifications, ...encommunity_feedback, ...encommunity_search, ...encommunity_room, ...encommunity_preferences, ...enachievements };
 export type Dictionary = typeof en;
 export type TranslationKey = {
   [Namespace in keyof Dictionary]: `${Namespace}.${keyof Dictionary[Namespace] & string}`
 }[keyof Dictionary];
 export const dictionaries = {
   en,
-  de: { ...decommon, ...delogin, ...deregister, ...derecovery, ...dehome, ...destudy, ...desession, ...decomplete, ...destats, ...descene, ...desettings, ...dedev, ...decomeback, ...dewebcam, ...deambience, ...deonboarding, ...decharacters, ...dedashboard, ...destatsRange, ...deprofile },
-  fr: { ...frcommon, ...frlogin, ...frregister, ...frrecovery, ...frhome, ...frstudy, ...frsession, ...frcomplete, ...frstats, ...frscene, ...frsettings, ...frdev, ...frcomeback, ...frwebcam, ...frambience, ...fronboarding, ...frcharacters, ...frdashboard, ...frstatsRange, ...frprofile },
-  pl: { ...plcommon, ...pllogin, ...plregister, ...plrecovery, ...plhome, ...plstudy, ...plsession, ...plcomplete, ...plstats, ...plscene, ...plsettings, ...pldev, ...plcomeback, ...plwebcam, ...plambience, ...plonboarding, ...plcharacters, ...pldashboard, ...plstatsRange, ...plprofile },
-  it: { ...itcommon, ...itlogin, ...itregister, ...itrecovery, ...ithome, ...itstudy, ...itsession, ...itcomplete, ...itstats, ...itscene, ...itsettings, ...itdev, ...itcomeback, ...itwebcam, ...itambience, ...itonboarding, ...itcharacters, ...itdashboard, ...itstatsRange, ...itprofile },
+  de: { ...decommon, ...delogin, ...deregister, ...derecovery, ...dehome, ...destudy, ...desession, ...decomplete, ...destats, ...descene, ...desettings, ...dedev, ...decomeback, ...dewebcam, ...deambience, ...deonboarding, ...decharacters, ...dedashboard, ...destatsRange, ...deprofile, ...decommunity_community, ...decommunity_spaces, ...decommunity_groups, ...decommunity_buddies, ...decommunity_conversations, ...decommunity_messages, ...decommunity_feed, ...decommunity_schedule, ...decommunity_partners, ...decommunity_leaderboards, ...decommunity_plans, ...decommunity_tasks, ...decommunity_notifications, ...decommunity_feedback, ...decommunity_search, ...decommunity_room, ...decommunity_preferences, ...deachievements },
+  fr: { ...frcommon, ...frlogin, ...frregister, ...frrecovery, ...frhome, ...frstudy, ...frsession, ...frcomplete, ...frstats, ...frscene, ...frsettings, ...frdev, ...frcomeback, ...frwebcam, ...frambience, ...fronboarding, ...frcharacters, ...frdashboard, ...frstatsRange, ...frprofile, ...frcommunity_community, ...frcommunity_spaces, ...frcommunity_groups, ...frcommunity_buddies, ...frcommunity_conversations, ...frcommunity_messages, ...frcommunity_feed, ...frcommunity_schedule, ...frcommunity_partners, ...frcommunity_leaderboards, ...frcommunity_plans, ...frcommunity_tasks, ...frcommunity_notifications, ...frcommunity_feedback, ...frcommunity_search, ...frcommunity_room, ...frcommunity_preferences, ...frachievements },
+  pl: { ...plcommon, ...pllogin, ...plregister, ...plrecovery, ...plhome, ...plstudy, ...plsession, ...plcomplete, ...plstats, ...plscene, ...plsettings, ...pldev, ...plcomeback, ...plwebcam, ...plambience, ...plonboarding, ...plcharacters, ...pldashboard, ...plstatsRange, ...plprofile, ...plcommunity_community, ...plcommunity_spaces, ...plcommunity_groups, ...plcommunity_buddies, ...plcommunity_conversations, ...plcommunity_messages, ...plcommunity_feed, ...plcommunity_schedule, ...plcommunity_partners, ...plcommunity_leaderboards, ...plcommunity_plans, ...plcommunity_tasks, ...plcommunity_notifications, ...plcommunity_feedback, ...plcommunity_search, ...plcommunity_room, ...plcommunity_preferences, ...plachievements },
+  it: { ...itcommon, ...itlogin, ...itregister, ...itrecovery, ...ithome, ...itstudy, ...itsession, ...itcomplete, ...itstats, ...itscene, ...itsettings, ...itdev, ...itcomeback, ...itwebcam, ...itambience, ...itonboarding, ...itcharacters, ...itdashboard, ...itstatsRange, ...itprofile, ...itcommunity_community, ...itcommunity_spaces, ...itcommunity_groups, ...itcommunity_buddies, ...itcommunity_conversations, ...itcommunity_messages, ...itcommunity_feed, ...itcommunity_schedule, ...itcommunity_partners, ...itcommunity_leaderboards, ...itcommunity_plans, ...itcommunity_tasks, ...itcommunity_notifications, ...itcommunity_feedback, ...itcommunity_search, ...itcommunity_room, ...itcommunity_preferences, ...itachievements },
 } satisfies Record<Locale, Dictionary>;
 
 export const languageNames: Record<Locale, string> = { en: "English", de: "Deutsch", fr: "Français", pl: "Polski", it: "Italiano" };

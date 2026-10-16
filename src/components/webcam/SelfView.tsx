@@ -29,7 +29,7 @@ const positions: Record<WebcamCorner, string> = {
   "bottom-right": "bottom-20 right-4 sm:bottom-6 sm:right-6",
 };
 
-export function SelfView({ camera, visible }: { camera: ReturnType<typeof useLocalCamera>; visible: boolean }) {
+export function SelfView({ camera, visible, mirrored = true, status = "" }: { camera: ReturnType<typeof useLocalCamera>; visible: boolean; mirrored?: boolean; status?: string }) {
   const { t } = useTranslation();
   const reducedMotion = useReducedMotion();
   const [width, height] = useSyncExternalStore(subscribeResize, viewport, serverViewport).split(":").map(Number);
@@ -58,7 +58,7 @@ export function SelfView({ camera, visible }: { camera: ReturnType<typeof useLoc
         className={cn("absolute h-[240px] w-[320px] overflow-hidden rounded-[32px] border border-border bg-surface transition-transform duration-200", isLeft ? "left-0" : "right-0", isTop ? "top-0" : "bottom-0")}
         style={{ transform: `scale(${scale})`, transformOrigin: `${isLeft ? "left" : "right"} ${isTop ? "top" : "bottom"}`, transitionDuration: reducedMotion ? "0ms" : undefined }}>
         <video ref={camera.videoRef} data-testid="local-camera-video" autoPlay muted playsInline aria-label={t("webcam.preview")}
-          className="ph-no-capture h-full w-full object-cover" style={{ transform: "scaleX(-1)" }} />
+          className="ph-no-capture h-full w-full object-cover" style={{ transform: mirrored ? "scaleX(-1)" : undefined }} />
       </button>
       <button type="button" onClick={camera.disable} aria-label={t("webcam.disable")}
         className="absolute top-0 right-0 flex size-11 items-center justify-center rounded-xl bg-background/70 text-foreground hover:bg-background/90">
@@ -87,6 +87,7 @@ export function SelfView({ camera, visible }: { camera: ReturnType<typeof useLoc
       className="absolute top-0 left-0 flex size-11 touch-none items-center justify-center rounded-xl bg-background/70 text-text-muted hover:text-foreground">
       <Grip aria-hidden="true" className="size-4" />
     </button>
+    {status && <p className="absolute right-0 bottom-0 left-0 truncate rounded-b-xl bg-background/80 px-2 py-1 text-[11px]">{status}</p>}
     {camera.permissionNote && <div role="status" data-testid="camera-permission-note"
       className={cn("absolute z-30 flex w-[min(288px,calc(100dvw-2rem))] items-center gap-1 rounded-xl bg-surface px-3 text-small text-foreground", isLeft ? "left-0" : "right-0", isTop ? "top-full mt-2" : "bottom-full mb-2")}>
       <p>{t("webcam.permissionNote")}</p>

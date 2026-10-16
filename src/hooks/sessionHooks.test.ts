@@ -13,7 +13,7 @@ import { useEndSession, type EndSessionInput } from "./useEndSession";
 const mocks = vi.hoisted(() => ({ invalidate: vi.fn(), push: vi.fn(), getQueryData: vi.fn() }));
 vi.mock("@/lib/clock", () => ({ now: () => new Date("2026-10-13T12:00:10Z") }));
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push: mocks.push }) }));
-vi.mock("react", async (original) => ({ ...await original<typeof import("react")>(), useEffect: vi.fn() }));
+vi.mock("react", async (original) => ({ ...await original<typeof import("react")>(), useEffect: vi.fn(),useRef:vi.fn(value=>({current:value})) }));
 vi.mock("@tanstack/react-query", () => ({
   useQueryClient: () => ({ invalidateQueries: mocks.invalidate, getQueryData: mocks.getQueryData }),
   useMutation: vi.fn(() => ({})), useQuery: vi.fn(() => ({})),
@@ -80,7 +80,7 @@ describe("session query and mutation boundaries", () => {
     expect(useCompletionStore.getState().result).toMatchObject(ended);
     expect(mocks.push).not.toHaveBeenCalled();
     expect(mocks.invalidate.mock.calls).toEqual([
-      [{ queryKey: queryKeys.activeSession() }], [{ queryKey: queryKeys.stats.all() }], [{ queryKey: queryKeys.streak() }],
+      [{ queryKey: queryKeys.activeSession() }], [{ queryKey: queryKeys.stats.all() }], [{ queryKey: queryKeys.streak() }], [{ queryKey: queryKeys.achievements() }],
     ]);
     release(); await completing;
     expect(mocks.push).toHaveBeenCalledWith("/session/local-session/complete");
