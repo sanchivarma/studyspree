@@ -1,4 +1,7 @@
 export const queryKeys = {
+  community:{all:()=>["community"] as const,read:(area:string,query:object)=>["community",area,query] as const},
+  achievements: () => ["achievements"] as const,
+  personalTile: () => ["personalTile"] as const,
   directory: {
     all: () => ["directory"] as const,
     own: () => ["directory", "own"] as const,
@@ -9,6 +12,7 @@ export const queryKeys = {
   activeSession: () => ["activeSession"] as const,
   stats: {
     all: () => ["stats"] as const,
+    session: (id: string) => ["stats", "session", id] as const,
     total: () => ["stats", "total"] as const,
     summary: () => ["stats", "summary"] as const,
     days: (from: string, to: string) => ["stats", "days", from, to] as const,

@@ -19,6 +19,26 @@ export function repositoryContract(name: string, create: () => Repository) {
       expect(await repo.getActiveSession()).toEqual(first);
       expect(first.actualSeconds).toBe(0);
     });
+    it("reads an individual session without scanning history",async()=>{
+      const session=await repo.startSession(input);
+      expect(await repo.getSession(session.id)).toEqual(session);
+      expect(await repo.getSession("not-present")).toBeNull();
+    });
+    it("persists tile preferences and bounded message history without touching time",async()=>{
+      expect(await repo.getPersonalTile()).toMatchObject({mirrored:true,isVisible:true,status:"",history:[]});
+      for(let i=0;i<25;i++)await repo.updatePersonalTile({status:`Message ${i}`});
+      await repo.updatePersonalTile({mirrored:false,isVisible:false});
+      const tile=await repo.getPersonalTile();
+      expect(tile).toMatchObject({mirrored:false,isVisible:false,status:"Message 24"});
+      expect(tile.history).toHaveLength(20);
+      expect(await repo.getTotalSecondsAllTime()).toBe(0);
+    });
+    it("awards a milestone once and keeps it after a later lapse",async()=>{
+      const first=await repo.startSession(input);vi.advanceTimersByTime(10000);await repo.endSession(first.id,"completed");
+      const awards=await repo.getAchievements();expect(awards.map(a=>a.milestone)).toEqual([1]);
+      vi.advanceTimersByTime(30*86400000);const second=await repo.startSession(input);await repo.endSession(second.id,"completed");
+      expect(await repo.getAchievements()).toEqual(awards);
+    });
     it("exposes an honest local dashboard without fictitious live participants", async () => {
       expect(await repo.getDashboard()).toEqual({ latestRoom: null, rooms: [], onlinePeople: [], capabilities: { humanRooms: false } });
       expect(await repo.getActiveSession()).toBeNull();

@@ -15,6 +15,7 @@ export const profileEditSchema = z.object({
 export const mediaKindSchema = z.enum(["avatar", "banner"]);
 export const mediaPathSchema = z.string().regex(/^[0-9a-f-]{36}\/[0-9a-f-]{36}\.(png|jpg|webp)$/);
 export const publicProfileSchema = profileEditSchema.omit({ isPublic: true }).extend({
+  displayName: z.string().max(100),
   id: z.uuid(), username: usernameSchema, joinedAt: z.iso.datetime({ offset: true }),
   avatarPath: mediaPathSchema.nullable(), bannerPath: mediaPathSchema.nullable(),
   followers: z.number().int().nonnegative(), following: z.number().int().nonnegative(),

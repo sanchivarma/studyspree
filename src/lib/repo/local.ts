@@ -15,6 +15,8 @@ import type { DashboardData } from "@/types/dashboard";
 import { paginateHistory } from "@/lib/stats/history";
 import type { SessionHistoryQuery, SessionHistoryPage } from "@/types/stats";
 import { profileEditSchema, type ProfileEdit, type OwnProfile } from "@/lib/profiles/schemas";
+import { awardSchema, awardMilestones, type Award } from "@/lib/achievements/eligibility";
+import { tileSchema, tilePatchSchema, type PersonalTile, type TilePatch } from "@/lib/personalTile/schemas";
 
 type StorageAccess = Pick<Storage, "getItem" | "setItem" | "removeItem">;
 const iso = z.iso.datetime();
@@ -22,7 +24,7 @@ const date = z.iso.date();
 const timezone = z.string().refine((value) => {
   try { new Intl.DateTimeFormat("en", { timeZone: value }); return true; } catch { return false; }
 });
-const profileSchema = z.object({
+export const profileSchema = z.object({
   displayName: z.string(), selectedTheme: z.string().min(1), timezone,
   showStreak: z.boolean(), reduceMotion: z.boolean(), webcamEnabled: z.boolean(), ambienceEnabled: z.boolean(),
   // Older profiles upgrade without discarding preferences.
@@ -34,7 +36,7 @@ const profileSchema = z.object({
   companionPreferences: localCompanionSchema.default(soloCompanions),
 }).strict();
 const inputSchema = z.object({ plannedMinutes: z.number().finite().positive().nullable(), themeSlug: z.string().min(1), task: z.string().nullable(), companions: localCompanionSchema.default(soloCompanions) }).strict();
-const sessionSchema = z.object({
+export const sessionSchema = z.object({
   id: z.string().min(1), startedAt: iso, endedAt: iso.nullable(),
   ...inputSchema.shape, companions: companionSchema.default(soloCompanions), actualSeconds: z.number().int().min(0).max(21600),
   endedReason: z.enum(["completed", "stopped_early", "abandoned"]).nullable(), localDate: date,
@@ -43,7 +45,7 @@ const sessionSchema = z.object({
   : session.endedReason !== null && session.endedAt >= session.startedAt);
 const sessionsSchema = z.array(sessionSchema).refine((sessions) => new Set(sessions.map((session) => session.id)).size === sessions.length && sessions.filter((session) => session.endedAt === null).length <= 1);
 const activeSchema = z.object({ id: z.string().min(1), lastHeartbeatAt: iso }).strict().nullable();
-const streakSchema = z.object({
+export const streakSchema = z.object({
   current: z.number().int().nonnegative(), best: z.number().int().nonnegative(),
   lastActiveDate: date.nullable(), freezesRemaining: z.number().int().min(0).max(2), freezesResetAt: date,
 }).strict().refine((state) => state.best >= state.current);
@@ -149,6 +151,23 @@ export class LocalRepository implements Repository {
   }
 
   async getProfile(): Promise<Profile> { return this.profile(); }
+  async getAchievements(): Promise<Award[]> {
+    return this.mutate(() => {
+      const previous = this.read("ss_awards", z.array(awardSchema), () => []);
+      const awards = awardMilestones(previous, this.streak(this.sessions()).best, now().toISOString());
+      this.write("ss_awards", awards); return awards;
+    });
+  }
+  async getPersonalTile(): Promise<PersonalTile> { return this.read("ss_personal_tile", tileSchema, () => tileSchema.parse({})); }
+  updatePersonalTile(patch: TilePatch): Promise<PersonalTile> {
+    return this.mutate(() => {
+      const current = this.read("ss_personal_tile", tileSchema, () => tileSchema.parse({}));
+      const validated = tilePatchSchema.parse(patch);
+      const history = validated.status !== undefined && validated.status !== current.status && validated.status
+        ? [{ text: validated.status, createdAt: now().toISOString() }, ...current.history].slice(0,20) : current.history;
+      const next = tileSchema.parse({ ...current, ...validated, history }); this.write("ss_personal_tile", next); return next;
+    });
+  }
   private directoryProfile(): OwnProfile {
     const joinedAt = this.read("ss_directory_joined_at", iso, () => now().toISOString());
     this.write("ss_directory_joined_at", joinedAt);
@@ -179,6 +198,7 @@ export class LocalRepository implements Repository {
     return this.mutate(() => { const profile = profileSchema.parse({ ...this.profile(), ...patch }); this.write("ss_profile", profile); return profile; });
   }
   async getActiveSession(): Promise<Session | null> { return this.active(this.sessions()); }
+  async getSession(id: string): Promise<Session | null> { return this.sessions().find(session=>session.id===id)??null; }
   startSession(input: StartSessionInput): Promise<Session> {
     return this.mutate(() => {
       const sessions = this.sessions();

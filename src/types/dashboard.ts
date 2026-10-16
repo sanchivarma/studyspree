@@ -8,6 +8,7 @@ export type RoomPreview = {
   canJoin: boolean;
 };
 export type DashboardData = {
+  activeRoomId?: string | null;
   latestRoom: RoomPreview | null;
   rooms: RoomPreview[];
   onlinePeople: PublicPerson[];
