@@ -5,6 +5,7 @@ import { getTheme } from "@/lib/themes/registry";
 import { authRepository } from "@/lib/repo/authRepository";
 import { redirect } from "next/navigation";
 import { getDevAdminProfile } from "@/lib/auth/devAdmin";
+import { AccountModeProvider } from "@/components/layout/AccountModeProvider";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const profile = await authRepository.getProfile();
@@ -12,11 +13,14 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   if (!profile.onboarding_complete) redirect("/onboarding");
   const theme = getTheme(profile.selected_theme);
   const style = { "--accent": theme.accentColor } as CSSProperties;
+  const mode = await getDevAdminProfile() ? "preview" : "account";
 
   return (
-    <div style={style} data-repository-mode={await getDevAdminProfile() ? "local" : "server"}>
+    <div style={style} data-repository-mode={mode === "preview" ? "local" : "server"}>
+      <AccountModeProvider mode={mode}>
       <AppNav showStreak={profile.show_streak} />
       <AppContent>{children}</AppContent>
+      </AccountModeProvider>
     </div>
   );
 }

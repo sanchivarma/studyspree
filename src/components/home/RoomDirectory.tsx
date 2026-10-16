@@ -7,7 +7,7 @@ export function RoomDirectory({ rooms, available }: { rooms: RoomPreview[]; avai
   const { t } = useTranslation();
   return <section className="mt-6 rounded-2xl border border-border bg-surface/80 p-5" aria-label={t("dashboard.rooms")}>
     <h2 className="text-body font-semibold">{t("dashboard.rooms")}</h2>
-    {rooms.length === 0 && <p className="mt-2 text-small text-text-muted">{t(available ? "dashboard.noRooms" : "characters.peopleUnavailable")}</p>}
+    {rooms.length === 0 && <p className="mt-2 text-small text-text-muted">{t(available ? "dashboard.noRooms" : "invitations.previewRooms")}</p>}
     <div className="grid gap-3 sm:grid-cols-2">{rooms.map(room => <article key={room.id} className="mt-4 rounded-xl border border-border p-4">
       <h3 className="font-medium">{room.name}</h3><p className="mt-1 text-small text-text-muted">{room.description}</p>
       <p className="mt-2 text-small">{t("dashboard.humansOnline", { count: room.humanCount })}</p>

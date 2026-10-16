@@ -10,10 +10,10 @@ import type { TranslationKey } from "@/translations";
 
 const inputClass = "h-12 w-full rounded-xl border border-border bg-background/50 px-4 text-body text-foreground";
 
-export function AuthScreen({ isConfigured, allowOAuth = true, hasDevLogin = false, hasCallbackError = false }: { isConfigured: boolean; allowOAuth?: boolean; hasDevLogin?: boolean; hasCallbackError?: boolean }) {
+export function AuthScreen({ isConfigured, allowOAuth = true, hasDevLogin = false, hasCallbackError = false, initialMode = "login" }: { isConfigured: boolean; allowOAuth?: boolean; hasDevLogin?: boolean; hasCallbackError?: boolean; initialMode?: "login" | "register" }) {
   const { t } = useTranslation();
   const { execute, isPending, result, clearResult } = useAuth();
-  const [mode, setMode] = useState<"login" | "register" | "reset">("login");
+  const [mode, setMode] = useState<"login" | "register" | "reset">(initialMode);
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();

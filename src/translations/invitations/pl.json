@@ -1,0 +1,23 @@
+{
+  "invitations": {
+    "title": "Zaproś przez e-mail",
+    "description": "Zaproś kogoś do StudySpree i uczcie się wspólnie.",
+    "preview": "Jesteś zalogowany jako ss_admin w trybie podglądu. Możesz wysyłać zaproszenia e-mail; wspólne pokoje wymagają zarejestrowanego konta.",
+    "previewRooms": "Wspólne pokoje wymagają zarejestrowanego konta. Zaproszenia e-mail są dostępne w tym podglądzie.",
+    "peopleDescription": "Ucz się z innymi osobami lub zaproś kogoś do StudySpree.",
+    "send": "Wyślij zaproszenie",
+    "localNotice": "Test lokalny: zaproszenia trafiają do lokalnej skrzynki, a nie do prawdziwej skrzynki odbiorcy.",
+    "captured": "Zaproszenie zapisano w lokalnej skrzynce e-mail.",
+    "sent": "Zaproszenie przyjęto do wysłania.",
+    "openInbox": "Otwórz lokalną skrzynkę e-mail",
+    "notConfigured": "Wysyłanie e-maili nie jest jeszcze skonfigurowane. Zaproszenia będą dostępne po ustawieniu nadawcy i publicznego adresu witryny.",
+    "unauthorized": "Zaloguj się, aby wysłać zaproszenie.",
+    "invalid": "Wpisz prawidłowy adres e-mail.",
+    "rateLimited": "Osiągnięto limit zaproszeń na tę godzinę. Spróbuj później.",
+    "duplicate": "To zaproszenie zostało już przetworzone. Sprawdź skrzynkę e-mail.",
+    "unavailable": "Nie można wysłać zaproszenia. Spróbuj później.",
+    "subject": "{name} zaprasza Cię do StudySpree",
+    "emailBody": "{name} zaprasza Cię do wspólnej nauki na StudySpree. Wielkie cele zaczynają się od obecności. Utwórz konto, wybierz otoczenie i znajdź partnerów do nauki.",
+    "join": "Dołącz do StudySpree"
+  }
+}

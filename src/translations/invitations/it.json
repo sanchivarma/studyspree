@@ -1,0 +1,23 @@
+{
+  "invitations": {
+    "title": "Invita via email",
+    "description": "Invita qualcuno su StudySpree per studiare insieme.",
+    "preview": "Hai effettuato l’accesso come ss_admin in modalità anteprima. Puoi invitare via email; le stanze condivise richiedono un account registrato.",
+    "previewRooms": "Le stanze condivise richiedono un account registrato. Gli inviti via email sono disponibili in questa anteprima.",
+    "peopleDescription": "Studia con altre persone o invita qualcuno a scoprire StudySpree.",
+    "send": "Invia invito",
+    "localNotice": "Test locale: gli inviti arrivano nella casella locale, non nella vera casella del destinatario.",
+    "captured": "Invito salvato nella casella email locale.",
+    "sent": "Invito accettato per l’invio.",
+    "openInbox": "Apri la casella email locale",
+    "notConfigured": "L’invio di email non è ancora configurato. Gli inviti saranno disponibili dopo aver impostato il mittente e l’indirizzo pubblico del sito.",
+    "unauthorized": "Accedi per inviare un invito.",
+    "invalid": "Inserisci un indirizzo email valido.",
+    "rateLimited": "Hai raggiunto il limite di inviti per questa ora. Riprova più tardi.",
+    "duplicate": "Questa richiesta di invito è già stata elaborata. Controlla la casella email.",
+    "unavailable": "Impossibile inviare l’invito. Riprova più tardi.",
+    "subject": "{name} ti invita su StudySpree",
+    "emailBody": "{name} ti invita a studiare insieme su StudySpree. I grandi obiettivi iniziano presentandosi. Crea un account per scegliere il tuo ambiente, incontrare compagni di studio e iniziare una sessione.",
+    "join": "Unisciti a StudySpree"
+  }
+}

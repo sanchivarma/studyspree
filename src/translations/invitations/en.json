@@ -1,0 +1,23 @@
+{
+  "invitations": {
+    "title": "Invite by email",
+    "description": "Invite someone to join StudySpree and study with you.",
+    "preview": "You’re signed in as ss_admin in preview mode. You can invite people by email; shared rooms need a registered account.",
+    "previewRooms": "Shared rooms need a registered account. Email invitations are available in this preview.",
+    "peopleDescription": "Study with real people, or invite someone new to StudySpree.",
+    "send": "Send invitation",
+    "localNotice": "Local testing: invitations go to the local email inbox, not the recipient’s real inbox.",
+    "captured": "Invitation captured in the local email inbox.",
+    "sent": "Invitation accepted for delivery.",
+    "openInbox": "Open local email inbox",
+    "notConfigured": "Email delivery is not configured yet. Invitations will be available after the sender and public site address are set up.",
+    "unauthorized": "Please sign in to send an invitation.",
+    "invalid": "Enter a valid email address.",
+    "rateLimited": "You’ve reached the invitation limit for this hour. Please try later.",
+    "duplicate": "This invitation request has already been processed. Check your email inbox.",
+    "unavailable": "We could not send the invitation. Please try later.",
+    "subject": "{name} invited you to StudySpree",
+    "emailBody": "{name} invited you to study together on StudySpree. Big goals start with showing up. Create an account to choose your theme, meet study partners and begin a session.",
+    "join": "Join StudySpree"
+  }
+}

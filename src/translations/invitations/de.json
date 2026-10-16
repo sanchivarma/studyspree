@@ -1,0 +1,23 @@
+{
+  "invitations": {
+    "title": "Per E-Mail einladen",
+    "description": "Lade jemanden zu StudySpree ein, um gemeinsam zu lernen.",
+    "preview": "Du bist als ss_admin im Vorschaumodus angemeldet. Du kannst per E-Mail einladen; gemeinsame Räume benötigen ein registriertes Konto.",
+    "previewRooms": "Gemeinsame Räume benötigen ein registriertes Konto. E-Mail-Einladungen sind in dieser Vorschau verfügbar.",
+    "peopleDescription": "Lerne mit anderen oder lade neue Personen zu StudySpree ein.",
+    "send": "Einladung senden",
+    "localNotice": "Lokaler Test: Einladungen landen im lokalen E-Mail-Postfach, nicht im echten Postfach der eingeladenen Person.",
+    "captured": "Die Einladung liegt im lokalen E-Mail-Postfach.",
+    "sent": "Die Einladung wurde zum Versand angenommen.",
+    "openInbox": "Lokales E-Mail-Postfach öffnen",
+    "notConfigured": "Der E-Mail-Versand ist noch nicht eingerichtet. Einladungen sind verfügbar, sobald Absender und öffentliche Website-Adresse eingerichtet sind.",
+    "unauthorized": "Bitte melde dich an, um eine Einladung zu senden.",
+    "invalid": "Gib eine gültige E-Mail-Adresse ein.",
+    "rateLimited": "Das Einladungslimit für diese Stunde ist erreicht. Bitte versuche es später.",
+    "duplicate": "Diese Einladungsanfrage wurde bereits verarbeitet. Prüfe dein E-Mail-Postfach.",
+    "unavailable": "Die Einladung konnte nicht gesendet werden. Bitte versuche es später.",
+    "subject": "{name} lädt dich zu StudySpree ein",
+    "emailBody": "{name} lädt dich ein, gemeinsam auf StudySpree zu lernen. Große Ziele beginnen damit, dass du da bist. Erstelle ein Konto, wähle deine Lernumgebung und finde Lernpartner.",
+    "join": "StudySpree beitreten"
+  }
+}

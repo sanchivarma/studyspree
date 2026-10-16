@@ -1,0 +1,23 @@
+{
+  "invitations": {
+    "title": "Inviter par e-mail",
+    "description": "Invitez une personne à rejoindre StudySpree pour étudier ensemble.",
+    "preview": "Vous êtes connecté en tant que ss_admin en mode aperçu. Vous pouvez inviter par e-mail ; les salons partagés nécessitent un compte inscrit.",
+    "previewRooms": "Les salons partagés nécessitent un compte inscrit. Les invitations par e-mail sont disponibles dans cet aperçu.",
+    "peopleDescription": "Étudiez avec d’autres personnes ou invitez quelqu’un à découvrir StudySpree.",
+    "send": "Envoyer l’invitation",
+    "localNotice": "Test local : les invitations arrivent dans la boîte locale, pas dans la vraie boîte du destinataire.",
+    "captured": "Invitation enregistrée dans la boîte e-mail locale.",
+    "sent": "Invitation acceptée pour envoi.",
+    "openInbox": "Ouvrir la boîte e-mail locale",
+    "notConfigured": "L’envoi d’e-mails n’est pas encore configuré. Les invitations seront disponibles après la configuration de l’expéditeur et de l’adresse publique du site.",
+    "unauthorized": "Connectez-vous pour envoyer une invitation.",
+    "invalid": "Saisissez une adresse e-mail valide.",
+    "rateLimited": "La limite d’invitations pour cette heure est atteinte. Réessayez plus tard.",
+    "duplicate": "Cette demande d’invitation a déjà été traitée. Consultez votre boîte e-mail.",
+    "unavailable": "Impossible d’envoyer l’invitation. Réessayez plus tard.",
+    "subject": "{name} vous invite sur StudySpree",
+    "emailBody": "{name} vous invite à étudier ensemble sur StudySpree. Les grands objectifs commencent par votre présence. Créez un compte pour choisir votre ambiance, rencontrer des partenaires et commencer une séance.",
+    "join": "Rejoindre StudySpree"
+  }
+}

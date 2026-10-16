@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useState } from "react";
 import { useCommunity } from "@/hooks/useCommunity";
 import { useCommunityMutation } from "@/hooks/useCommunityMutation";
@@ -19,6 +20,7 @@ export function ContactsScreen() {
   return <section className="mx-auto max-w-4xl space-y-6 p-4 md:p-8" data-testid="contacts-screen">
     <h1 className="text-title">{t("contacts.title")}</h1>
     <p className="text-text-muted">{t("contacts.description")}</p>
+    <Link href="/invite" className="inline-flex min-h-11 items-center underline">{t("invitations.title")}</Link>
     <form className="flex flex-wrap items-end gap-3" onSubmit={event => { event.preventDefault(); setNotice(false); mutation.mutate({ action: "contact.request", data: { username } }, { onSuccess: () => { setUsername(""); setNotice(true); } }); }}>
       <label className="flex-1">{t("common.username")}<input required maxLength={30} value={username} onChange={event => setUsername(event.target.value)} className="mt-2 block min-h-11 w-full rounded-xl border border-border bg-surface px-3"/></label>
       <button className={buttonClass} disabled={mutation.isPending}>{t("contacts.add")}</button>

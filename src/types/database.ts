@@ -559,6 +559,40 @@ export type Database = {
                     }
                 ];
             };
+            "email_invitation_reservations": {
+                Row: {
+                    "created_at": string;
+                    "id": string;
+                    "recipient_hash": string;
+                    "user_id": string;
+                };
+                ComputedFields: never;
+                Insert: {
+                    "created_at"?: string;
+                    "id": string;
+                    "recipient_hash": string;
+                    "user_id": string;
+                };
+                Update: {
+                    "created_at"?: string;
+                    "id"?: string;
+                    "recipient_hash"?: string;
+                    "user_id"?: string;
+                };
+                Relationships: [
+                    {
+                        foreignKeyName: "email_invitation_reservations_user_id_fkey";
+                        columns: [
+                            "user_id"
+                        ];
+                        isOneToOne: false;
+                        referencedRelation: "profiles";
+                        referencedColumns: [
+                            "id"
+                        ];
+                    }
+                ];
+            };
             "feed_posts": {
                 Row: {
                     "attachments": NonNullable<Json>;
@@ -1898,6 +1932,13 @@ export type Database = {
                     "p_username": string;
                 };
                 Returns: Json;
+            };
+            "reserve_email_invitation": {
+                Args: {
+                    "p_id": string;
+                    "p_recipient_hash": string;
+                };
+                Returns: boolean;
             };
             "start_study_session": {
                 Args: {
