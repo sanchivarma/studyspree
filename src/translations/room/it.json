@@ -1,5 +1,15 @@
 {
   "room": {
-    "title": "Stanza di studio"
+    "title": "Stanza di studio",
+    "chat": "Chat della sessione",
+    "chatMessages": "Messaggi della stanza",
+    "chatEmpty": "Presentati o saluta.",
+    "message": "Messaggio",
+    "sayHi": "Saluta i tuoi compagni di studio…",
+    "send": "Invia",
+    "goal": "Obiettivo della sessione (facoltativo)",
+    "goalNotice": "Il tuo obiettivo verrà condiviso al tuo ingresso. Lascia il campo vuoto per mantenerlo privato.",
+    "goalPosted": "Obiettivo della sessione",
+    "chatLimit": "Attendi un momento prima di inviare altri messaggi."
   }
 }

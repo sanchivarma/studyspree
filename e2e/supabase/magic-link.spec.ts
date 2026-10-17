@@ -17,15 +17,15 @@ test("local email magic link signs in and onboarding has exactly three steps", a
   const listing = z.object({ messages: z.array(z.object({ ID: z.string(), To: z.array(z.object({ Address: z.string() })) })) });
   let messageId: string | undefined;
   await expect.poll(async () => {
-    const response = await page.request.get("http://127.0.0.1:54324/api/v1/messages");
+    const response = await page.request.get("http://127.0.0.1:55324/api/v1/messages");
     const data = listing.parse(await response.json());
     messageId = data.messages.find(message => message.To.some(recipient => recipient.Address === email))?.ID;
     return Boolean(messageId);
   }, { timeout: 15000 }).toBe(true);
-  const response = await page.request.get(`http://127.0.0.1:54324/api/v1/message/${encodeURIComponent(messageId!)}`);
+  const response = await page.request.get(`http://127.0.0.1:55324/api/v1/message/${encodeURIComponent(messageId!)}`);
   const content = z.object({ HTML: z.string(), Text: z.string() }).parse(await response.json());
   const candidates = (content.HTML + "\n" + content.Text).match(/https?:\/\/[^\s"<>]+/g) ?? [];
-  const magicLink = candidates.map(value => new URL(value.replaceAll("&amp;", "&"))).find(url => ["localhost", "127.0.0.1"].includes(url.hostname) && url.port === "54321" && url.pathname === "/auth/v1/verify");
+  const magicLink = candidates.map(value => new URL(value.replaceAll("&amp;", "&"))).find(url => ["localhost", "127.0.0.1"].includes(url.hostname) && url.port === "55321" && url.pathname === "/auth/v1/verify");
   if (!magicLink) throw new Error("The local inbox did not contain a local authentication link.");
   await page.goto(magicLink.href);
   await expect(page).toHaveURL(/\/onboarding$/, { timeout: 15000 });

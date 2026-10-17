@@ -44,10 +44,10 @@ test("character selection persists, restores after refresh, and never requests a
   expect(await page.evaluate(() => (window as unknown as Window & { __cameraRequests: number }).__cameraRequests)).toBe(0);
 });
 
-test("reduced-motion companions render static posters with no GIF requests", async ({ page }) => {
+test("reduced-motion companions render static posters with no animation requests", async ({ page }) => {
   await signIn(page);
   const gifs: string[] = [];
-  page.on("request", request => { if (request.url().endsWith(".gif")) gifs.push(request.url()); });
+  page.on("request", request => { if (/\/characters\/.*\.(gif|webm|mp4)$/.test(request.url())) gifs.push(request.url()); });
   await choosePartners(page);
   await page.getByRole("button", { name: "Start", exact: true }).click();
   await expect(page.getByTestId("session-companions")).toBeVisible();
@@ -55,10 +55,12 @@ test("reduced-motion companions render static posters with no GIF requests", asy
   expect(gifs).toEqual([]);
 });
 
-test("missing GIF falls back to its poster and Finish remains usable", async ({ page }) => {
+test("missing long video and GIF fall back to the poster and Finish remains usable", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await signIn(page);
   await page.route("**/characters/*/study-v1.gif", route => route.abort());
+  await page.route("**/characters/*/study-v2.webm", route => route.abort());
+  await page.route("**/characters/*/study-v2.mp4", route => route.abort());
   await choosePartners(page);
   await page.getByRole("button", { name: "Start", exact: true }).click();
   const loop = page.getByTestId("session-companions").getByTestId("character-loop-male-01");

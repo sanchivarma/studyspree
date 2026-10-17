@@ -1,5 +1,15 @@
 {
   "room": {
-    "title": "Study room"
+    "title": "Study room",
+    "chat": "Session chat",
+    "chatMessages": "Room messages",
+    "chatEmpty": "Introduce yourself or say hi.",
+    "message": "Message",
+    "sayHi": "Say hi to your study partners…",
+    "send": "Send",
+    "goal": "Session goal (optional)",
+    "goalNotice": "Your goal will be posted to the room when you join. Leave it empty to keep it private.",
+    "goalPosted": "Session goal",
+    "chatLimit": "Please wait a moment before sending more messages."
   }
 }

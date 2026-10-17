@@ -1,0 +1,108 @@
+# Session companions and chat
+
+Email configuration is paused at the user's request. Local Supabase now uses
+API 55321, database 55322, Studio 55323 and the local inbox 55324. Existing history
+was restored from its normal backup; no reset was run. Migrations 0021–0023 are
+applied and database types were regenerated.
+
+## Choose and mix styles
+
+Open Study → Choose companions → Virtual partners. Filter by All, Illustrated
+people, Whimsical or Realistic. Mix up to eight companions across styles.
+Selections persist across refresh and can change during a session without
+changing its start timestamp. Real people in shared rooms remain separate users.
+
+- Eight illustrated adults: Noah, Amir, Leo, Kai, Maya, Zara, Mei and Eva.
+- Three original whimsical partners: Moss the Fox, Pip the Owl and Momo the Cloud.
+- Two realistic fictional adults: Arun and Lin, explicitly labelled **AI-generated ·
+  static preview**. These are selectable static posters; realistic human motion
+  has not been generated and is not claimed as complete.
+
+All eleven illustrated/whimsical partners have actual 150-second recordings in
+muted WebM and MP4. The source renderer spans reading, blinking, posture and
+page-turn states over that timeline. It does not concatenate a four-second GIF
+to pretend that it contains several minutes of varied motion. The original
+short GIFs remain lightweight picker previews; session tiles use the long video.
+Each long file is under 600 KB. Reduced motion shows a static poster; hidden or
+offscreen animations unmount; missing video falls back to GIF and then poster.
+No character requests camera or microphone access.
+
+Reproducible vector sources: `scripts/generate-character-loops.mjs` and
+`scripts/generate-session-companions.mjs`. Assets are immutable and generators
+refuse to replace published versions. Provenance: `public/characters/LICENCES.md`.
+
+## Realistic video still needed
+
+The available built-in image tool produces still images, not natural two-minute
+human videos. A realistic motion source must be supplied through an AI-video
+workflow or another appropriately licensed fictional-adult video source.
+The app does not label a still photo with camera movement as human motion.
+
+Once an eligible source exists, install ffmpeg/ffprobe and run:
+
+```sh
+node scripts/prepare-companion-video.mjs source.mp4 realistic-01 video-v1
+```
+
+The helper requires 120–180 seconds of source motion, strips audio, prepares
+WebM/MP4 and a poster, enforces size budgets and refuses existing versioned URLs.
+Record the source and commercial rights in the character licence ledger, then
+connect the emitted paths and measured loopSeconds in `registry.ts`. The
+helper was syntax-checked; full transcoding awaits ffmpeg and source footage.
+
+## Existing characters and commercial assets
+
+No famous franchise character has been bundled or claimed as cleared for
+commercial use. An independently verified alternative is [Kenney Animal Pack](https://kenney.nl/assets/animal-pack):
+the official page identifies CC0, and [Kenney's own support page](https://kenney.nl/support)
+explicitly permits commercial projects without mandatory attribution. That
+permission applies to those asset files; Kenney reserves its own studio logo.
+Checked 17 October 2026. This build uses original fox/owl/cloud designs instead.
+
+## Realistic poster provenance and exact generation prompts
+
+Generated using the built-in imagegen skill/tool; no API runner or reference
+photograph was used. Outputs were inspected and converted to project-local WebP
+posters. They depict fictional adults and are always identified as virtual.
+Generation-service terms apply; no third-party character licence is asserted.
+
+`public/characters/realistic-01/poster-v1.webp`:
+
+> A natural editorial photograph of a completely fictional adult man, around thirty, medium brown skin and dark wavy hair, quietly reading an open textbook at a wooden desk in a calm library. Chest-up candid three-quarter view, looking down at book, hands resting naturally on pages. Warm soft side light, realistic skin texture, casual muted blue sweater. 4:3 landscape composition, entire head and hands in frame, no text, no logos, no famous person, no resemblance to a real identifiable person. This is a static poster for a clearly labelled virtual study partner.
+
+`public/characters/realistic-02/poster-v1.webp`:
+
+> A natural editorial photograph of a completely fictional adult woman, around thirty, East Asian appearance with shoulder-length dark hair, quietly taking handwritten notes from an open textbook at a wooden desk by a library window. Chest-up candid three-quarter view, looking down, hands and pen resting naturally by notebook. Warm soft daylight, realistic skin texture, casual muted green cardigan. 4:3 landscape composition, entire head and hands in frame, no text, no logos, no famous person, no resemblance to a real identifiable person. This is a static poster for a clearly labelled virtual study partner.
+
+## Room chat
+
+Use real Supabase accounts, join the same shared room, and open Session chat.
+Participants can introduce themselves or say hi. The latest 100 messages appear
+chronologically and refresh every three seconds while the chat is open and the
+page is visible. The panel overlays the grid without reducing video tile sizes.
+Escape closes chat and restores its trigger's focus; it does not finish the timer.
+
+Before joining, the optional goal is visible with a sharing notice. A nonempty
+goal is posted as a goal announcement once per room visit. Clearing the input
+opts out. Refresh/repeated Join does not duplicate it. Message authors and kinds
+come from authenticated database functions, never caller-supplied identities.
+Only active room participants can read/send; leaving, closure or blocked presence
+revokes access. Messages from blocked people are suppressed. Retrying an unchanged
+send is idempotent; the database allows at most twenty user messages per minute.
+
+The local `ss_admin` preview can use virtual partners; it cannot impersonate an
+account to post shared chat. Local camera self-view still never enters the network.
+
+## Verification
+
+- Production build, typecheck, lint, asset gates and 368 unit tests passed.
+- All 181 database assertions passed, including 17 room-chat and three mixed-style assertions.
+- Twenty-six companion/style/timer/camera browser checks passed, including decoding
+  all eleven 150-second recordings in both formats and the twenty-second privacy audit.
+- Two real-account journeys passed: local magic-link onboarding and two-person room chat,
+  once-per-visit goals, persistence, timer continuity and Escape behavior. Chat was
+  verified with the independent media transport unavailable; no Cloud camera minutes
+  were needed for this test.
+- Maintenance returned 401 without credentials and 200 with its configured bearer token.
+- The optional realistic-video importer was syntax-checked; actual transcoding awaits
+  ffmpeg and source footage. Realistic motion is not marked complete.

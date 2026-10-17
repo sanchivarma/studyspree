@@ -22,6 +22,18 @@
     "female-01": "Maya",
     "female-02": "Zara",
     "female-03": "Mei",
-    "female-04": "Eva"
+    "female-04": "Eva",
+    "styles": "Styles de compagnons",
+    "all": "Tous",
+    "illustrated": "Personnages illustrés",
+    "whimsical": "Fantaisie",
+    "realistic": "Réaliste",
+    "limit": "Choisissez jusqu’à huit compagnons en mélangeant les styles.",
+    "staticPreview": "Généré par IA · aperçu statique",
+    "moss-fox": "Moss le renard",
+    "pip-owl": "Pip la chouette",
+    "momo-cloud": "Momo le nuage",
+    "realistic-01": "Arun",
+    "realistic-02": "Lin"
   }
 }

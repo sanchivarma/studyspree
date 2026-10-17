@@ -17,6 +17,6 @@ export function InviteEmailForm({ delivery }: { delivery: "smtp" | "resend" | "m
     </form>
     {mutation.isSuccess && <p role="status">{t(mutation.data.delivery === "captured" ? "invitations.captured" : "invitations.sent")}</p>}
     {mutation.isError && <p role="alert">{t(`invitations.${mutation.error instanceof InvitationError ? mutation.error.code : "unavailable"}`)}</p>}
-    {delivery === "mailpit" && <a href="http://localhost:54324" target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center underline">{t("invitations.openInbox")}</a>}
+    {delivery === "mailpit" && <a href="http://localhost:55324" target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center underline">{t("invitations.openInbox")}</a>}
   </section>;
 }

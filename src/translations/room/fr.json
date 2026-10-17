@@ -1,5 +1,15 @@
 {
   "room": {
-    "title": "Salon d’étude"
+    "title": "Salon d’étude",
+    "chat": "Discussion de la session",
+    "chatMessages": "Messages de la salle",
+    "chatEmpty": "Présentez-vous ou dites bonjour.",
+    "message": "Message",
+    "sayHi": "Dites bonjour à vos partenaires…",
+    "send": "Envoyer",
+    "goal": "Objectif de la session (facultatif)",
+    "goalNotice": "Votre objectif sera partagé à votre arrivée. Laissez le champ vide pour le garder privé.",
+    "goalPosted": "Objectif de la session",
+    "chatLimit": "Patientez un instant avant d’envoyer d’autres messages."
   }
 }

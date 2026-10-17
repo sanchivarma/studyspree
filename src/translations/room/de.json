@@ -1,5 +1,15 @@
 {
   "room": {
-    "title": "Lernraum"
+    "title": "Lernraum",
+    "chat": "Sitzungschat",
+    "chatMessages": "Raumnachrichten",
+    "chatEmpty": "Stell dich vor oder sag Hallo.",
+    "message": "Nachricht",
+    "sayHi": "Sag deinen Lernpartnern Hallo…",
+    "send": "Senden",
+    "goal": "Sitzungsziel (optional)",
+    "goalNotice": "Dein Ziel wird beim Beitritt im Raum geteilt. Lass das Feld leer, um es privat zu halten.",
+    "goalPosted": "Sitzungsziel",
+    "chatLimit": "Warte bitte einen Moment, bevor du weitere Nachrichten sendest."
   }
 }

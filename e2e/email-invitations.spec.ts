@@ -18,12 +18,12 @@ test("preview People sends a real local invitation and its link opens registrati
   await expect(page.getByTestId("email-invitation").getByRole("status")).toHaveText("Invitation captured in the local email inbox.");
   let messageId = "";
   await expect.poll(async () => {
-    const response = await page.request.get("http://127.0.0.1:54324/api/v1/messages");
+    const response = await page.request.get("http://127.0.0.1:55324/api/v1/messages");
     const inbox = await response.json() as { messages: { ID: string; To: { Address: string }[] }[] };
     messageId = inbox.messages.find(message => message.To.some(to => to.Address === recipient))?.ID ?? "";
     return Boolean(messageId);
   }).toBe(true);
-  const response = await page.request.get(`http://127.0.0.1:54324/api/v1/message/${messageId}`);
+  const response = await page.request.get(`http://127.0.0.1:55324/api/v1/message/${messageId}`);
   const message = await response.json() as { Text: string; Subject: string };
   expect(message.Subject).toContain("ss_admin");
   expect(message.Text).toContain("/login?invite=1");

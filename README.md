@@ -5,6 +5,10 @@ Shared feature routes, real account storage, camera boundaries and local mainten
 See [the completion audit](docs/REMAINING_WORK.md) for completed follow-up requests
 and remaining machine, email-provider and deployment setup.
 
+See [Session companions and chat](docs/SESSION_COMPANIONS.md) for mixed character
+styles, 150-second illustrated/whimsical loops, clearly labelled realistic still
+previews, and participant chat with an optional goal posted on joining.
+
 Big goals start with showing up.
 
 **NEVER add audio without a recorded licence. NEVER use audio ripped from YouTube.**
@@ -200,7 +204,7 @@ were brought forward from the phased plan at the user's request.
 4. Run `node scripts/start-local-supabase.mjs`. This starts the required local services and suppresses credentials in terminal output. Unused analytics and edge-function services are disabled to keep local resource usage down.
 5. Run `node scripts/configure-local-supabase.mjs` to copy local connection values into `.env.local` without printing them. Existing environment values are backed up to the ignored `.env.local.before-local`; development preview credentials are preserved. Alternatively obtain values from `npx supabase status` and configure them manually.
 6. For a deliberate fresh local database, `npx supabase db reset` reapplies migrations and `supabase/seed.sql`. This erases local database accounts/records; it is not a routine startup command. Run the configuration helper afterwards to restore the local username-lookup hash.
-7. Studio: `http://localhost:54323`. Local email inbox: `http://localhost:54324` (Mailpit in this CLI version; the plan calls this Inbucket). Magic-link emails stay in this local inbox.
+7. Studio: `http://localhost:55323`. Local email inbox: `http://localhost:55324` (Mailpit in this CLI version; the plan calls this Inbucket). Magic-link emails stay in this local inbox.
 8. Run `npm run db:types` after schema changes and `npm run db:test` for pgTAP. Then run `npm run dev` on port 3000. Restart an existing app server if it has not picked up environment changes. `npm run test:e2e:supabase` verifies real local magic-link login and onboarding; regular UI/privacy tests remain a separate command and do not require a database.
 
 Real Supabase accounts use the server repository for sessions and progress. The development test login retains LocalRepository for offline previews. Existing local history is preserved locally; signing in does not automatically import it into an account.

@@ -1,5 +1,15 @@
 {
   "room": {
-    "title": "Pokój nauki"
+    "title": "Pokój nauki",
+    "chat": "Czat sesji",
+    "chatMessages": "Wiadomości pokoju",
+    "chatEmpty": "Przedstaw się lub przywitaj.",
+    "message": "Wiadomość",
+    "sayHi": "Przywitaj swoich partnerów do nauki…",
+    "send": "Wyślij",
+    "goal": "Cel sesji (opcjonalnie)",
+    "goalNotice": "Twój cel zostanie udostępniony po dołączeniu. Pozostaw pole puste, aby zachować go dla siebie.",
+    "goalPosted": "Cel sesji",
+    "chatLimit": "Poczekaj chwilę przed wysłaniem kolejnych wiadomości."
   }
 }

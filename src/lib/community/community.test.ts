@@ -30,6 +30,14 @@ describe("timezone-safe scheduling", () => {
     it("round-trips an ordinary date in another timezone", () => expect(resolveCalendarTime("2026-10-16T09:00", "America/New_York")).toBe("2026-10-16T13:00:00.000Z"));
 });
 describe("strict client boundaries", () => {
+    it("allows an optional join goal and rejects spoofed chat identities or message kinds", () => {
+        const id = crypto.randomUUID(), clientId = crypto.randomUUID();
+        expect(communityCommandSchema.parse({ action: "room.join", data: { id, goal: "Read chapter three" } }).data).toMatchObject({ goal: "Read chapter three" });
+        expect(communityCommandSchema.safeParse({ action: "room.chat.send", data: { id, body: "Hi", clientId } }).success).toBe(true);
+        expect(communityCommandSchema.safeParse({ action: "room.chat.send", data: { id, body: "Hi", clientId, authorId: id } }).success).toBe(false);
+        expect(communityCommandSchema.safeParse({ action: "room.chat.send", data: { id, body: "Hi", clientId, kind: "goal" } }).success).toBe(false);
+        expect(communityCommandSchema.safeParse({ action: "room.join", data: { id, goal: "a".repeat(501) } }).success).toBe(false);
+    });
     it("keeps partial profile updates from resetting omitted preferences",()=>{
       const result=repositoryRequestSchema.parse({op:"updateProfile",patch:{showStreak:false}});
       expect(result).toEqual({op:"updateProfile",patch:{showStreak:false}});

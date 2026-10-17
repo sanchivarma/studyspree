@@ -1,14 +1,17 @@
-export const characterSlugs = ["male-01", "male-02", "male-03", "male-04", "female-01", "female-02", "female-03", "female-04"] as const;
+export const humanCharacterSlugs = ["male-01", "male-02", "male-03", "male-04", "female-01", "female-02", "female-03", "female-04"] as const;
+export const characterSlugs = [...humanCharacterSlugs, "moss-fox", "pip-owl", "momo-cloud", "realistic-01", "realistic-02"] as const;
 export type CharacterSlug = typeof characterSlugs[number];
 export type CompanionMode = "solo" | "characters" | "people" | "mixed";
 export type CompanionPreferences = { mode: CompanionMode; characterSlugs: CharacterSlug[] };
 export type CharacterDefinition = {
   slug: CharacterSlug;
-  presentation: "male" | "female";
+  presentation: "male" | "female" | "neutral";
+  style: "illustrated" | "whimsical" | "realistic";
   nameKey: import("@/translations").TranslationKey;
   descriptionKey: import("@/translations").TranslationKey;
   activity: "reading" | "writing" | "studying";
-  gif: string;
+  gif: string | null;
+  loopSeconds: number | null;
   poster: string;
   webm: string | null;
   mp4: string | null;

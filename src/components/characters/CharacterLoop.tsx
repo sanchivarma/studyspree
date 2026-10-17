@@ -19,6 +19,7 @@ export function CharacterLoop({ slug, className, active = true, priority = false
   const [failed, setFailed] = useState<string | null>(null);
   const [ready, setReady] = useState<string | null>(null);
   const [posterFailed, setPosterFailed] = useState<string | null>(null);
+  const [movieFailed, setMovieFailed] = useState<string | null>(null);
   const character = getCharacter(slug);
   const { t } = useTranslation();
   useEffect(() => {
@@ -28,15 +29,28 @@ export function CharacterLoop({ slug, className, active = true, priority = false
     observer.observe(target);
     return () => observer.disconnect();
   }, []);
-  const animate = active && pageVisible && onScreen && !reducedMotion && failed !== slug;
+  const animate = Boolean(character && (character.gif || character.webm || character.mp4)) && active && pageVisible && onScreen && !reducedMotion && failed !== slug;
+  const showMovie = animate && priority && movieFailed !== slug && Boolean(character?.webm || character?.mp4);
   return <div ref={root} data-testid={`character-loop-${slug}`} data-animated={animate}
     role="img" aria-label={`${character ? t(character.nameKey) : slug} — ${t("characters.virtualLabel")}`}
     className={cn("relative aspect-[4/3] overflow-hidden rounded-xl bg-surface-2", className)}>
     {character && posterFailed !== slug && <img src={character.poster} alt="" aria-hidden="true" width={480} height={360}
       loading={priority ? "eager" : "lazy"} onError={() => setPosterFailed(slug)} className="absolute inset-0 h-full w-full object-cover" />}
-    {character && animate && <img key={slug} src={character.gif} alt="" aria-hidden="true" width={480} height={360}
+    {character && showMovie && <CharacterMovie key={slug} webm={character.webm} mp4={character.mp4} onReady={() => setReady(`${slug}:movie`)} onError={() => setMovieFailed(slug)} ready={ready === `${slug}:movie`}/>}
+    {character?.gif && animate && !showMovie && <img key={slug} src={character.gif} alt="" aria-hidden="true" width={480} height={360}
       onLoad={() => setReady(slug)} onError={() => setFailed(slug)} data-testid="character-animation"
       className={cn("absolute inset-0 h-full w-full object-cover transition-opacity duration-300 motion-reduce:transition-none", ready === slug ? "opacity-100" : "opacity-0")} />}
     {posterFailed === slug && <span className="absolute inset-0 flex items-center justify-center p-4 text-small text-text-muted">{t("characters.virtualLabel")}</span>}
   </div>;
+}
+
+function CharacterMovie({ webm, mp4, onReady, onError, ready }: { webm: string | null; mp4: string | null; onReady: () => void; onError: () => void; ready: boolean }) {
+  const ref = useRef<HTMLVideoElement>(null);
+  const errors = useRef(0);
+  const count = Number(Boolean(webm)) + Number(Boolean(mp4));
+  useEffect(() => { const movie = ref.current; if (movie) void movie.play().catch(() => {}); return () => movie?.pause(); }, []);
+  const sourceError = () => { if (++errors.current >= count) onError(); };
+  return <video ref={ref} muted autoPlay loop playsInline preload="auto" data-testid="character-animation" aria-hidden="true" onCanPlay={onReady} onError={onError} className={cn("absolute inset-0 h-full w-full object-cover transition-opacity duration-300 motion-reduce:transition-none", ready ? "opacity-100" : "opacity-0")}>
+    {webm && <source src={webm} type="video/webm" onError={sourceError}/>}{mp4 && <source src={mp4} type="video/mp4" onError={sourceError}/>}
+  </video>;
 }

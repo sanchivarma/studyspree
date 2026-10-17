@@ -1036,6 +1036,74 @@ export type Database = {
                 Relationships: [
                 ];
             };
+            "room_chat_messages": {
+                Row: {
+                    "author_id": string;
+                    "body": string;
+                    "client_id": string;
+                    "created_at": string;
+                    "id": string;
+                    "kind": string;
+                    "room_id": string;
+                    "visit_id": string | null;
+                };
+                ComputedFields: never;
+                Insert: {
+                    "author_id": string;
+                    "body": string;
+                    "client_id": string;
+                    "created_at"?: string;
+                    "id"?: string;
+                    "kind"?: string;
+                    "room_id": string;
+                    "visit_id"?: string | null;
+                };
+                Update: {
+                    "author_id"?: string;
+                    "body"?: string;
+                    "client_id"?: string;
+                    "created_at"?: string;
+                    "id"?: string;
+                    "kind"?: string;
+                    "room_id"?: string;
+                    "visit_id"?: string | null;
+                };
+                Relationships: [
+                    {
+                        foreignKeyName: "room_chat_messages_author_id_fkey";
+                        columns: [
+                            "author_id"
+                        ];
+                        isOneToOne: false;
+                        referencedRelation: "profiles";
+                        referencedColumns: [
+                            "id"
+                        ];
+                    },
+                    {
+                        foreignKeyName: "room_chat_messages_room_id_fkey";
+                        columns: [
+                            "room_id"
+                        ];
+                        isOneToOne: false;
+                        referencedRelation: "study_rooms";
+                        referencedColumns: [
+                            "id"
+                        ];
+                    },
+                    {
+                        foreignKeyName: "room_chat_messages_visit_id_fkey";
+                        columns: [
+                            "visit_id"
+                        ];
+                        isOneToOne: false;
+                        referencedRelation: "room_visits";
+                        referencedColumns: [
+                            "id"
+                        ];
+                    }
+                ];
+            };
             "room_invites": {
                 Row: {
                     "created_by": string;
@@ -1909,6 +1977,13 @@ export type Database = {
                     isSetofReturn: false;
                 };
             };
+            "join_room_with_goal": {
+                Args: {
+                    "p_goal"?: string;
+                    "p_room": string;
+                };
+                Returns: Json;
+            };
             "lookup_login_email": {
                 Args: {
                     "p_lookup_secret": string;
@@ -1927,6 +2002,12 @@ export type Database = {
                 };
                 Returns: Json;
             };
+            "read_room_chat": {
+                Args: {
+                    "p_room": string;
+                };
+                Returns: Json;
+            };
             "read_visible_profile": {
                 Args: {
                     "p_username": string;
@@ -1939,6 +2020,14 @@ export type Database = {
                     "p_recipient_hash": string;
                 };
                 Returns: boolean;
+            };
+            "send_room_chat": {
+                Args: {
+                    "p_body": string;
+                    "p_client_id": string;
+                    "p_room": string;
+                };
+                Returns: Json;
             };
             "start_study_session": {
                 Args: {

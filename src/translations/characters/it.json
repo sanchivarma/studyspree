@@ -22,6 +22,18 @@
     "female-01": "Maya",
     "female-02": "Zara",
     "female-03": "Mei",
-    "female-04": "Eva"
+    "female-04": "Eva",
+    "styles": "Stili dei compagni",
+    "all": "Tutti",
+    "illustrated": "Persone illustrate",
+    "whimsical": "Fantasia",
+    "realistic": "Realistico",
+    "limit": "Scegli fino a otto compagni mescolando gli stili.",
+    "staticPreview": "Generato con IA · anteprima statica",
+    "moss-fox": "Moss la volpe",
+    "pip-owl": "Pip il gufo",
+    "momo-cloud": "Momo la nuvola",
+    "realistic-01": "Arun",
+    "realistic-02": "Lin"
   }
 }

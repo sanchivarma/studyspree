@@ -15,6 +15,14 @@ export async function executeCommunity(input: z.infer<typeof communityRequestSch
     if (identity.error || !identity.data.user)
         throw new CommunityServerError(401, "accountRequired");
     if (input.operation === "mutate") {
+        if (input.command.action === "room.join" || input.command.action === "room.chat.send") {
+            const command = input.command;
+            const response = command.action === "room.join"
+                ? await client.rpc("join_room_with_goal", { p_room: command.data.id, ...(command.data.goal === undefined ? {} : { p_goal: command.data.goal }) })
+                : await client.rpc("send_room_chat", { p_room: command.data.id, p_body: command.data.body, p_client_id: command.data.clientId });
+            if (response.error) throw new CommunityServerError(response.error.code === "42501" ? 403 : 400, response.error.code === "42501" ? "forbidden" : response.error.message.includes("rate limit") ? "chatLimit" : response.error.message.includes("is full") ? "full" : response.error.message.includes("allowance") ? "limit" : response.error.code === "22023" ? "invalid" : "unavailable");
+            return response.data;
+        }
         if (/^(contact\.|calendar\.|session\.share$)/.test(input.command.action)) {
             const response = await client.rpc("calendar_mutate", { p_action: input.command.action, p_data: input.command.data });
             if (response.error) throw new CommunityServerError(response.error.code === "42501" ? 403 : 400, response.error.code === "42501" ? "forbidden" : "invalid");
@@ -36,6 +44,12 @@ export async function executeCommunity(input: z.infer<typeof communityRequestSch
         return response.data;
     }
     const { area, query } = input;
+    if (area === "roomChat") {
+        if (!query.id) throw new CommunityServerError(400, "invalid");
+        const response = await client.rpc("read_room_chat", { p_room: query.id });
+        if (response.error) throw new CommunityServerError(response.error.code === "42501" ? 403 : 400, "forbidden");
+        return communityStateSchema.parse(response.data);
+    }
     if (area === "calendar" || area === "contacts") {
         if (query.cursor && !/^\d{1,6}$/.test(query.cursor)) throw new CommunityServerError(400, "invalid");
         const response = await client.rpc("calendar_read", { p_area: area, p_query: query });

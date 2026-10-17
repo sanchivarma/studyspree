@@ -27,7 +27,7 @@ Port 465 uses TLS immediately. Port 587 requires STARTTLS. Certificate checking 
 
 ## Local testing without credentials
 
-When connected to local Supabase and no SMTP/API sender is configured, invitations are captured through the existing local Mailpit service. They do not reach a recipient's real inbox. The form and success message explicitly identify local capture, with a link to http://localhost:54324.
+When connected to local Supabase and no SMTP/API sender is configured, invitations are captured through the existing local Mailpit service. They do not reach a recipient's real inbox. The form and success message explicitly identify local capture, with a link to http://localhost:55324.
 
 For isolated tests with existing sender credentials, start a separate verification instance with `INVITATION_EMAIL_TRANSPORT=mailpit`. This override is accepted with local Supabase. `smtp` and `resend` can also explicitly select a configured sender. Do not change the normal instance's delivery settings just to run a test.
 

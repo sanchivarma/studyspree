@@ -3,10 +3,10 @@
 import sharp from "sharp";
 import { mkdir, writeFile, access } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 
 const root = fileURLToPath(new URL("../public/characters/", import.meta.url));
-const cast = [
+export const cast = [
   ["male-01", "#be8566", "#25242c", "#648f99", "short", false, "reading"],
   ["male-02", "#805039", "#211b22", "#b37a5c", "curls", true, "writing"],
   ["male-03", "#e7b491", "#664536", "#86956e", "sweep", true, "reading"],
@@ -17,12 +17,14 @@ const cast = [
   ["female-04", "#e9c0a0", "#a55d39", "#73988a", "bun", false, "writing"],
 ];
 
-function illustration(person, frame) {
+export function illustration(person, frame, seconds = null) {
   const [slug, skin, hair, shirt, style, glasses, activity] = person;
   const phase = frame / 32 * Math.PI * 2;
   const breath = (Math.sin(phase) * 1.3).toFixed(2);
   const pen = (Math.sin(phase * 3) * 3).toFixed(2);
-  const blink = frame === 12 || frame === 13;
+  const blink = seconds === null ? frame === 12 || frame === 13 : seconds % 5.7 < 0.16 || seconds % 17.3 < 0.12;
+  const look = seconds === null ? 0 : Math.sin(seconds * Math.PI / 25) * 1.5;
+  const pageTurn = seconds !== null && seconds % 37 > 29 && seconds % 37 < 31;
   const eye = blink ? "M-22 4h8 M14 4h8" : "M-22 2q4 4 8 0 M14 2q4 4 8 0";
   const backHair = ["long", "bob", "curls"].includes(style)
     ? `<path d="M-50-33Q-69 10-58 84Q0 111 59 82L50-35Z" fill="${hair}"/>` : "";
@@ -41,7 +43,7 @@ function illustration(person, frame) {
   <path d="M418 51q-8-18 1-27q14 12 0 27m0-8q9-20 20-14q-1 18-20 14" fill="#7d997c"/>
   <ellipse cx="245" cy="330" rx="175" ry="19" fill="#101623"/>
   <path d="M169 304V199Q240 165 312 199V304" fill="#343b4b"/>
-  <g transform="translate(240 ${177 + Number(breath)})">
+  <g transform="translate(240 ${177 + Number(breath)}) rotate(${look})">
   ${backHair}
   <path d="M-23 34v39h46V34" fill="${skin}"/>
   <path d="M-23 49q23 17 46 0v10q-22 17-46 0" fill="#000" opacity=".1"/>
@@ -62,6 +64,7 @@ function illustration(person, frame) {
   <ellipse cx="240" cy="318" rx="103" ry="10" fill="#493f3a" opacity=".6"/>
   <path d="M140 301l17-39q44-3 83 12q39-15 83-12l17 39q-52-6-100 10q-48-16-100-10Z" fill="#e4d7bb" stroke="#baa584" stroke-width="2"/>
   <path d="M240 275v31m-72-31q28 0 57 9m-60 0q28 0 60 9m31-9q29-9 57-9m-57 18q31-9 60-9" stroke="#a79983" fill="none" stroke-width="2"/>
+  ${pageTurn ? `<path d="M240 276q${38 * Math.sin((seconds % 37 - 29) * Math.PI / 2)}-55 78-15l-8 40-70 7Z" fill="#eee3cb" stroke="#baa584" stroke-width="1.5"/>` : ""}
   <path d="M170 268q-15 9-25 20q14 9 35-1l18-9M310 268q15 9 25 20q-14 9-35-1l-18-9" fill="${skin}"/>
   ${activity === "writing" ? `<g transform="translate(${pen} 0)"><path d="M286 280l-10-27" stroke="#2a333e" stroke-width="5" stroke-linecap="round"/><path d="M284 279l3 7" stroke="#dbc9a9" stroke-width="2"/><ellipse cx="286" cy="277" rx="8" ry="5" fill="${skin}"/></g>` : `<path d="M242 277q${20 + Math.sin(phase) * 4} -18 65-8" stroke="#f2e8d4" stroke-width="2" fill="none"/>`}
   <path d="M370 309v-30h28v30q-14 6-28 0" fill="${shirt}"/><path d="M399 283q19 0 9 15h-9" fill="none" stroke="${shirt}" stroke-width="5"/>
@@ -70,6 +73,7 @@ function illustration(person, frame) {
   </svg>`;
 }
 
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
 await mkdir(root, { recursive: true });
 for (const person of cast) {
   const dir = join(root, person[0]);
@@ -87,4 +91,5 @@ for (const person of cast) {
   await writeFile(gif, animation);
   await sharp(Buffer.from(illustration(person, 0))).webp({ quality: 85 }).toFile(join(dir, "poster-v1.webp"));
   console.log(`${person[0]}: ${animation.length} bytes`);
+}
 }

@@ -2,7 +2,7 @@ import { z } from "zod";
 const id = z.uuid();
 const title = z.string().trim().min(1).max(100);
 const body = z.string().trim().min(1).max(4000);
-export const areas = ["calendar", "contacts", "tasks", "notifications", "feedback", "groups", "spaces", "room", "buddies", "conversations", "messages", "feed", "schedule", "partners", "search", "recipients", "plans", "preferences", "awards", "leaderboards"] as const;
+export const areas = ["roomChat", "calendar", "contacts", "tasks", "notifications", "feedback", "groups", "spaces", "room", "buddies", "conversations", "messages", "feed", "schedule", "partners", "search", "recipients", "plans", "preferences", "awards", "leaderboards"] as const;
 export const areaSchema = z.enum(areas);
 export type CommunityArea = z.infer<typeof areaSchema>;
 export const communityQuerySchema = z.object({ id: id.optional(), groupId: id.optional(), q: z.string().trim().max(100).optional(), filter: z.string().max(30).optional(), cursor: z.string().max(2048).nullable().optional(), date: z.iso.date().optional(), from: z.iso.datetime({ offset: true }).optional(), to: z.iso.datetime({ offset: true }).optional(), metric: z.enum(["time", "streak"]).optional(), period: z.enum(["week", "all"]).optional() }).strict();
@@ -25,7 +25,9 @@ export const communityCommandSchema = z.discriminatedUnion("action", [
     command("block.set", { targetId: id, value: z.boolean() }), command("report.create", { kind: z.enum(["person", "post", "message", "buddy", "room", "group"]), targetId: id, reason: z.string().trim().min(1).max(1000) }),
     command("group.create", { title, body: z.string().trim().max(2000), private: z.boolean() }), command("group.update", { id, title, body: z.string().trim().max(2000) }), command("group.join", { id }), command("group.leave", { id }), command("group.approve", member), command("group.remove", member), command("group.transfer", member), command("group.role", { ...member, role: z.enum(["member", "moderator"]) }),
     command("room.create", { title, body: z.string().trim().max(1000), category: z.enum(["pomodoro", "deep", "chill", "cram"]), private: z.boolean(), capacity: z.number().int().min(1).max(1000), groupId: id.optional() }), command("room.update", { id, title, body: z.string().trim().max(1000), capacity: z.number().int().min(1).max(1000) }),
-    command("room.join", { id }), command("room.heartbeat", { id }), command("room.leave", { id }), command("room.share", toggle), command("room.status", { id, body: z.string().trim().max(200) }),
+    command("room.join", { id, goal: z.string().trim().max(500).optional() }),
+    command("room.chat.send", { id, body: z.string().trim().min(1).max(1000), clientId: id }),
+    command("room.heartbeat", { id }), command("room.leave", { id }), command("room.share", toggle), command("room.status", { id, body: z.string().trim().max(200) }),
     command("room.pin", { ...toggle, targetId: id, reason: z.string().trim().max(200).optional() }), command("room.invite", { id, uses: z.number().int().min(1).max(1000), hours: z.number().int().min(1).max(168) }), command("room.accept", { token: z.string().regex(/^[a-f0-9]{64}$/) }),
     command("partner.set", { targetId: id, favorite: z.boolean(), notify: z.boolean() }),
     command("buddy.save", { title, body, subjects: z.array(z.string().trim().min(1).max(40)).max(10), published: z.boolean() }), command("buddy.remove", {}),

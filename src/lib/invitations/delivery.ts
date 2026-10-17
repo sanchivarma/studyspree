@@ -14,7 +14,7 @@ export async function deliverInvitation(config: InvitationConfiguration, email: 
   }
   const response = config.kind === "resend"
     ? await fetch("https://api.resend.com/emails", { method: "POST", headers: { Authorization: `Bearer ${config.key}`, "Content-Type": "application/json", "Idempotency-Key": `studyspree-invite/${requestId}` }, body: JSON.stringify({ from: `StudySpree <${config.from}>`, to: [email], ...message }), signal: AbortSignal.timeout(15000), cache: "no-store" })
-    : await fetch("http://127.0.0.1:54324/api/v1/send", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ From: { Name: "StudySpree", Email: config.from }, To: [{ Email: email }], Subject: message.subject, Text: message.text, HTML: message.html }), signal: AbortSignal.timeout(10000), cache: "no-store" });
+    : await fetch("http://127.0.0.1:55324/api/v1/send", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ From: { Name: "StudySpree", Email: config.from }, To: [{ Email: email }], Subject: message.subject, Text: message.text, HTML: message.html }), signal: AbortSignal.timeout(10000), cache: "no-store" });
   if (!response.ok) throw new Error("Email not accepted");
   return config.kind === "mailpit" ? "captured" as const : "sent" as const;
 }

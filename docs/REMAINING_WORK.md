@@ -38,12 +38,16 @@ is below 1 MB. Character and audio licence checks also passed.
 
 ## Outstanding setup and verification
 
-- [ ] Apply additive migration `0021_original_ambience.sql`, regenerate types and
-  run database tests. Windows currently reserves ports 54293–54392, including
-  the project's local Supabase ports. The user has been asked whether to move
-  this project's ports to 55321–55324 or keep them and repair Windows networking.
-  Existing data was backed up normally by Supabase; no database reset was run.
-- [ ] Real Gmail delivery: `SMTP_HOST`, `SMTP_USER` and `SMTP_PASS` are missing.
+- [ ] Natural photorealistic 2–3-minute companion motion still needs eligible
+  source video. Two realistic AI posters are selectable and clearly labelled
+  static previews; eleven illustrated/whimsical companions have 150-second loops.
+  Session chat and automatic join goals are implemented. See
+  [SESSION_COMPANIONS.md](SESSION_COMPANIONS.md).
+
+- [x] The user approved moving local Supabase to 55321–55324. The stack is
+  running with preserved history; migrations 0021–0023 and generated types are
+  current. All 181 database assertions pass, including room chat and mixed styles.
+- [ ] **Paused by the user:** real Gmail delivery. `SMTP_HOST`, `SMTP_USER` and `SMTP_PASS` are missing.
   Configure server-only values as described in [EMAIL_INVITATIONS.md](EMAIL_INVITATIONS.md).
   Resend settings are present but have not been used to send external test mail.
   A recipient must have a reachable public HTTPS app address.

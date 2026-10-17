@@ -22,6 +22,18 @@
     "female-01": "Maya",
     "female-02": "Zara",
     "female-03": "Mei",
-    "female-04": "Eva"
+    "female-04": "Eva",
+    "styles": "Style partnerów",
+    "all": "Wszystkie",
+    "illustrated": "Ilustrowane osoby",
+    "whimsical": "Bajkowe",
+    "realistic": "Realistyczne",
+    "limit": "Wybierz do ośmiu partnerów, łącząc dowolne style.",
+    "staticPreview": "Wygenerowane przez AI · statyczny podgląd",
+    "moss-fox": "Lis Moss",
+    "pip-owl": "Sowa Pip",
+    "momo-cloud": "Chmurka Momo",
+    "realistic-01": "Arun",
+    "realistic-02": "Lin"
   }
 }

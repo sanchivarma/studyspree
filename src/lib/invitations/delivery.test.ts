@@ -22,7 +22,7 @@ it("reports SMTP rejection as an error and closes the connection", async () => {
 it("distinguishes local capture from real delivery and surfaces provider errors", async () => {
   const fetcher = vi.fn().mockResolvedValue(new Response("{}", { status: 200 })); vi.stubGlobal("fetch", fetcher);
   expect(await deliverInvitation({ kind: "mailpit", from: "invites@studyspree.local", siteUrl: "http://localhost:3000" }, "friend@example.test", "request", message)).toBe("captured");
-  expect(fetcher.mock.calls[0][0]).toBe("http://127.0.0.1:54324/api/v1/send");
+  expect(fetcher.mock.calls[0][0]).toBe("http://127.0.0.1:55324/api/v1/send");
   fetcher.mockResolvedValue(new Response("{}", { status: 503 }));
   await expect(deliverInvitation({ kind: "resend", key: "test-key", from: "sender@example.test", siteUrl: "https://study.example.test" }, "friend@example.test", "request", message)).rejects.toThrow();
 });

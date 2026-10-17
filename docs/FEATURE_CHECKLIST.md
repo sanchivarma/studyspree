@@ -6,8 +6,10 @@ Checkboxes mean implemented and verified, not merely scaffolded. Existing featur
 
 For the current follow-up audit, original theme/audio completion and outstanding
 machine/provider setup, see [REMAINING_WORK.md](REMAINING_WORK.md). Earlier
-verification below records the working stack on 16 October; Windows port
-reservations currently prevent restarting that stack on 17 October.
+verification below records the working stack on 16 October. On 17 October the
+user approved moving local Supabase to 55321–55324; the stack is running again
+with preserved history. [Session companions and chat](SESSION_COMPANIONS.md)
+records the current mixed-style/long-loop expansion and realistic-motion limitation.
 
 - [x] **17. Virtual study characters** — local flow and database migration verified
   - [x] Eight distinct original animated GIFs: four adult male, four adult female; static posters and licence ledger.

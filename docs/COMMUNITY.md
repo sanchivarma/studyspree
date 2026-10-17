@@ -1,6 +1,6 @@
 # Shared features
 
-Use a real local Supabase account for shared features. The development test login keeps its existing offline personal-session repository and cannot impersonate a database user. `/login` sends magic links to the local inbox at http://localhost:54324.
+Use a real local Supabase account for shared features. The development test login keeps its existing offline personal-session repository and cannot impersonate a database user. `/login` sends magic links to the local inbox at http://localhost:55324.
 
 The navigation's More menu opens Spaces, Focus partners, Buddy discovery, Conversations, Groups, Feed, Schedule, Leaderboards, Tasks, Notifications, Search, Feedback, Plans and Preferences. Profiles, Settings, Study and Stats remain on the main navigation.
 

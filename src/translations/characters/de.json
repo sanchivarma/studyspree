@@ -22,6 +22,18 @@
     "female-01": "Maya",
     "female-02": "Zara",
     "female-03": "Mei",
-    "female-04": "Eva"
+    "female-04": "Eva",
+    "styles": "Begleitungsstile",
+    "all": "Alle",
+    "illustrated": "Illustrierte Personen",
+    "whimsical": "Fantasievoll",
+    "realistic": "Realistisch",
+    "limit": "Wähle bis zu acht Begleitungen und mische die Stile.",
+    "staticPreview": "KI-generiert · statische Vorschau",
+    "moss-fox": "Moss der Fuchs",
+    "pip-owl": "Pip die Eule",
+    "momo-cloud": "Momo die Wolke",
+    "realistic-01": "Arun",
+    "realistic-02": "Lin"
   }
 }

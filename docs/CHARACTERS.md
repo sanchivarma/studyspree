@@ -12,11 +12,19 @@ Themes choose the environment; characters add illustrated study company. Charact
 6. Move the pointer or press a navigation key to restore the controls. **Choose companions** changes the running session's selection; Finish banks elapsed time normally.
 7. **Hide companions** removes the animated tiles; **Show companions** restores them.
 
-The eight default adults are Noah, Amir, Leo, Kai, Maya, Zara, Mei, and Eva. Four are male and four female. People mode is disabled until real room infrastructure is available.
+The eight default illustrated adults are Noah, Amir, Leo, Kai, Maya, Zara, Mei,
+and Eva. Four are male and four female. The picker now also has three original
+whimsical partners and two explicitly static realistic AI previews. Shared rooms
+support real people. See [the current session guide](SESSION_COMPANIONS.md).
 
 ## Media
 
-Each versioned GIF has 32 frames and loops every 4.8 seconds. The original source is `scripts/generate-character-loops.mjs`, which renders vector frames through the existing Next.js installation's sharp tooling. No external artwork or new runtime library is used. See `public/characters/LICENCES.md` for provenance.
+The original eight preview GIFs have 32 frames and loop every 4.8 seconds.
+Session tiles now use 150-second WebM/MP4 sequences for the eight adults and
+three whimsical partners. Realistic AI choices remain static previews, clearly
+labelled. Vector source is in `scripts/generate-character-loops.mjs` and
+`scripts/generate-session-companions.mjs`; realistic poster prompts are recorded
+in the current session guide. See `public/characters/LICENCES.md` for provenance.
 
 - GIF: `public/characters/{slug}/study-v1.gif`, budget 2 MiB.
 - Poster: `public/characters/{slug}/poster-v1.webp`, budget 256 KiB.

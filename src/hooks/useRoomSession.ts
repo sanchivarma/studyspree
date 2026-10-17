@@ -5,13 +5,13 @@ import {communityRepository} from "@/lib/repo/community";
 import {repo} from "@/lib/repo";
 import {queryKeys} from "@/lib/queryKeys";
 import type {CharacterSlug} from "@/types/characters";
-export function useRoomSession(id:string,joined:boolean,themeSlug:string,characters:CharacterSlug[]){
+export function useRoomSession(id:string,joined:boolean,themeSlug:string,characters:CharacterSlug[],goal=""){
  const cache=useQueryClient();
  const join=useMutation({mutationFn:async()=>{
-  await communityRepository.mutate({action:"room.join",data:{id}});
+  await communityRepository.mutate({action:"room.join",data:{id,goal}});
   try{
    const companions={mode:characters.length?"mixed" as const:"people" as const,characterSlugs:characters};
-   const session=await repo.startSession({plannedMinutes:null,themeSlug,task:null,companions});
+   const session=await repo.startSession({plannedMinutes:null,themeSlug,task:goal.trim()||null,companions});
    await repo.updateSessionCompanions(session.id,companions);
   }catch(error){await communityRepository.mutate({action:"room.leave",data:{id}});throw error;}
  },onSuccess:()=>{void cache.invalidateQueries({queryKey:queryKeys.community.all()});void cache.invalidateQueries({queryKey:queryKeys.activeSession()});}});

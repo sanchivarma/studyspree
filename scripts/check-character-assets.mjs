@@ -8,7 +8,8 @@ const root = fileURLToPath(new URL("../public/characters/", import.meta.url));
 const ledger = await readFile(join(root, "LICENCES.md"), "utf8");
 const slugs = ["male", "female"].flatMap(gender => [1, 2, 3, 4].map(index => `${gender}-0${index}`));
 const dirs = (await readdir(root, { withFileTypes: true })).filter(entry => entry.isDirectory()).map(entry => entry.name).sort();
-if (JSON.stringify(dirs) !== JSON.stringify([...slugs].sort())) throw new Error("Expected exactly four male and four female character asset folders");
+const extra = ["moss-fox", "pip-owl", "momo-cloud", "realistic-01", "realistic-02"];
+if (JSON.stringify(dirs) !== JSON.stringify([...slugs, ...extra].sort())) throw new Error("Expected the eight illustrated adults, three whimsical partners and two realistic previews");
 const hashes = new Set();
 for (const slug of slugs) {
   const gifPath = join(root, slug, "study-v1.gif");
@@ -26,4 +27,16 @@ for (const slug of slugs) {
   if (!ledger.includes(`studyspree-original-${slug}-v1`)) throw new Error(`${slug}: missing provenance ID`);
   console.log(`${slug}: ${metadata.pages} frames, infinite loop, ${bytes.length} bytes`);
 }
-console.log("Verified eight distinct animated characters and their posters.");
+for (const slug of [...slugs, ...extra]) {
+  const poster = await readFile(join(root, slug, "poster-v1.webp"));
+  if ((await sharp(poster).metadata()).format !== "webp" || poster.length > 256 * 1024) throw new Error(`${slug}: invalid poster`);
+  if (!ledger.includes(`${slug}/poster-v1.webp`)) throw new Error(`${slug}: missing poster provenance`);
+  if (slug.startsWith("realistic-")) continue; // Clearly labelled still previews, never counted as long video.
+  for (const format of ["webm", "mp4"]) {
+    const name = `${slug}/study-v2.${format}`;
+    const bytes = await readFile(join(root, name));
+    const valid = format === "webm" ? bytes.subarray(0, 4).equals(Buffer.from([0x1a, 0x45, 0xdf, 0xa3])) : bytes.toString("ascii", 4, 8) === "ftyp";
+    if (!valid || bytes.length > 8000000 || !ledger.includes(name)) throw new Error(`${name}: invalid, oversized or unrecorded video`);
+  }
+}
+console.log("Verified eight illustrated adults, three whimsical partners, long media and two labelled static realistic previews.");
