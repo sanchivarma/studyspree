@@ -12,6 +12,8 @@ test("the left chat icon opens a right drawer and Escape preserves the session",
   const box = await drawer.boundingBox();
   expect(box!.x + box!.width).toBe(await page.evaluate(() => innerWidth));
   await expect(drawer).toContainText("Chat with people is available in shared rooms.");
+  await expect(drawer.getByRole("link")).toHaveCount(0);
+  await expect(drawer.getByRole("button", { name: "People", exact: true })).toHaveCount(0);
   await page.keyboard.press("Escape");
   await expect(drawer).toHaveCount(0);
   await expect(trigger).toBeFocused();
@@ -19,4 +21,10 @@ test("the left chat icon opens a right drawer and Escape preserves the session",
   const current = await page.evaluate(() => JSON.parse(localStorage.getItem("ss_sessions")!)[0]);
   expect(current.startedAt).toBe(original.startedAt);
   expect(current.endedAt).toBeNull();
+  await expect(page.getByRole("button", { name: "Copy link", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Choose companions", exact: true }).click();
+  const picker = page.getByRole("dialog", { name: "Study companions", exact: true });
+  await expect(picker).toBeVisible();
+  await expect(picker.getByRole("button", { name: "People", exact: true })).toHaveCount(0);
+  await expect(picker.getByRole("link")).toHaveCount(0);
 });

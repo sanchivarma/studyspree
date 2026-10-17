@@ -134,7 +134,7 @@ Partner selection and visibility buttons sit in a reserved left-side rail. Each 
 
 ## Session chat drawer
 
-The chat icon sits in the left session/room controls. It opens a modal drawer on the right with the existing membership-protected room messages, introduction text, goal announcements and Send form. Escape closes chat and restores focus without finishing the timer. Personal sessions use their active shared-room chat when available; otherwise a real account can open a shared session. The local preview explains its virtual-partner boundary instead of pretending to send messages. No new backend or transport was added.
+The chat icon sits in the left session/room controls. It opens a modal drawer on the right with the existing membership-protected room messages, introduction text, goal announcements and Send form. Escape closes chat and restores focus without finishing the timer. Personal sessions use their active shared-room chat when available. The local preview explains its virtual-partner boundary instead of pretending to send messages. Session sharing uses a single icon that copies the invitation link directly; there is no sharing popover or navigation link. The session companion picker and chat drawer have no People-page link. No new backend or transport was added.
 
 ## Extra themes
 

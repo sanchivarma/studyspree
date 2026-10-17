@@ -55,8 +55,10 @@ test("contacts consent, list invitations and monthly reading persist for real ac
     expect(sessionResponse.ok()).toBe(true);
     const session = await sessionResponse.json() as { id: string; startedAt: string };
     await page.goto(`/session/${session.id}`);
-    await page.getByRole("button", { name: "Share session", exact: true }).click();
-    await expect(page.getByLabel("Share session link", { exact: true })).toHaveValue(/\/invite\/[a-f0-9]{64}$/);
+    await page.context().grantPermissions(["clipboard-read", "clipboard-write"]);
+    await page.getByRole("button", { name: "Copy link", exact: true }).click();
+    await expect(page.getByRole("status").filter({ hasText: "Link copied." })).toBeAttached();
+    expect(await page.evaluate(() => navigator.clipboard.readText())).toMatch(/\/invite\/[a-f0-9]{64}$/);
     const activeResponse = await page.request.post("/api/repository", { data: { op: "active" } });
     expect((await activeResponse.json()).startedAt).toBe(session.startedAt);
     await page.getByRole("button", { name: "Finish", exact: true }).click();

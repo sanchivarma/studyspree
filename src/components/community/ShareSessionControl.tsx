@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState, useSyncExternalStore } from "react";
-import { Share2 } from "lucide-react";
+import { Share2, Link2, Check } from "lucide-react";
 import { useCommunityMutation } from "@/hooks/useCommunityMutation";
 import { useTranslation } from "@/hooks/useTranslation";
 import { buttonClass } from "./CommunityComposer";
@@ -14,9 +14,29 @@ export function ShareSessionControl({ sessionId, roomId, onOpenChange, compact =
   const origin = useSyncExternalStore(subscribe, () => window.location.origin, () => "");
   const [shared, setShared] = useState<{ id: string; token?: string } | null>(null);
   const [copied, setCopied] = useState(false);
+  const [copyError, setCopyError] = useState(false);
   const [open, setOpen] = useState(false);
   const updateOpen = (value: boolean) => { setOpen(value); onOpenChange?.(value); };
-  const link = shared ? `${origin}/invite/${shared.token}` : roomId ? `${origin}/rooms/${roomId}` : "";
+  const link = shared ? shared.token ? `${origin}/invite/${shared.token}` : `${origin}/rooms/${shared.id}` : roomId ? `${origin}/rooms/${roomId}` : "";
+  if (compact) return <div className="relative">
+    <button type="button" className={`${buttonClass} size-11 !p-0`} disabled={mutation.isPending} aria-label={t("calendar.copy")} title={t(copied ? "calendar.copied" : "calendar.copy")} onClick={async () => {
+      setCopyError(false);
+      setCopied(false);
+      try {
+        let copyLink = link;
+        if (!copyLink && sessionId) {
+          const result = await mutation.mutateAsync({ action: "session.share", data: { id: sessionId } });
+          setShared(result);
+          copyLink = result.token ? `${origin}/invite/${result.token}` : `${origin}/rooms/${result.id}`;
+        }
+        if (!copyLink || !navigator.clipboard) throw new Error("Clipboard unavailable");
+        await navigator.clipboard.writeText(copyLink);
+        setCopied(true);
+      } catch { setCopyError(true); }
+    }}>{copied ? <Check className="size-4" aria-hidden="true"/> : <Link2 className="size-4" aria-hidden="true"/>}</button>
+    {copied && <span role="status" className="sr-only">{t("calendar.copied")}</span>}
+    {copyError && <p role="alert" className="absolute top-full left-0 z-40 w-64 rounded-xl bg-surface p-3 text-small">{t(mutation.error instanceof CommunityError && mutation.error.code === "accountRequired" ? "community.accountRequired" : "community.unavailable")}</p>}
+  </div>;
   return <div className="relative" onKeyDown={event => { if (open && event.key === "Escape") { event.preventDefault(); event.stopPropagation(); updateOpen(false); } }}>
     <button type="button" className={buttonClass} disabled={mutation.isPending} aria-label={t("calendar.shareSession")} aria-expanded={open} onClick={() => {
       if (roomId || shared) { updateOpen(!open); return; }

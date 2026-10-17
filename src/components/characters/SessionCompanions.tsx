@@ -40,7 +40,7 @@ export function SessionCompanions({ session, visible, onOpenChange, leading, sid
         <SheetContent side={desktop ? "right" : "bottom"} showCloseButton={false} className="max-h-[90dvh] overflow-y-auto bg-background p-5">
           <SheetHeader className="mb-5 p-0 pr-11"><SheetTitle>{t("characters.title")}</SheetTitle><SheetDescription>{t("characters.description")}</SheetDescription></SheetHeader>
           <SheetClose asChild><button type="button" aria-label={t("scene.close")} className="absolute top-2 right-2 flex size-11 items-center justify-center"><X className="size-5" /></button></SheetClose>
-          <CompanionModePicker value={selection.variables && selection.isPending ? selection.variables : companions} onChange={value => selection.mutate(value)} />
+          <CompanionModePicker allowPeople={false} value={selection.variables && selection.isPending ? selection.variables : companions} onChange={value => selection.mutate(value)} />
           {selection.error && <p role="alert" className="mt-3 text-small">{t("characters.saveError")}</p>}
         </SheetContent>
       </Sheet>
