@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { signIn } from "./sessionFixtures";
 
-test("all eight realistic partners animate in a session and preserve its timestamp", async ({ page }) => {
+test("the original eight realistic partners animate in a session and preserve its timestamp", async ({ page }) => {
   test.setTimeout(60000);
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await signIn(page);
@@ -38,6 +38,40 @@ test("all eight realistic partners animate in a session and preserve its timesta
   await page.reload();
   await expect(page.getByTestId("character-loop-realistic-08")).toHaveAttribute("data-animated", "true");
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem("ss_sessions")!)[0].startedAt)).toBe(startedAt);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(page.getByTestId("session-companions").getByTestId("character-animation")).toHaveCount(0);
+});
+
+test("four expanded partners mix with existing styles, animate and persist", async ({ page }) => {
+  test.setTimeout(60000);
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await signIn(page); await page.goto("/study");
+  await page.getByRole("button", { name: "Choose companions", exact: true }).click();
+  await page.getByRole("button", { name: "Virtual partners", exact: true }).click();
+  await page.getByRole("button", { name: "Whimsical", exact: true }).click();
+  await page.getByTestId("character-card-moss-fox").click();
+  await page.getByRole("button", { name: "Realistic", exact: true }).click();
+  for (const label of ["Central Asian", "Pacific Islander", "Indigenous Andean", "Afro-Caribbean"]) await expect(page.getByText(label, { exact: true })).toBeVisible();
+  for (const slug of ["realistic-09", "realistic-10", "realistic-11", "realistic-12"]) await page.getByTestId(`character-card-${slug}`).click();
+  await page.getByRole("button", { name: "Close", exact: true }).click();
+  await page.getByRole("button", { name: "Start", exact: true }).click();
+  await expect(page.getByTestId("session-companions").getByRole("img")).toHaveCount(6);
+  const original = await page.evaluate(() => JSON.parse(localStorage.getItem("ss_sessions")!)[0]);
+  for (const slug of ["realistic-09", "realistic-10", "realistic-11", "realistic-12"]) {
+    const image = page.getByTestId(`character-loop-${slug}`).getByTestId("character-animation");
+    await expect.poll(() => image.evaluate(el => (el as HTMLImageElement).naturalWidth)).toBe(320);
+    const frames: string[] = [];
+    for (let sample = 0; sample < 3; sample++) {
+      frames.push((await image.screenshot({ animations: "allow" })).toString("base64"));
+      await page.waitForTimeout(250); // Compare actual browser-painted GIF frames.
+    }
+    expect(new Set(frames).size, slug).toBeGreaterThan(1);
+  }
+  await page.reload();
+  await expect(page.getByTestId("character-loop-realistic-12")).toHaveAttribute("data-animated", "true");
+  const restored = await page.evaluate(() => JSON.parse(localStorage.getItem("ss_sessions")!)[0]);
+  expect(restored.startedAt).toBe(original.startedAt);
+  expect(restored.companions).toEqual(original.companions);
   await page.emulateMedia({ reducedMotion: "reduce" });
   await expect(page.getByTestId("session-companions").getByTestId("character-animation")).toHaveCount(0);
 });

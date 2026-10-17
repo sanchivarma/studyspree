@@ -1,0 +1,54 @@
+[
+  {
+    "slug": "realistic-09",
+    "name": "Timur",
+    "background": "Central Asian",
+    "presentation": "male",
+    "key": "centralAsian",
+    "subject": "a fictional Kazakh Central Asian adult man around thirty with short dark hair, wearing a muted slate-blue overshirt",
+    "prompt": "Use case: photorealistic-natural. Asset type: animation frame sheet for a virtual study partner. Create one landscape 4:3 sheet with EXACTLY FOUR COLUMNS and FOUR ROWS, sixteen equal cells. Every cell is a complete 4:3 photographic frame of a fictional Kazakh Central Asian adult man around thirty with short dark hair, wearing a muted slate-blue overshirt, quietly writing notes from an open textbook at a wooden desk in a calm library. Normal contemporary everyday clothes; no stereotyped costume. Fictional person, no likeness to a real identifiable person. LOCK THE CAMERA, composition, identity, clothing, desk, window, shelves and lighting perfectly across all sixteen frames. No camera motion, no zoom, no frame-to-frame scale changes. Head, both hands, pen and open notebook visible in EVERY cell. Reading-order animation: cells1-4 pen makes a tiny writing stroke,5-8 a second tiny writing stroke and subtle natural blink,9-12 pen pauses then tiny writing stroke,13-16 returns to initial pen position. Restrict movement to the hand, eyes and a tiny head tilt. Frame16 returns to frame1 pose for looping. Photographic natural anatomy, exactly two hands, warm diffuse daylight. No looking at camera, no talking, no text overlay, no labels, no cell numbers, no inset image, no watermark. Grid must fill entire output with NO EXTRA STRIPS, NO GAPS. Each row has exactly FOUR identical-sized complete frames. This is a sequence of nearby poses, not sixteen different compositions.",
+    "sheet": "realistic-09-sheet.png",
+    "columns": 4,
+    "rows": 4,
+    "tool": "built-in imagegen"
+  },
+  {
+    "slug": "realistic-10",
+    "name": "Leilani",
+    "background": "Pacific Islander",
+    "presentation": "female",
+    "key": "pacificIslander",
+    "subject": "a fictional Samoan Pacific Islander adult woman around thirty with dark wavy hair tied loosely back, wearing a muted teal cardigan",
+    "prompt": "Use case: photorealistic-natural. Asset type: animation frame sheet for a virtual study partner. Create one landscape 4:3 sheet with EXACTLY FOUR COLUMNS and FOUR ROWS, sixteen equal cells. Every cell is a complete 4:3 photographic frame of a fictional Samoan Pacific Islander adult woman around thirty with dark wavy hair tied loosely back, wearing a muted teal cardigan, quietly writing notes from an open textbook at a wooden desk in a calm library. Normal contemporary everyday clothes; no stereotyped costume. Fictional person, no likeness to a real identifiable person. LOCK THE CAMERA, composition, identity, clothing, desk, window, shelves and lighting perfectly across all sixteen frames. No camera motion, no zoom, no frame-to-frame scale changes. Head, both hands, pen and open notebook visible in EVERY cell. Reading-order animation: cells1-4 pen makes a tiny writing stroke,5-8 a second tiny writing stroke and subtle natural blink,9-12 pen pauses then tiny writing stroke,13-16 returns to initial pen position. Restrict movement to the hand, eyes and a tiny head tilt. Frame16 returns to frame1 pose for looping. Photographic natural anatomy, exactly two hands, warm diffuse daylight. No looking at camera, no talking, no text overlay, no labels, no cell numbers, no inset image, no watermark. Grid must fill entire output with NO EXTRA STRIPS, NO GAPS. Each row has exactly FOUR identical-sized complete frames. This is a sequence of nearby poses, not sixteen different compositions.",
+    "sheet": "realistic-10-sheet.png",
+    "columns": 4,
+    "rows": 4,
+    "tool": "built-in imagegen"
+  },
+  {
+    "slug": "realistic-11",
+    "name": "Valeria",
+    "background": "Indigenous Andean",
+    "presentation": "female",
+    "key": "andean",
+    "subject": "a fictional Indigenous Andean Peruvian adult woman around thirty with straight dark hair loosely tied back, wearing a plain muted ochre sweater",
+    "prompt": "Use case: photorealistic-natural. Asset type: animation frame sheet for a virtual study partner. Create one landscape 4:3 sheet with EXACTLY FOUR COLUMNS and FOUR ROWS, sixteen equal cells. Every cell is a complete 4:3 photographic frame of a fictional Indigenous Andean Peruvian adult woman around thirty with straight dark hair loosely tied back, wearing a plain muted ochre sweater, quietly writing notes from an open textbook at a wooden desk in a calm library. Normal contemporary everyday clothes; no stereotyped costume. Fictional person, no likeness to a real identifiable person. LOCK THE CAMERA, composition, identity, clothing, desk, window, shelves and lighting perfectly across all sixteen frames. No camera motion, no zoom, no frame-to-frame scale changes. Head, both hands, pen and open notebook visible in EVERY cell. Reading-order animation: cells1-4 pen makes a tiny writing stroke,5-8 a second tiny writing stroke and subtle natural blink,9-12 pen pauses then tiny writing stroke,13-16 returns to initial pen position. Restrict movement to the hand, eyes and a tiny head tilt. Frame16 returns to frame1 pose for looping. Photographic natural anatomy, exactly two hands, warm diffuse daylight. No looking at camera, no talking, no text overlay, no labels, no cell numbers, no inset image, no watermark. Grid must fill entire output with NO EXTRA STRIPS, NO GAPS. Each row has exactly FOUR identical-sized complete frames. This is a sequence of nearby poses, not sixteen different compositions.",
+    "sheet": "realistic-11-sheet.png",
+    "columns": 4,
+    "rows": 4,
+    "tool": "built-in imagegen"
+  },
+  {
+    "slug": "realistic-12",
+    "name": "Andre",
+    "background": "Afro-Caribbean",
+    "presentation": "male",
+    "key": "afroCaribbean",
+    "subject": "a fictional Afro-Caribbean adult man around thirty with short natural textured hair, wearing a plain muted burgundy sweater",
+    "prompt": "Use case: photorealistic-natural. Asset type: animation frame sheet for a virtual study partner. Create one landscape 4:3 sheet with EXACTLY FOUR COLUMNS and FOUR ROWS, sixteen equal cells. Every cell is a complete 4:3 photographic frame of a fictional Afro-Caribbean adult man around thirty with short natural textured hair, wearing a plain muted burgundy sweater, quietly writing notes from an open textbook at a wooden desk in a calm library. Normal contemporary everyday clothes; no stereotyped costume. Fictional person, no likeness to a real identifiable person. LOCK THE CAMERA, composition, identity, clothing, desk, window, shelves and lighting perfectly across all sixteen frames. No camera motion, no zoom, no frame-to-frame scale changes. Head, both hands, pen and open notebook visible in EVERY cell. Reading-order animation: cells1-4 pen makes a tiny writing stroke,5-8 a second tiny writing stroke and subtle natural blink,9-12 pen pauses then tiny writing stroke,13-16 returns to initial pen position. Restrict movement to the hand, eyes and a tiny head tilt. Frame16 returns to frame1 pose for looping. Photographic natural anatomy, exactly two hands, warm diffuse daylight. No looking at camera, no talking, no text overlay, no labels, no cell numbers, no inset image, no watermark. Grid must fill entire output with NO EXTRA STRIPS, NO GAPS. Each row has exactly FOUR identical-sized complete frames. This is a sequence of nearby poses, not sixteen different compositions.",
+    "sheet": "realistic-12-sheet.png",
+    "columns": 4,
+    "rows": 4,
+    "tool": "built-in imagegen"
+  }
+]

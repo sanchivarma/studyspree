@@ -14,7 +14,7 @@ Themes choose the environment; characters add illustrated study company. Charact
 
 The eight default illustrated adults are Noah, Amir, Leo, Kai, Maya, Zara, Mei,
 and Eva. Four are male and four female. The picker now also has three original
-whimsical partners and eight realistic fictional adult GIFs. Shared rooms
+whimsical partners and twelve realistic fictional adult GIFs. Shared rooms
 support real people. See [the current session guide](SESSION_COMPANIONS.md).
 
 ## Media
@@ -22,9 +22,10 @@ support real people. See [the current session guide](SESSION_COMPANIONS.md).
 The original eight preview GIFs have 32 frames and loop every 4.8 seconds.
 Session tiles now use 150-second WebM/MP4 sequences for the eight adults and
 three whimsical partners. Seven realistic AI choices use 16-frame, 5.02-second studying GIFs; Lin uses
-a corrected 109-frame 20fps GIF lasting 5.45 seconds. Vector source is in `scripts/generate-character-loops.mjs` and
+a corrected 109-frame 20fps GIF lasting 5.45 seconds. The four expanded partners
+use 106-frame 20fps GIFs lasting 5.3 seconds. Vector source is in `scripts/generate-character-loops.mjs` and
 `scripts/generate-session-companions.mjs`; realistic GIF prompts and source sheets are recorded
-in `docs/realistic-gifs/sources.json`. See `public/characters/LICENCES.md` for provenance.
+in `docs/realistic-gifs/sources.json` and `expanded-cast.json`. See `public/characters/LICENCES.md` for provenance.
 
 - GIF: `public/characters/{slug}/study-v1.gif`, budget 2 MiB.
 - Poster: `public/characters/{slug}/poster-v1.webp`, budget 256 KiB.

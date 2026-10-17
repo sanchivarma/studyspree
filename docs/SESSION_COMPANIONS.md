@@ -2,7 +2,7 @@
 
 Email configuration is paused at the user's request. Local Supabase now uses
 API 55321, database 55322, Studio 55323 and the local inbox 55324. Existing history
-was restored from its normal backup; no reset was run. Migrations 0021–0024 are
+was restored from its normal backup; no reset was run. Migrations 0021–0025 are
 applied and database types were regenerated.
 
 ## Choose and mix styles
@@ -14,10 +14,11 @@ changing its start timestamp. Real people in shared rooms remain separate users.
 
 - Eight illustrated adults: Noah, Amir, Leo, Kai, Maya, Zara, Mei and Eva.
 - Three original whimsical partners: Moss the Fox, Pip the Owl and Momo the Cloud.
-- Eight realistic fictional adults, four men and four women: Arun (South Asian),
+- Twelve realistic fictional adults, six men and six women: Arun (South Asian),
   Lin (East Asian), Amina (Black African heritage), Omar (Middle Eastern / North
-  African), Sofia (Latin American), Elias (European), Minh (Southeast Asian), and
-  Samira (mixed heritage). These are character design briefs, not inferred
+  African), Sofia (Latin American), Elias (European), Minh (Southeast Asian),
+  Samira (mixed heritage), Timur (Central Asian), Leilani (Pacific Islander),
+  Valeria (Indigenous Andean), and Andre (Afro-Caribbean). These are character design briefs, not inferred
   identities or an exhaustive list of ethnicities. Cards translate their background
   subtitles into all five supported languages.
 - Seven realistic partners have an actual 16-frame, 5.02-second infinitely looping
@@ -25,13 +26,14 @@ changing its start timestamp. Real people in shared rooms remain separate users.
   can have pose/background drift; they are not continuous photorealistic video.
   Lin uses a corrected three-column crop and 109 motion-interpolated frames at
   20fps (5.45 seconds). The v4 GIF fixes sideways jumping caused by the old crop.
-  Natural continuous source video remains a separate quality improvement.
+  The four expanded partners use 106 frames at 20fps (5.3 seconds); each is under
+  1.5 MB. Natural continuous source video remains a separate quality improvement.
 
 Exact prompts and source sheets: `docs/realistic-gifs/sources.json`, generated using
 built-in imagegen. Reproduce extraction with `node scripts/assemble-realistic-gifs.mjs`
 (only when the target revision does not exist). Assets use immutable `study-v3.gif`
-and matching `poster-v3.webp` URLs (Lin: v4), with a 2 MiB GIF budget. All eight are approximately
-1 MiB each. No application dependency was added.
+and matching `poster-v3.webp` URLs (Lin: v4; expanded cast: v1). All twelve
+remain below the 2 MiB GIF budget. No application dependency was added.
 
 All eleven illustrated/whimsical partners have actual 150-second recordings in
 muted WebM and MP4. The source renderer spans reading, blinking, posture and
@@ -123,3 +125,5 @@ account to post shared chat. Local camera self-view still never enters the netwo
   ffmpeg and source footage. Realistic motion is not marked complete.
 
 Lin rebuild: install FFmpeg or set `FFMPEG_PATH`, then run `node scripts/prepare-lin-gif.mjs` with no v4 target files present. The local media tool was obtained through imageio-ffmpeg for this task; no application package dependency was added. FFmpeg motion compensation documentation: https://ffmpeg.org/ffmpeg-filters.html#minterpolate.
+
+Expanded cast: exact built-in imagegen prompts and inspected 4x4 sheets are recorded in `docs/realistic-gifs/expanded-cast.json`. Rebuild with `FFMPEG_PATH` configured and `node scripts/prepare-expanded-gifs.mjs`; the script refuses existing immutable targets. New assets use `realistic-09` through `realistic-12` with `study-v1.gif` and `poster-v1.webp`. All five languages include the new names and background subtitles. There are now 23 selectable companions across styles, with the existing eight-at-once cap.

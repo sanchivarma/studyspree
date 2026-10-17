@@ -6,7 +6,7 @@ See [the completion audit](docs/REMAINING_WORK.md) for completed follow-up reque
 and remaining machine, email-provider and deployment setup.
 
 See [Session companions and chat](docs/SESSION_COMPANIONS.md) for mixed character
-styles, 150-second illustrated/whimsical loops, eight realistic studying GIFs, and participant chat with an optional goal posted on joining.
+styles, 150-second illustrated/whimsical loops, twelve realistic studying GIFs, and participant chat with an optional goal posted on joining.
 
 Big goals start with showing up.
 
