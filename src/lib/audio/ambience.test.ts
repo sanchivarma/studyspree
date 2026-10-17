@@ -68,6 +68,20 @@ describe("two independent, gesture-gated audio buses", () => {
     engine.setRoomVolume(0.5); expect(mocks.sounds).toHaveLength(8);
     engine.destroy(); expect(vi.getTimerCount()).toBe(0);
   });
+  it("updates both live sources when the master changes during a loop crossfade", () => {
+    engine.setBackgroundEffects(["rain"], { rain: 0.5 });
+    engine.setRoomVolume(0.8); engine.init(); loaded();
+    vi.advanceTimersByTime(4000);
+    expect(mocks.sounds[1].play).toHaveBeenCalledOnce();
+    engine.setRoomVolume(0.2);
+    expect(mocks.sounds[1].fade).toHaveBeenLastCalledWith(0.5, 0.1, 100, 1);
+    expect(mocks.sounds[0].fade).toHaveBeenLastCalledWith(0.5, 0, 100, 1);
+    vi.advanceTimersByTime(100);
+    expect(mocks.sounds[0].stop).toHaveBeenCalledOnce();
+    engine.setRoomVolume(0);
+    expect(mocks.sounds.every(sound => sound.unload.mock.calls.length === 1)).toBe(true);
+    expect(vi.getTimerCount()).toBe(0);
+  });
   it("loads original music independently from the theme sound without changing a saved silent selection", () => {
     engine.setMusicTrack("still-water"); engine.setMusicVolume(0.2);
     expect(mocks.sounds).toHaveLength(0);

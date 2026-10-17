@@ -48,6 +48,17 @@ class AudioBus {
       // A slider change does not restart playback or disturb the other bus.
       const id = this.ids[this.current];
       if (id !== null) this.sounds[this.current].fade(Number(this.sounds[this.current].volume(id)), this.volume, 100, id);
+      // A loop seam can have two live sources. Apply a slider change to the
+      // retiring source too, so it cannot retain the previous louder level.
+      const previous = 1 - this.current;
+      const previousId = this.ids[previous];
+      if (previousId !== null) {
+        if (this.cleanupTimer) clearTimeout(this.cleanupTimer);
+        this.sounds[previous].fade(Number(this.sounds[previous].volume(previousId)), 0, 100, previousId);
+        this.cleanupTimer = setTimeout(() => {
+          this.sounds[previous]?.stop(); this.ids[previous] = null; this.cleanupTimer = null;
+        }, 100);
+      }
     }
   }
 
