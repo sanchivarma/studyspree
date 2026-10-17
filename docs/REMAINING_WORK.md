@@ -1,8 +1,10 @@
 # Completion audit — 17 October 2026
 
-The 17 feature categories are implemented; their detailed checklist is
-[FEATURE_CHECKLIST.md](FEATURE_CHECKLIST.md). Implementation is distinct from
-deployment, provider credentials and verification on this machine.
+All 17 feature categories have code, but the supplied code-level contract is
+not fully implemented. [IMPLEMENTATION_AUDIT.md](IMPLEMENTATION_AUDIT.md)
+records the substantive gaps and supersedes the earlier completion claim.
+The corrected checklist is [FEATURE_CHECKLIST.md](FEATURE_CHECKLIST.md).
+Missing implementation is distinct from deployment/provider setup.
 
 ## Follow-up requests
 

@@ -2,7 +2,11 @@
 
 Requested order: **17 → 1 → 6 → 5 → 7 → 4 → 15 → 2 → 3 → 8 → 9 → 10 → 11 → 12 → 13 → 14 → 16**.
 
-Checkboxes mean implemented and verified, not merely scaffolded. Existing features are reused. Backend-dependent work must be verified against a running backend before its feature is marked complete.
+The 17 October code-contract audit supersedes the completion claims below:
+see [IMPLEMENTATION_AUDIT.md](IMPLEMENTATION_AUDIT.md). Checked top-level items
+mean their core behavior exists, with structural deviations documented there;
+unchecked items have substantive missing requirements. Nested checks and older
+verification logs record the implemented subsets, not full prompt compliance.
 
 For the current follow-up audit, original theme/audio completion and outstanding
 machine/provider setup, see [REMAINING_WORK.md](REMAINING_WORK.md). Earlier
@@ -29,26 +33,26 @@ records the current mixed-style/long-loop expansion and realistic-motion limitat
   - [x] Saved-date grouping, tied-timestamp pagination, invalid-range and DST tests.
   - [x] Browser checks for filters, all five languages, seed conservation, pagination, mobile heatmap, streak visibility and completion-to-Stats updates.
   - [x] Server repository supports filtered history, saved-date totals and cursor pagination.
-- [x] **5. Profile** — private/public DTOs, editing, uploads, follow relationships and access controls verified.
+- [ ] **5. Profile — partial:** editing/uploads/follows exist; profile tabs and constrained lookingFor values remain.
   - [x] Private-by-default account cards, narrow public DTOs and owner editing.
   - [x] Profile/cover uploads to a private bucket; owner paths, size/MIME/signature validation and no-store authenticated delivery.
   - [x] Real follow/unfollow, unique relationships, counts and cross-user access rules.
   - [x] Five-language mobile UI, persisted development preview and two-account Supabase browser verification.
   - [x] Migration 0005 applied; generated types updated; 22 profile pgTAP assertions passed.
   - [x] Start and permanent webcam privacy regressions; profile transport isolated from the session import graph.
-- [x] **7. Achievements** — pure eligibility, persisted idempotent awards and profile badges.
-- [x] **4. Camera/personal tile** — mirror preference, tile visibility, status/history and explicit sharing boundary.
-- [x] **15. Navigation/utilities** — feature-aware routes, tasks, notifications, search and feedback.
-- [x] **2. Live session/room** — authorised room membership, presence, real media adapter and grid/pins.
-- [x] **3. Spaces** — discovery, categories, invitations and atomic capacity enforcement.
-- [x] **8. Focus partners** — merged participation overlaps, private history and favourites.
-- [x] **9. Study-buddy discovery** — listings, search, owner editing, messaging and reporting/blocking.
-- [x] **10. Conversations** — channels, private chats, threads, saved messages and reliable delivery.
-- [x] **11. Groups** — discovery, private membership, moderation roles and ownership transfer.
-- [x] **12. Feed/posting** — following/popular feeds, replies, reactions, saves and validated attachments.
-- [x] **13. Scheduled focus sessions** — timezone-safe calendar, bookings, capacity and session entry.
-- [x] **14. Leaderboards** — opt-in, trusted rankings, stable pagination and privacy.
-- [x] **16. Entitlements/limits** — configured server-authoritative access and interval metering; no invented prices.
+- [ ] **7. Achievements — partial:** streak awards exist; study-time/session-count awards and highest profile badge remain.
+- [ ] **4. Camera/personal tile — partial:** local privacy/mirror/status work; append-only status history and Spotify capability boundary remain.
+- [ ] **15. Navigation/utilities — partial:** routes and utility pages exist; task editing/TodayTasks panel and capability registry remain.
+- [ ] **2. Live session/room — partial:** real media/membership/grid work; participant cursor API, explicit adapter contract and local-only pin state differ.
+- [ ] **3. Spaces — partial:** categories/private rooms/capacity work; unlisted mode, invite revocation and requested responsive sheet remain.
+- [ ] **8. Focus partners — partial:** overlap/favorites work; character history and subject consent for arrival notifications remain.
+- [ ] **9. Study-buddy discovery — partial:** basic listings work; category/timezone/availability and stable pagination remain.
+- [ ] **10. Conversations — partial:** chats/replies/saves work; read state, optimistic message rows and realtime reconciliation remain.
+- [ ] **11. Groups — partial:** membership/roles/transfer work; group invitations and owner-edit UI remain.
+- [ ] **12. Feed/posting — partial:** feed/reactions/uploads work; publication retry idempotency and stable pagination remain.
+- [ ] **13. Scheduled focus sessions — partial:** bookings/DST/capacity work; private-character schedules, saved scheduling timezone and editing remain.
+- [ ] **14. Leaderboards — partial:** opt-in snapshot rankings work; best-streak/last-7-days query combination is not offered and API contracts differ.
+- [ ] **16. Entitlements/limits — partial:** quota metering/enforcement work; per-feature contracts, usage-event ledger and billing/webhook boundary remain.
 
 ## Constraints and dependencies
 
@@ -73,7 +77,9 @@ records the current mixed-style/long-loop expansion and realistic-motion limitat
 
 ## Completed roadmap verification - 16 October 2026
 
-All 17 categories above are implemented. Earlier log entries describe intermediate checkpoints; the following supersedes their pending-dependency notes.
+This historical checkpoint reported all 17 categories as implemented. The
+17 October contract audit above found missing requirements; this older log
+records tests of the implemented subsets and is not proof of full compliance.
 
 - Server-owned session start/Finish, refresh recovery, totals, streaks and achievements are live for real Supabase accounts. Local preview remains available separately.
 - Three real-account integration journeys passed: community forms and persistence; two-account data/access controls and server sessions; two-account LiveKit camera opt-in/subscription plus male/female GIF partners and refresh.
