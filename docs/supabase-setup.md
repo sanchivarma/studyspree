@@ -112,13 +112,13 @@ npm.cmd run dev
 
 1. Open `http://localhost:3000` and choose a language using the globe.
 2. Register using all five fields. Check the confirmation email.
-3. Confirm the account. `/home` shows the actual username, tagline and
+3. Confirm the account and complete the three onboarding steps. `/` shows the actual username, tagline and
    link to Study. It contains no duration controls or timer.
 4. Choose the BookOpen icon to open `/study`. This is the session setup
-   screen; the timer/session demo routes are still placeholders at this phase.
+   screen; starting opens a persisted session with a timestamp-derived timer.
 5. Sign out and sign in with the same username/password.
 6. Test Forgot password and both OAuth providers after configuring them.
-7. Visiting `/home`, `/study` or session routes signed out redirects to `/`.
+7. Visiting `/`, `/study` or session routes signed out redirects to `/login`.
 
 ## Verification limits
 

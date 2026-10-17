@@ -4,6 +4,11 @@ Requested order: **17 → 1 → 6 → 5 → 7 → 4 → 15 → 2 → 3 → 8 →
 
 Checkboxes mean implemented and verified, not merely scaffolded. Existing features are reused. Backend-dependent work must be verified against a running backend before its feature is marked complete.
 
+For the current follow-up audit, original theme/audio completion and outstanding
+machine/provider setup, see [REMAINING_WORK.md](REMAINING_WORK.md). Earlier
+verification below records the working stack on 16 October; Windows port
+reservations currently prevent restarting that stack on 17 October.
+
 - [x] **17. Virtual study characters** — local flow and database migration verified
   - [x] Eight distinct original animated GIFs: four adult male, four adult female; static posters and licence ledger.
   - [x] Typed registry, validation, asset preparation and asset checks.
@@ -76,4 +81,6 @@ All 17 categories above are implemented. Earlier log entries describe intermedia
 - Final session regression: 12 Start/Finish/refresh/expiry/mobile/translation checks passed; the corrected idle keyboard-focus case then passed three consecutive runs. The idle hook exposes its synchronous visibility ref so input does not depend on a pending React render.
 - Maintenance HTTP verification: unauthorized request rejected (401); configured bearer request succeeded with database and media cleanup available.
 - Deployment configuration remains explicit: run the protected maintenance scheduler every minute; configure commercial plan policies before imposing limits. No paid plan, price or checkout was activated.
-- Theme videos and audible ambience are still deliberate fallbacks/placeholders until licensed assets are supplied. Eight original looping GIF study partners are present.
+- Theme videos and audible ambience were placeholders at this checkpoint. The
+  17 October audit adds four original illustrated video loops and five original
+  synthesized audio files. Eight original looping GIF study partners remain present.

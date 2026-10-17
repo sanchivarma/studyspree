@@ -1,5 +1,5 @@
 import { existsSync } from "node:fs";
-import { mkdir, writeFile, unlink } from "node:fs/promises";
+import { mkdir, writeFile, unlink, rename } from "node:fs/promises";
 import { resolve, join } from "node:path";
 import { expect, test } from "@playwright/test";
 import { signIn } from "./sessionFixtures";
@@ -33,7 +33,7 @@ test.beforeAll(async ({ browser }) => {
   await page.close();
   webm = Buffer.from(fixture.video, "base64"); poster = Buffer.from(fixture.jpeg, "base64");
   await mkdir(root, { recursive: true });
-  for (const [name, body] of [["loop.webm", webm], ["poster.jpg", poster]] as const) {
+  for (const [name, body] of [["scene-v1.webm", webm], ["poster-v1.jpg", poster]] as const) {
     const path = join(root, name);
     if (!existsSync(path)) { await writeFile(path, body); ownedFiles.push(path); }
   }
@@ -43,8 +43,8 @@ test.afterAll(async () => {
   for (const path of ownedFiles) { if (resolve(path).startsWith(`${root}\\`) || resolve(path).startsWith(`${root}/`)) await unlink(path); }
 });
 test.beforeEach(async ({ page }) => {
-  await page.route("**/themes/rain-desk/loop.webm", (route) => route.fulfill({ status: 200, contentType: "video/webm", body: webm }));
-  await page.route("**/themes/rain-desk/poster.jpg", (route) => route.fulfill({ status: 200, contentType: "image/jpeg", body: poster }));
+  await page.route("**/themes/rain-desk/scene-v1.webm", (route) => route.fulfill({ status: 200, contentType: "video/webm", body: webm }));
+  await page.route("**/themes/rain-desk/poster-v1.jpg", (route) => route.fulfill({ status: 200, contentType: "image/jpeg", body: poster }));
 });
 
 test("poster and looping muted video paint, pause hidden, and retain the same node on rerender", async ({ page }) => {
@@ -62,7 +62,7 @@ test("poster and looping muted video paint, pause hidden, and retain the same no
   expect(await movie.evaluate((element: HTMLVideoElement) => element.paused)).toBe(true);
   await page.evaluate(() => { Object.defineProperty(document, "hidden", { configurable: true, value: false }); document.dispatchEvent(new Event("visibilitychange")); });
   await expect.poll(() => movie.evaluate((element: HTMLVideoElement) => element.paused)).toBe(false);
-  const response = await page.request.get("/themes/rain-desk/poster.jpg");
+  const response = await page.request.get("/themes/rain-desk/poster-v1.jpg");
   expect(response.headers()["cache-control"]).toContain("max-age=31536000");
   expect(response.headers()["cache-control"]).toContain("immutable");
 });
@@ -84,6 +84,16 @@ test("OS and profile reduced motion show a static poster and never mount video",
 });
 
 test("a missing theme has an immediate gradient with no missing-media requests or console errors", async ({ page }) => {
+  // Make real bundled assets temporarily unavailable before the first layout
+  // render. Restore exact files in finally; never delete or replace user media.
+  const unavailable: string[] = [];
+  const directory = resolve("public/themes/night-shift");
+  try {
+  for (const name of ["scene-v1.webm", "scene-v1.mp4", "poster-v1.jpg"]) {
+    const path = join(directory, name);
+    if (existsSync(`${path}.missing-test`)) throw new Error("Previous scene test backup needs restoration");
+    if (existsSync(path)) { await rename(path, `${path}.missing-test`); unavailable.push(path); }
+  }
   const errors: string[] = []; const requests: string[] = [];
   page.on("console", (message) => { if (message.type() === "error") errors.push(message.text()); });
   page.on("pageerror", (error) => errors.push(error.message));
@@ -98,15 +108,18 @@ test("a missing theme has an immediate gradient with no missing-media requests o
   await expect(scene.locator("img, video")).toHaveCount(0);
   expect(await scene.getByTestId("scene-gradient").evaluate((element) => getComputedStyle(element).backgroundImage)).not.toBe("none");
   expect(requests).toEqual([]); expect(errors).toEqual([]);
+  } finally {
+    for (const path of unavailable) await rename(`${path}.missing-test`, path);
+  }
 });
 
 test("slow video leaves the poster and Start usable, and media errors leave the fallback visible", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await signIn(page);
-  await page.unroute("**/themes/rain-desk/loop.webm");
+  await page.unroute("**/themes/rain-desk/scene-v1.webm");
   let release!: () => void;
   const blocked = new Promise<void>((resolve) => { release = resolve; });
-  await page.route("**/themes/rain-desk/loop.webm", async (route) => { await blocked; await route.fulfill({ status: 200, contentType: "video/webm", body: webm }).catch(() => {}); });
+  await page.route("**/themes/rain-desk/scene-v1.webm", async (route) => { await blocked; await route.fulfill({ status: 200, contentType: "video/webm", body: webm }).catch(() => {}); });
   await page.goto("/study", { waitUntil: "domcontentloaded" });
   await expect(page.getByTestId("scene-video").locator("img")).toHaveCSS("opacity", "1");
   const start = page.getByRole("button", { name: "Start", exact: true });

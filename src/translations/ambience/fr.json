@@ -6,6 +6,7 @@
     "tracks": "Pistes musicales",
     "off": "Désactivé",
     "silentTrack": "Aperçu silencieux",
-    "placeholderNote": "Les aperçus audio sont silencieux pendant la préparation des enregistrements."
+    "stillWater": "Eau calme",
+    "originalNote": "Sons d’ambiance originaux. Choisissez un volume confortable."
   }
 }

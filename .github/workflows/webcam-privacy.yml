@@ -37,6 +37,9 @@ jobs:
       - run: npm run test
       - run: npm run check:audio-licences
       - run: npm run check:character-assets
+      - run: npm run check:default-media
+      - name: Decode original themes and audible ambience
+        run: npm run test:e2e -- e2e/default-media.spec.ts
       - name: Verify virtual study companions
         run: npm run test:e2e -- e2e/characters.spec.ts
       - name: Enforce webcam privacy

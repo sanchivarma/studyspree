@@ -80,7 +80,7 @@ export function SettingsScreen() {
       <h2 className="text-body font-semibold">{t("settings.sound")}</h2>
       <PreferenceSwitch {...toggleProps} label={t("ambience.label")} checked={preferences?.ambienceEnabled ?? false}
         onChange={ambienceEnabled => update.mutate({ ambienceEnabled })} />
-      <p className="mb-4 text-small text-text-muted">{t("ambience.placeholderNote")}</p>
+      <p className="mb-4 text-small text-text-muted">{t("ambience.originalNote")}</p>
       <label className="block text-small">{t("ambience.music")}
         <input type="range" min="0" max="1" step="0.05" disabled={disabled} value={preferences?.musicVolume ?? 0}
           onChange={event => update.mutate({ musicVolume: Number(event.target.value) })} className="block h-11 w-full accent-accent" />

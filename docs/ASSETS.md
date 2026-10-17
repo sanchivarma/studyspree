@@ -29,8 +29,9 @@ so playback can start before the full download. The script stages all encodes
 before publishing them, refuses to overwrite existing assets, and removes its
 temporary files when it exits.
 
-The existing registry in `src/lib/themes/registry.ts` uses these names for
-`rain-desk`, `night-shift`, `balcony-dusk`, and `dorm-bunk`. A different output slug
+The helper produces these conventional names. The shipped original scenes use
+versioned `scene-v1.mp4`, `scene-v1.webm` and `poster-v1.jpg` URLs in the registry
+for `rain-desk`, `night-shift`, `balcony-dusk`, and `dorm-bunk`. A different output slug
 must be connected through the registry's media paths. Development discovers
 available assets when rendering a page; restart the dev server after adding files
 if needed. Production records availability at build time, so add assets **before**

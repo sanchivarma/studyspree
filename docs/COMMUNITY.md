@@ -24,6 +24,12 @@ Settings self-view remains a local preview: its stream never enters LiveKit. A r
 
 Run the protected `GET /api/cron/study-leases` endpoint every minute using `Authorization: Bearer <CRON_SECRET>` from your deployment's scheduler. It closes stale room visits and stale personal sessions, resets monthly freezes and removes expired/unauthorized LiveKit participants. Server credentials stay on the server. Local development can run `npm run maintenance` in a second terminal. A token expiring by itself does not disconnect an existing LiveKit connection, so production must run this scheduler to enforce media leases while clients are closed.
 
+Alternatively use `npm run dev:local` to start the local app and maintenance
+worker together; stop any existing port-3000 development server first. Stopping
+this command stops the processes it owns. Backend services and the existing
+server-only `CRON_SECRET` are still required; a production scheduler remains
+part of deployment setup.
+
 ## Verification
 
 With Docker/local Supabase and the app running:

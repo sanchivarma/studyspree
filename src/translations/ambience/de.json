@@ -6,6 +6,7 @@
     "tracks": "Musiktitel",
     "off": "Aus",
     "silentTrack": "Stille Vorschau",
-    "placeholderNote": "Die Audiovorschau ist stumm, bis Aufnahmen bereitstehen."
+    "stillWater": "Stilles Wasser",
+    "originalNote": "Eigene Umgebungsklänge. Wähle eine angenehme Lautstärke."
   }
 }

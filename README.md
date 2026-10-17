@@ -2,13 +2,17 @@
 
 Shared feature routes, real account storage, camera boundaries and local maintenance are documented in [docs/COMMUNITY.md](docs/COMMUNITY.md). The development test login is an offline preview; use a local Supabase account for shared rooms, groups and messages.
 
+See [the completion audit](docs/REMAINING_WORK.md) for completed follow-up requests
+and remaining machine, email-provider and deployment setup.
+
 Big goals start with showing up.
 
 **NEVER add audio without a recorded licence. NEVER use audio ripped from YouTube.**
 
 Session ambience uses Howler with independent music and theme-matched room
-buses. Both start off; saved preferences wait for a user gesture. The current
-four WebM assets and music preview are silent placeholders. Record every future
+buses. Both start off; saved preferences wait for a user gesture. Four original
+synthesized room soundscapes and the original Still Water track are included.
+The old silent preview remains available. Record every future
 asset in `public/audio/LICENCES.md`, and run `npm run check:audio-licences`.
 New audio versions need new filenames because `/audio/` is cached as immutable.
 
@@ -21,22 +25,30 @@ npm.cmd install
 npm.cmd run dev
 ```
 
-Open http://localhost:3000. Only `src/app/(auth)/page.tsx` owns the root URL.
+Open http://localhost:3000. `/login` is public; `/` is the authenticated Home.
+With local Supabase running and `CRON_SECRET` configured, use `npm.cmd run dev:local`
+to run the app and its maintenance scheduler together. Stop an existing server
+before using this command. Ctrl+C stops both processes it started.
 
 ## Pages
 
-- `/`: public welcome page, translated Login/Register tabs, Google/Facebook
-  buttons, username/password login and password recovery.
-- `/home`: signed-in Start page with the actual username greeting, tagline
-  and a link to Study. No session controls or timer.
+- `/login`: public welcome, translated Login/Register tabs, email magic links,
+  username/password login and recovery. OAuth requires provider configuration.
+- `/`: signed-in Home with username greeting, tagline, Study shortcuts and
+  authorized room discovery. `/home` redirects here. Session controls live on Study.
 - `/study`: BookOpen navigation item and session setup.
 - `/session/{id}`: persisted countdown or Open session, optional task, idle
   controls and Finish/Escape navigation. Refresh resumes from its timestamp.
-- `/session/{id}/complete`: calm summary re-read from the local repository with
+- `/session/{id}/complete`: calm summary re-read from the active repository with
   a 1.2-second count-up that respects reduced motion and pauses in hidden tabs.
-- `/stats`: deterministic 365-day mock dashboard with a keyboard-accessible
-  CSS heatmap, conditional streak card, 14-day bars and 20 recent sessions.
-- `/settings`: protected placeholder.
+- `/stats`: real totals, date ranges, accessible charts/heatmap, optional streaks
+  and paginated, filtered session history.
+- `/settings`: persisted profile, theme, motion, ambience, camera and timezone preferences.
+- `/calendar` and `/contacts`: reading history, scheduling, invitations and accepted contact lists.
+- `/invite`: direct email invitations through SMTP, optional Resend or explicit local capture.
+- `/rooms/{id}`: shared rooms with real participants and virtual partners together.
+- The navigation More menu contains the remaining community features; see
+  [the feature checklist](docs/FEATURE_CHECKLIST.md).
 - `/reset-password`: password update after a valid recovery link.
 
 English, German, French, Polish and Italian copy lives in separate JSON
@@ -91,6 +103,10 @@ gap and a recent ramp-up. Totals, streaks and session history derive from
 the same daily fixture. These values do not write to Supabase.
 
 ## Local session repository (Phase 2.1)
+
+The following Phase 2 paragraphs record implementation history. Current real
+accounts use SupabaseRepository; local preview uses LocalRepository. Stats,
+streaks, Settings and completion are implemented, as listed above.
 
 `src/lib/repo/index.ts` exports the session `repo`. `LocalRepository` stores
 validated JSON under `ss_profile`, `ss_sessions` and `ss_active`. Its profile
@@ -162,7 +178,12 @@ Add `loop.webm`, `loop.mp4` and `poster.jpg` under
 that are absent are not requested. The server checks availability during local
 page loads; production uses an availability snapshot embedded at build time so
 CDN-hosted assets work without runtime filesystem access. Rebuild to ship newly
-added production assets. The current repository contains no real theme media.
+added production assets. Four original illustrated scenes now ship with WebM,
+MP4 and static posters; registry paths use `scene-v1.*` and `poster-v1.jpg`.
+`scripts/generate-default-media.mjs` records original vector animations and
+synthesized audio without external media or additional dependencies. It refuses
+to overwrite published assets. See `public/themes/LICENCES.md` and
+`docs/audio/original-ambience-v1.md` for provenance.
 
 Theme and audio URLs use a one-year immutable cache. A new asset version
 must use a new filename and updated registry path. Scene tests create tiny

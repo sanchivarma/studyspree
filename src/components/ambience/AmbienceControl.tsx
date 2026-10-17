@@ -25,7 +25,7 @@ export function AmbienceControl({ theme, onOpenChange }: { theme: string; onOpen
         onKeyDown={event => event.stopPropagation()}
         className="z-50 max-h-[calc(100dvh-6rem)] w-72 max-w-[calc(100dvw-2rem)] overflow-y-auto rounded-2xl border border-border bg-surface p-5 text-foreground shadow-lg">
         <h2 className="text-body font-semibold">{t("ambience.label")}</h2>
-        <p className="mt-1 text-small text-text-muted">{t("ambience.placeholderNote")}</p>
+        <p className="mt-1 text-small text-text-muted">{t("ambience.originalNote")}</p>
         <label className="mt-4 block text-small" htmlFor="music-volume">{t("ambience.music")}</label>
         <input id="music-volume" type="range" min={0} max={1} step={0.05} value={audio.musicVolume} onChange={event => audio.setMusicVolume(Number(event.target.value))}
           className="h-11 w-full accent-accent" />

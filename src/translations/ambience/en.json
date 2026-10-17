@@ -6,6 +6,7 @@
     "tracks": "Music tracks",
     "off": "Off",
     "silentTrack": "Silent preview",
-    "placeholderNote": "Audio previews are silent while recordings are being prepared."
+    "stillWater": "Still Water",
+    "originalNote": "Original ambient sounds. Choose a comfortable volume."
   }
 }

@@ -28,8 +28,8 @@ and following counts are projected without exposing the relationship lists.
 
 The development login is explicitly local: edits stay in `ss_directory_profile`
 and the local greeting preference. It cannot publish, upload photos or impersonate
-remote accounts. Session history remains in the existing local repository; this
-feature does not activate the pending server session-storage migration.
+remote accounts. Real accounts now store session history through the server
+repository; the development preview keeps its independent local history.
 
 ## Implementation and checks
 

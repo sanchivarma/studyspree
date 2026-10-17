@@ -29,11 +29,20 @@ afterEach(() => { engine.destroy(); vi.useRealTimers(); vi.unstubAllGlobals(); }
 function loaded(from = 0) { mocks.sounds[from].options.onload?.(1); mocks.sounds[from + 1].options.onload?.(1); }
 
 describe("two independent, gesture-gated audio buses", () => {
+  it("loads original music independently from the theme sound without changing a saved silent selection", () => {
+    engine.setMusicTrack("still-water"); engine.setMusicVolume(0.2);
+    expect(mocks.sounds).toHaveLength(0);
+    engine.init();
+    expect(mocks.sounds[0].options.src).toEqual(["/audio/still-water-v1.webm"]);
+    engine.setMusicTrack("silent");
+    expect(mocks.sounds[0].unload).toHaveBeenCalledOnce();
+    expect(mocks.sounds[2].options.src).toEqual(["/audio/rain.webm"]);
+  });
   it("restores preferences without any context, Howl or request before init", () => {
     engine.setMusicTrack("silent"); engine.setMusicVolume(0.4); engine.setRoomForTheme("night-shift"); engine.setRoomVolume(0.2);
     expect(mocks.sounds).toHaveLength(0); expect(mocks.volume).not.toHaveBeenCalled();
     engine.init(); expect(mocks.volume).toHaveBeenCalledExactlyOnceWith(1);
-    expect(mocks.sounds.map(sound => sound.options.src)).toEqual([["/audio/rain.webm"], ["/audio/rain.webm"], ["/audio/city-night.webm"], ["/audio/city-night.webm"]]);
+    expect(mocks.sounds.map(sound => sound.options.src)).toEqual([["/audio/rain.webm"], ["/audio/rain.webm"], ["/audio/city-night-v1.webm"], ["/audio/city-night-v1.webm"]]);
     expect(mocks.sounds.every(sound => sound.options.autoplay === false && sound.options.preload === false)).toBe(true);
   });
   it("loads the second Howl after the first and crossfades for two seconds before stopping the old one", () => {
@@ -52,7 +61,7 @@ describe("two independent, gesture-gated audio buses", () => {
     engine.setRoomForTheme("dorm-bunk");
     expect(mocks.sounds[0].unload).not.toHaveBeenCalled(); expect(mocks.sounds[1].unload).not.toHaveBeenCalled();
     expect(mocks.sounds[2].unload).toHaveBeenCalledOnce(); expect(mocks.sounds[3].unload).toHaveBeenCalledOnce();
-    expect(mocks.sounds[4].options.src).toEqual(["/audio/keyboard-room.webm"]);
+    expect(mocks.sounds[4].options.src).toEqual(["/audio/keyboard-room-v1.webm"]);
   });
   it("visibility fades to zero and pauses, then resumes at the selected volume", () => {
     engine.init(); engine.setRoomForTheme("rain-desk"); engine.setRoomVolume(0.4); loaded();

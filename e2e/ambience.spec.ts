@@ -53,7 +53,7 @@ test("default off, gesture unlock, independent controls, debounced persistence a
   await slider(page, "Music", 0.2);
   await expect.poll(() => preferences(page)).toMatchObject({ ambienceEnabled: true, musicTrack: "silent", musicVolume: 0.2, roomVolume: 0.5 });
   await expect.poll(() => requests.length).toBeGreaterThan(0);
-  expect(requests.every(url => new URL(url).pathname === "/audio/rain.webm")).toBe(true);
+  expect(requests.every(url => ["/audio/rain.webm", "/audio/rain-v1.webm"].includes(new URL(url).pathname))).toBe(true);
   await page.keyboard.press("Escape"); await expect(page.getByTestId("ambience-popover")).toHaveCount(0);
   expect(new URL(page.url()).pathname).toBe(path);
   await page.reload(); await expect(page.getByTestId("session-screen")).toBeVisible();
@@ -74,7 +74,7 @@ test("room follows theme, visibility fades and Finish releases gains without cha
   const priorFades = await page.evaluate(() => (window as unknown as { audioAudit: { fades: number[] } }).audioAudit.fades.filter(value => value === 0.5).length);
   await page.getByRole("button", { name: "Switch theme", exact: true }).click();
   await page.getByRole("button", { name: /Night Shift/ }).click();
-  await expect.poll(() => requests.some(url => url.includes("city-night.webm"))).toBe(true);
+  await expect.poll(() => requests.some(url => url.includes("city-night-v1.webm"))).toBe(true);
   await expect.poll(() => page.evaluate(() => (window as unknown as { audioAudit: { fades: number[] } }).audioAudit.fades.filter(value => value === 0.5).length)).toBeGreaterThan(priorFades);
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem("ss_sessions")!)[0].startedAt)).toBe(initial);
   await page.evaluate(() => {
@@ -92,7 +92,7 @@ test("room follows theme, visibility fades and Finish releases gains without cha
 
 test("a missing room file leaves Finish usable without application errors", async ({ page }) => {
   const errors: string[] = []; page.on("pageerror", error => errors.push(error.message));
-  await page.route("**/audio/rain.webm", route => route.fulfill({ status: 404, body: "" }));
+  await page.route("**/audio/rain-v1.webm", route => route.fulfill({ status: 404, body: "" }));
   await signIn(page); const path = await startSession(page);
   await page.getByRole("button", { name: "Sound", exact: true }).click(); await slider(page, "Room sound", 0.5);
   await page.keyboard.press("Escape");
