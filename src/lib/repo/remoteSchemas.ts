@@ -1,3 +1,4 @@
+import { themeSlugs } from "@/lib/themes/registry";
 import { z } from "zod";
 import { profileSchema } from "./local";
 import { companionSchema } from "@/lib/characters/schemas";
@@ -20,7 +21,7 @@ export const repositoryRequestSchema = z.discriminatedUnion("op", [
     empty("profile"), empty("active"), empty("total"), empty("summary"), empty("streak"), empty("awards"), empty("tile"), empty("directory"), empty("dashboard"),
     z.object({ op: z.literal("updateProfile"), patch: profilePatch }).strict(),
     z.object({ op: z.literal("updateDirectory"), input: z.unknown() }).strict(),
-    z.object({ op: z.literal("start"), input: z.object({ plannedMinutes: z.union([z.literal(5), z.literal(15), z.literal(25), z.literal(50)]).nullable(), themeSlug: z.enum(["rain-desk", "night-shift", "balcony-dusk", "dorm-bunk"]), task: z.string().trim().max(500).nullable(), companions: companionSchema.optional() }).strict() }).strict(),
+    z.object({ op: z.literal("start"), input: z.object({ plannedMinutes: z.union([z.literal(5), z.literal(15), z.literal(25), z.literal(50)]).nullable(), themeSlug: z.enum(themeSlugs), task: z.string().trim().max(500).nullable(), companions: companionSchema.optional() }).strict() }).strict(),
     z.object({ op: z.literal("finish"), id: z.uuid(), reason: z.enum(["completed", "stopped_early", "abandoned"]) }).strict(),
     z.object({ op: z.literal("heartbeat"), id: z.uuid() }).strict(),
     z.object({ op: z.literal("session"), id: z.uuid() }).strict(),

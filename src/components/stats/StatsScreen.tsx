@@ -23,7 +23,7 @@ import { Heatmap } from "./Heatmap";
 import { StreakCard } from "./StreakCard";
 
 const card = "rounded-2xl border border-border bg-surface p-5 md:p-6";
-const themeNames: Record<ThemeSlug, TranslationKey> = { "rain-desk": "stats.rainDesk", "night-shift": "stats.nightShift", "balcony-dusk": "stats.balconyDusk", "dorm-bunk": "stats.dormBunk" };
+const themeNames: Record<ThemeSlug, TranslationKey> = { "rain-desk": "stats.rainDesk", "night-shift": "stats.nightShift", "balcony-dusk": "stats.balconyDusk", "dorm-bunk": "stats.dormBunk", "nature-day": "scene.natureDay", "nature-night": "scene.natureNight", "sci-fi": "scene.sciFi", "space": "scene.space" };
 
 export function StatsScreen() {
   const { locale, t } = useTranslation();

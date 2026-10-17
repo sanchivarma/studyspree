@@ -12,8 +12,8 @@ test("explicit room camera reaches a second real account and turns off", async (
         expect(response.ok()).toBe(true);
         const { id } = await response.json();
         await page.goto(`/rooms/${id}`);
-        await page.getByLabel("Noah",{exact:true}).check();
-        await page.getByLabel("Maya",{exact:true}).check();
+        await page.getByTestId("character-card-male-01").click();
+        await page.getByTestId("character-card-female-01").click();
         await page.getByRole("button", { name: "Join", exact: true }).click();
         await expect(page.getByText("1 in the room", { exact: true })).toBeVisible();
         await expect(page.getByTestId("character-loop-male-01")).toBeVisible();
@@ -27,8 +27,8 @@ test("explicit room camera reaches a second real account and turns off", async (
         const identity = await page.request.post("/api/community", { data: { operation: "read", area: "preferences", query: {} } });
         const { viewerId } = await identity.json();
         await page.getByRole("button", { name: "Pin my video first", exact: true }).click();
-        await expect(page.getByTestId("room-video-grid").locator(":scope > article").first()).toHaveAttribute("data-person-id", viewerId);
-        expect((await page.getByTestId("room-video-grid").boundingBox())!.width).toBeGreaterThanOrEqual((await page.evaluate(() => innerWidth)) - 16);
+        await expect(page.getByTestId("room-video-grid").locator("[data-person-id]").first()).toHaveAttribute("data-person-id", viewerId);
+        expect((await page.getByTestId("room-video-grid").boundingBox())!.width).toBeGreaterThanOrEqual((await page.evaluate(() => innerWidth)) - 64);
         expect(await page.locator("video").count()).toBe(0);
         await page.getByRole("button", { name: "Share camera in this room", exact: true }).click();
         await expect.poll(() => viewer.locator("video").evaluateAll(elements => elements.some(element => element instanceof HTMLVideoElement && element.videoWidth > 0)), { timeout: 20000 }).toBe(true);

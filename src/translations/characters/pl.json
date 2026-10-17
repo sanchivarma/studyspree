@@ -1,5 +1,10 @@
 {
   "characters": {
+    "pages": "Strony uczestników",
+    "hidePerson": "Ukryj: {name} w moim widoku",
+    "restorePeople": "Pokaż ukryte osoby",
+    "tileOptions": "Opcje kafelka",
+    "roomOptions": "Sterowanie pokojem",
     "remove": "Usuń: {name}",
     "title": "Towarzysze nauki",
     "description": "Trochę towarzystwa, we własnym tempie.",
@@ -29,7 +34,7 @@
     "illustrated": "Ilustrowane osoby",
     "whimsical": "Bajkowe",
     "realistic": "Realistyczne",
-    "limit": "Wybierz do ośmiu partnerów, łącząc dowolne style.",
+    "limit": "Łącz dowolne style. Sesje wyświetlają 20 kafelków na stronie.",
     "realisticReading": "Wygenerowane przez AI · GIF z czytaniem",
     "realisticWriting": "Wygenerowane przez AI · GIF z notowaniem",
     "southAsian": "Azja Południowa",

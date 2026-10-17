@@ -1,5 +1,13 @@
 {
   "scene": {
+    "natureDay": "Natur am Tag",
+    "natureNight": "Natur bei Nacht",
+    "sciFi": "Sci-Fi-Observatorium",
+    "space": "Weltraum",
+    "natureDayDescription": "Sonnige Waldhügel und ein ruhiger Fluss.",
+    "natureNightDescription": "Mondlicht, Flussspiegelungen und Glühwürmchen.",
+    "sciFiDescription": "Cyanfarbene Konsolen in einer ruhigen Raumstation.",
+    "spaceDescription": "Ferne Sterne und ein Planet mit Ringen.",
     "title": "Wähle dein Design",
     "description": "Ein ruhiger Hintergrund für deine Konzentration.",
     "close": "Schließen",

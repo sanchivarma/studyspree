@@ -1,5 +1,10 @@
 {
   "characters": {
+    "pages": "Pagine dei partecipanti",
+    "hidePerson": "Nascondi {name} nella mia vista",
+    "restorePeople": "Mostra le persone nascoste",
+    "tileOptions": "Opzioni del riquadro",
+    "roomOptions": "Controlli della stanza",
     "remove": "Rimuovi {name}",
     "title": "Compagni di studio",
     "description": "Un po’ di compagnia, al tuo ritmo.",
@@ -29,7 +34,7 @@
     "illustrated": "Persone illustrate",
     "whimsical": "Fantasia",
     "realistic": "Realistico",
-    "limit": "Scegli fino a otto compagni mescolando gli stili.",
+    "limit": "Combina gli stili. Le sessioni mostrano 20 riquadri per pagina.",
     "realisticReading": "Generato con IA · GIF di lettura",
     "realisticWriting": "Generato con IA · GIF di appunti",
     "southAsian": "Asia meridionale",

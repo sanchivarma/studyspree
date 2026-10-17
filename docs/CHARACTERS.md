@@ -6,7 +6,7 @@ Themes choose the environment; characters add illustrated study company. Charact
 
 1. Sign in and open `/study`.
 2. Open **Choose companions** and select **Virtual partners**.
-3. Select up to eight cards. The initial selection is Noah; cards toggle independently. Removing every selection returns to Solo.
+3. Select any of the available cards. The initial selection is Noah; cards toggle independently. Removing every selection returns to Solo.
 4. Close the picker, choose a theme/duration, and press Start.
 5. Refresh during the session: the ID, original start timestamp, theme preference, and companion snapshot remain available.
 6. Move the pointer or press a navigation key to restore the controls. **Choose companions** changes the running session's selection; Finish banks elapsed time normally.

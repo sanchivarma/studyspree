@@ -1,5 +1,13 @@
 {
   "scene": {
+    "natureDay": "Natura di giorno",
+    "natureNight": "Natura di notte",
+    "sciFi": "Osservatorio fantascientifico",
+    "space": "Spazio profondo",
+    "natureDayDescription": "Colline boscose al sole e un fiume tranquillo.",
+    "natureNightDescription": "Chiaro di luna, riflessi e lucciole.",
+    "sciFiDescription": "Console ciano in un tranquillo osservatorio orbitale.",
+    "spaceDescription": "Stelle lontane e un pianeta con anelli.",
     "title": "Scegli il tuo tema",
     "description": "Uno sfondo tranquillo per concentrarti.",
     "close": "Chiudi",

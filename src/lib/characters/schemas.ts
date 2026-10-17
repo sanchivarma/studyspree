@@ -5,7 +5,7 @@ import type { CompanionPreferences } from "@/types/characters";
 export const soloCompanions = (): CompanionPreferences => ({ mode: "solo", characterSlugs: [] });
 export const companionSchema = z.object({
   mode: z.enum(["solo", "characters", "people", "mixed"]),
-  characterSlugs: z.array(z.enum(characterSlugs)).max(8),
+  characterSlugs: z.array(z.enum(characterSlugs)).max(characterSlugs.length),
 }).strict().superRefine((value, context) => {
   if (new Set(value.characterSlugs).size !== value.characterSlugs.length) context.addIssue({ code: "custom", message: "Duplicate character" });
   const needsCharacters = value.mode === "characters" || value.mode === "mixed";

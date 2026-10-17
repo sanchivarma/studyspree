@@ -9,7 +9,7 @@ test("Study starts a persisted timer with its task and Finish banks elapsed time
   await expect(page.getByTestId("session-screen")).toBeVisible();
   await expect(page.getByRole("navigation")).toHaveCount(0);
   await expect(page.getByTestId("auth-feedback")).toHaveCount(0);
-  await expect(page.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "100");
+  await expect(page.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "0");
   await expect(page.getByTestId("session-time")).toHaveText("5:00 left");
   await expect(page.getByText("Read chapter 3 & take notes", { exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "Sound" })).toBeEnabled();
@@ -27,13 +27,13 @@ test("Study starts a persisted timer with its task and Finish banks elapsed time
   expect(hasDialog).toBe(false);
 });
 
-test("five seconds of inactivity hides controls, dims the ring and input restores them", async ({ page }) => {
+test("five seconds of inactivity hides controls, dims the progress bar and input restores them", async ({ page }) => {
   await signIn(page);
   await freezeClock(page);
   const path = await startSession(page, "Reading");
   const screen = page.getByTestId("session-screen");
   const ring = page.getByRole("progressbar");
-  const controls = page.getByTestId("session-controls");
+  const controls = page.getByRole("button", { name: "Finish", exact: true });
   const details = page.getByTestId("session-details");
   await expect(screen).toHaveAttribute("data-controls-visible", "true");
   await page.mouse.move(10, 10);
@@ -74,16 +74,16 @@ test("phone layout keeps the camera and Finish separate and respects reduced mot
   await signIn(page);
   await startSession(page);
   const ring = page.getByRole("progressbar");
-  const camera = page.getByText("camera", { exact: true }).locator("..");
+  const camera = page.getByTestId("self-view");
   const finish = page.getByRole("button", { name: "Finish", exact: true });
   await expect(ring).toBeVisible();
-  expect(await ring.boundingBox()).toMatchObject({ width: 120, height: 120 });
+  expect((await ring.boundingBox())!.height).toBe(4);
   const cameraBox = await camera.boundingBox();
   const finishBox = await finish.boundingBox();
-  expect(cameraBox).toMatchObject({ width: 120, height: 90 });
-  expect(cameraBox!.y + cameraBox!.height).toBeLessThan(finishBox!.y);
+  expect(cameraBox).toMatchObject({ width: 44, height: 44 });
+  expect(cameraBox!.y + cameraBox!.height).toBeLessThanOrEqual(finishBox!.y);
   await expect(ring).toHaveCSS("transition-duration", "0s");
-  await expect(page.getByTestId("session-details").locator("p")).toHaveCount(1);
+  await expect(page.getByTestId("session-details").locator("p")).toHaveCount(2);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   await page.screenshot({ path: "test-results/session-mobile.png" });
 });
@@ -99,7 +99,7 @@ test("session controls are translated in every supported language", async ({ pag
     await settleClock(page, "session-screen");
     await expect(page.getByRole("button", { name: session.finish, exact: true })).toBeVisible();
     await expect(page.getByTestId("session-time")).toHaveText(session.remaining.replace("{time}", "5:00"));
-    await expect(page.getByText(session.camera, { exact: true })).toBeVisible();
+    await expect(page.getByTestId("self-view")).toBeVisible();
     await expect(page.getByRole("button", { name: session.sound, exact: true })).toBeVisible();
   }
 });

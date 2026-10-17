@@ -8,7 +8,7 @@ applied and database types were regenerated.
 ## Choose and mix styles
 
 Open Study → Choose companions → Virtual partners. Filter by All, Illustrated
-people, Whimsical or Realistic. Mix up to eight companions across styles.
+people, Whimsical or Realistic. Mix companions across styles; the combined people/character grid shows 20 tiles per page.
 Selections persist across refresh and can change during a session without
 changing its start timestamp. Real people in shared rooms remain separate users.
 
@@ -126,8 +126,8 @@ account to post shared chat. Local camera self-view still never enters the netwo
 
 Lin rebuild: install FFmpeg or set `FFMPEG_PATH`, then run `node scripts/prepare-lin-gif.mjs` with no v4 target files present. The local media tool was obtained through imageio-ffmpeg for this task; no application package dependency was added. FFmpeg motion compensation documentation: https://ffmpeg.org/ffmpeg-filters.html#minterpolate.
 
-Expanded cast: exact built-in imagegen prompts and inspected 4x4 sheets are recorded in `docs/realistic-gifs/expanded-cast.json`. Rebuild with `FFMPEG_PATH` configured and `node scripts/prepare-expanded-gifs.mjs`; the script refuses existing immutable targets. New assets use `realistic-09` through `realistic-12` with `study-v1.gif` and `poster-v1.webp`. All five languages include the new names and background subtitles. There are now 23 selectable companions across styles, with the existing eight-at-once cap.
+Expanded cast: exact built-in imagegen prompts and inspected 4x4 sheets are recorded in `docs/realistic-gifs/expanded-cast.json`. Rebuild with `FFMPEG_PATH` configured and `node scripts/prepare-expanded-gifs.mjs`; the script refuses existing immutable targets. New assets use `realistic-09` through `realistic-12` with `study-v1.gif` and `poster-v1.webp`. All five languages include the new names and background subtitles. There are now 23 selectable companions across styles, with twenty tiles per page.
 
 ## Personal-session tile controls
 
-Partner selection and visibility buttons sit in a reserved left-side rail. Each virtual tile has a translated remove button, hidden with the rest of the idle controls. Removing a partner updates the existing session selection, persists on refresh, and preserves its ID/start timestamp. Responsive resizing and pagination are pending clarification of the requested page size and video fit; the existing selection cap is unchanged in this partial update.
+Partner selection and visibility buttons sit in a reserved left-side rail. Each virtual tile has a translated remove button, hidden with the rest of the idle controls. Removing a partner updates the existing session selection, persists on refresh, and preserves its ID/start timestamp. Personal sessions and shared rooms use the same measured, responsive grid, capped at 20 rendered tiles per page. The complete known virtual cast can be selected. Switching pages unmounts hidden media; removing the last tile on a page clamps to the previous page. The timer and elapsed time now live in a compact bottom footer with a horizontal progress bar. The stage uses the remaining screen without vertical scrolling. Shared-room cross buttons hide people from the viewer, with Restore hidden people in Room controls; manager removal remains a separate action.

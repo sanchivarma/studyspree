@@ -25,4 +25,4 @@ for (const src of [...Object.values(roomSounds), ...musicTracks.map(track => tra
   const bytes = await readFile(new URL(src.slice(1), root));
   if (!bytes.subarray(0, 4).equals(Buffer.from([0x1a, 0x45, 0xdf, 0xa3]))) throw new Error(`${src}: invalid WebM`);
 }
-console.log(`Verified four original theme scenes, posters and current audio assets in ${fileURLToPath(root)}.`);
+console.log(`Verified ${themes.length} original theme scenes, posters and current audio assets in ${fileURLToPath(root)}.`);

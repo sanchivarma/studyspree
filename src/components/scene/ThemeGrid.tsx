@@ -10,6 +10,10 @@ import { SceneVideo } from "./SceneVideo";
 import { cn } from "@/lib/utils";
 
 export const themeCopy: Record<ThemeSlug, { name: TranslationKey; description: TranslationKey }> = {
+  "nature-day": { name: "scene.natureDay", description: "scene.natureDayDescription" },
+  "nature-night": { name: "scene.natureNight", description: "scene.natureNightDescription" },
+  "sci-fi": { name: "scene.sciFi", description: "scene.sciFiDescription" },
+  "space": { name: "scene.space", description: "scene.spaceDescription" },
   "rain-desk": { name: "stats.rainDesk", description: "scene.rainDeskDescription" },
   "night-shift": { name: "stats.nightShift", description: "scene.nightShiftDescription" },
   "balcony-dusk": { name: "stats.balconyDusk", description: "scene.balconyDuskDescription" },

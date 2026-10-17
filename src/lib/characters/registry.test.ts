@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { characters, getCharacter } from "./registry";
+import { characterSlugs } from "@/types/characters";
 import { companionSchema, localCompanionSchema } from "./schemas";
 
 describe("virtual companion definitions", () => {
@@ -27,6 +28,9 @@ describe("virtual companion definitions", () => {
       expect(value.descriptionKey).toMatch(/realistic(Reading|Writing)$/);
     }
     expect(companionSchema.safeParse({ mode: "characters", characterSlugs: ["female-01", "moss-fox", "realistic-01", "realistic-09", "realistic-10", "realistic-11", "realistic-12"] }).success).toBe(true);
+  });
+  it("accepts the complete known cast for paginated sessions", () => {
+    expect(companionSchema.safeParse({ mode: "characters", characterSlugs: [...characterSlugs] }).success).toBe(true);
   });
   it("rejects unknown, duplicate, empty and mode-inconsistent selections", () => {
     for (const input of [

@@ -1,4 +1,8 @@
 export const roomSounds = {
+  "nature-day": "/audio/evening-outdoor-v1.webm",
+  "nature-night": "/audio/evening-outdoor-v1.webm",
+  "sci-fi": "/audio/keyboard-room-v1.webm",
+  "space": "/audio/city-night-v1.webm",
   "rain-desk": "/audio/rain-v1.webm",
   "night-shift": "/audio/city-night-v1.webm",
   "balcony-dusk": "/audio/evening-outdoor-v1.webm",

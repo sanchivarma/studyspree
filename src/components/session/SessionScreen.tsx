@@ -14,7 +14,7 @@ import { formatTimer } from "@/lib/session/presentation";
 import type { Session } from "@/types/domain";
 import { cn } from "@/lib/utils";
 
-import { DepletingRing } from "@/components/timer/DepletingRing";
+import { SessionProgress } from "@/components/timer/SessionProgress";
 import { useSessionTitle } from "@/hooks/useSessionTitle";
 import { useLocalCamera } from "@/hooks/useLocalCamera";
 import { SelfView } from "@/components/webcam/SelfView";
@@ -72,32 +72,27 @@ export function SessionScreen({ session }: { session: Session }) {
     className={cn("relative isolate h-dvh w-full overflow-hidden", !isVisible && "cursor-none")}>
     <ThemeScene slug={slug} priority />
     <SessionCompanions session={session} visible={isVisible} onOpenChange={setCompanionOpen} leading={isSelfInStage ? <SelfView camera={camera} visible={isVisible} mirrored={tile.data?.mirrored ?? true} stage onTogglePin={() => setSelfPinned(false)}/> : undefined}/>
-    <div className={cn("absolute top-4 right-4 z-30", fade)}><ShareSessionControl sessionId={session.id} onOpenChange={setShareOpen}/></div>
-
-    <div className="absolute top-10 right-6 left-6 flex flex-col items-center md:top-12">
-      <div className={cn("shrink-0 transition-opacity duration-200 motion-reduce:transition-none", isVisible ? "opacity-100" : "opacity-40")}>
-        <DepletingRing elapsedSeconds={elapsedSeconds} totalSeconds={session.plannedMinutes === null ? null : session.plannedMinutes * 60} size={120} strokeWidth={6} accent="var(--accent)" />
+    <div className={cn("absolute top-2 left-2 z-30", fade)}><ShareSessionControl compact sessionId={session.id} onOpenChange={setShareOpen}/></div>
+    <div data-testid="session-controls" className="absolute right-3 bottom-2 left-[60px] flex h-[68px] items-center gap-3">
+      <div className="min-w-0 flex-1">
+        <div data-testid="session-details" className={fade}>
+          <p data-testid="session-elapsed" className="text-[13px] text-foreground/70 tabular-nums">{t("session.elapsed", { time: formatTimer(elapsedSeconds) })}</p>
+          {remainingSeconds !== null && <p data-testid="session-time" className="text-[11px] text-foreground/50 tabular-nums">{t("session.remaining", { time })}</p>}
+          {remainingSeconds === null && <span data-testid="session-time" className="sr-only">{t("session.elapsed", { time })}</span>}
+          {task && <p className="truncate text-[11px] text-foreground/40">{task}</p>}
+        </div>
+        <div className={cn("mt-1 transition-opacity duration-200 motion-reduce:transition-none", !isVisible && "opacity-40")}><SessionProgress elapsedSeconds={elapsedSeconds} plannedMinutes={session.plannedMinutes}/></div>
+        {error && <p role="alert" className="text-small text-text-muted">{t("session.finishError")}</p>}
       </div>
-      <div data-testid="session-details" className={cn("mt-4 w-full text-center", fade)}>
-        <p data-testid="session-time" className="text-[18px] opacity-60 tabular-nums">{t(remainingSeconds === null ? "session.elapsed" : "session.remaining", { time })}</p>
-        {task && <p className="mx-auto mt-2 max-w-[480px] truncate text-[13px] opacity-40">{task}</p>}
-        {error && <p role="alert" className="mt-3 text-small text-text-muted">{t("session.finishError")}</p>}
-      </div>
-    </div>
-
-    <div data-testid="session-controls" className={cn("absolute right-0 bottom-0 left-0 h-[194px] sm:h-[138px]", fade)}>
       <button ref={finishButton} type="button" aria-keyshortcuts="Escape" onClick={finish} disabled={isFinishing}
-        className="absolute bottom-6 left-1/2 min-h-11 -translate-x-1/2 rounded-xl border border-border px-4 text-body text-foreground/80 hover:bg-background/30 disabled:opacity-60 sm:px-6">
-        {t("session.finish")}
-      </button>
-      <AmbienceControl theme={slug} onOpenChange={setSoundOpen} />
+        className={cn("min-h-11 shrink-0 rounded-xl border border-border px-4 text-body text-foreground/80 hover:bg-background/30 disabled:opacity-60", fade)}>{t("session.finish")}</button>
+    </div>
+    <div className={cn("absolute bottom-0 left-0 h-36 w-[60px]", fade)}>
+      <AmbienceControl theme={slug} onOpenChange={setSoundOpen} className="!bottom-3 !left-2"/>
       <ThemeSheet onOpenChange={setSheetOpen}>
-        <button type="button" aria-label={t("study.switchTheme")} title={t("study.switchTheme")}
-          className="absolute bottom-20 left-4 flex size-11 items-center justify-center rounded-xl text-foreground/60 hover:bg-background/30 sm:left-6">
-          <Shuffle aria-hidden="true" className="size-4" />
-        </button>
+        <button type="button" aria-label={t("study.switchTheme")} title={t("study.switchTheme")} className="absolute bottom-16 left-2 flex size-11 items-center justify-center rounded-xl text-foreground/60 hover:bg-background/30"><Shuffle aria-hidden="true" className="size-4"/></button>
       </ThemeSheet>
     </div>
-    {!isSelfInStage && <SelfView camera={camera} visible={isVisible && (tile.data?.isVisible ?? true)} mirrored={tile.data?.mirrored ?? true} status={tile.data?.status ?? ""} onTogglePin={() => setSelfPinned(true)}/>}
+    {!isSelfInStage && <SelfView compactIdle camera={camera} visible={isVisible && (tile.data?.isVisible ?? true)} mirrored={tile.data?.mirrored ?? true} status={tile.data?.status ?? ""} bottomInset={session.companions.characterSlugs.length > 20 ? 128 : 84} onTogglePin={() => setSelfPinned(true)}/>}
   </section>;
 }

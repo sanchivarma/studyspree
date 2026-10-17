@@ -1,5 +1,13 @@
 {
   "scene": {
+    "natureDay": "Natura za dnia",
+    "natureNight": "Natura nocą",
+    "sciFi": "Obserwatorium sci-fi",
+    "space": "Głęboki kosmos",
+    "natureDayDescription": "Słoneczne leśne wzgórza i spokojna rzeka.",
+    "natureNightDescription": "Blask księżyca, odbicia w rzece i świetliki.",
+    "sciFiDescription": "Turkusowe konsole w spokojnym obserwatorium orbitalnym.",
+    "spaceDescription": "Odległe gwiazdy i planeta z pierścieniami.",
     "title": "Wybierz motyw",
     "description": "Spokojne tło sprzyjające skupieniu.",
     "close": "Zamknij",

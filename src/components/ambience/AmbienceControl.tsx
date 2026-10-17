@@ -6,16 +6,17 @@ import type { CSSProperties } from "react";
 import { useAmbience } from "@/hooks/useAmbience";
 import { useTranslation } from "@/hooks/useTranslation";
 import { musicTracks } from "@/lib/audio/catalog";
+import { cn } from "@/lib/utils";
 import { getTheme } from "@/lib/themes/registry";
 
-export function AmbienceControl({ theme, onOpenChange }: { theme: string; onOpenChange: (open: boolean) => void }) {
+export function AmbienceControl({ theme, onOpenChange, className }: { theme: string; onOpenChange: (open: boolean) => void; className?: string }) {
   const audio = useAmbience(theme);
   const { t } = useTranslation();
   const Icon = audio.isAudible ? Volume2 : VolumeX;
   return <Popover.Root onOpenChange={open => { if (open) audio.unlock(); onOpenChange(open); }}>
     <Popover.Trigger asChild>
       <button type="button" aria-label={t("session.sound")} title={t("session.sound")}
-        className="absolute bottom-6 left-4 flex size-11 items-center justify-center rounded-xl text-foreground/60 hover:bg-background/30 sm:left-6">
+        className={cn("absolute bottom-6 left-4 flex size-11 items-center justify-center rounded-xl text-foreground/60 hover:bg-background/30 sm:left-6", className)}>
         <Icon aria-hidden="true" className="size-5" />
       </button>
     </Popover.Trigger>

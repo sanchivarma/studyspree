@@ -1,5 +1,10 @@
 {
   "characters": {
+    "pages": "Pages des participants",
+    "hidePerson": "Masquer {name} dans ma vue",
+    "restorePeople": "Réafficher les personnes masquées",
+    "tileOptions": "Options de la vignette",
+    "roomOptions": "Commandes de la salle",
     "remove": "Retirer {name}",
     "title": "Compagnons d’étude",
     "description": "Un peu de compagnie, à votre rythme.",
@@ -29,7 +34,7 @@
     "illustrated": "Personnages illustrés",
     "whimsical": "Fantaisie",
     "realistic": "Réaliste",
-    "limit": "Choisissez jusqu’à huit compagnons en mélangeant les styles.",
+    "limit": "Mélangez les styles. Les sessions affichent 20 vignettes par page.",
     "realisticReading": "Généré par IA · GIF de lecture",
     "realisticWriting": "Généré par IA · GIF de prise de notes",
     "southAsian": "Asie du Sud",

@@ -1,5 +1,13 @@
 {
   "scene": {
+    "natureDay": "Nature Day",
+    "natureNight": "Nature Night",
+    "sciFi": "Sci-Fi Observatory",
+    "space": "Deep Space",
+    "natureDayDescription": "Sunlit forest hills and a quiet river.",
+    "natureNightDescription": "Moonlight, river reflections and fireflies.",
+    "sciFiDescription": "Cyan consoles in a calm orbital observatory.",
+    "spaceDescription": "Distant stars and a ringed planet.",
     "title": "Choose your theme",
     "description": "A calm backdrop for your focus.",
     "close": "Close",

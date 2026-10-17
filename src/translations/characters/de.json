@@ -1,5 +1,10 @@
 {
   "characters": {
+    "pages": "Teilnehmerseiten",
+    "hidePerson": "{name} in meiner Ansicht ausblenden",
+    "restorePeople": "Ausgeblendete Personen anzeigen",
+    "tileOptions": "Kacheloptionen",
+    "roomOptions": "Raumsteuerung",
     "remove": "{name} entfernen",
     "title": "Lernbegleitung",
     "description": "Etwas Gesellschaft, in deinem Tempo.",
@@ -29,7 +34,7 @@
     "illustrated": "Illustrierte Personen",
     "whimsical": "Fantasievoll",
     "realistic": "Realistisch",
-    "limit": "Wähle bis zu acht Begleitungen und mische die Stile.",
+    "limit": "Kombiniere alle Stile. Pro Seite werden 20 Kacheln angezeigt.",
     "realisticReading": "KI-generiert · Lese-GIF",
     "realisticWriting": "KI-generiert · Notizen-GIF",
     "southAsian": "Südasiatisch",

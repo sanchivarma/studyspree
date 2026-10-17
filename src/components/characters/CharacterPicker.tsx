@@ -23,7 +23,7 @@ export function CharacterPicker({ selected, onChange }: { selected: CharacterSlu
     <div className="grid grid-cols-2 gap-3" data-testid="character-picker">
       {shown.map((character, index) => <button key={character.slug} type="button" ref={node => { cards.current[index] = node; }}
         tabIndex={focused === index ? 0 : -1} aria-pressed={selected.includes(character.slug)}
-        aria-disabled={!selected.includes(character.slug) && selected.length >= 8}
+        aria-disabled={!selected.includes(character.slug) && selected.length >= characters.length}
         aria-label={`${t(character.nameKey)} — ${t(character.descriptionKey)}`} data-testid={`character-card-${character.slug}`}
         className={cn("min-h-11 rounded-xl border p-2 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent", selected.includes(character.slug) ? "border-accent bg-accent/10" : "border-border bg-surface")}
         onMouseEnter={() => setPreview(character.slug)} onMouseLeave={() => setPreview(null)}
@@ -34,7 +34,7 @@ export function CharacterPicker({ selected, onChange }: { selected: CharacterSlu
           event.preventDefault();
           cards.current[(index + moves[event.key] + shown.length) % shown.length]?.focus();
         }}
-        onClick={() => { if (selected.includes(character.slug)) onChange(selected.filter(slug => slug !== character.slug)); else if (selected.length < 8) onChange([...selected, character.slug]); }}>
+        onClick={() => { if (selected.includes(character.slug)) onChange(selected.filter(slug => slug !== character.slug)); else if (selected.length < characters.length) onChange([...selected, character.slug]); }}>
         <CharacterLoop slug={character.slug} active={desktop && preview === character.slug} />
         <span className="mt-2 block text-small font-semibold">{t(character.nameKey)}</span>
         <span className="block text-[12px] text-text-muted">{t(character.descriptionKey)}</span>

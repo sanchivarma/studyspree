@@ -1,5 +1,10 @@
 {
   "characters": {
+    "pages": "Participant pages",
+    "hidePerson": "Hide {name} from my view",
+    "restorePeople": "Restore hidden people",
+    "tileOptions": "Tile options",
+    "roomOptions": "Room controls",
     "remove": "Remove {name}",
     "title": "Study companions",
     "description": "A little company, at your own pace.",
@@ -29,7 +34,7 @@
     "illustrated": "Illustrated people",
     "whimsical": "Whimsical",
     "realistic": "Realistic",
-    "limit": "Choose up to eight partners, mixing any styles.",
+    "limit": "Mix partners from any style. Sessions show 20 tiles per page.",
     "realisticReading": "AI-generated · reading GIF",
     "realisticWriting": "AI-generated · note-taking GIF",
     "southAsian": "South Asian",

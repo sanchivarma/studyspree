@@ -11,6 +11,7 @@ import { getCharacter } from "@/lib/characters/registry";
 import { soloCompanions } from "@/lib/characters/schemas";
 import { CharacterLoop } from "./CharacterLoop";
 import { CompanionModePicker } from "./CompanionModePicker";
+import { ParticipantGrid, type ParticipantTile } from "@/components/session/ParticipantGrid";
 
 export function SessionCompanions({ session, visible, onOpenChange, leading }: { session: Session; visible: boolean; onOpenChange: (open: boolean) => void; leading?: ReactNode }) {
   const [hidden, setHidden] = useState(false);
@@ -22,16 +23,17 @@ export function SessionCompanions({ session, visible, onOpenChange, leading }: {
     const characterSlugs = companions.characterSlugs.filter(value => value !== slug);
     selection.mutate(characterSlugs.length ? { mode: "characters", characterSlugs } : soloCompanions());
   };
-  return <>
-    {((!hidden && companions.characterSlugs.length > 0) || leading) && <div data-testid="session-companions" className="absolute right-1 left-[60px] top-[200px] bottom-20 grid auto-rows-fr gap-1 overflow-y-auto" style={{ gridTemplateColumns: `repeat(${Math.min(desktop ? 4 : 2, (hidden ? 0 : companions.characterSlugs.length) + (leading ? 1 : 0))}, minmax(0, 1fr))` }}>
-      {leading}
-      {!hidden && companions.characterSlugs.map(slug => <figure key={slug} className="relative min-h-40 min-w-0">
+  const tiles: ParticipantTile[] = [
+    ...(leading ? [{ id: "self", content: leading }] : []),
+    ...(!hidden ? companions.characterSlugs.map(slug => ({ id: slug, content: <figure className="relative h-full min-h-0 min-w-0">
         <CharacterLoop slug={slug} priority className="h-full !aspect-auto !rounded-lg"/>
         <button type="button" disabled={selection.isPending} tabIndex={visible ? 0 : -1} aria-hidden={!visible} onClick={() => remove(slug)} aria-label={t("characters.remove", { name: t(getCharacter(slug)!.nameKey) })}
           className={`absolute top-1 right-1 z-10 flex size-11 items-center justify-center rounded-xl bg-background/75 text-foreground transition-opacity duration-200 focus-visible:outline-2 focus-visible:outline-accent disabled:opacity-50 ${visible ? "" : "pointer-events-none opacity-0"}`}><X aria-hidden="true" className="size-4"/></button>
         <figcaption className="absolute right-1 bottom-1 left-1 truncate rounded bg-background/70 p-1 text-center text-[11px] text-foreground/70">{t(getCharacter(slug)!.nameKey)} · {t("characters.virtualLabel")}</figcaption>
-      </figure>)}
-    </div>}
+      </figure> })) : []),
+  ];
+  return <>
+    {tiles.length > 0 && <ParticipantGrid tiles={tiles} testId="session-companions" controlsVisible={visible} className="absolute top-1 right-1 bottom-[84px] left-[60px]"/>}
     <div data-testid="companion-side-controls" className={visible ? "absolute top-1/2 left-2 z-30 flex -translate-y-1/2 flex-col gap-2" : "hidden"}>
       {companions.characterSlugs.length > 0 && <button type="button" onClick={() => setHidden(value => !value)} aria-label={t(hidden ? "characters.show" : "characters.hide")} className="flex size-11 items-center justify-center rounded-xl bg-background/40">{hidden ? <Eye className="size-4" /> : <EyeOff className="size-4" />}</button>}
       <Sheet onOpenChange={onOpenChange}><SheetTrigger asChild><button type="button" aria-label={t("characters.change")} className="flex size-11 items-center justify-center rounded-xl bg-background/40"><Users className="size-4" /></button></SheetTrigger>

@@ -9,7 +9,7 @@
 "use client";
 
 import { useRef, useState, useSyncExternalStore, type PointerEvent } from "react";
-import { CameraOff, Grip, Pin, PinOff, X } from "lucide-react";
+import { Camera, CameraOff, Grip, Pin, PinOff, X } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import type { useLocalCamera } from "@/hooks/useLocalCamera";
@@ -29,7 +29,7 @@ const positions: Record<WebcamCorner, string> = {
   "bottom-right": "bottom-20 right-4 sm:bottom-6 sm:right-6",
 };
 
-export function SelfView({ camera, visible, mirrored = true, status = "", stage = false, onTogglePin }: { camera: ReturnType<typeof useLocalCamera>; visible: boolean; mirrored?: boolean; status?: string; stage?: boolean; onTogglePin?: () => void }) {
+export function SelfView({ camera, visible, mirrored = true, status = "", stage = false, onTogglePin, className, compactIdle = false, bottomInset }: { camera: ReturnType<typeof useLocalCamera>; visible: boolean; mirrored?: boolean; status?: string; stage?: boolean; onTogglePin?: () => void; className?: string; compactIdle?: boolean; bottomInset?: number }) {
   const { t } = useTranslation();
   const reducedMotion = useReducedMotion();
   const [width, height] = useSyncExternalStore(subscribeResize, viewport, serverViewport).split(":").map(Number);
@@ -39,8 +39,9 @@ export function SelfView({ camera, visible, mirrored = true, status = "", stage 
   const drag = useRef<{ id: number; x: number; y: number } | null>(null);
   const expanded = camera.isReady && (tappedOpen || hovered) && visible;
   const scale = expanded ? Math.max(0.375, Math.min(1, (width - 32) / 320, (height - 304) / 240)) : 0.375;
-  const isLeft = camera.corner.endsWith("left");
-  const isTop = camera.corner.startsWith("top");
+  const compact = compactIdle && !camera.isReady;
+  const isLeft = compact || camera.corner.endsWith("left");
+  const isTop = compact || camera.corner.startsWith("top");
   const finishDrag = (event: PointerEvent<HTMLButtonElement>) => {
     if (drag.current?.id !== event.pointerId) return;
     drag.current = null; setOffset({ x: 0, y: 0 });
@@ -57,8 +58,8 @@ export function SelfView({ camera, visible, mirrored = true, status = "", stage 
     onPointerEnter={event => { if (camera.isReady && event.pointerType === "mouse") setHovered(true); }}
     onPointerMove={event => { if (camera.isReady && event.pointerType === "mouse" && !drag.current) setHovered(true); }}
     onPointerLeave={() => setHovered(false)}
-    className={cn("ph-no-capture absolute z-20 h-[90px] w-[120px] transition-opacity duration-200 motion-reduce:transition-none", positions[camera.corner], visible ? "opacity-100" : "pointer-events-none opacity-0")}
-    style={{ transform: `translate3d(${offset.x}px, ${offset.y}px, 0)` }}>
+    className={cn("ph-no-capture absolute z-20 transition-opacity duration-200 motion-reduce:transition-none", compact ? "top-16 left-2 size-11" : cn("h-[90px] w-[120px]", positions[camera.corner]), visible ? "opacity-100" : "pointer-events-none opacity-0", className)}
+    style={{ transform: `translate3d(${offset.x}px, ${offset.y}px, 0)`, bottom: !compact && camera.corner.startsWith("bottom") ? bottomInset : undefined }}>
     {camera.isReady ? <>
       <button type="button" aria-label={t(expanded ? "webcam.collapse" : "webcam.expand")} aria-expanded={expanded}
         onClick={() => setTappedOpen(value => !value)}
@@ -73,7 +74,7 @@ export function SelfView({ camera, visible, mirrored = true, status = "", stage 
       </button>
     </> : <button type="button" onClick={camera.enable} disabled={camera.isPending} aria-label={t("webcam.enable")}
       className="flex h-full w-full items-center justify-center rounded-xl border border-border bg-surface/30 text-small text-text-muted disabled:opacity-60">
-      <span>{t("session.camera")}</span>
+        {compact ? <Camera aria-hidden="true" className="size-4"/> : <span>{t("session.camera")}</span>}
     </button>}
     <button type="button" aria-label={t("webcam.move")} title={t("webcam.moveHint")}
       onPointerDown={event => {
@@ -91,7 +92,7 @@ export function SelfView({ camera, visible, mirrored = true, status = "", stage 
         const horizontal = event.key === "ArrowLeft" ? "left" : event.key === "ArrowRight" ? "right" : isLeft ? "left" : "right";
         camera.moveTo(`${vertical}-${horizontal}`);
       }}
-      className="absolute top-0 left-0 flex size-11 touch-none items-center justify-center rounded-xl bg-background/70 text-text-muted hover:text-foreground">
+      className={cn("absolute left-0 flex size-11 touch-none items-center justify-center rounded-xl bg-background/70 text-text-muted hover:text-foreground", compact ? "top-11" : "top-0")}>
       <Grip aria-hidden="true" className="size-4" />
     </button>
     {status && <p className="absolute right-0 bottom-0 left-0 truncate rounded-b-xl bg-background/80 px-2 py-1 text-[11px]">{status}</p>}

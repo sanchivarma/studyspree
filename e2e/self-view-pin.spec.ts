@@ -15,7 +15,7 @@ test("local camera can lead the character grid without another permission reques
   await page.getByRole("button", { name: "Enable camera", exact: true }).click();
   await page.getByRole("button", { name: "Pin my video first", exact: true }).click();
   await expect(page.getByTestId("self-view-pinned")).toBeVisible();
-  await expect(page.getByTestId("session-companions").locator(":scope > *").first()).toHaveAttribute("data-testid", "self-view-pinned");
+  await expect(page.getByTestId("session-companions").locator(":scope > *").first()).toHaveAttribute("data-tile-id", "self");
   await expect.poll(() => page.getByTestId("local-camera-video").evaluate(video => (video as HTMLVideoElement).videoWidth)).toBeGreaterThan(0);
   await page.getByRole("button", { name: "Unpin my video", exact: true }).click();
   await expect(page.getByTestId("self-view")).toBeVisible();

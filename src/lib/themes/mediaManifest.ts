@@ -2,11 +2,11 @@ import "server-only";
 import { stat } from "node:fs/promises";
 import { join } from "node:path";
 import { z } from "zod";
-import { themes } from "./registry";
+import { themes, themeSlugs } from "./registry";
 import type { SceneMediaManifest } from "./mediaTypes";
 
 const media = z.object({ poster: z.boolean(), webm: z.boolean(), mp4: z.boolean() });
-const manifestSchema = z.object({ "rain-desk": media, "night-shift": media, "balcony-dusk": media, "dorm-bunk": media });
+const manifestSchema = z.record(z.enum(themeSlugs), media);
 export async function getSceneMediaManifest(): Promise<SceneMediaManifest> {
   // Production assets may live on a CDN rather than the server filesystem.
   // Use the availability snapshot embedded at build time in that environment.

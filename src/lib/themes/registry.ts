@@ -1,4 +1,5 @@
-export type ThemeSlug = "rain-desk" | "night-shift" | "balcony-dusk" | "dorm-bunk";
+export const themeSlugs = ["rain-desk", "night-shift", "balcony-dusk", "dorm-bunk", "nature-day", "nature-night", "sci-fi", "space"] as const;
+export type ThemeSlug = typeof themeSlugs[number];
 
 export type Theme = {
   slug: ThemeSlug;
@@ -56,6 +57,12 @@ export const themes: readonly Theme[] = [
     webm: "/themes/dorm-bunk/scene-v1.webm",
     poster: "/themes/dorm-bunk/poster-v1.jpg",
   },
+  ...([
+    { slug: "nature-day", name: "Nature Day", description: "Sunlight, forest hills and a quiet river.", accentColor: "#a9ce8a", gradient: "linear-gradient(160deg, #89bfc4, #538571 60%, #285443)" },
+    { slug: "nature-night", name: "Nature Night", description: "Moonlit trees, soft river reflections and fireflies.", accentColor: "#a8c9d9", gradient: "radial-gradient(ellipse at 70% 20%, #365b70, transparent 55%), linear-gradient(#08152f, #102c33)" },
+    { slug: "sci-fi", name: "Sci-Fi Observatory", description: "A quiet orbital observatory with cyan console lights.", accentColor: "#73d9d9", gradient: "radial-gradient(ellipse at 60% 40%, #397685, transparent 50%), linear-gradient(#061c2b, #163d4d)" },
+    { slug: "space", name: "Deep Space", description: "Distant stars and a ringed planet above an orbital deck.", accentColor: "#c6a4e5", gradient: "radial-gradient(ellipse at 75% 40%, #8b6e92, transparent 50%), linear-gradient(#100b29, #332247)" },
+  ] as const).map(theme => ({ ...theme, mp4: `/themes/${theme.slug}/scene-v1.mp4`, webm: `/themes/${theme.slug}/scene-v1.webm`, poster: `/themes/${theme.slug}/poster-v1.jpg` })),
 ];
 
 export function getTheme(slug: string): Theme {
