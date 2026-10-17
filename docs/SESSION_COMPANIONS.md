@@ -2,7 +2,7 @@
 
 Email configuration is paused at the user's request. Local Supabase now uses
 API 55321, database 55322, Studio 55323 and the local inbox 55324. Existing history
-was restored from its normal backup; no reset was run. Migrations 0021–0023 are
+was restored from its normal backup; no reset was run. Migrations 0021–0024 are
 applied and database types were regenerated.
 
 ## Choose and mix styles
@@ -14,9 +14,24 @@ changing its start timestamp. Real people in shared rooms remain separate users.
 
 - Eight illustrated adults: Noah, Amir, Leo, Kai, Maya, Zara, Mei and Eva.
 - Three original whimsical partners: Moss the Fox, Pip the Owl and Momo the Cloud.
-- Two realistic fictional adults: Arun and Lin, explicitly labelled **AI-generated ·
-  static preview**. These are selectable static posters; realistic human motion
-  has not been generated and is not claimed as complete.
+- Eight realistic fictional adults, four men and four women: Arun (South Asian),
+  Lin (East Asian), Amina (Black African heritage), Omar (Middle Eastern / North
+  African), Sofia (Latin American), Elias (European), Minh (Southeast Asian), and
+  Samira (mixed heritage). These are character design briefs, not inferred
+  identities or an exhaustive list of ethnicities. Cards translate their background
+  subtitles into all five supported languages.
+- Seven realistic partners have an actual 16-frame, 5.02-second infinitely looping
+  GIF showing reading/page-turning or note-taking. These generated frame sequences
+  can have pose/background drift; they are not continuous photorealistic video.
+  Lin uses a corrected three-column crop and 109 motion-interpolated frames at
+  20fps (5.45 seconds). The v4 GIF fixes sideways jumping caused by the old crop.
+  Natural continuous source video remains a separate quality improvement.
+
+Exact prompts and source sheets: `docs/realistic-gifs/sources.json`, generated using
+built-in imagegen. Reproduce extraction with `node scripts/assemble-realistic-gifs.mjs`
+(only when the target revision does not exist). Assets use immutable `study-v3.gif`
+and matching `poster-v3.webp` URLs (Lin: v4), with a 2 MiB GIF budget. All eight are approximately
+1 MiB each. No application dependency was added.
 
 All eleven illustrated/whimsical partners have actual 150-second recordings in
 muted WebM and MP4. The source renderer spans reading, blinking, posture and
@@ -106,3 +121,5 @@ account to post shared chat. Local camera self-view still never enters the netwo
 - Maintenance returned 401 without credentials and 200 with its configured bearer token.
 - The optional realistic-video importer was syntax-checked; actual transcoding awaits
   ffmpeg and source footage. Realistic motion is not marked complete.
+
+Lin rebuild: install FFmpeg or set `FFMPEG_PATH`, then run `node scripts/prepare-lin-gif.mjs` with no v4 target files present. The local media tool was obtained through imageio-ffmpeg for this task; no application package dependency was added. FFmpeg motion compensation documentation: https://ffmpeg.org/ffmpeg-filters.html#minterpolate.

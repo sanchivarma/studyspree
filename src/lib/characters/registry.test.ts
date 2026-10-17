@@ -12,13 +12,19 @@ describe("virtual companion definitions", () => {
     expect(getCharacter("rain-desk")).toBeNull();
     for (const character of illustrated) expect(character.gif).toBe(`/characters/${character.slug}/study-v1.gif`);
   });
-  it("supports mixed styles, long loops and honestly labelled realistic stills", () => {
+  it("supports mixed styles, long illustrated loops and eight realistic studying GIFs", () => {
     expect(characters.filter(value => value.style === "whimsical")).toHaveLength(3);
     for (const value of characters.filter(value => value.style !== "realistic")) {
       expect(value.loopSeconds).toBe(150); expect(value.webm).toMatch(/study-v2\.webm$/);
     }
-    for (const value of characters.filter(value => value.style === "realistic")) {
-      expect(value.loopSeconds).toBeNull(); expect(value.webm).toBeNull(); expect(value.descriptionKey).toBe("characters.staticPreview");
+    const realistic = characters.filter(value => value.style === "realistic");
+    expect(realistic).toHaveLength(8);
+    expect(new Set(realistic.map(value => value.backgroundKey)).size).toBe(8);
+    expect(realistic.filter(value => value.presentation === "male")).toHaveLength(4);
+    expect(realistic.filter(value => value.presentation === "female")).toHaveLength(4);
+    for (const value of realistic) {
+      expect(value.loopSeconds).toBe(value.slug === "realistic-02" ? 5.45 : 5.02); expect(value.webm).toBeNull(); expect(value.gif).toMatch(/study-v[34]\.gif$/);
+      expect(value.descriptionKey).toMatch(/realistic(Reading|Writing)$/);
     }
     expect(companionSchema.safeParse({ mode: "characters", characterSlugs: ["female-01", "moss-fox", "realistic-01"] }).success).toBe(true);
   });

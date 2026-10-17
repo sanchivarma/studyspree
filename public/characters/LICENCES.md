@@ -59,3 +59,33 @@ Original illustrated/whimsical v2 sequences run for 150 seconds. Sources: script
 | momo-cloud/poster-v1.webp | studyspree-original-momo-cloud-v1 | Original vector animation | CC0-1.0 | 2026-10-17 | yes |
 | realistic-01/poster-v1.webp | studyspree-ai-realistic-01-v1 | Original fictional adult generated with built-in imagegen | AI-generated project asset; see provenance | 2026-10-17 | subject to generation-service terms |
 | realistic-02/poster-v1.webp | studyspree-ai-realistic-02-v1 | Original fictional adult generated with built-in imagegen | AI-generated project asset; see provenance | 2026-10-17 | subject to generation-service terms |
+
+## Realistic studying GIF revision 3
+
+Fictional adults generated with built-in imagegen. Exact prompts and source sheets: `docs/realistic-gifs/sources.json`. Frames assembled using `scripts/assemble-realistic-gifs.mjs`; no real-person footage or third-party characters. These are 5.02-second frame animations, not continuous multi-minute video. Existing immutable v1 posters remain recorded above.
+
+| File | Provenance ID | Source | Licence | Date | Commercial use |
+|---|---|---|---|---|---|
+| realistic-01/study-v3.gif | studyspree-ai-realistic-01-v3 | Original fictional adult generated with built-in imagegen | AI-generated project asset; see provenance | 2026-10-17 | subject to generation-service terms |
+| realistic-01/poster-v3.webp | studyspree-ai-realistic-01-v3 | Original fictional adult generated with built-in imagegen | AI-generated project asset; see provenance | 2026-10-17 | subject to generation-service terms |
+| realistic-02/study-v3.gif | studyspree-ai-realistic-02-v3 | Original fictional adult generated with built-in imagegen | AI-generated project asset; see provenance | 2026-10-17 | subject to generation-service terms |
+| realistic-02/poster-v3.webp | studyspree-ai-realistic-02-v3 | Original fictional adult generated with built-in imagegen | AI-generated project asset; see provenance | 2026-10-17 | subject to generation-service terms |
+| realistic-03/study-v3.gif | studyspree-ai-realistic-03-v3 | Original fictional adult generated with built-in imagegen | AI-generated project asset; see provenance | 2026-10-17 | subject to generation-service terms |
+| realistic-03/poster-v3.webp | studyspree-ai-realistic-03-v3 | Original fictional adult generated with built-in imagegen | AI-generated project asset; see provenance | 2026-10-17 | subject to generation-service terms |
+| realistic-04/study-v3.gif | studyspree-ai-realistic-04-v3 | Original fictional adult generated with built-in imagegen | AI-generated project asset; see provenance | 2026-10-17 | subject to generation-service terms |
+| realistic-04/poster-v3.webp | studyspree-ai-realistic-04-v3 | Original fictional adult generated with built-in imagegen | AI-generated project asset; see provenance | 2026-10-17 | subject to generation-service terms |
+| realistic-05/study-v3.gif | studyspree-ai-realistic-05-v3 | Original fictional adult generated with built-in imagegen | AI-generated project asset; see provenance | 2026-10-17 | subject to generation-service terms |
+| realistic-05/poster-v3.webp | studyspree-ai-realistic-05-v3 | Original fictional adult generated with built-in imagegen | AI-generated project asset; see provenance | 2026-10-17 | subject to generation-service terms |
+| realistic-06/study-v3.gif | studyspree-ai-realistic-06-v3 | Original fictional adult generated with built-in imagegen | AI-generated project asset; see provenance | 2026-10-17 | subject to generation-service terms |
+| realistic-06/poster-v3.webp | studyspree-ai-realistic-06-v3 | Original fictional adult generated with built-in imagegen | AI-generated project asset; see provenance | 2026-10-17 | subject to generation-service terms |
+| realistic-07/study-v3.gif | studyspree-ai-realistic-07-v3 | Original fictional adult generated with built-in imagegen | AI-generated project asset; see provenance | 2026-10-17 | subject to generation-service terms |
+| realistic-07/poster-v3.webp | studyspree-ai-realistic-07-v3 | Original fictional adult generated with built-in imagegen | AI-generated project asset; see provenance | 2026-10-17 | subject to generation-service terms |
+| realistic-08/study-v3.gif | studyspree-ai-realistic-08-v3 | Original fictional adult generated with built-in imagegen | AI-generated project asset; see provenance | 2026-10-17 | subject to generation-service terms |
+| realistic-08/poster-v3.webp | studyspree-ai-realistic-08-v3 | Original fictional adult generated with built-in imagegen | AI-generated project asset; see provenance | 2026-10-17 | subject to generation-service terms |
+
+Lin revision 4 corrects a three-column source crop and uses local FFmpeg motion compensation, 109 frames at 20fps (5.45 seconds). Previous v3 is superseded and unused. Exact reproducible pipeline: `scripts/prepare-lin-gif.mjs`; interpolation reference: https://ffmpeg.org/ffmpeg-filters.html#minterpolate. No external generation service or upload is involved in this processing.
+
+| File | Provenance ID | Source | Licence | Date | Commercial use |
+|---|---|---|---|---|---|
+| realistic-02/study-v4.gif | studyspree-ai-realistic-02-v4 | Corrected generated source sheet; local motion interpolation | AI-generated project asset; see provenance | 2026-10-17 | subject to generation-service terms |
+| realistic-02/poster-v4.webp | studyspree-ai-realistic-02-v4 | Corrected generated source sheet | AI-generated project asset; see provenance | 2026-10-17 | subject to generation-service terms |

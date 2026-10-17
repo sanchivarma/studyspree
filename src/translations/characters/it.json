@@ -29,11 +29,26 @@
     "whimsical": "Fantasia",
     "realistic": "Realistico",
     "limit": "Scegli fino a otto compagni mescolando gli stili.",
-    "staticPreview": "Generato con IA · anteprima statica",
+    "realisticReading": "Generato con IA · GIF di lettura",
+    "realisticWriting": "Generato con IA · GIF di appunti",
+    "southAsian": "Asia meridionale",
+    "eastAsian": "Asia orientale",
+    "blackAfrican": "Origini africane",
+    "mena": "Medio Oriente / Nord Africa",
+    "latinAmerican": "America Latina",
+    "european": "Europa",
+    "southeastAsian": "Sud-est asiatico",
+    "mixedHeritage": "Origini miste",
     "moss-fox": "Moss la volpe",
     "pip-owl": "Pip il gufo",
     "momo-cloud": "Momo la nuvola",
     "realistic-01": "Arun",
-    "realistic-02": "Lin"
+    "realistic-02": "Lin",
+    "realistic-03": "Amina",
+    "realistic-04": "Omar",
+    "realistic-05": "Sofia",
+    "realistic-06": "Elias",
+    "realistic-07": "Minh",
+    "realistic-08": "Samira"
   }
 }

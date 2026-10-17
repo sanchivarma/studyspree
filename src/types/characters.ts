@@ -1,5 +1,6 @@
 export const humanCharacterSlugs = ["male-01", "male-02", "male-03", "male-04", "female-01", "female-02", "female-03", "female-04"] as const;
-export const characterSlugs = [...humanCharacterSlugs, "moss-fox", "pip-owl", "momo-cloud", "realistic-01", "realistic-02"] as const;
+export const realisticCharacterSlugs = ["realistic-01", "realistic-02", "realistic-03", "realistic-04", "realistic-05", "realistic-06", "realistic-07", "realistic-08"] as const;
+export const characterSlugs = [...humanCharacterSlugs, "moss-fox", "pip-owl", "momo-cloud", ...realisticCharacterSlugs] as const;
 export type CharacterSlug = typeof characterSlugs[number];
 export type CompanionMode = "solo" | "characters" | "people" | "mixed";
 export type CompanionPreferences = { mode: CompanionMode; characterSlugs: CharacterSlug[] };
@@ -9,6 +10,7 @@ export type CharacterDefinition = {
   style: "illustrated" | "whimsical" | "realistic";
   nameKey: import("@/translations").TranslationKey;
   descriptionKey: import("@/translations").TranslationKey;
+  backgroundKey?: import("@/translations").TranslationKey;
   activity: "reading" | "writing" | "studying";
   gif: string | null;
   loopSeconds: number | null;

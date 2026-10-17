@@ -1,0 +1,75 @@
+[
+  {
+    "slug": "realistic-01",
+    "name": "Arun",
+    "background": "South Asian",
+    "sheet": "realistic-01-sheet.png",
+    "tool": "built-in imagegen",
+    "prompt": "Create an animation sprite sheet, photorealistic photographic frames, using the attached fictional man's photo as the EXACT identity, clothing, lighting, background and camera reference. Output one landscape 4:3 image with EXACTLY 4 columns and 4 rows, 16 perfectly equal rectangular cells, each cell 4:3. No gutters, no gaps, no cell borders, no labels or numbers. Every cell must show the SAME full composition at the SAME scale with the SAME absolutely locked camera and background, entire man's head and hands and open book visible. No crop changes, no zoom, no light changes. This is successive frames of a quiet studying loop. Order is left to right then top to bottom. Frame 1 reading with eyes down and right hand on book edge; 2-3 subtle eye blink and tiny head movement; 4-6 right hand slowly lifts the corner of one page; 7-9 slowly turn one page halfway across book; 10-12 lay page flat; 13-15 return hand to book edge and continue reading; frame16 matches frame1 pose and composition for a seamless loop. Natural anatomy, exactly two hands, coherent identity and clothes in all16 cells. Small realistic movements, not dramatic gestures, no talking, no looking into camera. Photorealistic film frames, NOT cartoon. Preserve the bookshelf/window/table in identical positions across all frames. Do not add any inset reference photo or title."
+  },
+  {
+    "slug": "realistic-02",
+    "name": "Lin",
+    "background": "East Asian",
+    "sheet": "realistic-02-sheet.png",
+    "tool": "built-in imagegen",
+    "prompt": "Create an animation sprite sheet, photorealistic photographic frames, using the attached fictional woman's photo as the EXACT identity, clothing, lighting, background and camera reference. Output one landscape 4:3 image with EXACTLY 4 columns and 4 rows, 16 perfectly equal rectangular cells, each cell 4:3. No gutters, no gaps, no cell borders, no labels or numbers. Every cell must show the SAME full composition at the SAME scale with the SAME absolutely locked camera and background, entire woman's head and hands and open book visible. No crop changes, no zoom, no light changes. This is successive frames of a quiet studying loop. Order is left to right then top to bottom. Frame 1 reading with eyes down and right hand holding a pen by her notebook; 2-3 subtle eye blink and tiny head movement; 4-6 writing hand slowly writes a small line of notes; 7-9 continue writing notes and blink; 10-12 pause writing with pen resting by notes; 13-15 settle hand back by notebook and continue reading; frame16 matches frame1 pose and composition for a seamless loop. Natural anatomy, exactly two hands, coherent identity and clothes in all16 cells. Small realistic movements, not dramatic gestures, no talking, no looking into camera. Photorealistic film frames, NOT cartoon. Preserve the bookshelf/window/table in identical positions across all frames. Do not add any inset reference photo or title.",
+    "observedLayout": {
+      "columns": 3,
+      "rows": 4,
+      "activeWidth": 1356,
+      "activeHeight": 1084
+    },
+    "outputVersion": "v4",
+    "processing": "Corrected 12-frame crop; FFmpeg motion compensation; 109 GIF frames at 20fps; prepare-lin-gif.mjs"
+  },
+  {
+    "slug": "realistic-03",
+    "name": "Amina",
+    "background": "Black African",
+    "sheet": "realistic-03-sheet.png",
+    "tool": "built-in imagegen",
+    "prompt": "Generate a completely fictional adult Black African woman named Amina, around thirty, dark brown skin, natural coily hair tied loosely back, muted rust cardigan, quietly reading a textbook in a warm library. Create an animation sprite sheet, photorealistic photographic frames, Keep this one fictional wowoman perfectly consistent in all frames. Output one landscape 4:3 image with EXACTLY 4 columns and 4 rows, 16 perfectly equal rectangular cells, each cell 4:3. No gutters, no gaps, no cell borders, no labels or numbers. Every cell must show the SAME full composition at the SAME scale with the SAME absolutely locked camera and background, entire woman's head and hands and open book visible. No crop changes, no zoom, no light changes. This is successive frames of a quiet studying loop. Order is left to right then top to bottom. Frame 1 reading with eyes down and right hand on book edge; 2-3 subtle eye blink and tiny head movement; 4-6 right hand slowly lifts the corner of one page; 7-9 slowly turn one page halfway across book; 10-12 lay page flat; 13-15 return hand to book edge and continue reading; frame16 matches frame1 pose and composition for a seamless loop. Natural anatomy, exactly two hands, coherent identity and clothes in all16 cells. Small realistic movements, not dramatic gestures, no talking, no looking into camera. Photorealistic film frames, NOT cartoon. Preserve the bookshelf/window/table in identical positions across all frames. Do not add any inset reference photo or title."
+  },
+  {
+    "slug": "realistic-04",
+    "name": "Omar",
+    "background": "Middle Eastern / North African",
+    "sheet": "realistic-04-sheet.png",
+    "activeHeight": 972,
+    "tool": "built-in imagegen",
+    "prompt": "Generate a completely fictional adult Middle Eastern/North African man named Omar, around thirty, medium olive skin, short dark hair and neat stubble, muted beige knit shirt, quietly reading a textbook in a warm library. Create an animation sprite sheet, photorealistic photographic frames, Keep this one fictional man perfectly consistent in all frames. Output one landscape 4:3 image with EXACTLY 4 columns and 4 rows, 16 perfectly equal rectangular cells, each cell 4:3. No gutters, no gaps, no cell borders, no labels or numbers. Every cell must show the SAME full composition at the SAME scale with the SAME absolutely locked camera and background, entire man's head and hands and open book visible. No crop changes, no zoom, no light changes. This is successive frames of a quiet studying loop. Order is left to right then top to bottom. Frame 1 reading with eyes down and right hand on book edge; 2-3 subtle eye blink and tiny head movement; 4-6 right hand slowly lifts the corner of one page; 7-9 slowly turn one page halfway across book; 10-12 lay page flat; 13-15 return hand to book edge and continue reading; frame16 matches frame1 pose and composition for a seamless loop. Natural anatomy, exactly two hands, coherent identity and clothes in all16 cells. Small realistic movements, not dramatic gestures, no talking, no looking into camera. Photorealistic film frames, NOT cartoon. Preserve the bookshelf/window/table in identical positions across all frames. Do not add any inset reference photo or title."
+  },
+  {
+    "slug": "realistic-05",
+    "name": "Sofia",
+    "background": "Latin American",
+    "sheet": "realistic-05-sheet.png",
+    "tool": "built-in imagegen",
+    "prompt": "Create a completely fictional adult Latin American woman around thirty, warm tan skin, wavy dark brown shoulder-length hair, muted burgundy sweater, named Sofia, quietly reading an open textbook at a wooden table in a warm quiet library. Create an animation sprite sheet, photorealistic photographic frames, Keep this one fictional adult's face, clothes, lighting and entire library background identical across every cell. Output one landscape 4:3 image with EXACTLY 4 columns and 4 rows, 16 perfectly equal rectangular cells, each cell 4:3. No gutters, no gaps, no cell borders, no labels or numbers. Every cell must show the SAME full composition at the SAME scale with the SAME absolutely locked camera and background, entire person's head and hands and open book visible. No crop changes, no zoom, no light changes. This is successive frames of a quiet studying loop. Order is left to right then top to bottom. Frame 1 reading with eyes down and right hand on book edge; 2-3 subtle eye blink and tiny head movement; 4-6 right hand slowly lifts the corner of one page; 7-9 slowly turn one page halfway across book; 10-12 lay page flat; 13-15 return hand to book edge and continue reading; frame16 matches frame1 pose and composition for a seamless loop. Natural anatomy, exactly two hands, coherent identity and clothes in all16 cells. Small realistic movements, not dramatic gestures, no talking, no looking into camera. Photorealistic film frames, NOT cartoon. Preserve the bookshelf/window/table in identical positions across all frames. Do not add any inset reference photo or title.\nCritical exact layout: the image itself must consist of ONLY 16 cells in FOUR ROWS and FOUR COLUMNS. Fill the whole sheet, no extra bottom strip, no fifth row, no empty space. Every frame must be equal width and height."
+  },
+  {
+    "slug": "realistic-06",
+    "name": "Elias",
+    "background": "European",
+    "sheet": "realistic-06-sheet.png",
+    "tool": "built-in imagegen",
+    "prompt": "Create a completely fictional adult European man around thirty, fair skin, short sandy brown hair, muted forest-green sweater, named Elias, quietly reading an open textbook at a wooden table in a warm quiet library. Create an animation sprite sheet, photorealistic photographic frames, Keep this one fictional adult's face, clothes, lighting and entire library background identical across every cell. Output one landscape 4:3 image with EXACTLY 4 columns and 4 rows, 16 perfectly equal rectangular cells, each cell 4:3. No gutters, no gaps, no cell borders, no labels or numbers. Every cell must show the SAME full composition at the SAME scale with the SAME absolutely locked camera and background, entire person's head and hands and open book visible. No crop changes, no zoom, no light changes. This is successive frames of a quiet studying loop. Order is left to right then top to bottom. Frame 1 reading with eyes down and right hand on book edge; 2-3 subtle eye blink and tiny head movement; 4-6 right hand slowly lifts the corner of one page; 7-9 slowly turn one page halfway across book; 10-12 lay page flat; 13-15 return hand to book edge and continue reading; frame16 matches frame1 pose and composition for a seamless loop. Natural anatomy, exactly two hands, coherent identity and clothes in all16 cells. Small realistic movements, not dramatic gestures, no talking, no looking into camera. Photorealistic film frames, NOT cartoon. Preserve the bookshelf/window/table in identical positions across all frames. Do not add any inset reference photo or title.\nCritical exact layout: the image itself must consist of ONLY 16 cells in FOUR ROWS and FOUR COLUMNS. Fill the whole sheet, no extra bottom strip, no fifth row, no empty space. Every frame must be equal width and height."
+  },
+  {
+    "slug": "realistic-07",
+    "name": "Minh",
+    "background": "Southeast Asian",
+    "sheet": "realistic-07-sheet.png",
+    "tool": "built-in imagegen",
+    "prompt": "Create a completely fictional adult Southeast Asian man around thirty, medium tan skin, short straight dark hair, muted slate-blue shirt, named Minh, quietly reading an open textbook at a wooden table in a warm quiet library. Create an animation sprite sheet, photorealistic photographic frames, Keep this one fictional adult's face, clothes, lighting and entire library background identical across every cell. Output one landscape 4:3 image with EXACTLY 4 columns and 4 rows, 16 perfectly equal rectangular cells, each cell 4:3. No gutters, no gaps, no cell borders, no labels or numbers. Every cell must show the SAME full composition at the SAME scale with the SAME absolutely locked camera and background, entire person's head and hands and open book visible. No crop changes, no zoom, no light changes. This is successive frames of a quiet studying loop. Order is left to right then top to bottom. Frame 1 reading with eyes down and right hand on book edge; 2-3 subtle eye blink and tiny head movement; 4-6 right hand slowly lifts the corner of one page; 7-9 slowly turn one page halfway across book; 10-12 lay page flat; 13-15 return hand to book edge and continue reading; frame16 matches frame1 pose and composition for a seamless loop. Natural anatomy, exactly two hands, coherent identity and clothes in all16 cells. Small realistic movements, not dramatic gestures, no talking, no looking into camera. Photorealistic film frames, NOT cartoon. Preserve the bookshelf/window/table in identical positions across all frames. Do not add any inset reference photo or title.\nCritical exact layout: the image itself must consist of ONLY 16 cells in FOUR ROWS and FOUR COLUMNS. Fill the whole sheet, no extra bottom strip, no fifth row, no empty space. Every frame must be equal width and height."
+  },
+  {
+    "slug": "realistic-08",
+    "name": "Samira",
+    "background": "Mixed heritage",
+    "sheet": "realistic-08-sheet.png",
+    "tool": "built-in imagegen",
+    "prompt": "Create a completely fictional adult woman of mixed Black and European heritage around thirty, medium brown skin, dark curly shoulder-length hair, muted ochre cardigan, named Samira, quietly reading an open textbook at a wooden table in a warm quiet library. Create an animation sprite sheet, photorealistic photographic frames, Keep this one fictional adult's face, clothes, lighting and entire library background identical across every cell. Output one landscape 4:3 image with EXACTLY 4 columns and 4 rows, 16 perfectly equal rectangular cells, each cell 4:3. No gutters, no gaps, no cell borders, no labels or numbers. Every cell must show the SAME full composition at the SAME scale with the SAME absolutely locked camera and background, entire person's head and hands and open book visible. No crop changes, no zoom, no light changes. This is successive frames of a quiet studying loop. Order is left to right then top to bottom. Frame 1 reading with eyes down and right hand on book edge; 2-3 subtle eye blink and tiny head movement; 4-6 right hand slowly lifts the corner of one page; 7-9 slowly turn one page halfway across book; 10-12 lay page flat; 13-15 return hand to book edge and continue reading; frame16 matches frame1 pose and composition for a seamless loop. Natural anatomy, exactly two hands, coherent identity and clothes in all16 cells. Small realistic movements, not dramatic gestures, no talking, no looking into camera. Photorealistic film frames, NOT cartoon. Preserve the bookshelf/window/table in identical positions across all frames. Do not add any inset reference photo or title.\nCritical exact layout: the image itself must consist of ONLY 16 cells in FOUR ROWS and FOUR COLUMNS. Fill the whole sheet, no extra bottom strip, no fifth row, no empty space. Every frame must be equal width and height."
+  }
+]

@@ -29,11 +29,26 @@
     "whimsical": "Fantasievoll",
     "realistic": "Realistisch",
     "limit": "Wähle bis zu acht Begleitungen und mische die Stile.",
-    "staticPreview": "KI-generiert · statische Vorschau",
+    "realisticReading": "KI-generiert · Lese-GIF",
+    "realisticWriting": "KI-generiert · Notizen-GIF",
+    "southAsian": "Südasiatisch",
+    "eastAsian": "Ostasiatisch",
+    "blackAfrican": "Schwarzafrikanische Herkunft",
+    "mena": "Nahöstlich / Nordafrikanisch",
+    "latinAmerican": "Lateinamerikanisch",
+    "european": "Europäisch",
+    "southeastAsian": "Südostasiatisch",
+    "mixedHeritage": "Gemischte Herkunft",
     "moss-fox": "Moss der Fuchs",
     "pip-owl": "Pip die Eule",
     "momo-cloud": "Momo die Wolke",
     "realistic-01": "Arun",
-    "realistic-02": "Lin"
+    "realistic-02": "Lin",
+    "realistic-03": "Amina",
+    "realistic-04": "Omar",
+    "realistic-05": "Sofia",
+    "realistic-06": "Elias",
+    "realistic-07": "Minh",
+    "realistic-08": "Samira"
   }
 }

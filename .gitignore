@@ -6,6 +6,7 @@
 /coverage/
 /test-results/
 /playwright-report/
+/.tmp/
 *.tsbuildinfo
 next-env.d.ts
 .env*

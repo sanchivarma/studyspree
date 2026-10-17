@@ -29,11 +29,26 @@
     "whimsical": "Whimsical",
     "realistic": "Realistic",
     "limit": "Choose up to eight partners, mixing any styles.",
-    "staticPreview": "AI-generated · static preview",
+    "realisticReading": "AI-generated · reading GIF",
+    "realisticWriting": "AI-generated · note-taking GIF",
+    "southAsian": "South Asian",
+    "eastAsian": "East Asian",
+    "blackAfrican": "Black African heritage",
+    "mena": "Middle Eastern / North African",
+    "latinAmerican": "Latin American",
+    "european": "European",
+    "southeastAsian": "Southeast Asian",
+    "mixedHeritage": "Mixed heritage",
     "moss-fox": "Moss the Fox",
     "pip-owl": "Pip the Owl",
     "momo-cloud": "Momo the Cloud",
     "realistic-01": "Arun",
-    "realistic-02": "Lin"
+    "realistic-02": "Lin",
+    "realistic-03": "Amina",
+    "realistic-04": "Omar",
+    "realistic-05": "Sofia",
+    "realistic-06": "Elias",
+    "realistic-07": "Minh",
+    "realistic-08": "Samira"
   }
 }

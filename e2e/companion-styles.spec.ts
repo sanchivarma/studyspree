@@ -2,14 +2,14 @@ import { expect, test } from "@playwright/test";
 import { signIn } from "./sessionFixtures";
 import { characters } from "../src/lib/characters/registry";
 
-test("mixing all styles persists and realistic previews are honestly static", async ({ page }) => {
+test("mixing all styles persists and realistic GIFs respect reduced motion", async ({ page }) => {
   await signIn(page); await page.goto("/study");
   await page.getByRole("button", { name: "Choose companions", exact: true }).click();
   await page.getByRole("button", { name: "Virtual partners", exact: true }).click();
   await page.getByRole("button", { name: "Whimsical", exact: true }).click();
   await page.getByTestId("character-card-moss-fox").click();
   await page.getByRole("button", { name: "Realistic", exact: true }).click();
-  await expect(page.getByText("AI-generated · static preview").first()).toBeVisible();
+  await expect(page.getByText(/AI-generated.*reading GIF/).first()).toBeVisible();
   await page.getByTestId("character-card-realistic-01").click();
   await page.getByRole("button", { name: "Close", exact: true }).click();
   await page.getByRole("button", { name: "Start", exact: true }).click();
@@ -25,7 +25,7 @@ test("mixing all styles persists and realistic previews are honestly static", as
 test("all eleven long companion recordings decode as 2–3-minute videos with visible activity", async ({ page }) => {
   test.setTimeout(120000);
   await page.goto("/login");
-  for (const character of characters.filter(value => value.loopSeconds !== null)) for (const src of [character.webm!, character.mp4!]) {
+  for (const character of characters.filter(value => value.webm && value.mp4)) for (const src of [character.webm!, character.mp4!]) {
     const result = await page.evaluate(async src => {
       const movie = document.createElement("video"); movie.muted = true; movie.preload = "auto";
       const ready = new Promise<void>((resolve, reject) => { movie.onloadeddata = () => resolve(); movie.onerror = () => reject(new Error(`Cannot decode ${src}`)); }); movie.src = src; await ready;

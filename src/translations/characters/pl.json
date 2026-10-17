@@ -29,11 +29,26 @@
     "whimsical": "Bajkowe",
     "realistic": "Realistyczne",
     "limit": "Wybierz do ośmiu partnerów, łącząc dowolne style.",
-    "staticPreview": "Wygenerowane przez AI · statyczny podgląd",
+    "realisticReading": "Wygenerowane przez AI · GIF z czytaniem",
+    "realisticWriting": "Wygenerowane przez AI · GIF z notowaniem",
+    "southAsian": "Azja Południowa",
+    "eastAsian": "Azja Wschodnia",
+    "blackAfrican": "Afrykańskie pochodzenie",
+    "mena": "Bliski Wschód / Afryka Północna",
+    "latinAmerican": "Ameryka Łacińska",
+    "european": "Europa",
+    "southeastAsian": "Azja Południowo-Wschodnia",
+    "mixedHeritage": "Mieszane pochodzenie",
     "moss-fox": "Lis Moss",
     "pip-owl": "Sowa Pip",
     "momo-cloud": "Chmurka Momo",
     "realistic-01": "Arun",
-    "realistic-02": "Lin"
+    "realistic-02": "Lin",
+    "realistic-03": "Amina",
+    "realistic-04": "Omar",
+    "realistic-05": "Sofia",
+    "realistic-06": "Elias",
+    "realistic-07": "Minh",
+    "realistic-08": "Samira"
   }
 }

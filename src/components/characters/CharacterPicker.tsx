@@ -38,6 +38,7 @@ export function CharacterPicker({ selected, onChange }: { selected: CharacterSlu
         <CharacterLoop slug={character.slug} active={desktop && preview === character.slug} />
         <span className="mt-2 block text-small font-semibold">{t(character.nameKey)}</span>
         <span className="block text-[12px] text-text-muted">{t(character.descriptionKey)}</span>
+        {character.backgroundKey && <span className="block text-[12px] text-text-muted">{t(character.backgroundKey)}</span>}
       </button>)}
     </div>
   </fieldset>;
