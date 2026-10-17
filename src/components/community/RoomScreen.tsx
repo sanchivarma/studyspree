@@ -146,6 +146,6 @@ export function RoomScreen({ id }: {
         {selector}
       </>}
       {(mutation.isError || join.isError || selection.isError) && <p role="alert">{t("community.unavailable")}</p>}
-      {joined && chatOpen && <RoomChat roomId={id} onClose={() => { setChatOpen(false); chatTrigger.current?.focus(); }}/>}
+      {joined && chatOpen && <RoomChat roomId={id} onClose={() => setChatOpen(false)} onRestoreFocus={() => chatTrigger.current?.focus()}/>}
     </section>;
 }

@@ -1,5 +1,8 @@
 {
   "room": {
+    "previewChat": "Les sessions d’aperçu utilisent des compagnons virtuels. La discussion entre personnes est disponible dans les salles partagées.",
+    "sharedChat": "Ouvrez une salle partagée pour discuter avec les personnes de votre session.",
+    "openSharedChat": "Ouvrir une session partagée",
     "title": "Salon d’étude",
     "chat": "Discussion de la session",
     "chatMessages": "Messages de la salle",

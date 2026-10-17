@@ -13,7 +13,7 @@ import { CharacterLoop } from "./CharacterLoop";
 import { CompanionModePicker } from "./CompanionModePicker";
 import { ParticipantGrid, type ParticipantTile } from "@/components/session/ParticipantGrid";
 
-export function SessionCompanions({ session, visible, onOpenChange, leading }: { session: Session; visible: boolean; onOpenChange: (open: boolean) => void; leading?: ReactNode }) {
+export function SessionCompanions({ session, visible, onOpenChange, leading, sideControls }: { session: Session; visible: boolean; onOpenChange: (open: boolean) => void; leading?: ReactNode; sideControls?: ReactNode }) {
   const [hidden, setHidden] = useState(false);
   const desktop = useMediaQuery("(min-width: 768px)");
   const { t } = useTranslation();
@@ -34,7 +34,7 @@ export function SessionCompanions({ session, visible, onOpenChange, leading }: {
   ];
   return <>
     {tiles.length > 0 && <ParticipantGrid tiles={tiles} testId="session-companions" controlsVisible={visible} className="absolute top-1 right-1 bottom-[84px] left-[60px]"/>}
-    <div data-testid="companion-side-controls" className={visible ? "absolute top-1/2 left-2 z-30 flex -translate-y-1/2 flex-col gap-2" : "hidden"}>
+    <div data-testid="companion-side-controls" className={visible ? "absolute top-[156px] bottom-[124px] left-2 z-30 flex w-11 flex-col gap-2 overflow-y-auto [scrollbar-width:none] [&>button]:shrink-0" : "hidden"}>
       {companions.characterSlugs.length > 0 && <button type="button" onClick={() => setHidden(value => !value)} aria-label={t(hidden ? "characters.show" : "characters.hide")} className="flex size-11 items-center justify-center rounded-xl bg-background/40">{hidden ? <Eye className="size-4" /> : <EyeOff className="size-4" />}</button>}
       <Sheet onOpenChange={onOpenChange}><SheetTrigger asChild><button type="button" aria-label={t("characters.change")} className="flex size-11 items-center justify-center rounded-xl bg-background/40"><Users className="size-4" /></button></SheetTrigger>
         <SheetContent side={desktop ? "right" : "bottom"} showCloseButton={false} className="max-h-[90dvh] overflow-y-auto bg-background p-5">
@@ -44,6 +44,7 @@ export function SessionCompanions({ session, visible, onOpenChange, leading }: {
           {selection.error && <p role="alert" className="mt-3 text-small">{t("characters.saveError")}</p>}
         </SheetContent>
       </Sheet>
+      {sideControls}
     </div>
   </>;
 }

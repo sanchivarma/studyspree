@@ -9,11 +9,11 @@ test("the new themes persist and switching during a session preserves its timer"
     await page.getByTestId("session-screen").dispatchEvent("touchstart");
     await page.getByRole("button", { name: "Switch theme", exact: true }).click();
     await page.getByTestId(`theme-card-${slug}`).click();
-    await expect(page.getByTestId("theme-scene")).toHaveAttribute("data-theme", slug);
+    await expect(page.getByTestId("theme-scene").getByTestId("scene-video").last()).toHaveAttribute("data-theme", slug);
     await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("ss_profile")!).selectedTheme)).toBe(slug);
   }
   await page.reload();
-  await expect(page.getByTestId("theme-scene")).toHaveAttribute("data-theme", "space");
+  await expect(page.getByTestId("theme-scene").getByTestId("scene-video").last()).toHaveAttribute("data-theme", "space");
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem("ss_sessions")!)[0].startedAt)).toBe(started);
 });
 

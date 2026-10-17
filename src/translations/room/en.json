@@ -1,5 +1,8 @@
 {
   "room": {
+    "previewChat": "Preview sessions use virtual partners. Chat with people is available in shared rooms.",
+    "sharedChat": "Open a shared room to chat with the people in your session.",
+    "openSharedChat": "Open a shared session",
     "title": "Study room",
     "chat": "Session chat",
     "chatMessages": "Room messages",

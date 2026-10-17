@@ -131,3 +131,11 @@ Expanded cast: exact built-in imagegen prompts and inspected 4x4 sheets are reco
 ## Personal-session tile controls
 
 Partner selection and visibility buttons sit in a reserved left-side rail. Each virtual tile has a translated remove button, hidden with the rest of the idle controls. Removing a partner updates the existing session selection, persists on refresh, and preserves its ID/start timestamp. Personal sessions and shared rooms use the same measured, responsive grid, capped at 20 rendered tiles per page. The complete known virtual cast can be selected. Switching pages unmounts hidden media; removing the last tile on a page clamps to the previous page. The timer and elapsed time now live in a compact bottom footer with a horizontal progress bar. The stage uses the remaining screen without vertical scrolling. Shared-room cross buttons hide people from the viewer, with Restore hidden people in Room controls; manager removal remains a separate action.
+
+## Session chat drawer
+
+The chat icon sits in the left session/room controls. It opens a modal drawer on the right with the existing membership-protected room messages, introduction text, goal announcements and Send form. Escape closes chat and restores focus without finishing the timer. Personal sessions use their active shared-room chat when available; otherwise a real account can open a shared session. The local preview explains its virtual-partner boundary instead of pretending to send messages. No new backend or transport was added.
+
+## Extra themes
+
+Nature Day, Nature Night, Sci-Fi Observatory and Deep Space are original illustrated loops, with 1280x720 WebM/MP4 and JPEG posters. They use the existing theme selector, persistence, reduced-motion poster mode and media fallbacks. Source: `scripts/generate-extra-themes.mjs`. All files are versioned, below 8 MB, and recorded in `public/themes/LICENCES.md`. Existing original room sounds are mapped to the new environments. Migration 0027 expands valid account/session choices without changing accounting or history.

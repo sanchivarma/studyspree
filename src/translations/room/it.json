@@ -1,5 +1,8 @@
 {
   "room": {
+    "previewChat": "Le sessioni di anteprima usano compagni virtuali. La chat tra persone è disponibile nelle stanze condivise.",
+    "sharedChat": "Apri una stanza condivisa per parlare con le persone della sessione.",
+    "openSharedChat": "Apri una sessione condivisa",
     "title": "Stanza di studio",
     "chat": "Chat della sessione",
     "chatMessages": "Messaggi della stanza",

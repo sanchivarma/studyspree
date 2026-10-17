@@ -1,5 +1,8 @@
 {
   "room": {
+    "previewChat": "Vorschausitzungen verwenden virtuelle Begleitungen. Chats mit Personen sind in gemeinsamen Räumen verfügbar.",
+    "sharedChat": "Öffne einen gemeinsamen Raum, um mit den Personen deiner Sitzung zu chatten.",
+    "openSharedChat": "Gemeinsame Sitzung öffnen",
     "title": "Lernraum",
     "chat": "Sitzungschat",
     "chatMessages": "Raumnachrichten",

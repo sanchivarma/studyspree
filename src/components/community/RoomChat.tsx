@@ -6,8 +6,9 @@ import { useCommunityMutation } from "@/hooks/useCommunityMutation";
 import { useTranslation } from "@/hooks/useTranslation";
 import { CommunityError } from "@/lib/repo/community";
 import { buttonClass } from "./CommunityComposer";
+import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 
-export function RoomChat({ roomId, onClose }: { roomId: string; onClose: () => void }) {
+export function RoomChat({ roomId, onClose, onRestoreFocus }: { roomId: string; onClose: () => void; onRestoreFocus?: () => void }) {
   const { t, locale } = useTranslation();
   const query = useCommunity("roomChat", { id: roomId });
   const mutation = useCommunityMutation();
@@ -20,9 +21,11 @@ export function RoomChat({ roomId, onClose }: { roomId: string; onClose: () => v
   const latest = items.at(-1)?.id;
   useEffect(() => { input.current?.focus(); }, []);
   useEffect(() => { if (stickToBottom.current && log.current) log.current.scrollTop = log.current.scrollHeight; }, [latest]);
-  return <aside id="room-chat" aria-label={t("room.chat")} data-testid="room-chat" onKeyDown={event => {
+  return <Sheet open onOpenChange={open => { if (!open) onClose(); }}><SheetContent side="right" showCloseButton={false} onCloseAutoFocus={event => { if (onRestoreFocus) { event.preventDefault(); onRestoreFocus(); } }} className="w-[min(22rem,100dvw)] gap-0 bg-surface p-0 motion-reduce:animate-none sm:max-w-[22rem]">
+    <SheetTitle className="sr-only">{t("room.chat")}</SheetTitle><SheetDescription className="sr-only">{t("room.chatEmpty")}</SheetDescription>
+    <aside id="room-chat" aria-label={t("room.chat")} data-testid="room-chat" onKeyDown={event => {
     if (event.key === "Escape") { event.preventDefault(); event.stopPropagation(); onClose(); }
-  }} className="fixed top-24 right-2 bottom-2 z-40 flex w-[min(22rem,calc(100vw-1rem))] flex-col rounded-2xl border border-border bg-surface shadow-xl">
+  }} className="flex h-full min-h-0 flex-col bg-surface">
     <header className="flex items-center justify-between border-b border-border px-4 py-2"><h2 className="font-semibold">{t("room.chat")}</h2><button type="button" aria-label={t("scene.close")} className="flex size-11 items-center justify-center rounded-lg" onClick={onClose}><X aria-hidden="true" className="size-5"/></button></header>
     <div ref={log} role="log" aria-label={t("room.chatMessages")} aria-live="polite" aria-relevant="additions" onScroll={() => { const node = log.current; if (node) stickToBottom.current = node.scrollHeight - node.scrollTop - node.clientHeight < 70; }} className="min-h-0 flex-1 space-y-4 overflow-y-auto p-4">
       {query.isPending && <p role="status">{t("community.loading")}</p>}
@@ -43,5 +46,5 @@ export function RoomChat({ roomId, onClose }: { roomId: string; onClose: () => v
       <button type="submit" className={buttonClass} disabled={!body.trim() || mutation.isPending}>{t("room.send")}</button>
       {mutation.isError && <p role="alert" className="text-small">{t(mutation.error instanceof CommunityError && mutation.error.code === "chatLimit" ? "room.chatLimit" : "community.unavailable")}</p>}
     </form>
-  </aside>;
+  </aside></SheetContent></Sheet>;
 }

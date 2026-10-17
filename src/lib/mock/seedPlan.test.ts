@@ -1,3 +1,4 @@
+import { themes } from "@/lib/themes/registry";
 import { expect, it, vi } from "vitest";
 import { generateSeedPlan } from "./seedPlan";
 import { toLocalDate } from "@/lib/stats/localDate";
@@ -10,7 +11,7 @@ it.each(["UTC", "Europe/Berlin", "America/Los_Angeles", "Pacific/Kiritimati"])("
     const plan = generateSeedPlan(anchor, timezone);
     expect(generateSeedPlan(anchor, timezone)).toEqual(plan);
     expect(plan.reduce((sum, session) => sum + (new Date(session.endedAt).getTime() - new Date(session.startedAt).getTime()) / 1000, 0)).toBe(144000);
-    expect(new Set(plan.map((session) => session.themeSlug)).size).toBe(4);
+    expect(new Set(plan.map((session) => session.themeSlug)).size).toBe(themes.length);
     expect([...new Set(plan.map((session) => session.plannedMinutes))].sort((a, b) => a! - b!)).toEqual([5, 15, 25, 50]);
     const today = toLocalDate(anchor, timezone);
     const dates = new Set(plan.map((session) => toLocalDate(new Date(session.startedAt), timezone)));

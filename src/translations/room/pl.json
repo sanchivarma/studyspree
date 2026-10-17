@@ -1,5 +1,8 @@
 {
   "room": {
+    "previewChat": "Sesje podglądowe korzystają z wirtualnych partnerów. Rozmowy z ludźmi są dostępne we wspólnych pokojach.",
+    "sharedChat": "Otwórz wspólny pokój, aby rozmawiać z uczestnikami sesji.",
+    "openSharedChat": "Otwórz wspólną sesję",
     "title": "Pokój nauki",
     "chat": "Czat sesji",
     "chatMessages": "Wiadomości pokoju",
