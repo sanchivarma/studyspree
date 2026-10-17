@@ -1,5 +1,6 @@
 {
   "characters": {
+    "remove": "Rimuovi {name}",
     "title": "Compagni di studio",
     "description": "Un po’ di compagnia, al tuo ritmo.",
     "solo": "Da solo",

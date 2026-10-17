@@ -127,3 +127,7 @@ account to post shared chat. Local camera self-view still never enters the netwo
 Lin rebuild: install FFmpeg or set `FFMPEG_PATH`, then run `node scripts/prepare-lin-gif.mjs` with no v4 target files present. The local media tool was obtained through imageio-ffmpeg for this task; no application package dependency was added. FFmpeg motion compensation documentation: https://ffmpeg.org/ffmpeg-filters.html#minterpolate.
 
 Expanded cast: exact built-in imagegen prompts and inspected 4x4 sheets are recorded in `docs/realistic-gifs/expanded-cast.json`. Rebuild with `FFMPEG_PATH` configured and `node scripts/prepare-expanded-gifs.mjs`; the script refuses existing immutable targets. New assets use `realistic-09` through `realistic-12` with `study-v1.gif` and `poster-v1.webp`. All five languages include the new names and background subtitles. There are now 23 selectable companions across styles, with the existing eight-at-once cap.
+
+## Personal-session tile controls
+
+Partner selection and visibility buttons sit in a reserved left-side rail. Each virtual tile has a translated remove button, hidden with the rest of the idle controls. Removing a partner updates the existing session selection, persists on refresh, and preserves its ID/start timestamp. Responsive resizing and pagination are pending clarification of the requested page size and video fit; the existing selection cap is unchanged in this partial update.

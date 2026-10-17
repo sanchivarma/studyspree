@@ -1,5 +1,6 @@
 {
   "characters": {
+    "remove": "Remove {name}",
     "title": "Study companions",
     "description": "A little company, at your own pace.",
     "solo": "Solo",

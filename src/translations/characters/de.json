@@ -1,5 +1,6 @@
 {
   "characters": {
+    "remove": "{name} entfernen",
     "title": "Lernbegleitung",
     "description": "Etwas Gesellschaft, in deinem Tempo.",
     "solo": "Allein",

@@ -1,5 +1,6 @@
 {
   "characters": {
+    "remove": "Usuń: {name}",
     "title": "Towarzysze nauki",
     "description": "Trochę towarzystwa, we własnym tempie.",
     "solo": "Samodzielnie",
