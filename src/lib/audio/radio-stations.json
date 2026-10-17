@@ -1,0 +1,5 @@
+[
+  { "id": "lofi-studying", "name": "Lofi Cafe · Studying", "website": "https://loficafe.net/", "embedUrl": "https://loficafe.net/embed/studying", "streamUrl": null, "permissionUrl": "https://loficafe.net/embed" },
+  { "id": "lofi-working", "name": "Lofi Cafe · Working", "website": "https://loficafe.net/", "embedUrl": "https://loficafe.net/embed/working", "streamUrl": null, "permissionUrl": "https://loficafe.net/embed" },
+  { "id": "lofi-sleeping", "name": "Lofi Cafe · Sleeping", "website": "https://loficafe.net/", "embedUrl": "https://loficafe.net/embed/sleeping", "streamUrl": null, "permissionUrl": "https://loficafe.net/embed" }
+]

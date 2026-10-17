@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AmbienceEngine } from "./ambience";
 import type { HowlOptions } from "howler";
+import { radioStations } from "./radio";
 
 const mocks = vi.hoisted(() => ({ sounds: [] as {
   options: HowlOptions; load: ReturnType<typeof vi.fn>; unload: ReturnType<typeof vi.fn>;
@@ -29,6 +30,44 @@ afterEach(() => { engine.destroy(); vi.useRealTimers(); vi.unstubAllGlobals(); }
 function loaded(from = 0) { mocks.sounds[from].options.onload?.(1); mocks.sounds[from + 1].options.onload?.(1); }
 
 describe("two independent, gesture-gated audio buses", () => {
+  it("plays an approved direct radio as one streaming source after a gesture", () => {
+    radioStations.push({ id: "test-radio", name: "Test", website: "https://radio.example.test", permissionUrl: "https://radio.example.test/permission", embedUrl: null, streamUrl: "https://radio.example.test/live.mp3" });
+    try {
+      engine.setMusicTrack("radio:test-radio"); engine.setMusicVolume(0.4);
+      expect(mocks.sounds).toHaveLength(0);
+      engine.init(); expect(mocks.sounds).toHaveLength(1);
+      expect(mocks.sounds[0].options).toMatchObject({ html5: true, src: ["https://radio.example.test/live.mp3"], format: ["mp3"] });
+      engine.setMusicTrack(null); expect(mocks.sounds[0].unload).toHaveBeenCalledOnce();
+    } finally { radioStations.pop(); }
+  });
+  it("mixes selected effects lazily, preserves music and releases removed sources", () => {
+    engine.setBackgroundEffects(["rain", "wind"]); engine.setRoomVolume(0.6);
+    expect(mocks.sounds).toHaveLength(0);
+    engine.init(); expect(mocks.sounds).toHaveLength(4);
+    expect(mocks.sounds.every(sound => sound.options.format?.[0] === "mp3")).toBe(true);
+    loaded(); loaded(2);
+    expect(mocks.sounds[0].fade).toHaveBeenLastCalledWith(0.5, 0.6 / Math.sqrt(2), 500, 1);
+    engine.setMusicTrack("still-water"); engine.setMusicVolume(0.2);
+    engine.setBackgroundEffects(["rain"]);
+    expect(mocks.sounds[0].unload).toHaveBeenCalledOnce(); // Wind is catalog-first.
+    expect(mocks.sounds[2].unload).not.toHaveBeenCalled();
+    expect(mocks.sounds[4].unload).not.toHaveBeenCalled();
+    engine.setBackgroundEffects([]); expect(mocks.sounds[2].unload).toHaveBeenCalledOnce();
+    engine.destroy(); expect(vi.getTimerCount()).toBe(0);
+  });
+  it("master effects volume updates every live source and preserves independent levels", () => {
+    engine.setBackgroundEffects(["rain", "wind"], { rain: 0.8, wind: 0.2 });
+    engine.setRoomVolume(0.5); engine.init(); loaded(); loaded(2);
+    expect(mocks.sounds[0].fade).toHaveBeenLastCalledWith(0.5, 0.5 * 0.2 / Math.sqrt(2), 500, 1);
+    expect(mocks.sounds[2].fade).toHaveBeenLastCalledWith(0.5, 0.5 * 0.8 / Math.sqrt(2), 500, 1);
+    engine.setRoomVolume(1);
+    expect(mocks.sounds[0].fade).toHaveBeenLastCalledWith(0.5, 0.2 / Math.sqrt(2), 100, 1);
+    expect(mocks.sounds[2].fade).toHaveBeenLastCalledWith(0.5, 0.8 / Math.sqrt(2), 100, 1);
+    engine.setRoomVolume(0);
+    expect(mocks.sounds.every(sound => sound.unload.mock.calls.length === 1)).toBe(true);
+    engine.setRoomVolume(0.5); expect(mocks.sounds).toHaveLength(8);
+    engine.destroy(); expect(vi.getTimerCount()).toBe(0);
+  });
   it("loads original music independently from the theme sound without changing a saved silent selection", () => {
     engine.setMusicTrack("still-water"); engine.setMusicVolume(0.2);
     expect(mocks.sounds).toHaveLength(0);

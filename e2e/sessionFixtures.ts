@@ -31,7 +31,7 @@ export async function settleClock(page: Page, testId: string, stepMs = 1) {
 export async function startSession(page: Page, task?: string, minutes: number | null = 5) {
   await page.goto("/study");
   if (minutes !== 5) await page.getByRole("button", { name: minutes === null ? "Open" : `${minutes} min`, exact: true }).click();
-  if (task) await page.getByRole("textbox").fill(task);
+  if (task) await page.getByPlaceholder("What are you working on? (optional)").fill(task);
   await page.getByRole("button", { name: "Start", exact: true }).click();
   if (controlledPages.has(page)) await settleClock(page, "session-screen", 16);
   else await expect(page.getByTestId("session-screen")).toBeVisible({ timeout: 15000 });

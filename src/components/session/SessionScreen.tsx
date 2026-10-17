@@ -23,6 +23,7 @@ import { SessionCompanions } from "@/components/characters/SessionCompanions";
 import { usePersonalTile } from "@/hooks/usePersonalTile";
 import { ShareSessionControl } from "@/components/community/ShareSessionControl";
 import { SessionChat } from "./SessionChat";
+import { PersonalTileSheet } from "./PersonalTileSheet";
 
 export function SessionScreen({ session }: { session: Session }) {
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -75,7 +76,7 @@ export function SessionScreen({ session }: { session: Session }) {
     className={cn("relative isolate h-dvh w-full overflow-hidden", !isVisible && "cursor-none")}>
     <ThemeScene slug={slug} priority />
     <SessionCompanions session={session} visible={isVisible} onOpenChange={setCompanionOpen} leading={isSelfInStage ? <SelfView camera={camera} visible={isVisible} mirrored={tile.data?.mirrored ?? true} stage onTogglePin={() => setSelfPinned(false)}/> : undefined}
-      sideControls={<button ref={chatButton} type="button" aria-label={t("room.chat")} aria-expanded={chatOpen} aria-controls="room-chat" onClick={() => setChatOpen(true)} className="flex size-11 items-center justify-center rounded-xl bg-background/60 focus-visible:outline-2 focus-visible:outline-accent"><MessageCircle aria-hidden="true" className="size-4"/></button>}/>
+      sideControls={<><button ref={chatButton} type="button" aria-label={t("room.chat")} aria-expanded={chatOpen} aria-controls="room-chat" onClick={() => setChatOpen(true)} className="flex size-11 items-center justify-center rounded-xl bg-background/60 focus-visible:outline-2 focus-visible:outline-accent"><MessageCircle aria-hidden="true" className="size-4"/></button><PersonalTileSheet onOpenChange={setSheetOpen}/></>}/>
     <div className={cn("absolute top-2 left-2 z-30", fade)}><ShareSessionControl compact sessionId={session.id} onOpenChange={setShareOpen}/></div>
     {chatOpen && <SessionChat onClose={() => setChatOpen(false)} onRestoreFocus={() => chatButton.current?.focus()}/>}
     <div data-testid="session-controls" className="absolute right-3 bottom-2 left-[60px] flex h-[68px] items-center gap-3">

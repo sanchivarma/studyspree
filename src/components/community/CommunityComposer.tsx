@@ -60,7 +60,7 @@ export function CommunityComposer({ area, id, groupId, parentId, canPost = true 
                         command = { action: "group.create", data: { title, body, private: data.get("private") === "on" } };
                         break;
                     case "spaces":
-                        command = communityCommandSchema.parse({ action: "room.create", data: { title, body, category: text("category"), capacity: Number(data.get("capacity")), private: data.get("private") === "on", ...(groupId ? { groupId } : {}) } });
+                        command = communityCommandSchema.parse({ action: "room.create", data: { title, body, category: text("category"), capacity: Number(data.get("capacity")), visibility: text("visibility"), private: data.get("private") === "on", ...(groupId ? { groupId } : {}) } });
                         break;
                     case "buddies":
                         command = { action: "buddy.save", data: { title, body, subjects: text("subjects").split(",").map(v => v.trim()).filter(Boolean), published: data.get("published") === "on" } };
@@ -73,7 +73,8 @@ export function CommunityComposer({ area, id, groupId, parentId, canPost = true 
                         command = { action: "message.send", data: { id: id!, body, clientId: clientId.current, ...(parentId ? { parentId } : {}) } };
                         break;
                     case "feed":
-                        command = { action: "post.create", data: { body, ...(groupId ? { groupId } : {}), ...(id ? { parentId: id } : {}), attachments } };
+                        clientId.current ??= crypto.randomUUID();
+                        command = communityCommandSchema.parse({ action: "post.create", data: { body, clientId: clientId.current, visibility: groupId ? "group" : text("visibility"), ...(groupId ? { groupId } : {}), ...(id ? { parentId: id } : {}), attachments } });
                         break;
                     case "schedule": {
                         let startsAt: string;
@@ -102,11 +103,13 @@ export function CommunityComposer({ area, id, groupId, parentId, canPost = true 
   {area === "tasks" && <label className="block">{t("community.date")}<input name="date" type="date" required defaultValue={today} className={fieldClass}/></label>}
   {area === "feedback" && <label className="block">{t("community.category")}<select name="kind" className={fieldClass}><option value="idea">{t("community.idea")}</option><option value="issue">{t("community.issue")}</option></select></label>}
   {(area === "groups" || area === "spaces") && <label className="flex min-h-11 items-center gap-3"><input name="private" type="checkbox" className="size-5 accent-accent"/>{t("community.private")}</label>}
+  {area === "spaces" && <label className="block">{t("roadmap.visibility")}<select name="visibility" defaultValue="public" className={fieldClass}>{(["public","unlisted","private"]as const).map(v=><option value={v} key={v}>{t(`roadmap.${v}`)}</option>)}</select></label>}
   {area === "spaces" && <label className="block">{t("community.category")}<select name="category" className={fieldClass}>{(["deep", "pomodoro", "chill", "cram"] as const).map(value => <option key={value} value={value}>{t(`community.${value}`)}</option>)}</select></label>}
   {(area === "spaces" || area === "schedule") && <label className="block">{t("community.capacity")}<input type="number" name="capacity" min={1} max={1000} defaultValue={12} required className={fieldClass}/></label>}
   {area === "buddies" && <><label className="block">{t("community.subjects")}<input name="subjects" maxLength={410} className={fieldClass}/></label><label className="flex min-h-11 items-center gap-3"><input name="published" type="checkbox" defaultChecked className="size-5 accent-accent"/>{t("community.publish")}</label></>}
   {area === "conversations" && <fieldset><legend>{t("community.inviteMembers")}</legend><input aria-label={t("community.search")} value={recipientQuery} onChange={event => setRecipientQuery(event.target.value)} className={fieldClass}/><ul className="mt-2 space-y-2">{recipients.data?.pages.flatMap(page => page.items).filter(item => item.data.kind === "person").map(person => <li key={person.id}><label className="flex min-h-11 items-center gap-3"><input type="checkbox" checked={selected.includes(person.id)} onChange={event => setSelected(current => event.target.checked ? [...current, person.id] : current.filter(id => id !== person.id))}/>{person.title}</label></li>)}</ul></fieldset>}
   {area === "schedule" && <><p className="text-small text-text-muted">{t("community.timezone")}: {zone}</p><label className="block">{t("community.startsAt")}<input name="startsAt" type="datetime-local" required className={fieldClass}/></label><label className="block">{t("community.dstChoice")}<select name="occurrence" className={fieldClass}><option value="earlier">{t("community.earlier")}</option><option value="later">{t("community.later")}</option></select></label><label className="block">{t("community.minutes")}<select name="minutes" className={fieldClass}><option value="30">30</option><option value="60">60</option></select></label></>}
+  {area === "feed" && !groupId && <label className="block">{t("roadmap.visibility")}<select name="visibility" defaultValue="public" className={fieldClass}><option value="public">{t("roadmap.public")}</option><option value="followers">{t("profile.followers")}</option><option value="private">{t("roadmap.private")}</option></select></label>}
   {area === "feed" && <><label className="block">{t("community.attachment")}<input type="file" accept="image/png,image/jpeg,image/webp,image/gif,audio/mpeg,audio/webm,audio/ogg,application/pdf" disabled={attachments.length >= 4 || upload.isPending} className={fieldClass} onChange={event => { const file = event.target.files?.[0]; if (file)
         upload.mutate(file, { onSuccess: value => setAttachments(current => [...current, value].slice(0, 4)) }); event.target.value = ""; }}/></label><p className="text-small text-text-muted">{t("community.attachmentHint")}</p><ul>{attachments.map(file => <li key={file.path} className="flex min-h-11 items-center justify-between gap-3 text-small"><span className="truncate">{file.name}</span><button type="button" className={buttonClass} onClick={() => setAttachments(current => current.filter(item => item.path !== file.path))}>{t("community.remove")}</button></li>)}</ul></>}
   {(error || mutation.isError || upload.isError) && <p role="alert">{t(error ?? "community.unavailable")}</p>}

@@ -16,6 +16,8 @@ import { CompanionModeCard } from "@/components/home/CompanionModeCard";
 import { LatestRoomCard } from "@/components/home/LatestRoomCard";
 import { RoomDirectory } from "@/components/home/RoomDirectory";
 import { OnlinePeople } from "@/components/home/OnlinePeople";
+import { TodayTasks } from "@/components/tasks/TodayTasks";
+import {PublicSessions} from '@/components/home/PublicSessions';
 
 export function HomeScreen({ username, slug, initialHour }: { username: string; slug: ThemeSlug; initialHour: number }) {
   const { t } = useTranslation();
@@ -41,6 +43,8 @@ export function HomeScreen({ username, slug, initialHour }: { username: string; 
         <BookOpen aria-hidden="true" className="size-5" />{t("home.studyLink")}
       </Link>
       <CompanionModeCard />
+      <PublicSessions />
+      <TodayTasks />
       {dashboard.data && <>
         <LatestRoomCard room={dashboard.data.latestRoom} />
         <RoomDirectory rooms={dashboard.data.rooms} available={dashboard.data.capabilities.humanRooms} />

@@ -4,6 +4,7 @@ import { createAuthClient } from "@/lib/auth/server";
 import { getDevAdminProfile } from "@/lib/auth/devAdmin";
 import { communityRequestSchema, communityStateSchema } from "./schemas";
 import { removeRoomParticipant } from "./livekitServer";
+import { validateCommunityCursor } from "./cursor";
 export class CommunityServerError extends Error {
     constructor(public status: number, public code: string) { super(code); }
 }
@@ -44,6 +45,13 @@ export async function executeCommunity(input: z.infer<typeof communityRequestSch
         return response.data;
     }
     const { area, query } = input;
+    if (area === "roomParticipants") {
+        if (!query.id) throw new CommunityServerError(400,"invalid");
+        if (query.cursor) { try { z.object({snapshotAt:z.iso.datetime({offset:true}),id:z.uuid()}).strict().parse(JSON.parse(query.cursor)); } catch {throw new CommunityServerError(400,"invalid");} }
+        const response=await client.rpc("read_room_participants",{p_room:query.id,p_cursor:query.cursor??undefined,p_limit:query.limit??20});
+        if(response.error)throw new CommunityServerError(403,"forbidden");
+        return communityStateSchema.parse(response.data);
+    }
     if (area === "roomChat") {
         if (!query.id) throw new CommunityServerError(400, "invalid");
         const response = await client.rpc("read_room_chat", { p_room: query.id });
@@ -77,8 +85,7 @@ export async function executeCommunity(input: z.infer<typeof communityRequestSch
             throw new CommunityServerError(400, "unavailable");
         return communityStateSchema.parse(response.data);
     }
-    if (query.cursor && !/^\d{1,6}$/.test(query.cursor))
-        throw new CommunityServerError(400, "invalid");
+    if (query.cursor) { try { validateCommunityCursor(query.cursor); } catch { throw new CommunityServerError(400, "invalid"); } }
     const response = await client.rpc("community_read", { p_area: area, p_query: query });
     if (response.error)
         throw new CommunityServerError(response.error.code === "42501" ? 403 : 400, response.error.code === "42501" ? "forbidden" : "unavailable");

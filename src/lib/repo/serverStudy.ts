@@ -19,15 +19,17 @@ function assertResult(error: unknown) { if (error)
     throw new StudyError(503); }
 export function mapSession(row: SessionRow) {
     return sessionSchema.parse({ id: row.id, startedAt: new Date(row.started_at).toISOString(), endedAt: row.ended_at ? new Date(row.ended_at).toISOString() : null,
-        plannedMinutes: row.planned_minutes, actualSeconds: row.actual_seconds, endedReason: row.ended_reason, themeSlug: row.theme_slug, localDate: row.local_date, task: row.task, companions: companionSchema.parse(row.companions) });
+        plannedMinutes: row.planned_minutes, actualSeconds: row.actual_seconds, endedReason: row.ended_reason, themeSlug: row.theme_slug, localDate: row.local_date, task: row.task, companions: companionSchema.parse(row.companions), roomId: row.room_id,title:row.title,rules:row.rules,visibility:row.visibility });
 }
 async function profile(client: Client, id: string) {
     const response = await client.from("profiles").select("*").eq("id", id).single();
     assertResult(response.error);
     const p = response.data!;
+    const tile=tileSchema.parse(p.personal_tile);
     return profileSchema.parse({ displayName: p.display_name, selectedTheme: p.selected_theme, timezone: p.timezone, showStreak: p.show_streak,
+        mirrorSelfView:tile.mirrored,showOwnTile:tile.isVisible,shareNowPlaying:tile.shareNowPlaying,leaderboardOptIn:p.leaderboard_opt_in,
         reduceMotion: p.reduce_motion, webcamEnabled: p.webcam_enabled, webcamCorner: p.webcam_corner, ambienceEnabled: p.ambience_enabled,
-        musicTrack: p.music_track, musicVolume: p.music_volume, roomVolume: p.room_volume, comebackShownForDate: p.comeback_shown_for_date,
+        musicTrack: p.music_track, backgroundEffects: p.background_effects, effectVolumes: p.effect_volumes, musicVolume: p.music_volume, roomVolume: p.room_volume, comebackShownForDate: p.comeback_shown_for_date,
         companionPreferences: p.companion_preferences });
 }
 async function streak(client: Client, id: string) {
@@ -49,14 +51,29 @@ export async function executeStudy(input: Input) {
             const p = input.patch;
             const mapping = { displayName: "display_name", selectedTheme: "selected_theme", timezone: "timezone", showStreak: "show_streak", reduceMotion: "reduce_motion", webcamEnabled: "webcam_enabled", webcamCorner: "webcam_corner", ambienceEnabled: "ambience_enabled", musicTrack: "music_track", musicVolume: "music_volume", roomVolume: "room_volume", comebackShownForDate: "comeback_shown_for_date", companionPreferences: "companion_preferences" } as const;
             const update: Database["public"]["Tables"]["profiles"]["Update"] = {};
+            if (p.backgroundEffects !== undefined) update.background_effects = profileSchema.shape.backgroundEffects.parse(p.backgroundEffects);
+            if (p.effectVolumes !== undefined) update.effect_volumes = profileSchema.shape.effectVolumes.parse(p.effectVolumes);
             for (const [key, value] of Object.entries(p))
-                Reflect.set(update, mapping[key as keyof typeof mapping], value);
-            const response = await client.from("profiles").update(update).eq("id", id).select("id").single();
+                if(key in mapping)Reflect.set(update, mapping[key as keyof typeof mapping], value);
+            if(typeof p.leaderboardOptIn === "boolean")update.leaderboard_opt_in=p.leaderboardOptIn;
+            if(p.mirrorSelfView!==undefined||p.showOwnTile!==undefined||p.shareNowPlaying!==undefined){const patch={...(p.mirrorSelfView!==undefined?{mirrored:p.mirrorSelfView}:{}),...(p.showOwnTile!==undefined?{isVisible:p.showOwnTile}:{}),...(p.shareNowPlaying!==undefined?{shareNowPlaying:p.shareNowPlaying}:{})};const tile=await client.rpc('update_personal_tile',{p_patch:patch});assertResult(tile.error);}
+            const response = Object.keys(update).length ? await client.from("profiles").update(update).eq("id", id).select("id").single() : {error:null};
             assertResult(response.error);
             return profile(client, id);
         }
         case "directory": return serverProfileRepository.getOwn();
         case "updateDirectory": return serverProfileRepository.update(profileEditSchema.parse(input.input));
+        case "earnedAchievements": {
+            const response = await client.from("user_achievements").select("achievement_id,earned_at").eq("user_id", id);
+            assertResult(response.error);
+            return response.data!.map(a => ({ achievementId: a.achievement_id, earnedAt: a.earned_at }));
+        }
+        case "characterHistory": {
+            const response = await client.rpc("read_character_history"); assertResult(response.error); return response.data;
+        }
+        case "tileHistory": {
+            const response = await client.rpc("read_tile_history", { p_cursor: input.cursor ?? undefined, p_limit: input.limit }); assertResult(response.error); return response.data;
+        }
         case "awards": {
             const response = await client.from("achievement_awards").select("milestone,earned_at").eq("user_id", id).order("milestone");
             assertResult(response.error);
@@ -69,13 +86,9 @@ export async function executeStudy(input: Input) {
             const current = tileSchema.parse(response.data!.personal_tile);
             if (input.op === "tile")
                 return current;
-            const patch = input.patch;
-            const history = patch.status !== undefined && patch.status !== current.status && patch.status
-                ? [{ text: patch.status, createdAt: now().toISOString() }, ...current.history].slice(0, 20) : current.history;
-            const next = tileSchema.parse({ ...current, ...patch, history });
-            const saved = await client.from("profiles").update({ personal_tile: next }).eq("id", id).select("id").single();
+            const saved = await client.rpc("update_personal_tile", { p_patch: input.patch });
             assertResult(saved.error);
-            return next;
+            return tileSchema.parse(saved.data);
         }
         case "active": {
             const response = await client.from("sessions").select("*").eq("user_id", id).is("ended_at", null).maybeSingle();
@@ -89,7 +102,7 @@ export async function executeStudy(input: Input) {
         }
         case "start": {
             const p = input.input;
-            const response = await client.rpc("start_study_session", { p_minutes: p.plannedMinutes!, p_theme: p.themeSlug, p_task: p.task!, p_companions: p.companions ?? soloCompanions() });
+            const response = p.title !== undefined ? await client.rpc("start_session_with_details",{p_minutes:p.plannedMinutes!,p_theme:p.themeSlug,p_task:p.task!,p_companions:p.companions??soloCompanions(),p_title:p.title,p_rules:p.rules!,p_visibility:p.visibility,p_room:p.roomId??undefined}) : input.input.roomId ? await client.rpc("start_room_session", { p_room: input.input.roomId, p_minutes: input.input.plannedMinutes!, p_theme: input.input.themeSlug, p_task: input.input.task!, p_companions: input.input.companions ?? soloCompanions() }) : await client.rpc("start_study_session", { p_minutes: p.plannedMinutes!, p_theme: p.themeSlug, p_task: p.task!, p_companions: p.companions ?? soloCompanions() });
             assertResult(response.error);
             return mapSession(response.data!);
         }
@@ -124,6 +137,8 @@ export async function executeStudy(input: Input) {
             return response.data!.map(mapSession);
         }
         case "history": {
+            const features = await client.rpc("read_entitlements"); assertResult(features.error);
+            if (!z.array(z.object({key:z.string(),enabled:z.boolean()})).parse(features.data).find(f=>f.key==='detailed-history')?.enabled) throw new StudyError(403);
             const q = input.query;
             const signature = JSON.stringify([q.from ?? null, q.to ?? null, q.companionMode ?? null]);
             let cursor: {

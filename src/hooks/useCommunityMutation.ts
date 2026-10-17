@@ -5,7 +5,7 @@ import type { CommunityCommand,CommunityState } from "@/lib/community/schemas";
 import { queryKeys } from "@/lib/queryKeys";
 export function useCommunityMutation() {
     const cache = useQueryClient();
-    return useMutation({ mutationFn: (input: CommunityCommand) => communityRepository.mutate(input),scope:{id:"community-write"},
+    return useMutation({ mutationKey:queryKeys.delivery(),mutationFn: (input: CommunityCommand) => communityRepository.mutate(input),scope:{id:"community-write"},
         onMutate:async command=>{
             await cache.cancelQueries({queryKey:queryKeys.community.all()});
             const previous=cache.getQueriesData<InfiniteData<CommunityState>>({queryKey:queryKeys.community.all()});

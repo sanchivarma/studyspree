@@ -8,6 +8,10 @@ Missing implementation is distinct from deployment/provider setup.
 
 ## Follow-up requests
 
+- [x] Session sound controls: Music Volume, multi-select distinct licensed background
+  effects with individually saved volume levels, a master effects volume and an editable JSON catalog of permitted radio
+  embeds. Provider players retain their own radio volume controls. See AUDIO_RADIOS.md.
+
 - [x] Background environments are named themes, separate from virtual characters.
 - [x] Four male and four female original, infinitely looping GIF study partners.
 - [x] Calendar/Contacts navigation icons and translated pages.

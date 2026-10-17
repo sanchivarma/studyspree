@@ -8,6 +8,8 @@ import { tileSchema, type TilePatch } from "@/lib/personalTile/schemas";
 import type { Profile, EndedReason } from "@/types/domain";
 import type { CompanionPreferences } from "@/types/characters";
 import type { SessionHistoryQuery } from "@/types/stats";
+import { tileHistorySchema } from "@/types/tileStatus";
+import { characterHistorySchema } from "@/types/focusPartners";
 const room = z.object({ id: z.uuid(), name: z.string(), description: z.string(), humanCount: z.number(), access: z.enum(["public", "members", "invite"]), canJoin: z.boolean() });
 export class SupabaseRepository implements Repository {
     private async call<T>(op: string, schema: z.ZodType<T>, args: object = {}): Promise<T> {
@@ -25,6 +27,9 @@ export class SupabaseRepository implements Repository {
     getDirectoryProfile() { return this.call("directory", ownProfileSchema); }
     updateDirectoryProfile(input: ProfileEdit) { return this.call("updateDirectory", ownProfileSchema, { input }); }
     getAchievements() { return this.call("awards", z.array(awardSchema)); }
+    getEarnedAchievements() { return this.call("earnedAchievements", z.array(z.object({ achievementId: z.string(), earnedAt: z.iso.datetime({ offset: true }) }))); }
+    getCharacterCompanionHistory() { return this.call("characterHistory", characterHistorySchema); }
+    getTileStatusHistory(opts: { cursor?: string | null; limit: number }) { return this.call("tileHistory", tileHistorySchema, opts); }
     getPersonalTile() { return this.call("tile", tileSchema); }
     updatePersonalTile(patch: TilePatch) { return this.call("updateTile", tileSchema, { patch }); }
     getActiveSession() { return this.call("active", sessionSchema.nullable()); }

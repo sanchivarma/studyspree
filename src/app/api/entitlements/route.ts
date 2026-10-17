@@ -1,0 +1,2 @@
+import {createAuthClient} from '@/lib/auth/server';
+export async function GET(){const headers={'Cache-Control':'private, no-store'};const client=await createAuthClient();const user=await client.auth.getUser();if(user.error||!user.data.user)return Response.json({error:'accountRequired'},{status:401,headers});const result=await client.rpc('read_entitlements');return result.error?Response.json({error:'unavailable'},{status:503,headers}):Response.json(result.data,{headers});}

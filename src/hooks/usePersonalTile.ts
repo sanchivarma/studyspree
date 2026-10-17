@@ -12,7 +12,7 @@ export function usePersonalTile() {
             cache.setQueryData(key, { ...previous, ...patch }); return { previous }; },
         onError: (_e, _p, context) => { if (context?.previous)
             cache.setQueryData(key, context.previous); },
-        onSuccess: value => cache.setQueryData(key, value),
+        onSuccess: value => { cache.setQueryData(key, value); void cache.invalidateQueries({ queryKey: queryKeys.tileHistory() }); void cache.invalidateQueries({queryKey:queryKeys.profile()}); },
     });
     return { ...query, mutation };
 }

@@ -6,24 +6,28 @@ import { useCommunityMutation } from "@/hooks/useCommunityMutation";
 import { useTranslation } from "@/hooks/useTranslation";
 import { buttonClass } from "./CommunityComposer";
 import { CommunityError } from "@/lib/repo/community";
+import {useAccountMode} from '@/hooks/useAccountMode';
+import type {TranslationKey} from '@/translations';
 
 const subscribe = () => () => {};
-export function ShareSessionControl({ sessionId, roomId, onOpenChange, compact = false }: { sessionId?: string; roomId?: string; onOpenChange?: (open: boolean) => void; compact?: boolean }) {
+export function ShareSessionControl({ sessionId, roomId, onOpenChange, compact = false, copyOnly=false, label, requiresInvite=false }: { sessionId?: string; roomId?: string; onOpenChange?: (open: boolean) => void; compact?: boolean;copyOnly?:boolean;label?:TranslationKey;requiresInvite?:boolean }) {
   const { t } = useTranslation();
   const mutation = useCommunityMutation();
+  const accountMode=useAccountMode();
   const origin = useSyncExternalStore(subscribe, () => window.location.origin, () => "");
   const [shared, setShared] = useState<{ id: string; token?: string } | null>(null);
   const [copied, setCopied] = useState(false);
   const [copyError, setCopyError] = useState(false);
   const [open, setOpen] = useState(false);
   const updateOpen = (value: boolean) => { setOpen(value); onOpenChange?.(value); };
-  const link = shared ? shared.token ? `${origin}/invite/${shared.token}` : `${origin}/rooms/${shared.id}` : roomId ? `${origin}/rooms/${roomId}` : "";
-  if (compact) return <div className="relative">
-    <button type="button" className={`${buttonClass} size-11 !p-0`} disabled={mutation.isPending} aria-label={t("calendar.copy")} title={t(copied ? "calendar.copied" : "calendar.copy")} onClick={async () => {
+  const link = shared ? shared.token ? `${origin}/invite/${shared.token}` : `${origin}/rooms/${shared.id}` : roomId&&!requiresInvite ? `${origin}/rooms/${roomId}` : "";
+  if (compact||copyOnly) return <div className="relative">
+    <button type="button" className={`${buttonClass} ${copyOnly?'flex w-full items-center justify-center gap-2':'size-11 !p-0'}`} disabled={mutation.isPending||accountMode==='preview'} aria-label={t(label??"calendar.copy")} title={t(copied ? "calendar.copied" : label??"calendar.copy")} onClick={async () => {
       setCopyError(false);
       setCopied(false);
       try {
         let copyLink = link;
+        if(!copyLink&&roomId){const result=await mutation.mutateAsync({action:'room.invite',data:{id:roomId,uses:10,hours:24}});setShared(result);copyLink=`${origin}/invite/${result.token}`;}
         if (!copyLink && sessionId) {
           const result = await mutation.mutateAsync({ action: "session.share", data: { id: sessionId } });
           setShared(result);
@@ -33,7 +37,8 @@ export function ShareSessionControl({ sessionId, roomId, onOpenChange, compact =
         await navigator.clipboard.writeText(copyLink);
         setCopied(true);
       } catch { setCopyError(true); }
-    }}>{copied ? <Check className="size-4" aria-hidden="true"/> : <Link2 className="size-4" aria-hidden="true"/>}</button>
+    }}>{copied ? <Check className="size-4 shrink-0" aria-hidden="true"/> : <Link2 className="size-4 shrink-0" aria-hidden="true"/>}{copyOnly&&<span>{t(copied?'calendar.copied':label??'calendar.copy')}</span>}</button>
+    {copyOnly&&accountMode==='preview'&&<p className="mt-2 text-small text-text-muted">{t('sessionSetup.previewPublic')}</p>}
     {copied && <span role="status" className="sr-only">{t("calendar.copied")}</span>}
     {copyError && <p role="alert" className="absolute top-full left-0 z-40 w-64 rounded-xl bg-surface p-3 text-small">{t(mutation.error instanceof CommunityError && mutation.error.code === "accountRequired" ? "community.accountRequired" : "community.unavailable")}</p>}
   </div>;

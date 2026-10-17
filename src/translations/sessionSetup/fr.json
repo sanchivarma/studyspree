@@ -1,0 +1,15 @@
+{
+  "sessionSetup": {
+    "title": "Titre de la séance",
+    "rules": "Règles de la séance (facultatif)",
+    "visibility": "Visibilité de la séance",
+    "public": "Public",
+    "private": "Privé",
+    "publicSessions": "Séances publiques",
+    "empty": "Aucune séance publique n’est en cours.",
+    "previewPublic": "Les séances publiques nécessitent un compte enregistré. L’étude privée est disponible dans cet aperçu.",
+    "inviteCopy": "Inviter des personnes à cette séance — copier le lien",
+    "defaultTitle": "Séance d’étude",
+    "needTitle": "Saisissez un titre de séance."
+  }
+}

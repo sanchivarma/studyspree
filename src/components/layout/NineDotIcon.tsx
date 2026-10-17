@@ -1,0 +1,1 @@
+export function NineDotIcon(){return <svg aria-hidden="true" viewBox="0 0 24 24" className="block size-5 shrink-0" fill="currentColor">{[6,12,18].flatMap(y=>[6,12,18].map(x=><circle key={`${x}-${y}`} cx={x} cy={y} r={1.5}/>))}</svg>;}

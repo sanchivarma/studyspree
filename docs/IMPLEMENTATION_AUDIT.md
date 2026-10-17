@@ -2,6 +2,17 @@
 
 Audit date: 17 October 2026. Source baseline: commit `60b1f17`.
 
+**Implementation follow-up in progress:** the table below is the original baseline
+audit, not a fresh audit of the current working tree. Subsequent work adds stable
+social cursors, local room pins, participant paging, feed retry IDs, append-only
+status events, all three achievement kinds, scheduling metadata/editing, REST
+aliases, feature entitlements and signed billing boundaries. Public/private titled
+sessions and dismissible shared-feature drawers are also implemented. Current
+verification reaches 396 unit tests and 248 local database assertions. Exact
+contract reconciliation and the complete real-account browser journeys remain
+outstanding; the earlier local magic-link problem still prevents claiming those
+journeys passed. No payment provider or external invitation delivery is activated.
+
 The previous statement that all 17 prompts were complete was too broad.
 All categories have code, but several requirements are absent or implemented
 with narrower semantics. Passing existing tests does not establish coverage

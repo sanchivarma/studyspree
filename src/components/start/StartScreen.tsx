@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import {useAccountMode} from "@/hooks/useAccountMode";
 import { useRouter } from "next/navigation";
 import { Shuffle, Users, X } from "lucide-react";
 import { CompanionModePicker } from "@/components/characters/CompanionModePicker";
@@ -29,8 +30,13 @@ const durations = [5, 15, 25, 50, "open"] as const;
 export function StartScreen({ displayName, initialHour, initialMode }: { displayName: string; initialHour: number; initialMode?: "solo" | "characters" }) {
   const router = useRouter();
   const { t } = useTranslation();
+  const accountMode=useAccountMode();
+  const [visibility,setVisibility]=useState<"public"|"private">("private");
+  const titleRef=useRef<HTMLInputElement>(null);
+  const rulesRef=useRef<HTMLTextAreaElement>(null);
+  const [titleError,setTitleError]=useState(false);
   const active = useActiveSession();
-  const roomSession=Boolean(active.data&&["people","mixed"].includes(active.data.companions.mode));
+  const roomSession=Boolean(active.data&&(["people","mixed"].includes(active.data.companions.mode)||active.data.visibility==="public"));
   const dashboard=useDashboard(roomSession);
   const profile = useProfile();
   const recent = useRecentSession();
@@ -54,12 +60,14 @@ export function StartScreen({ displayName, initialHour, initialMode }: { display
   const taskRef = useRef<HTMLInputElement>(null);
   const startSession = useCallback(() => {
     if (starting.current || isPending) return;
-    starting.current = true;
+    const title=titleRef.current?.value.trim();
+    if(!title){setTitleError(true);titleRef.current?.focus();return;}
+    setTitleError(false);starting.current = true;
     const task = taskRef.current?.value.trim();
-    mutate({ plannedMinutes: selectedDuration, themeSlug: slug, task: task || null, companions }, {
+    mutate({ plannedMinutes: selectedDuration, themeSlug: slug, task: task || null, companions,title,rules:rulesRef.current?.value.trim()||null,visibility }, {
       onSettled: () => { starting.current = false; },
     });
-  }, [mutate, isPending, selectedDuration, slug, companions]);
+  }, [mutate, isPending, selectedDuration, slug, companions,visibility]);
   const hour = useCurrentHour(initialHour);
   const greeting = t(hour < 12 ? "home.morning" : hour < 18 ? "home.afternoon" : "home.evening", { username: profile.data?.displayName || displayName });
   const style = { "--accent": getTheme(slug).accentColor } as CSSProperties;
@@ -121,6 +129,10 @@ export function StartScreen({ displayName, initialHour, initialMode }: { display
           </SheetContent>
         </Sheet>
 
+        <label className="mb-3 block text-small">{t("sessionSetup.title")}<input ref={titleRef} aria-label={t("sessionSetup.title")} defaultValue={t("sessionSetup.defaultTitle")} required maxLength={100} className="mt-1 min-h-11 w-full rounded-xl border border-border bg-background/40 px-3"/></label>
+        <label className="mb-3 block text-small">{t("sessionSetup.rules")}<textarea ref={rulesRef} rows={2} maxLength={2000} className="mt-1 w-full rounded-xl border border-border bg-background/40 px-3 py-2"/></label>
+        <fieldset className="mb-4"><legend className="text-small">{t("sessionSetup.visibility")}</legend><div className="flex flex-wrap gap-4">{(["private","public"]as const).map(value=><label key={value} className="flex min-h-11 items-center gap-2"><input type="radio" name="sessionVisibility" value={value} checked={visibility===value} disabled={value==="public"&&accountMode==="preview"} onChange={()=>setVisibility(value)}/>{t(`sessionSetup.${value}`)}</label>)}</div>{accountMode==="preview"&&<p className="text-small text-text-muted">{t("sessionSetup.previewPublic")}</p>}</fieldset>
+        {titleError&&<p role="alert">{t("sessionSetup.needTitle")}</p>}
         <fieldset className="mb-4">
           <legend className="sr-only">{t("study.duration")}</legend>
           <div className="grid grid-cols-[2fr_repeat(4,minmax(0,1fr))] gap-1.5">

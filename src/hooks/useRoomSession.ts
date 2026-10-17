@@ -11,7 +11,7 @@ export function useRoomSession(id:string,joined:boolean,themeSlug:string,charact
   await communityRepository.mutate({action:"room.join",data:{id,goal}});
   try{
    const companions={mode:characters.length?"mixed" as const:"people" as const,characterSlugs:characters};
-   const session=await repo.startSession({plannedMinutes:null,themeSlug,task:goal.trim()||null,companions});
+   const session=await repo.startSession({plannedMinutes:null,themeSlug,task:goal.trim()||null,companions,roomId:id});
    await repo.updateSessionCompanions(session.id,companions);
   }catch(error){await communityRepository.mutate({action:"room.leave",data:{id}});throw error;}
  },onSuccess:()=>{void cache.invalidateQueries({queryKey:queryKeys.community.all()});void cache.invalidateQueries({queryKey:queryKeys.activeSession()});}});

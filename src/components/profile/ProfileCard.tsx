@@ -2,10 +2,13 @@
 /* eslint-disable @next/next/no-img-element -- Private media requires authenticated, no-store requests. */
 import { useTranslation } from "@/hooks/useTranslation";
 import type { PublicProfile } from "@/lib/profiles/schemas";
+import {achievementDefinitions} from '@/lib/achievements/registry';
+import type {TranslationKey} from '@/translations';
 
 export function ProfileCard({ profile }: { profile: PublicProfile }) {
   const { t, locale } = useTranslation();
   const media = (path: string) => `/api/profile-media/${path}`;
+  const badge=achievementDefinitions.find(d=>d.id===profile.highestBadgeId);
   return <article className="overflow-hidden rounded-2xl border border-border bg-surface">
     <div className="relative aspect-[3/1] bg-accent/15">
       {profile.bannerPath && <img src={media(profile.bannerPath)} alt="" className="absolute inset-0 size-full object-cover" onError={event => { event.currentTarget.hidden = true; }} />}
@@ -19,6 +22,7 @@ export function ProfileCard({ profile }: { profile: PublicProfile }) {
         <div className="min-w-0"><h2 className="break-words text-xl font-semibold">{profile.displayName || profile.username}</h2><p className="break-words text-small text-text-muted">@{profile.username}</p></div>
       </div>
       {(profile.countryCode || profile.occupation) && <p className="text-small text-text-muted">{[profile.countryCode ? new Intl.DisplayNames([locale], { type: "region" }).of(profile.countryCode) : "", profile.occupation].filter(Boolean).join(" · ")}</p>}
+      {badge&&<p className="text-small text-accent">{t('roadmap.highestBadge')}: {t(badge.nameKey as TranslationKey,{n:badge.kind==='study-seconds'?badge.threshold/3600:badge.threshold})}</p>}
       {profile.bio && <p className="whitespace-pre-wrap break-words">{profile.bio}</p>}
       {(["interests", "lookingFor"] as const).map(field => profile[field].length > 0 && <div key={field}>
         <h3 className="mb-2 text-small text-text-muted">{t(`profile.${field}`)}</h3>

@@ -9,5 +9,5 @@ export function InviteScreen({ token }: {
     const { t } = useTranslation();
     const mutation = useCommunityMutation();
     const router = useRouter();
-    return <section className="mx-auto max-w-lg space-y-5 px-6 pt-24"><h1 className="text-title">{t("community.acceptInvite")}</h1><p>{t("community.sharingNotice")}</p><button className={buttonClass} disabled={mutation.isPending} onClick={() => mutation.mutate({ action: "room.accept", data: { token } }, { onSuccess: value => router.push(`/rooms/${value.id}`) })}>{t("community.acceptInvite")}</button>{mutation.isError && <p role="alert">{t("community.inviteUnavailable")}</p>}</section>;
+    return <section className="mx-auto max-w-lg space-y-5 px-6 pt-24"><h1 className="text-title">{t("community.acceptInvite")}</h1><p>{t("community.sharingNotice")}</p><button className={buttonClass} disabled={mutation.isPending} onClick={() => mutation.mutate({ action: "invite.accept", data: { token } }, { onSuccess: value => router.push(`/${value.kind === "group" ? "groups" : "rooms"}/${value.id}`) })}>{t("community.acceptInvite")}</button>{mutation.isError && <p role="alert">{t("community.inviteUnavailable")}</p>}</section>;
 }

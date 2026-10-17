@@ -1,12 +1,24 @@
 {
   "ambience": {
+    "effectVolume": "{effect} volume",
+    "radioOff": "Turn off radio",
     "label": "Ambience",
-    "music": "Music",
-    "room": "Room sound",
+    "music": "Music Volume",
+    "room": "Background effects volume",
     "tracks": "Music tracks",
     "off": "Off",
     "silentTrack": "Silent preview",
     "stillWater": "Still Water",
-    "originalNote": "Original ambient sounds. Choose a comfortable volume."
+    "originalNote": "Mix background effects at a comfortable volume.",
+    "effects": "Background effects",
+    "radios": "Online radio",
+    "cafe": "Cafe background",
+    "wind": "Wind",
+    "rain": "Rain",
+    "thunderstorm": "Thunderstorm",
+    "brown-noise": "Brown noise",
+    "white-noise": "White noise",
+    "playerVolume": "Use the radio player's volume control below. Press play to listen.",
+    "stationWebsite": "Station website"
   }
 }

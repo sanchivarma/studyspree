@@ -1,0 +1,15 @@
+{
+  "sessionSetup": {
+    "title": "Titolo della sessione",
+    "rules": "Regole della sessione (facoltativo)",
+    "visibility": "Visibilità della sessione",
+    "public": "Pubblica",
+    "private": "Privata",
+    "publicSessions": "Sessioni pubbliche",
+    "empty": "Al momento non ci sono sessioni pubbliche in corso.",
+    "previewPublic": "Le sessioni pubbliche richiedono un account registrato. Lo studio privato è disponibile in questa anteprima.",
+    "inviteCopy": "Invita persone a questa sessione — copia link",
+    "defaultTitle": "Sessione di studio",
+    "needTitle": "Inserisci un titolo per la sessione."
+  }
+}

@@ -98,10 +98,10 @@ test("saved profile and previous duration are read without overriding a user cho
   await expect(page.getByRole("button", { name: "15 min", exact: true })).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByText(/Alex\./)).toBeVisible();
   await page.getByRole("button", { name: "25 min", exact: true }).click();
-  await page.getByRole("textbox").fill("Notes");
+  await page.getByPlaceholder("What are you working on? (optional)").fill("Notes");
   await page.keyboard.press("Enter");
   await expect(page).toHaveURL(/\/study$/);
-  await page.getByRole("textbox").evaluate((input) => (input as HTMLInputElement).blur());
+  await page.getByPlaceholder("What are you working on? (optional)").evaluate((input) => (input as HTMLInputElement).blur());
   await page.keyboard.press("Space");
   await expect(page.getByTestId("session-screen")).toBeVisible();
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem("ss_sessions")!).at(-1))).toMatchObject({ plannedMinutes: 25, themeSlug: "night-shift", task: "Notes" });

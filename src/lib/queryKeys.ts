@@ -1,6 +1,11 @@
 export const queryKeys = {
+  entitlements: () => ["entitlements"] as const,
+  delivery: () => ["community-delivery"] as const,
   community:{all:()=>["community"] as const,read:(area:string,query:object)=>["community",area,query] as const},
   achievements: () => ["achievements"] as const,
+  earnedAchievements: () => ["achievements", "all-kinds"] as const,
+  characterHistory: () => ["stats", "character-history"] as const,
+  tileHistory: () => ["personalTile", "history"] as const,
   personalTile: () => ["personalTile"] as const,
   directory: {
     all: () => ["directory"] as const,

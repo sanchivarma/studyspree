@@ -77,6 +77,32 @@ export type Database = {
                     }
                 ];
             };
+            "achievement_definitions": {
+                Row: {
+                    "description_key": string;
+                    "id": string;
+                    "kind": string;
+                    "name_key": string;
+                    "threshold": number;
+                };
+                ComputedFields: never;
+                Insert: {
+                    "description_key": string;
+                    "id": string;
+                    "kind": string;
+                    "name_key": string;
+                    "threshold": number;
+                };
+                Update: {
+                    "description_key"?: string;
+                    "id"?: string;
+                    "kind"?: string;
+                    "name_key"?: string;
+                    "threshold"?: number;
+                };
+                Relationships: [
+                ];
+            };
             "app_feedback": {
                 Row: {
                     "body": string;
@@ -168,35 +194,67 @@ export type Database = {
                     }
                 ];
             };
+            "billing_events": {
+                Row: {
+                    "event_id": string;
+                    "payload_hash": string;
+                    "processed_at": string;
+                    "provider": string;
+                };
+                ComputedFields: never;
+                Insert: {
+                    "event_id": string;
+                    "payload_hash": string;
+                    "processed_at"?: string;
+                    "provider": string;
+                };
+                Update: {
+                    "event_id"?: string;
+                    "payload_hash"?: string;
+                    "processed_at"?: string;
+                    "provider"?: string;
+                };
+                Relationships: [
+                ];
+            };
             "buddy_listings": {
                 Row: {
+                    "availability": string;
                     "body": string;
+                    "category": string;
                     "created_at": string;
                     "id": string;
                     "is_published": boolean;
                     "owner_id": string;
                     "subjects": (string)[];
+                    "timezone": string;
                     "title": string;
                     "updated_at": string;
                 };
                 ComputedFields: never;
                 Insert: {
+                    "availability"?: string;
                     "body": string;
+                    "category"?: string;
                     "created_at"?: string;
                     "id"?: string;
                     "is_published"?: boolean;
                     "owner_id": string;
                     "subjects"?: (string)[];
+                    "timezone"?: string;
                     "title": string;
                     "updated_at"?: string;
                 };
                 Update: {
+                    "availability"?: string;
                     "body"?: string;
+                    "category"?: string;
                     "created_at"?: string;
                     "id"?: string;
                     "is_published"?: boolean;
                     "owner_id"?: string;
                     "subjects"?: (string)[];
+                    "timezone"?: string;
                     "title"?: string;
                     "updated_at"?: string;
                 };
@@ -593,40 +651,80 @@ export type Database = {
                     }
                 ];
             };
+            "feature_entitlements": {
+                Row: {
+                    "enabled": boolean;
+                    "feature_key": string;
+                    "user_id": string;
+                    "valid_until": string | null;
+                };
+                ComputedFields: never;
+                Insert: {
+                    "enabled": boolean;
+                    "feature_key": string;
+                    "user_id": string;
+                    "valid_until"?: string | null;
+                };
+                Update: {
+                    "enabled"?: boolean;
+                    "feature_key"?: string;
+                    "user_id"?: string;
+                    "valid_until"?: string | null;
+                };
+                Relationships: [
+                    {
+                        foreignKeyName: "feature_entitlements_user_id_fkey";
+                        columns: [
+                            "user_id"
+                        ];
+                        isOneToOne: false;
+                        referencedRelation: "profiles";
+                        referencedColumns: [
+                            "id"
+                        ];
+                    }
+                ];
+            };
             "feed_posts": {
                 Row: {
                     "attachments": NonNullable<Json>;
                     "author_id": string;
                     "body": string;
+                    "client_id": string;
                     "created_at": string;
                     "edited_at": string | null;
                     "group_id": string | null;
                     "id": string;
                     "is_deleted": boolean;
                     "parent_id": string | null;
+                    "visibility": string;
                 };
                 ComputedFields: never;
                 Insert: {
                     "attachments"?: NonNullable<Json>;
                     "author_id": string;
                     "body": string;
+                    "client_id"?: string;
                     "created_at"?: string;
                     "edited_at"?: string | null;
                     "group_id"?: string | null;
                     "id"?: string;
                     "is_deleted"?: boolean;
                     "parent_id"?: string | null;
+                    "visibility"?: string;
                 };
                 Update: {
                     "attachments"?: NonNullable<Json>;
                     "author_id"?: string;
                     "body"?: string;
+                    "client_id"?: string;
                     "created_at"?: string;
                     "edited_at"?: string | null;
                     "group_id"?: string | null;
                     "id"?: string;
                     "is_deleted"?: boolean;
                     "parent_id"?: string | null;
+                    "visibility"?: string;
                 };
                 Relationships: [
                     {
@@ -658,6 +756,57 @@ export type Database = {
                         ];
                         isOneToOne: false;
                         referencedRelation: "feed_posts";
+                        referencedColumns: [
+                            "id"
+                        ];
+                    }
+                ];
+            };
+            "group_invitations": {
+                Row: {
+                    "created_by": string;
+                    "expires_at": string;
+                    "group_id": string;
+                    "id": string;
+                    "revoked_at": string | null;
+                    "token_hash": string;
+                };
+                ComputedFields: never;
+                Insert: {
+                    "created_by": string;
+                    "expires_at": string;
+                    "group_id": string;
+                    "id"?: string;
+                    "revoked_at"?: string | null;
+                    "token_hash": string;
+                };
+                Update: {
+                    "created_by"?: string;
+                    "expires_at"?: string;
+                    "group_id"?: string;
+                    "id"?: string;
+                    "revoked_at"?: string | null;
+                    "token_hash"?: string;
+                };
+                Relationships: [
+                    {
+                        foreignKeyName: "group_invitations_created_by_fkey";
+                        columns: [
+                            "created_by"
+                        ];
+                        isOneToOne: false;
+                        referencedRelation: "profiles";
+                        referencedColumns: [
+                            "id"
+                        ];
+                    },
+                    {
+                        foreignKeyName: "group_invitations_group_id_fkey";
+                        columns: [
+                            "group_id"
+                        ];
+                        isOneToOne: false;
+                        referencedRelation: "study_groups";
                         referencedColumns: [
                             "id"
                         ];
@@ -822,17 +971,20 @@ export type Database = {
             };
             "post_reactions": {
                 Row: {
+                    "created_at": string;
                     "emoji": string;
                     "post_id": string;
                     "user_id": string;
                 };
                 ComputedFields: never;
                 Insert: {
+                    "created_at"?: string;
                     "emoji": string;
                     "post_id": string;
                     "user_id": string;
                 };
                 Update: {
+                    "created_at"?: string;
                     "emoji"?: string;
                     "post_id"?: string;
                     "user_id"?: string;
@@ -959,14 +1111,50 @@ export type Database = {
                     }
                 ];
             };
+            "profile_status_events": {
+                Row: {
+                    "created_at": string;
+                    "id": string;
+                    "text": string;
+                    "user_id": string;
+                };
+                ComputedFields: never;
+                Insert: {
+                    "created_at"?: string;
+                    "id"?: string;
+                    "text": string;
+                    "user_id": string;
+                };
+                Update: {
+                    "created_at"?: string;
+                    "id"?: string;
+                    "text"?: string;
+                    "user_id"?: string;
+                };
+                Relationships: [
+                    {
+                        foreignKeyName: "profile_status_events_user_id_fkey";
+                        columns: [
+                            "user_id"
+                        ];
+                        isOneToOne: false;
+                        referencedRelation: "profiles";
+                        referencedColumns: [
+                            "id"
+                        ];
+                    }
+                ];
+            };
             "profiles": {
                 Row: {
                     "allow_direct_messages": boolean;
                     "ambience_enabled": boolean;
+                    "background_effects": NonNullable<Json>;
                     "comeback_shown_for_date": string | null;
                     "companion_preferences": NonNullable<Json>;
                     "created_at": string;
                     "display_name": string;
+                    "effect_volumes": NonNullable<Json>;
                     "first_name": string;
                     "id": string;
                     "last_name": string;
@@ -978,6 +1166,7 @@ export type Database = {
                     "reduce_motion": boolean;
                     "room_volume": number;
                     "selected_theme": string;
+                    "share_presence": boolean;
                     "show_streak": boolean;
                     "timezone": string;
                     "username": string;
@@ -988,10 +1177,12 @@ export type Database = {
                 Insert: {
                     "allow_direct_messages"?: boolean;
                     "ambience_enabled"?: boolean;
+                    "background_effects"?: NonNullable<Json>;
                     "comeback_shown_for_date"?: string | null;
                     "companion_preferences"?: NonNullable<Json>;
                     "created_at"?: string;
                     "display_name"?: string;
+                    "effect_volumes"?: NonNullable<Json>;
                     "first_name"?: string;
                     "id": string;
                     "last_name"?: string;
@@ -1003,6 +1194,7 @@ export type Database = {
                     "reduce_motion"?: boolean;
                     "room_volume"?: number;
                     "selected_theme"?: string;
+                    "share_presence"?: boolean;
                     "show_streak"?: boolean;
                     "timezone"?: string;
                     "username": string;
@@ -1012,10 +1204,12 @@ export type Database = {
                 Update: {
                     "allow_direct_messages"?: boolean;
                     "ambience_enabled"?: boolean;
+                    "background_effects"?: NonNullable<Json>;
                     "comeback_shown_for_date"?: string | null;
                     "companion_preferences"?: NonNullable<Json>;
                     "created_at"?: string;
                     "display_name"?: string;
+                    "effect_volumes"?: NonNullable<Json>;
                     "first_name"?: string;
                     "id"?: string;
                     "last_name"?: string;
@@ -1027,6 +1221,7 @@ export type Database = {
                     "reduce_motion"?: boolean;
                     "room_volume"?: number;
                     "selected_theme"?: string;
+                    "share_presence"?: boolean;
                     "show_streak"?: boolean;
                     "timezone"?: string;
                     "username"?: string;
@@ -1101,6 +1296,17 @@ export type Database = {
                         referencedColumns: [
                             "id"
                         ];
+                    },
+                    {
+                        foreignKeyName: "room_chat_messages_visit_id_fkey";
+                        columns: [
+                            "visit_id"
+                        ];
+                        isOneToOne: false;
+                        referencedRelation: "usage_intervals";
+                        referencedColumns: [
+                            "id"
+                        ];
                     }
                 ];
             };
@@ -1110,6 +1316,7 @@ export type Database = {
                     "expires_at": string;
                     "id": string;
                     "remaining_uses": number;
+                    "revoked_at": string | null;
                     "room_id": string;
                     "token_hash": string;
                 };
@@ -1119,6 +1326,7 @@ export type Database = {
                     "expires_at": string;
                     "id"?: string;
                     "remaining_uses": number;
+                    "revoked_at"?: string | null;
                     "room_id": string;
                     "token_hash": string;
                 };
@@ -1127,6 +1335,7 @@ export type Database = {
                     "expires_at"?: string;
                     "id"?: string;
                     "remaining_uses"?: number;
+                    "revoked_at"?: string | null;
                     "room_id"?: string;
                     "token_hash"?: string;
                 };
@@ -1391,38 +1600,47 @@ export type Database = {
             "scheduled_sessions": {
                 Row: {
                     "capacity": number;
+                    "character_slugs": NonNullable<Json>;
                     "created_at": string;
                     "creator_id": string;
                     "ends_at": string;
                     "id": string;
                     "is_cancelled": boolean;
                     "minutes": number;
-                    "room_id": string;
+                    "mode": string;
+                    "room_id": string | null;
+                    "scheduling_timezone": string;
                     "starts_at": string;
                     "title": string;
                 };
                 ComputedFields: never;
                 Insert: {
                     "capacity": number;
+                    "character_slugs"?: NonNullable<Json>;
                     "created_at"?: string;
                     "creator_id": string;
                     "ends_at": string;
                     "id"?: string;
                     "is_cancelled"?: boolean;
                     "minutes": number;
-                    "room_id": string;
+                    "mode"?: string;
+                    "room_id"?: string | null;
+                    "scheduling_timezone"?: string;
                     "starts_at": string;
                     "title": string;
                 };
                 Update: {
                     "capacity"?: number;
+                    "character_slugs"?: NonNullable<Json>;
                     "created_at"?: string;
                     "creator_id"?: string;
                     "ends_at"?: string;
                     "id"?: string;
                     "is_cancelled"?: boolean;
                     "minutes"?: number;
-                    "room_id"?: string;
+                    "mode"?: string;
+                    "room_id"?: string | null;
+                    "scheduling_timezone"?: string;
                     "starts_at"?: string;
                     "title"?: string;
                 };
@@ -1504,12 +1722,17 @@ export type Database = {
                     "last_heartbeat_at": string;
                     "local_date": string;
                     "planned_minutes": number | null;
+                    "room_id": string | null;
+                    "rules": string | null;
                     "shared_room_id": string | null;
                     "started_at": string;
                     "streak_changed": boolean;
                     "task": string | null;
                     "theme_slug": string;
+                    "title": string;
+                    "title_explicit": boolean;
                     "user_id": string;
+                    "visibility": string;
                 };
                 ComputedFields: never;
                 Insert: {
@@ -1522,12 +1745,17 @@ export type Database = {
                     "last_heartbeat_at"?: string;
                     "local_date": string;
                     "planned_minutes"?: number | null;
+                    "room_id"?: string | null;
+                    "rules"?: string | null;
                     "shared_room_id"?: string | null;
                     "started_at"?: string;
                     "streak_changed"?: boolean;
                     "task"?: string | null;
                     "theme_slug"?: string;
+                    "title"?: string;
+                    "title_explicit"?: boolean;
                     "user_id": string;
+                    "visibility"?: string;
                 };
                 Update: {
                     "actual_seconds"?: number;
@@ -1539,14 +1767,30 @@ export type Database = {
                     "last_heartbeat_at"?: string;
                     "local_date"?: string;
                     "planned_minutes"?: number | null;
+                    "room_id"?: string | null;
+                    "rules"?: string | null;
                     "shared_room_id"?: string | null;
                     "started_at"?: string;
                     "streak_changed"?: boolean;
                     "task"?: string | null;
                     "theme_slug"?: string;
+                    "title"?: string;
+                    "title_explicit"?: boolean;
                     "user_id"?: string;
+                    "visibility"?: string;
                 };
                 Relationships: [
+                    {
+                        foreignKeyName: "sessions_room_id_fkey";
+                        columns: [
+                            "room_id"
+                        ];
+                        isOneToOne: false;
+                        referencedRelation: "study_rooms";
+                        referencedColumns: [
+                            "id"
+                        ];
+                    },
                     {
                         foreignKeyName: "sessions_shared_room_id_fkey";
                         columns: [
@@ -1711,6 +1955,9 @@ export type Database = {
                     "is_private": boolean;
                     "name": string;
                     "owner_id": string;
+                    "session_rules": string | null;
+                    "source_session_id": string | null;
+                    "visibility": string;
                 };
                 ComputedFields: never;
                 Insert: {
@@ -1724,6 +1971,9 @@ export type Database = {
                     "is_private"?: boolean;
                     "name": string;
                     "owner_id": string;
+                    "session_rules"?: string | null;
+                    "source_session_id"?: string | null;
+                    "visibility"?: string;
                 };
                 Update: {
                     "capacity"?: number;
@@ -1736,6 +1986,9 @@ export type Database = {
                     "is_private"?: boolean;
                     "name"?: string;
                     "owner_id"?: string;
+                    "session_rules"?: string | null;
+                    "source_session_id"?: string | null;
+                    "visibility"?: string;
                 };
                 Relationships: [
                     {
@@ -1759,6 +2012,17 @@ export type Database = {
                         referencedColumns: [
                             "id"
                         ];
+                    },
+                    {
+                        foreignKeyName: "study_rooms_source_session_id_fkey";
+                        columns: [
+                            "source_session_id"
+                        ];
+                        isOneToOne: true;
+                        referencedRelation: "sessions";
+                        referencedColumns: [
+                            "id"
+                        ];
                     }
                 ];
             };
@@ -1768,6 +2032,7 @@ export type Database = {
                     "due_date": string;
                     "id": string;
                     "is_done": boolean;
+                    "position": number;
                     "title": string;
                     "user_id": string;
                 };
@@ -1777,6 +2042,7 @@ export type Database = {
                     "due_date": string;
                     "id"?: string;
                     "is_done"?: boolean;
+                    "position"?: number;
                     "title": string;
                     "user_id": string;
                 };
@@ -1785,6 +2051,7 @@ export type Database = {
                     "due_date"?: string;
                     "id"?: string;
                     "is_done"?: boolean;
+                    "position"?: number;
                     "title"?: string;
                     "user_id"?: string;
                 };
@@ -1804,19 +2071,33 @@ export type Database = {
             };
             "thread_members": {
                 Row: {
+                    "last_read_message_id": string | null;
                     "thread_id": string;
                     "user_id": string;
                 };
                 ComputedFields: never;
                 Insert: {
+                    "last_read_message_id"?: string | null;
                     "thread_id": string;
                     "user_id": string;
                 };
                 Update: {
+                    "last_read_message_id"?: string | null;
                     "thread_id"?: string;
                     "user_id"?: string;
                 };
                 Relationships: [
+                    {
+                        foreignKeyName: "thread_members_last_read_message_id_fkey";
+                        columns: [
+                            "last_read_message_id"
+                        ];
+                        isOneToOne: false;
+                        referencedRelation: "chat_messages";
+                        referencedColumns: [
+                            "id"
+                        ];
+                    },
                     {
                         foreignKeyName: "thread_members_thread_id_fkey";
                         columns: [
@@ -1830,6 +2111,85 @@ export type Database = {
                     },
                     {
                         foreignKeyName: "thread_members_user_id_fkey";
+                        columns: [
+                            "user_id"
+                        ];
+                        isOneToOne: false;
+                        referencedRelation: "profiles";
+                        referencedColumns: [
+                            "id"
+                        ];
+                    }
+                ];
+            };
+            "usage_events": {
+                Row: {
+                    "created_at": string;
+                    "id": string;
+                    "idempotency_key": string;
+                    "resource": string;
+                    "user_id": string;
+                };
+                ComputedFields: never;
+                Insert: {
+                    "created_at"?: string;
+                    "id"?: string;
+                    "idempotency_key": string;
+                    "resource": string;
+                    "user_id": string;
+                };
+                Update: {
+                    "created_at"?: string;
+                    "id"?: string;
+                    "idempotency_key"?: string;
+                    "resource"?: string;
+                    "user_id"?: string;
+                };
+                Relationships: [
+                    {
+                        foreignKeyName: "usage_events_user_id_fkey";
+                        columns: [
+                            "user_id"
+                        ];
+                        isOneToOne: false;
+                        referencedRelation: "profiles";
+                        referencedColumns: [
+                            "id"
+                        ];
+                    }
+                ];
+            };
+            "user_achievements": {
+                Row: {
+                    "achievement_id": string;
+                    "earned_at": string;
+                    "user_id": string;
+                };
+                ComputedFields: never;
+                Insert: {
+                    "achievement_id": string;
+                    "earned_at"?: string;
+                    "user_id": string;
+                };
+                Update: {
+                    "achievement_id"?: string;
+                    "earned_at"?: string;
+                    "user_id"?: string;
+                };
+                Relationships: [
+                    {
+                        foreignKeyName: "user_achievements_achievement_id_fkey";
+                        columns: [
+                            "achievement_id"
+                        ];
+                        isOneToOne: false;
+                        referencedRelation: "achievement_definitions";
+                        referencedColumns: [
+                            "id"
+                        ];
+                    },
+                    {
+                        foreignKeyName: "user_achievements_user_id_fkey";
                         columns: [
                             "user_id"
                         ];
@@ -1885,9 +2245,57 @@ export type Database = {
             };
         };
         Views: {
-            [_ in never]: never;
+            "usage_intervals": {
+                Row: {
+                    "ended_at": string | null;
+                    "id": string | null;
+                    "resource": string | null;
+                    "started_at": string | null;
+                    "user_id": string | null;
+                };
+                ComputedFields: never;
+                Insert: {
+                    "ended_at"?: string | null;
+                    "id"?: string | null;
+                    "resource"?: never;
+                    "started_at"?: string | null;
+                    "user_id"?: string | null;
+                };
+                Update: {
+                    "ended_at"?: string | null;
+                    "id"?: string | null;
+                    "resource"?: never;
+                    "started_at"?: string | null;
+                    "user_id"?: string | null;
+                };
+                Relationships: [
+                    {
+                        foreignKeyName: "room_visits_user_id_fkey";
+                        columns: [
+                            "user_id"
+                        ];
+                        isOneToOne: false;
+                        referencedRelation: "profiles";
+                        referencedColumns: [
+                            "id"
+                        ];
+                    }
+                ];
+            };
         };
         Functions: {
+            "apply_billing_event": {
+                Args: {
+                    "p_enabled": boolean;
+                    "p_event": string;
+                    "p_feature": string;
+                    "p_hash": string;
+                    "p_provider": string;
+                    "p_user": string;
+                    "p_valid_until"?: string;
+                };
+                Returns: boolean;
+            };
             "apply_streak_activity": {
                 Args: {
                     "p_date": string;
@@ -1896,6 +2304,13 @@ export type Database = {
                 Returns: Json;
             };
             "calendar_mutate": {
+                Args: {
+                    "p_action": string;
+                    "p_data": Json;
+                };
+                Returns: Json;
+            };
+            "calendar_mutate_v39": {
                 Args: {
                     "p_action": string;
                     "p_data": Json;
@@ -1928,6 +2343,41 @@ export type Database = {
                 };
                 Returns: Json;
             };
+            "community_mutate_v27": {
+                Args: {
+                    "p_action": string;
+                    "p_data": Json;
+                };
+                Returns: Json;
+            };
+            "community_mutate_v29": {
+                Args: {
+                    "p_action": string;
+                    "p_data": Json;
+                };
+                Returns: Json;
+            };
+            "community_mutate_v31": {
+                Args: {
+                    "p_action": string;
+                    "p_data": Json;
+                };
+                Returns: Json;
+            };
+            "community_mutate_v35": {
+                Args: {
+                    "p_action": string;
+                    "p_data": Json;
+                };
+                Returns: Json;
+            };
+            "community_mutate_v38": {
+                Args: {
+                    "p_action": string;
+                    "p_data": Json;
+                };
+                Returns: Json;
+            };
             "community_read": {
                 Args: {
                     "p_area": string;
@@ -1936,6 +2386,34 @@ export type Database = {
                 Returns: Json;
             };
             "community_read_base": {
+                Args: {
+                    "p_area": string;
+                    "p_query"?: Json;
+                };
+                Returns: Json;
+            };
+            "community_read_v27": {
+                Args: {
+                    "p_area": string;
+                    "p_query"?: Json;
+                };
+                Returns: Json;
+            };
+            "community_read_v29": {
+                Args: {
+                    "p_area": string;
+                    "p_query"?: Json;
+                };
+                Returns: Json;
+            };
+            "community_read_v37": {
+                Args: {
+                    "p_area": string;
+                    "p_query"?: Json;
+                };
+                Returns: Json;
+            };
+            "community_read_v39": {
                 Args: {
                     "p_area": string;
                     "p_query"?: Json;
@@ -1963,12 +2441,17 @@ export type Database = {
                     "last_heartbeat_at": string;
                     "local_date": string;
                     "planned_minutes": number | null;
+                    "room_id": string | null;
+                    "rules": string | null;
                     "shared_room_id": string | null;
                     "started_at": string;
                     "streak_changed": boolean;
                     "task": string | null;
                     "theme_slug": string;
+                    "title": string;
+                    "title_explicit": boolean;
                     "user_id": string;
+                    "visibility": string;
                 };
                 SetofOptions: {
                     from: "*";
@@ -2002,13 +2485,48 @@ export type Database = {
                 };
                 Returns: Json;
             };
+            "read_character_history": {
+                Args: Record<PropertyKey, never>;
+                Returns: Json;
+            };
+            "read_entitlements": {
+                Args: Record<PropertyKey, never>;
+                Returns: Json;
+            };
             "read_room_chat": {
                 Args: {
                     "p_room": string;
                 };
                 Returns: Json;
             };
+            "read_room_participants": {
+                Args: {
+                    "p_cursor"?: string;
+                    "p_limit"?: number;
+                    "p_room": string;
+                };
+                Returns: Json;
+            };
+            "read_tile_history": {
+                Args: {
+                    "p_cursor"?: string;
+                    "p_limit"?: number;
+                };
+                Returns: Json;
+            };
             "read_visible_profile": {
+                Args: {
+                    "p_username": string;
+                };
+                Returns: Json;
+            };
+            "read_visible_profile_by_id": {
+                Args: {
+                    "p_id": string;
+                };
+                Returns: Json;
+            };
+            "read_visible_profile_v38": {
                 Args: {
                     "p_username": string;
                 };
@@ -2029,6 +2547,83 @@ export type Database = {
                 };
                 Returns: Json;
             };
+            "start_room_session": {
+                Args: {
+                    "p_companions": Json;
+                    "p_minutes": number;
+                    "p_room": string;
+                    "p_task": string;
+                    "p_theme": string;
+                };
+                Returns: {
+                    "actual_seconds": number;
+                    "companions": NonNullable<Json>;
+                    "ended_at": string | null;
+                    "ended_reason": string | null;
+                    "freeze_used": boolean;
+                    "id": string;
+                    "last_heartbeat_at": string;
+                    "local_date": string;
+                    "planned_minutes": number | null;
+                    "room_id": string | null;
+                    "rules": string | null;
+                    "shared_room_id": string | null;
+                    "started_at": string;
+                    "streak_changed": boolean;
+                    "task": string | null;
+                    "theme_slug": string;
+                    "title": string;
+                    "title_explicit": boolean;
+                    "user_id": string;
+                    "visibility": string;
+                };
+                SetofOptions: {
+                    from: "*";
+                    to: "sessions";
+                    isOneToOne: true;
+                    isSetofReturn: false;
+                };
+            };
+            "start_session_with_details": {
+                Args: {
+                    "p_companions": Json;
+                    "p_minutes": number;
+                    "p_room"?: string;
+                    "p_rules": string;
+                    "p_task": string;
+                    "p_theme": string;
+                    "p_title": string;
+                    "p_visibility": string;
+                };
+                Returns: {
+                    "actual_seconds": number;
+                    "companions": NonNullable<Json>;
+                    "ended_at": string | null;
+                    "ended_reason": string | null;
+                    "freeze_used": boolean;
+                    "id": string;
+                    "last_heartbeat_at": string;
+                    "local_date": string;
+                    "planned_minutes": number | null;
+                    "room_id": string | null;
+                    "rules": string | null;
+                    "shared_room_id": string | null;
+                    "started_at": string;
+                    "streak_changed": boolean;
+                    "task": string | null;
+                    "theme_slug": string;
+                    "title": string;
+                    "title_explicit": boolean;
+                    "user_id": string;
+                    "visibility": string;
+                };
+                SetofOptions: {
+                    from: "*";
+                    to: "sessions";
+                    isOneToOne: true;
+                    isSetofReturn: false;
+                };
+            };
             "start_study_session": {
                 Args: {
                     "p_companions": Json;
@@ -2046,12 +2641,17 @@ export type Database = {
                     "last_heartbeat_at": string;
                     "local_date": string;
                     "planned_minutes": number | null;
+                    "room_id": string | null;
+                    "rules": string | null;
                     "shared_room_id": string | null;
                     "started_at": string;
                     "streak_changed": boolean;
                     "task": string | null;
                     "theme_slug": string;
+                    "title": string;
+                    "title_explicit": boolean;
                     "user_id": string;
+                    "visibility": string;
                 };
                 SetofOptions: {
                     from: "*";
@@ -2071,9 +2671,21 @@ export type Database = {
                 Args: Record<PropertyKey, never>;
                 Returns: Json;
             };
+            "update_personal_tile": {
+                Args: {
+                    "p_patch": Json;
+                };
+                Returns: Json;
+            };
             "valid_companion_selection": {
                 Args: {
                     "selection": Json;
+                };
+                Returns: boolean;
+            };
+            "valid_effect_volumes": {
+                Args: {
+                    "value": Json;
                 };
                 Returns: boolean;
             };

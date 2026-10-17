@@ -1,0 +1,15 @@
+{
+  "sessionSetup": {
+    "title": "Session title",
+    "rules": "Session rules (optional)",
+    "visibility": "Session visibility",
+    "public": "Public",
+    "private": "Private",
+    "publicSessions": "Public sessions",
+    "empty": "No public sessions are running right now.",
+    "previewPublic": "Public sessions need a registered account. Private study is available in this preview.",
+    "inviteCopy": "Invite people to this session — copy link",
+    "defaultTitle": "Study session",
+    "needTitle": "Enter a session title."
+  }
+}

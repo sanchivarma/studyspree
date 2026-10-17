@@ -1,12 +1,24 @@
 {
   "ambience": {
+    "effectVolume": "Volume : {effect}",
+    "radioOff": "Éteindre la radio",
     "label": "Ambiance",
-    "music": "Musique",
-    "room": "Sons de la pièce",
+    "music": "Volume de la musique",
+    "room": "Volume des effets de fond",
     "tracks": "Pistes musicales",
     "off": "Désactivé",
     "silentTrack": "Aperçu silencieux",
     "stillWater": "Eau calme",
-    "originalNote": "Sons d’ambiance originaux. Choisissez un volume confortable."
+    "originalNote": "Mélangez les ambiances à un volume confortable.",
+    "effects": "Effets de fond",
+    "radios": "Radio en ligne",
+    "cafe": "Ambiance café",
+    "wind": "Vent",
+    "rain": "Pluie",
+    "thunderstorm": "Orage",
+    "brown-noise": "Bruit brun",
+    "white-noise": "Bruit blanc",
+    "playerVolume": "Utilisez le volume du lecteur radio ci-dessous. Lancez la lecture pour écouter.",
+    "stationWebsite": "Site de la station"
   }
 }

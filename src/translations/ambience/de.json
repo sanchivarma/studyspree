@@ -1,12 +1,24 @@
 {
   "ambience": {
+    "effectVolume": "Lautstärke: {effect}",
+    "radioOff": "Radio ausschalten",
     "label": "Atmosphäre",
-    "music": "Musik",
-    "room": "Raumklang",
+    "music": "Musiklautstärke",
+    "room": "Lautstärke der Hintergrundeffekte",
     "tracks": "Musiktitel",
     "off": "Aus",
     "silentTrack": "Stille Vorschau",
     "stillWater": "Stilles Wasser",
-    "originalNote": "Eigene Umgebungsklänge. Wähle eine angenehme Lautstärke."
+    "originalNote": "Mische Hintergrundklänge in angenehmer Lautstärke.",
+    "effects": "Hintergrundeffekte",
+    "radios": "Online-Radio",
+    "cafe": "Café-Atmosphäre",
+    "wind": "Wind",
+    "rain": "Regen",
+    "thunderstorm": "Gewitter",
+    "brown-noise": "Braunes Rauschen",
+    "white-noise": "Weißes Rauschen",
+    "playerVolume": "Nutze den Lautstärkeregler im Radio-Player unten. Drücke zum Hören auf Play.",
+    "stationWebsite": "Website des Senders"
   }
 }

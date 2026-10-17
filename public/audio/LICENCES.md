@@ -15,3 +15,14 @@ Files are immutable: use a new filename for a new version.
 | evening-outdoor-v1.webm | Original synthesized wind/insects; scripts/generate-default-media.mjs | CC0-1.0 | 2026-10-17 | yes | docs/audio/original-ambience-v1.md |
 | keyboard-room-v1.webm | Original synthesized key taps; scripts/generate-default-media.mjs | CC0-1.0 | 2026-10-17 | yes | docs/audio/original-ambience-v1.md |
 | still-water-v1.webm | Original ambient chord; scripts/generate-default-media.mjs | CC0-1.0 | 2026-10-17 | yes | docs/audio/original-ambience-v1.md |
+| effect-cafe-v1.wav | Original procedural synthesis; scripts/generate-background-effects.py | Original project asset; unrestricted commercial use | 2026-10-17 | yes | docs/BACKGROUND_EFFECTS_LICENCE.md |
+| effect-wind-v1.wav | Original procedural synthesis; scripts/generate-background-effects.py | Original project asset; unrestricted commercial use | 2026-10-17 | yes | docs/BACKGROUND_EFFECTS_LICENCE.md |
+| effect-rain-v1.wav | Original procedural synthesis; scripts/generate-background-effects.py | Original project asset; unrestricted commercial use | 2026-10-17 | yes | docs/BACKGROUND_EFFECTS_LICENCE.md |
+| effect-thunderstorm-v1.wav | Original procedural synthesis; scripts/generate-background-effects.py | Original project asset; unrestricted commercial use | 2026-10-17 | yes | docs/BACKGROUND_EFFECTS_LICENCE.md |
+| effect-brown-noise-v1.wav | Original procedural synthesis; scripts/generate-background-effects.py | Original project asset; unrestricted commercial use | 2026-10-17 | yes | docs/BACKGROUND_EFFECTS_LICENCE.md |
+| effect-white-noise-v1.wav | Original procedural synthesis; scripts/generate-background-effects.py | Original project asset; unrestricted commercial use | 2026-10-17 | yes | docs/BACKGROUND_EFFECTS_LICENCE.md |
+| effect-cafe-v2.mp3 | Freesound #332271 by evsecrets; HQ preview | CC0 1.0 | 2026-10-17 | yes | docs/FIELD_RECORDINGS_LICENCE.md |
+| effect-wind-v2.mp3 | Freesound #575380 by Cinetony; HQ preview | CC0 1.0 | 2026-10-17 | yes | docs/FIELD_RECORDINGS_LICENCE.md |
+| effect-rain-v2.mp3 | Freesound #406092 by Yin_Yang_Jake007; HQ preview | CC0 1.0 | 2026-10-17 | yes | docs/FIELD_RECORDINGS_LICENCE.md |
+| effect-thunderstorm-v2.mp3 | Freesound #278867 by Sandermotions; HQ preview | CC0 1.0 | 2026-10-17 | yes | docs/FIELD_RECORDINGS_LICENCE.md |
+| effect-rain-v3.mp3 | Freesound #217236 by roofusj; HQ preview | CC0 1.0 | 2026-10-17 | yes | docs/FIELD_RECORDINGS_LICENCE.md |

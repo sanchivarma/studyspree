@@ -9,16 +9,17 @@ export const socialSchema = z.object({ label: text(30).min(1), url: z.url().max(
 }) }).strict();
 export const profileEditSchema = z.object({
   displayName: text(100).min(1), bio: text(500), countryCode: z.string().regex(/^$|^[A-Z]{2}$/),
-  occupation: text(100), interests: tags, lookingFor: tags,
+  occupation: text(100), interests: tags, lookingFor: z.array(z.enum(["accountability", "study-buddy", "community"])).max(3).refine(values => new Set(values).size === values.length),
   socials: z.array(socialSchema).max(5), isPublic: z.boolean(),
 }).strict();
 export const mediaKindSchema = z.enum(["avatar", "banner"]);
 export const mediaPathSchema = z.string().regex(/^[0-9a-f-]{36}\/[0-9a-f-]{36}\.(png|jpg|webp)$/);
 export const publicProfileSchema = profileEditSchema.omit({ isPublic: true }).extend({
-  displayName: z.string().max(100),
+  displayName: z.string().max(100), lookingFor: tags,
   id: z.uuid(), username: usernameSchema, joinedAt: z.iso.datetime({ offset: true }),
   avatarPath: mediaPathSchema.nullable(), bannerPath: mediaPathSchema.nullable(),
   followers: z.number().int().nonnegative(), following: z.number().int().nonnegative(),
+  highestBadgeId:z.string().nullable().default(null),
   isFollowing: z.boolean(), isSelf: z.boolean(),
 }).strict();
 export const ownProfileSchema = publicProfileSchema.extend({ isPublic: z.boolean(), isLocal: z.boolean() });

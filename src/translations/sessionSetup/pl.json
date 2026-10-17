@@ -1,0 +1,15 @@
+{
+  "sessionSetup": {
+    "title": "Tytuł sesji",
+    "rules": "Zasady sesji (opcjonalnie)",
+    "visibility": "Widoczność sesji",
+    "public": "Publiczna",
+    "private": "Prywatna",
+    "publicSessions": "Publiczne sesje",
+    "empty": "Obecnie nie trwają żadne publiczne sesje.",
+    "previewPublic": "Sesje publiczne wymagają zarejestrowanego konta. W podglądzie dostępna jest nauka prywatna.",
+    "inviteCopy": "Zaproś osoby do sesji — kopiuj link",
+    "defaultTitle": "Sesja nauki",
+    "needTitle": "Wpisz tytuł sesji."
+  }
+}

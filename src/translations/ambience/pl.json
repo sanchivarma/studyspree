@@ -1,12 +1,24 @@
 {
   "ambience": {
+    "effectVolume": "Głośność: {effect}",
+    "radioOff": "Wyłącz radio",
     "label": "Atmosfera",
-    "music": "Muzyka",
-    "room": "Dźwięki otoczenia",
+    "music": "Głośność muzyki",
+    "room": "Głośność efektów tła",
     "tracks": "Utwory muzyczne",
     "off": "Wyłączone",
     "silentTrack": "Cichy podgląd",
     "stillWater": "Spokojna woda",
-    "originalNote": "Autorskie dźwięki otoczenia. Wybierz komfortową głośność."
+    "originalNote": "Łącz dźwięki tła przy komfortowej głośności.",
+    "effects": "Efekty tła",
+    "radios": "Radio internetowe",
+    "cafe": "Atmosfera kawiarni",
+    "wind": "Wiatr",
+    "rain": "Deszcz",
+    "thunderstorm": "Burza",
+    "brown-noise": "Szum brązowy",
+    "white-noise": "Szum biały",
+    "playerVolume": "Użyj regulacji głośności w odtwarzaczu radia poniżej. Włącz odtwarzanie, aby słuchać.",
+    "stationWebsite": "Strona stacji"
   }
 }

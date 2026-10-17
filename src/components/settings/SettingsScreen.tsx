@@ -12,7 +12,8 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useTimezones } from "@/hooks/useTimezones";
 import { getTheme } from "@/lib/themes/registry";
-import { musicTracks } from "@/lib/audio/catalog";
+import { BackgroundEffectsPicker } from "@/components/ambience/BackgroundEffectsPicker";
+import { radioStations } from "@/lib/audio/radio";
 import { PersonalTileSettings } from "./PersonalTileSettings";
 
 function PreferenceSwitch({ label, checked, disabled, reducedMotion, onChange }: {
@@ -85,15 +86,18 @@ export function SettingsScreen() {
         <input type="range" min="0" max="1" step="0.05" disabled={disabled} value={preferences?.musicVolume ?? 0}
           onChange={event => update.mutate({ musicVolume: Number(event.target.value) })} className="block h-11 w-full accent-accent" />
       </label>
+      <BackgroundEffectsPicker selected={preferences?.backgroundEffects ?? []} volumes={preferences?.effectVolumes ?? {}} disabled={disabled}
+        onSelectionChange={backgroundEffects => update.mutate({ backgroundEffects })}
+        onVolumeChange={(slug, volume) => update.mutate({ effectVolumes: { ...preferences?.effectVolumes, [slug]: volume } })} />
       <label className="mt-2 block text-small">{t("ambience.room")}
         <input type="range" min="0" max="1" step="0.05" disabled={disabled} value={preferences?.roomVolume ?? 0}
           onChange={event => update.mutate({ roomVolume: Number(event.target.value) })} className="block h-11 w-full accent-accent" />
       </label>
-      <label className="mt-2 block text-small">{t("ambience.tracks")}
+      <label className="mt-2 block text-small">{t("ambience.radios")}
         <select disabled={disabled} value={preferences?.musicTrack ?? ""} className={fieldClass}
-          onChange={event => update.mutate({ musicTrack: musicTracks.find(track => track.slug === event.target.value)?.slug ?? null })}>
+          onChange={event => { const value = event.target.value; const station = radioStations.find(station => `radio:${station.id}` === value); update.mutate({ musicTrack: station ? `radio:${station.id}` : null }); }}>
           <option value="">{t("ambience.off")}</option>
-          {musicTracks.map(track => <option key={track.slug} value={track.slug}>{t(track.labelKey)}</option>)}
+          {radioStations.map(station => <option key={station.id} value={`radio:${station.id}`}>{station.name}</option>)}
         </select>
       </label>
     </section>

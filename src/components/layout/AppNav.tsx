@@ -2,23 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, BookOpen, CalendarDays, ContactRound, Flame, Home, Settings, UserRound } from "lucide-react";
+import { Flame } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useProfile } from "@/hooks/useProfile";
 import { getTheme } from "@/lib/themes/registry";
 import type { CSSProperties } from "react";
 import { MoreNav } from "./MoreNav";
+import { navigationItems } from "@/lib/navigation/routes";
 
-const items = [
-  { label: "common.start", href: "/", icon: Home },
-  { label: "common.study", href: "/study", icon: BookOpen },
-  { label: "calendar.title", href: "/calendar", icon: CalendarDays },
-  { label: "contacts.title", href: "/contacts", icon: ContactRound },
-  { label: "common.stats", href: "/stats", icon: BarChart3 },
-  { label: "profile.title", href: "/profile", icon: UserRound },
-  { label: "common.settings", href: "/settings", icon: Settings },
-] as const;
+const items = navigationItems.filter(item=>item.primary).map(item=>({label:item.labelKey,href:item.href,icon:item.icon}));
 
 export function AppNav({ showStreak }: { showStreak: boolean }) {
   const pathname = usePathname();

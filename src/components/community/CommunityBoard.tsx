@@ -1,5 +1,13 @@
 "use client";
 import Link from "next/link";
+import { useEffect } from "react";
+import { UsageAllowance } from "@/components/billing/UsageAllowance";
+import { useAccountMode } from "@/hooks/useAccountMode";
+import { useMessages } from "@/hooks/useMessages";
+import { PendingDeliveries } from "@/components/conversations/PendingDeliveries";
+import { CreateScheduledSession } from "@/components/scheduling/CreateScheduledSession";
+import { BuddyListingForm } from "@/components/buddies/BuddyListingForm";
+import { InvitationManager } from "@/components/groups/InvitationManager";
 import { useDeferredValue, useState } from "react";
 import { z } from "zod";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -19,7 +27,7 @@ import { toLocalDate } from "@/lib/stats/localDate";
 import { shiftDate } from "@/lib/stats/dates";
 import { fromZonedTime, formatInTimeZone } from "date-fns-tz";
 import type { TranslationKey } from "@/translations";
-const pageTitle = (area: CommunityArea): TranslationKey => area === "roomChat" ? "room.chat" : area === "awards" ? "achievements.title" : area === "recipients" ? "conversations.title" : `${area}.title`;
+const pageTitle = (area: CommunityArea): TranslationKey => area === "publicSessions" ? "sessionSetup.publicSessions" : area === "invitations" ? "roadmap.invitations" : area === "roomParticipants" || area === "roomChat" ? "room.chat" : area === "awards" ? "achievements.title" : area === "recipients" ? "conversations.title" : `${area}.title`;
 const errorKeys = z.enum(["accountRequired", "full", "limit", "forbidden", "invalid", "unavailable", "transferFirst", "inviteUnavailable", "invalidMedia"]);
 export function CommunityBoard({ area, id, groupId, embedded = false }: {
     area: CommunityArea;
@@ -28,6 +36,7 @@ export function CommunityBoard({ area, id, groupId, embedded = false }: {
     embedded?: boolean;
 }) {
     const { t, locale } = useTranslation();
+    useMessages(area === "messages" ? id : undefined);
     const profile = useProfile();
     const auth = useAuth();
     const mutation = useCommunityMutation();
@@ -44,13 +53,18 @@ export function CommunityBoard({ area, id, groupId, embedded = false }: {
     const weekEnd = shiftDate(weekStart, 7);
     const query: CommunityQuery = { ...(id ? { id } : {}), ...(groupId ? { groupId } : {}), ...(term ? { q: term } : {}), filter,
         ...(area === "leaderboards" ? { metric, period } : {}), ...(area === "schedule" ? { from: fromZonedTime(`${weekStart}T00:00`, zone).toISOString(), to: fromZonedTime(`${weekEnd}T00:00`, zone).toISOString() } : {}), };
-    const result = useCommunity(area, query);
+    const accountMode=useAccountMode();
+    const result = useCommunity(area, query, accountMode === "account");
     const state = result.data?.pages[0];
     const entries = [...new Map(result.data?.pages.flatMap(page => page.items).map(item => [item.id, item]) ?? []).values()];
     const items = area === "messages" ? entries.sort((a, b) => a.createdAt.localeCompare(b.createdAt) || a.id.localeCompare(b.id)) : entries;
     const context = state?.context ?? {};
+    const newest = area === "messages" ? items.at(-1)?.id : undefined;
+    const markRead=mutation.mutate;const lastRead=state?.context.lastReadMessageId;const available=state?.available;
+    useEffect(()=>{if(area === "messages" && id && newest && available && lastRead !== newest) markRead({action:"message.read",data:{id,messageId:newest}});},[area,id,newest,available,lastRead,markRead]);
     const error = result.error instanceof CommunityError ? errorKeys.catch("unavailable").parse(result.error.code) : "unavailable";
     const members = z.array(z.object({ person: personSchema.nullable(), role: z.enum(["owner", "moderator", "member"]), accepted: z.boolean() })).safeParse(context.members ?? []);
+    if(accountMode === "preview") return <section className={embedded ? "space-y-4" : "mx-auto max-w-4xl space-y-4 px-5 pt-24"}>{!embedded&&<><AccountControls/><h1 className="text-title">{t(pageTitle(area))}</h1></>}<p role="status" className="rounded-xl border border-border bg-surface p-4">{t("invitations.preview")}</p></section>;
     const content = <>
   {!embedded && <><AccountControls /><h1 className="text-title">{state?.resource?.title || t(pageTitle(area))}</h1></>}
   {result.isError ? <div role="alert" className="rounded-2xl border border-border bg-surface p-5"><p>{t(`community.${error}`)}</p>{area==="groups"&&id&&error==="forbidden"&&<button className={buttonClass} onClick={()=>mutation.mutate({action:"group.join",data:{id}})}>{t(mutation.isSuccess?"community.pending":"community.join")}</button>}{error === "accountRequired" && <button className={`${buttonClass} mt-3`} onClick={() => void auth.execute("logout")}>{t("community.signin")}</button>}</div> : <>
@@ -63,20 +77,26 @@ export function CommunityBoard({ area, id, groupId, embedded = false }: {
      {member.role === "member" && <button className={buttonClass} onClick={() => mutation.mutate({ action: "group.remove", data: { id, targetId: member.person!.id } })}>{t("community.remove")}</button>}
      {state.resource?.ownerId === state.viewerId && member.accepted && <><button className={buttonClass} onClick={() => mutation.mutate({ action: "group.role", data: { id, targetId: member.person!.id, role: member.role === "moderator" ? "member" : "moderator" } })}>{t(member.role === "moderator" ? "community.member" : "community.moderator")}</button><button className={buttonClass} onClick={() => mutation.mutate({ action: "group.transfer", data: { id, targetId: member.person!.id } })}>{t("community.transfer")}</button></>}
     </>}</li>)}</ul>}</section>}
+    {area === "groups" && id && context.manager === true && <InvitationManager id={id} kind="group"/>}
+    {area === "groups" && id && state.resource?.ownerId === state.viewerId && <CommunityCard area="groups" item={state.resource} viewerId={state.viewerId} timezone={zone}/>}
     {area === "groups" && id && context.joined === true && <CommunityBoard area="feed" groupId={id} embedded/>}
+    {area === "plans" && <UsageAllowance/>}
     {area === "plans" && <section className="space-y-4 rounded-2xl border border-border bg-surface p-6"><h2 className="text-xl">{context.plan==="free"?t("community.free"):String(context.plan ?? "")}</h2><p>{t("community.used")}: <span className="tabular-nums">{formatDuration(Number(context.usedSeconds ?? 0), locale)}</span></p><p>{context.dailyLimitSeconds === null ? t("community.unconfigured") : `${t("community.remaining")}: ${formatDuration(Number(context.remainingSeconds ?? 0), locale)}`}</p><p className="text-small text-text-muted">{t("community.noCheckout")}</p><Link href="/study?mode=characters" className={buttonClass}>{t("characters.characters")}</Link></section>}
     {area === "preferences" && <section className="rounded-2xl border border-border bg-surface p-5"><label className="flex min-h-14 items-center justify-between gap-3">{t("community.allowMessages")}<input type="checkbox" disabled={mutation.isPending} checked={context.allowMessages === true} onChange={event => mutation.mutate({ action: "preferences", data: { allowMessages: event.target.checked } })}/></label>{z.array(z.object({ id: z.uuid() })).catch([]).parse(context.blocks ?? []).map(block => <button key={block.id} className={buttonClass} onClick={() => mutation.mutate({ action: "block.set", data: { targetId: block.id, value: false } })}>{t("community.unblock")}</button>)}</section>}
+    {area === "preferences" && <label className="flex min-h-14 items-center gap-3"><input type="checkbox" checked={context.sharePresence === true} disabled={mutation.isPending} onChange={event => mutation.mutate({ action: "preferences", data: { sharePresence: event.target.checked } })}/>{t("roadmap.sharePresence")}</label>}
     {area === "notifications" && <button className={buttonClass} onClick={() => mutation.mutate({ action: "notification.read", data: {} })}>{t("community.readAll")} ({String(context.unread ?? 0)})</button>}
     {area === "leaderboards" && <label className="flex min-h-11 items-center gap-3"><input type="checkbox" disabled={mutation.isPending} checked={context.optedIn === true} onChange={event => mutation.mutate({ action: "preferences", data: { leaderboardOptIn: event.target.checked } })}/>{t("community.optIn")}</label>}
     {area === "messages" && state.resource && <h2 className="text-lg font-semibold">{state.resource.data.kind === "direct" ? t("community.conversation") : state.resource.title}</h2>}
     {area === "feed" && id && state.resource && <CommunityCard area="feed" item={state.resource} viewerId={state.viewerId} timezone={zone}/>}
-    {(area !== "groups" || !id) && <CommunityComposer area={area} id={id} groupId={groupId??(typeof state.resource?.data.groupId==="string"?state.resource.data.groupId:undefined)} canPost={context.canPost !== false}/>}
+    {area === "schedule" ? <CreateScheduledSession groupId={groupId}/> : area === "buddies" ? <BuddyListingForm/> : (area !== "groups" || !id) && <CommunityComposer area={area} id={id} groupId={groupId??(typeof state.resource?.data.groupId==="string"?state.resource.data.groupId:undefined)} canPost={context.canPost !== false}/>}
    </>}
    {(["spaces", "groups", "feed", "partners", "messages"] as CommunityArea[]).includes(area) && !(area === "groups" && id) && <div className="flex flex-wrap gap-2">{(area === "spaces" ? ["all", "pomodoro", "deep", "chill", "cram"] : area === "groups" ? ["all", "mine"] : area === "feed" ? ["following", "popular", "saved"] : area === "partners" ? ["all", "favorites"] : ["all", "saved"]).map(value => <button key={value} type="button" className={buttonClass} aria-pressed={filter === value} onClick={() => setFilter(value)}>{t(`community.${value}` as TranslationKey)}</button>)}</div>}
-   {area === "leaderboards" && <div className="flex flex-wrap gap-3"><select aria-label={t("community.category")} value={metric} onChange={event => {setMetric(event.target.value === "streak" ? "streak" : "time");if(event.target.value==="streak")setPeriod("all");}} className={buttonClass}><option value="time">{t("community.studyTime")}</option><option value="streak">{t("community.bestStreak")}</option></select>{metric==="time"&&<select aria-label={t("community.date")} value={period} onChange={event => setPeriod(event.target.value === "all" ? "all" : "week")} className={buttonClass}><option value="week">{t("community.week")}</option><option value="all">{t("community.allTime")}</option></select>}</div>}
+   {area === "buddies" && <label>{t("roadmap.category")}<select className={buttonClass} value={filter} onChange={e=>setFilter(e.target.value)}><option value="all">{t("community.all")}</option>{(["student","professional","other"]as const).map(v=><option value={v} key={v}>{t(`roadmap.${v}`)}</option>)}</select><Link href="/study?mode=characters" className={buttonClass}>{t("characters.characters")}</Link></label>}
+   {area === "leaderboards" && <div className="flex flex-wrap gap-3"><select aria-label={t("community.category")} value={metric} onChange={event => {setMetric(event.target.value === "streak" ? "streak" : "time");}} className={buttonClass}><option value="time">{t("community.studyTime")}</option><option value="streak">{t("community.bestStreak")}</option></select>{<select aria-label={t("community.date")} value={period} onChange={event => setPeriod(event.target.value === "all" ? "all" : "week")} className={buttonClass}><option value="week">{t("community.week")}</option><option value="all">{t("community.allTime")}</option></select>}</div>}
    {area === "schedule" && <div className="flex flex-wrap items-center justify-between gap-3"><button className={buttonClass} onClick={() => setWeekOffset(value => value - 1)}>{t("community.previous")}</button><span>{formatDate(weekStart, locale)} – {formatDate(shiftDate(weekEnd, -1), locale)} · {zone}</span><button className={buttonClass} onClick={() => setWeekOffset(value => value + 1)}>{t("community.next")}</button></div>}
    {result.isPending ? <p role="status">{t("community.loading")}</p> : items.length === 0 && !(area === "groups" && id) && !["plans", "preferences"].includes(area) ? <p className="text-text-muted">{t("community.empty")}</p> : null}
    {area === "leaderboards" && items.length > 0 ? <div className="overflow-x-auto rounded-2xl border border-border"><table className="w-full text-left"><thead><tr><th className="p-4">{t("community.rank")}</th><th className="p-4">{t("community.member")}</th><th className="p-4">{t(metric === "time" ? "community.studyTime" : "community.bestStreak")}</th></tr></thead><tbody>{items.map(item => <tr key={item.id} className="border-t border-border"><td className="p-4 tabular-nums">{String(item.data.rank)}</td><td className="p-4">{item.title}</td><td className="p-4 tabular-nums">{metric === "time" ? formatDuration(Number(item.data.score), locale) : String(item.data.score)}</td></tr>)}</tbody></table></div> : area === "schedule" ? <div className="overflow-x-auto"><div className="grid min-w-[1050px] grid-cols-7 gap-3">{Array.from({ length: 7 }, (_, i) => shiftDate(weekStart, i)).map(day => <div key={day} className="space-y-3"><h2 className="text-small font-semibold">{formatDate(day, locale)}</h2>{items.filter(item => toLocalDate(new Date(String(item.data.startsAt)), zone) === day).map(item => <CommunityCard key={item.id} area={area} item={item} viewerId={state?.viewerId ?? ""} timezone={zone}/>)}</div>)}</div></div> : !(area === "groups" && id) && <div className={area === "messages" ? "space-y-3" : "grid gap-4 md:grid-cols-2"}>{items.map(item => <CommunityCard key={item.id} area={area} item={item} viewerId={state?.viewerId ?? ""} timezone={zone}/>)}</div>}
+   {(area === "feed" || area === "messages") && <PendingDeliveries area={area} id={id} groupId={groupId} knownIds={items.map(item=>item.id)}/>}
    {result.hasNextPage && <button type="button" className={buttonClass} disabled={result.isFetchingNextPage} onClick={() => void result.fetchNextPage()}>{t("community.loadMore")}</button>}
    {mutation.isError && <p role="alert">{t(`community.${mutation.error instanceof CommunityError ? errorKeys.catch("unavailable").parse(mutation.error.code) : "unavailable"}`)}</p>}
   </>}

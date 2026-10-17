@@ -1,5 +1,7 @@
 import { Howl, Howler } from "howler";
 import { musicTracks, roomSounds } from "./catalog";
+import { backgroundEffects, type EffectSlug, type EffectVolumes } from "./effects";
+import { radioStations } from "./radio";
 
 const CROSSFADE_MS = 2000;
 const clamp = (volume: number) => Number.isFinite(volume) ? Math.max(0, Math.min(1, volume)) : 0;
@@ -29,7 +31,7 @@ class AudioBus {
       const valid = () => this.generation === generation && this.sounds.length === 2;
       for (let index = 0; index < 2; index++) {
         this.sounds.push(new Howl({
-          src: [source], format: ["webm"], preload: false, autoplay: false, loop: false, volume: 0,
+          src: [source], format: [source.endsWith(".wav") ? "wav" : source.endsWith(".mp3") ? "mp3" : "webm"], preload: false, autoplay: false, loop: false, volume: 0,
           onload: () => {
             if (!valid()) return;
             this.loaded++;
@@ -113,7 +115,9 @@ class AudioBus {
     this.loopTimer = this.pauseTimer = this.cleanupTimer = null;
     const sounds = this.sounds; this.sounds = [];
     this.ids = [null, null]; this.loaded = 0; this.current = 0;
-    sounds.forEach(sound => { sound.volume(0); sound.unload(); });
+    // Cancel pending per-sound fades before muting/releasing the nodes. Otherwise
+    // an in-flight ramp can retain its previous target when the master hits zero.
+    sounds.forEach(sound => { sound.stop(); sound.volume(0); sound.unload(); });
   }
 
   refresh() { this.configure(this.source, this.volume); }
@@ -124,6 +128,11 @@ export class AmbienceEngine {
   private initialized = false;
   private readonly music = new AudioBus(() => this.initialized);
   private readonly room = new AudioBus(() => this.initialized);
+  private readonly effects = new Map<EffectSlug, AudioBus>();
+  private selectedEffects: EffectSlug[] | null = null;
+  private effectVolumes: EffectVolumes = {};
+  private radio: Howl | null = null;
+  private radioSlug: string | null = null;
   private musicSource: string | null = null;
   private roomSource: string | null = null;
   private musicVolume = 0;
@@ -142,26 +151,55 @@ export class AmbienceEngine {
       document.addEventListener("visibilitychange", this.visibility);
       if (document.hidden) this.fadeOutAll(0);
     }
-    this.music.refresh(); this.room.refresh();
+    this.music.refresh(); this.room.refresh(); this.effects.forEach(bus => bus.refresh()); this.refreshRadio();
     // Howler may replace its context while unlocking a first Howl. Resume the
     // final context while still inside the initiating user gesture.
     void Howler.ctx?.resume().catch(() => {});
   }
   setMusicTrack(slug: string | null) {
+    const station = radioStations.find(station => `radio:${station.id}` === slug && station.streamUrl);
+    if (this.radioSlug !== (station?.id ?? null)) {
+      this.radio?.unload(); this.radio = null; this.radioSlug = station?.id ?? null;
+    }
+    if (station) {
+      this.music.configure(null, 0); this.musicSource = null;
+      this.refreshRadio(); return;
+    }
     this.musicSource = musicTracks.find(track => track.slug === slug)?.src ?? null;
     this.music.configure(this.musicSource, this.musicVolume);
   }
   setRoomForTheme(slug: string) {
     this.roomSource = roomSounds[slug as keyof typeof roomSounds] ?? null;
-    this.room.configure(this.roomSource, this.roomVolume);
+    this.room.configure(this.selectedEffects === null ? this.roomSource : null, this.roomVolume);
   }
-  setMusicVolume(value: number) { this.musicVolume = clamp(value); this.music.configure(this.musicSource, this.musicVolume); }
-  setRoomVolume(value: number) { this.roomVolume = clamp(value); this.room.configure(this.roomSource, this.roomVolume); }
-  fadeOutAll(ms: number) { this.music.fadeOut(Math.max(0, ms)); this.room.fadeOut(Math.max(0, ms)); }
-  fadeInAll(ms: number) { this.music.resume(Math.max(0, ms)); this.room.resume(Math.max(0, ms)); }
+  private refreshRadio() {
+    const station = radioStations.find(station => station.id === this.radioSlug);
+    if (!this.initialized || !station?.streamUrl || this.musicVolume === 0 || document.hidden) { this.radio?.pause(); return; }
+    if (!this.radio) this.radio = new Howl({ src: [station.streamUrl], html5: true, format: ["mp3"], preload: false, autoplay: false, volume: this.musicVolume });
+    this.radio.volume(this.musicVolume);
+    if (!this.radio.playing()) this.radio.play();
+  }
+  setBackgroundEffects(slugs: readonly EffectSlug[], volumes: EffectVolumes = this.effectVolumes) {
+    this.effectVolumes = { ...volumes };
+    this.selectedEffects = [...new Set(slugs)];
+    this.room.configure(null, 0);
+    for (const [slug, bus] of this.effects) if (!this.selectedEffects.includes(slug)) { bus.reset(); this.effects.delete(slug); }
+    for (const effect of backgroundEffects.filter(effect => this.selectedEffects!.includes(effect.slug))) {
+      let bus = this.effects.get(effect.slug);
+      if (!bus) { bus = new AudioBus(() => this.initialized); this.effects.set(effect.slug, bus); if (typeof document !== "undefined" && document.hidden) bus.fadeOut(0); }
+      bus.configure(effect.src, this.roomVolume * clamp(this.effectVolumes[effect.slug] ?? 1) / Math.max(1, Math.sqrt(this.selectedEffects.length)));
+    }
+  }
+  setMusicVolume(value: number) { this.musicVolume = clamp(value); this.music.configure(this.musicSource, this.musicVolume); this.refreshRadio(); }
+  setRoomVolume(value: number) { this.roomVolume = clamp(value); if (this.selectedEffects === null) this.room.configure(this.roomSource, this.roomVolume); else this.setBackgroundEffects(this.selectedEffects); }
+  fadeOutAll(ms: number) { this.music.fadeOut(Math.max(0, ms)); this.room.fadeOut(Math.max(0, ms)); this.effects.forEach(bus => bus.fadeOut(Math.max(0, ms))); if (this.radio) { const radio = this.radio; radio.fade(Number(radio.volume()), 0, ms); radio.once("fade", () => { if (document.hidden) radio.pause(); }); } }
+  fadeInAll(ms: number) { this.music.resume(Math.max(0, ms)); this.room.resume(Math.max(0, ms)); this.effects.forEach(bus => bus.resume(Math.max(0, ms))); this.refreshRadio(); }
   destroy() {
     if (typeof document !== "undefined") document.removeEventListener("visibilitychange", this.visibility);
     this.music.reset(); this.room.reset();
+    this.effects.forEach(bus => bus.reset()); this.effects.clear(); this.selectedEffects = null;
+    this.effectVolumes = {};
+    this.radio?.unload(); this.radio = null; this.radioSlug = null;
     this.musicSource = this.roomSource = null; this.musicVolume = this.roomVolume = 0;
     this.initialized = false;
     // Do not call Howler.unload(): it creates a replacement global AudioContext.

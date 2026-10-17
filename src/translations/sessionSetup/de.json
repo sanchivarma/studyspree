@@ -1,0 +1,15 @@
+{
+  "sessionSetup": {
+    "title": "Sitzungstitel",
+    "rules": "Sitzungsregeln (optional)",
+    "visibility": "Sichtbarkeit der Sitzung",
+    "public": "Öffentlich",
+    "private": "Privat",
+    "publicSessions": "Öffentliche Sitzungen",
+    "empty": "Gerade laufen keine öffentlichen Sitzungen.",
+    "previewPublic": "Öffentliche Sitzungen benötigen ein registriertes Konto. Privates Lernen ist in dieser Vorschau verfügbar.",
+    "inviteCopy": "Personen zu dieser Sitzung einladen — Link kopieren",
+    "defaultTitle": "Lernsitzung",
+    "needTitle": "Gib einen Sitzungstitel ein."
+  }
+}

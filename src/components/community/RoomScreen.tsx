@@ -1,5 +1,7 @@
 "use client";
 import Link from "next/link";
+import { useRoomViewStore } from "@/stores/roomViewStore";
+import { InvitationManager } from "@/components/groups/InvitationManager";
 import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { Eye, EyeOff, Users, X, Grid2X2, Pin, MessageCircle, Video, VideoOff, Settings, MoreHorizontal, ArrowLeft } from "lucide-react";
@@ -11,6 +13,7 @@ import { SessionProgress } from "@/components/timer/SessionProgress";
 import { useCommunity } from "@/hooks/useCommunity";
 import { useCommunityMutation } from "@/hooks/useCommunityMutation";
 import { useRoomSession } from "@/hooks/useRoomSession";
+import { useRoomPresence } from "@/hooks/useRoomPresence";
 import { useSessionCompanions } from "@/hooks/useSessionCompanions";
 import { useRoomMedia } from "@/hooks/useRoomMedia";
 import { useActiveSession } from "@/hooks/useActiveSession";
@@ -32,7 +35,7 @@ import { ShareSessionControl } from "./ShareSessionControl";
 import { orderRoomPeople } from "@/lib/community/roomGrid";
 import { RoomChat } from "./RoomChat";
 const peopleSchema = z.array(z.object({ person: personSchema.nullable(), sharing: z.boolean(), status: z.string() }));
-const pinsSchema = z.array(z.object({ targetId: z.uuid(), reason: z.string() }));
+
 function RoomTimer({ session, leave }: {
     session: Session;
     leave: () => Promise<void>;
@@ -60,11 +63,17 @@ export function RoomScreen({ id }: {
     const result = useCommunity("room", { id });
     const state = result.data?.pages[0];
     const joined = state?.context.joined === true;
+    const roster=useRoomPresence(id,joined);
     const quota=z.object({usedSeconds:z.number(),remainingSeconds:z.number().nullable()}).safeParse(state?.context.quota);
-    const people = peopleSchema.catch([]).parse(state?.context.people ?? []).filter(p => p.person);
-    const pins = pinsSchema.catch([]).parse(state?.context.pins ?? []);
+    const people = peopleSchema.catch([]).parse(roster.data ? [...new Map(roster.data.pages.flatMap(p=>p.items).map(item=>[item.id,{person:item.person,sharing:item.data.sharing===true,status:String(item.data.status??'')}])).values()] : state?.context.people ?? []).filter(p => p.person);
+    const view = useRoomViewStore(s=>s.rooms[id]);
+    const pins = view?.pins ?? [];
+    const togglePin = useRoomViewStore(s=>s.togglePin);
+    const setReason = useRoomViewStore(s=>s.setReason);
+    const updateView = useRoomViewStore(s=>s.setView);
     const sharing = people.some(p => p.person!.id === state?.viewerId && p.sharing);
-    const [pinned, setPinned] = useState(false);
+    const pinned = view?.pinned ?? false;
+    const setPinned = (value:boolean)=>updateView(id,value);
     const [hiddenPeople, setHiddenPeople] = useState<string[]>([]);
     const [hideVirtual, setHideVirtual] = useState(false);
     const [prejoinCharacters, setPrejoinCharacters] = useState<CharacterSlug[]>([]);
@@ -99,12 +108,12 @@ export function RoomScreen({ id }: {
         return { id: `person:${person.id}`, content: <article data-person-id={person.id} className="relative h-full min-h-0 overflow-hidden rounded-lg bg-surface">
           <div className="absolute inset-0 flex items-center justify-center bg-surface-2">{track ? <RoomVideo track={track} mirrored={person.id === state?.viewerId && (tile.data?.mirrored ?? true)}/> : <span className="truncate px-2 text-small">{person.displayName}</span>}</div>
           <button type="button" aria-label={t("characters.hidePerson", { name: person.displayName })} onClick={() => setHiddenPeople(current => [...current, person.id])} className="absolute top-0 right-0 z-10 flex size-11 items-center justify-center rounded-lg bg-background/70"><X aria-hidden="true" className="size-4"/></button>
-          <button type="button" aria-label={pinLabel} aria-pressed={Boolean(pin)} disabled={mutation.isPending} onClick={() => mutation.mutate({ action: "room.pin", data: { id, targetId: person.id, value: !pin } })} className="absolute top-0 left-0 z-10 flex size-11 items-center justify-center rounded-lg bg-background/70"><Pin aria-hidden="true" className={pin ? "size-4 text-accent" : "size-4"}/></button>
+          <button type="button" aria-label={pinLabel} aria-pressed={Boolean(pin)} disabled={mutation.isPending} onClick={() => togglePin(id,person.id)} className="absolute top-0 left-0 z-10 flex size-11 items-center justify-center rounded-lg bg-background/70"><Pin aria-hidden="true" className={pin ? "size-4 text-accent" : "size-4"}/></button>
           <div className="absolute right-0 bottom-0 left-0 flex items-center gap-1 bg-background/75 pl-2"><p className="min-w-0 flex-1 truncate text-[11px]">{person.displayName}{p.status && ` ? ${p.status}`}</p>
             <Popover.Root><Popover.Trigger asChild><button type="button" aria-label={`${t("characters.tileOptions")} ${person.displayName}`} className="flex size-11 shrink-0 items-center justify-center"><MoreHorizontal aria-hidden="true" className="size-4"/></button></Popover.Trigger><Popover.Portal><Popover.Content onKeyDown={event => event.stopPropagation()} collisionPadding={12} className="z-50 max-h-[70dvh] w-64 overflow-y-auto rounded-xl border border-border bg-surface p-3">
               <p className="break-words text-small">{p.status}</p>
               {state?.context.manager === true && person.id !== state.viewerId && <button className={buttonClass} onClick={() => mutation.mutate({ action: "room.kick", data: { id, targetId: person.id } })}>{t("community.remove")}</button>}
-              {pin && <label className="block text-small">{t("community.pinReason")}<input maxLength={200} defaultValue={pin.reason} onBlur={event => mutation.mutate({ action: "room.pin", data: { id, targetId: person.id, value: true, reason: event.target.value } })} className="min-h-11 w-full rounded-lg bg-background px-3"/></label>}
+              {pin && <label className="block text-small">{t("community.pinReason")}<input maxLength={200} defaultValue={pin.reason} onBlur={event => setReason(id,person.id,event.target.value)} className="min-h-11 w-full rounded-lg bg-background px-3"/></label>}
             </Popover.Content></Popover.Portal></Popover.Root>
           </div>
         </article> };
@@ -117,6 +126,8 @@ export function RoomScreen({ id }: {
       {quota.success && <p className="text-small text-text-muted tabular-nums">{t(quota.data.remainingSeconds === null ? "community.used" : "community.remaining")}: {formatDuration(quota.data.remainingSeconds ?? quota.data.usedSeconds, locale)}</p>}
       {hiddenPeople.length > 0 && <button className={buttonClass} onClick={() => setHiddenPeople([])}>{t("characters.restorePeople")}</button>}
       <button className={buttonClass} onClick={() => mutation.mutate({ action: "room.status", data: { id, body: tile.data?.status ?? "" } })}>{t("personalTile.status")}</button>
+      {state?.resource?.data.rules && <p className="whitespace-pre-wrap break-words">{String(state.resource.data.rules)}</p>}
+      {state?.context.manager === true && <InvitationManager id={id} kind="room"/>}
       {state?.context.manager === true && <button className={buttonClass} onClick={() => mutation.mutate({ action: "room.invite", data: { id, uses: 10, hours: 24 } }, { onSuccess: response => { if (response.token) setInvite(`${window.location.origin}/invite/${response.token}`); } })}>{t("community.invite")}</button>}
       {invite && <label className="block">{t("community.inviteLink")}<input readOnly value={invite} onFocus={event => event.currentTarget.select()} className="block min-h-11 w-full rounded-lg border border-border bg-surface px-3"/></label>}
       {media.unavailable && <p role="status" className="text-small text-text-muted">{t("community.mediaUnavailable")}</p>}
@@ -129,8 +140,8 @@ export function RoomScreen({ id }: {
             <Link href="/spaces" aria-label={t("spaces.title")} className={sideButton}><ArrowLeft aria-hidden="true" className="size-4"/></Link>
             <button type="button" aria-label={t("community.grid")} aria-pressed={!pinned} onClick={() => setPinned(false)} className={sideButton}><Grid2X2 aria-hidden="true" className="size-4"/></button>
             <button type="button" aria-label={t("community.pinned")} aria-pressed={pinned} onClick={() => setPinned(true)} className={sideButton}><Pin aria-hidden="true" className="size-4"/></button>
-            <Sheet><SheetTrigger asChild><button type="button" aria-label={t("characters.change")} className={sideButton}><Users aria-hidden="true" className="size-4"/></button></SheetTrigger><SheetContent side="right" showCloseButton={false} onKeyDown={event => event.stopPropagation()} className="overflow-y-auto bg-background p-4"><SheetHeader><SheetTitle>{t("characters.title")}</SheetTitle><SheetDescription>{t("characters.description")}</SheetDescription></SheetHeader><SheetClose asChild><button aria-label={t("scene.close")} className="absolute top-2 right-2 flex size-11 items-center justify-center"><X className="size-4"/></button></SheetClose>{selector}</SheetContent></Sheet>
-            <button type="button" aria-label={t(hideVirtual ? "characters.show" : "characters.hide")} onClick={() => setHideVirtual(value => !value)} className={sideButton}>{hideVirtual ? <Eye className="size-4"/> : <EyeOff className="size-4"/>}</button>
+            <Sheet><SheetTrigger asChild><button type="button" aria-label={t("characters.change")} className={sideButton}><Users aria-hidden="true" className="size-4"/></button></SheetTrigger><SheetContent side="right" showCloseButton={false} onKeyDown={event => event.stopPropagation()} className="overflow-y-auto bg-background p-4"><SheetHeader><SheetTitle>{t("characters.title")}</SheetTitle><SheetDescription>{t("characters.description")}</SheetDescription></SheetHeader><SheetClose asChild><button aria-label={t("scene.close")} className="absolute top-2 right-2 flex size-11 items-center justify-center"><X className="size-4"/></button></SheetClose><div className="mb-4"><ShareSessionControl copyOnly label="sessionSetup.inviteCopy" roomId={id} requiresInvite={state?.resource?.data.private===true}/></div>{selector}</SheetContent></Sheet>
+            {characters.length > 0 && <button type="button" aria-label={t(hideVirtual ? "characters.show" : "characters.hide")} onClick={() => setHideVirtual(value => !value)} className={sideButton}>{hideVirtual ? <Eye className="size-4"/> : <EyeOff className="size-4"/>}</button>}
             <button ref={chatTrigger} type="button" aria-label={t("room.chat")} aria-expanded={chatOpen} aria-controls="room-chat" onClick={() => setChatOpen(value => !value)} className={sideButton}><MessageCircle aria-hidden="true" className="size-4"/></button>
             <button type="button" aria-label={t(sharing ? "community.hideCamera" : "community.shareCamera")} disabled={mutation.isPending} onClick={() => mutation.mutate({ action: "room.share", data: { id, value: !sharing } })} className={sideButton}>{sharing ? <VideoOff className="size-4"/> : <Video className="size-4"/>}</button>
             <Sheet><SheetTrigger asChild><button type="button" aria-label={t("characters.roomOptions")} className={sideButton}><Settings aria-hidden="true" className="size-4"/></button></SheetTrigger><SheetContent side="right" showCloseButton={false} onKeyDown={event => event.stopPropagation()} className="overflow-y-auto bg-background p-4"><SheetHeader><SheetTitle>{t("characters.roomOptions")}</SheetTitle><SheetDescription>{state.resource?.title ?? t("room.title")}</SheetDescription></SheetHeader><SheetClose asChild><button aria-label={t("scene.close")} className="absolute top-2 right-2 flex size-11 items-center justify-center"><X className="size-4"/></button></SheetClose>{options}</SheetContent></Sheet>

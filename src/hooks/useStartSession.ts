@@ -19,7 +19,7 @@ export function useStartSession(onStarted?: (session: Session) => void) {
       onStarted?.(session);
       useSessionStore.getState().setFinishing(false);
       await queryClient.invalidateQueries({ queryKey: queryKeys.activeSession() });
-      router.push(`/session/${session.id}`);
+      router.push(session.visibility === "public" && session.roomId ? `/rooms/${session.roomId}` : `/session/${session.id}`);
     },
   });
 }

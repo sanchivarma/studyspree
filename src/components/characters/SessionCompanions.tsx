@@ -5,7 +5,8 @@ import { Users, X, Eye, EyeOff } from "lucide-react";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useSessionCompanions } from "@/hooks/useSessionCompanions";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger, SheetClose } from "@/components/ui/sheet";
+import {FeatureDrawer} from '@/components/layout/FeatureDrawer';
+import {ShareSessionControl} from '@/components/community/ShareSessionControl';
 import type { Session } from "@/types/domain";
 import { getCharacter } from "@/lib/characters/registry";
 import { soloCompanions } from "@/lib/characters/schemas";
@@ -36,14 +37,11 @@ export function SessionCompanions({ session, visible, onOpenChange, leading, sid
     {tiles.length > 0 && <ParticipantGrid tiles={tiles} testId="session-companions" controlsVisible={visible} className="absolute top-1 right-1 bottom-[84px] left-[60px]"/>}
     <div data-testid="companion-side-controls" className={visible ? "absolute top-[156px] bottom-[124px] left-2 z-30 flex w-11 flex-col gap-2 overflow-y-auto [scrollbar-width:none] [&>button]:shrink-0" : "hidden"}>
       {companions.characterSlugs.length > 0 && <button type="button" onClick={() => setHidden(value => !value)} aria-label={t(hidden ? "characters.show" : "characters.hide")} className="flex size-11 items-center justify-center rounded-xl bg-background/40">{hidden ? <Eye className="size-4" /> : <EyeOff className="size-4" />}</button>}
-      <Sheet onOpenChange={onOpenChange}><SheetTrigger asChild><button type="button" aria-label={t("characters.change")} className="flex size-11 items-center justify-center rounded-xl bg-background/40"><Users className="size-4" /></button></SheetTrigger>
-        <SheetContent side={desktop ? "right" : "bottom"} showCloseButton={false} className="max-h-[90dvh] overflow-y-auto bg-background p-5">
-          <SheetHeader className="mb-5 p-0 pr-11"><SheetTitle>{t("characters.title")}</SheetTitle><SheetDescription>{t("characters.description")}</SheetDescription></SheetHeader>
-          <SheetClose asChild><button type="button" aria-label={t("scene.close")} className="absolute top-2 right-2 flex size-11 items-center justify-center"><X className="size-5" /></button></SheetClose>
+      <FeatureDrawer title={t('characters.title')} side={desktop?'right':'bottom'} onOpenChange={onOpenChange} trigger={<button type="button" aria-label={t("characters.change")} className="flex size-11 items-center justify-center rounded-xl bg-background/40"><Users className="size-4" /></button>}>
+          <div className="mb-5"><ShareSessionControl copyOnly label="sessionSetup.inviteCopy" sessionId={session.id} roomId={session.visibility==='public'?session.roomId??undefined:undefined}/></div>
           <CompanionModePicker allowPeople={false} value={selection.variables && selection.isPending ? selection.variables : companions} onChange={value => selection.mutate(value)} />
           {selection.error && <p role="alert" className="mt-3 text-small">{t("characters.saveError")}</p>}
-        </SheetContent>
-      </Sheet>
+      </FeatureDrawer>
       {sideControls}
     </div>
   </>;

@@ -25,7 +25,7 @@ import { StreakCard } from "./StreakCard";
 const card = "rounded-2xl border border-border bg-surface p-5 md:p-6";
 const themeNames: Record<ThemeSlug, TranslationKey> = { "rain-desk": "stats.rainDesk", "night-shift": "stats.nightShift", "balcony-dusk": "stats.balconyDusk", "dorm-bunk": "stats.dormBunk", "nature-day": "scene.natureDay", "nature-night": "scene.natureNight", "sci-fi": "scene.sciFi", "space": "scene.space" };
 
-export function StatsScreen() {
+export function StatsScreen({ embedded = false }: { embedded?: boolean } = {}) {
   const { locale, t } = useTranslation();
   // Keep five-minute progress caches fresh when another tab writes a session.
   useActiveSession();
@@ -59,8 +59,8 @@ export function StatsScreen() {
   const recent = days.slice(-14);
   const maximum = Math.max(1, ...recent.map((day) => day.totalSeconds));
 
-  return <section aria-label={t("common.stats")} data-testid="stats-screen" className="mx-auto w-full max-w-6xl px-4 pt-24 pb-8 md:px-8">
-    <AccountControls />
+  return <section aria-label={t("common.stats")} data-testid="stats-screen" className={embedded ? "w-full" : "mx-auto w-full max-w-6xl px-4 pt-24 pb-8 md:px-8"}>
+    {!embedded && <AccountControls />}
     <h1 className="mb-6 text-title">{t("common.stats")}</h1>
     {hasError ? <div role="alert" className={card}>
       <p>{t("stats.loadError")}</p><button type="button" className="mt-4 min-h-11 rounded-xl border border-border px-4" onClick={() => { for (const query of queries) void query.refetch(); }}>{t("stats.retry")}</button>

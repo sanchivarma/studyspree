@@ -1,0 +1,23 @@
+import {expect,test} from '@playwright/test';
+import {signIn} from './sessionFixtures';
+test('private setup saves title and rules, and idle companion controls stay applicable',async({page})=>{
+ await signIn(page);
+ const more=page.getByRole('button',{name:'More',exact:true});
+ await expect(more.locator('svg circle')).toHaveCount(9);
+ const icon=await more.locator('svg').boundingBox(),button=await more.boundingBox();
+ expect(Math.abs(icon!.x+icon!.width/2-button!.x-button!.width/2)).toBeLessThan(1);
+ await page.goto('/study');
+ await expect(page.getByRole('radio',{name:'Private',exact:true})).toBeChecked();
+ await page.getByLabel('Session title',{exact:true}).fill('Read chapter four');
+ await page.getByLabel('Session rules (optional)',{exact:true}).fill('Quiet focus.');
+ await page.getByRole('button',{name:'Start',exact:true}).click();
+ await expect(page.getByTestId('session-screen')).toBeVisible();
+ await expect(page.getByRole('button',{name:'Hide companions',exact:true})).toHaveCount(0);
+ const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('ss_sessions')!)[0]);
+ expect(saved).toMatchObject({title:'Read chapter four',rules:'Quiet focus.',visibility:'private'});
+ await page.getByRole('button',{name:'Choose companions',exact:true}).click();
+ const drawer=page.getByRole('dialog',{name:'Study companions',exact:true});
+ await expect(drawer.getByRole('button',{name:/Invite people to this session/})).toBeVisible();
+ await drawer.getByRole('button',{name:'Close',exact:true}).click();
+ await expect(drawer).toHaveCount(0);
+});

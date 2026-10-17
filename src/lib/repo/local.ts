@@ -2,6 +2,7 @@ import { z } from "zod";
 import { addMonths, format, parseISO, startOfMonth } from "date-fns";
 import { now } from "@/lib/clock";
 import { musicTracks } from "@/lib/audio/catalog";
+import { effectSlugs } from "@/lib/audio/effects";
 import { toLocalDate } from "@/lib/stats/localDate";
 import { defaultTimezone } from "@/lib/stats/defaultTimezone";
 import { aggregateSessions, summarizeSessions } from "@/lib/stats/aggregateSessions";
@@ -17,6 +18,11 @@ import type { SessionHistoryQuery, SessionHistoryPage } from "@/types/stats";
 import { profileEditSchema, type ProfileEdit, type OwnProfile } from "@/lib/profiles/schemas";
 import { awardSchema, awardMilestones, type Award } from "@/lib/achievements/eligibility";
 import { tileSchema, tilePatchSchema, type PersonalTile, type TilePatch } from "@/lib/personalTile/schemas";
+import { evaluateAchievements } from "@/lib/achievements/evaluateAchievements";
+import { achievementDefinitions } from "@/lib/achievements/registry";
+import { tileStatusSchema, type TileHistoryPage } from "@/types/tileStatus";
+import { CapabilityError } from "./capabilities";
+import {sessionDetailsShape} from '@/lib/session/setup';
 
 type StorageAccess = Pick<Storage, "getItem" | "setItem" | "removeItem">;
 const iso = z.iso.datetime();
@@ -25,19 +31,23 @@ const timezone = z.string().refine((value) => {
   try { new Intl.DateTimeFormat("en", { timeZone: value }); return true; } catch { return false; }
 });
 export const profileSchema = z.object({
+  mirrorSelfView:z.boolean().default(true),showOwnTile:z.boolean().default(true),shareNowPlaying:z.boolean().default(false),leaderboardOptIn:z.boolean().default(false),
   displayName: z.string(), selectedTheme: z.string().min(1), timezone,
   showStreak: z.boolean(), reduceMotion: z.boolean(), webcamEnabled: z.boolean(), ambienceEnabled: z.boolean(),
   // Older profiles upgrade without discarding preferences.
   comebackShownForDate: date.nullable().default(null),
   webcamCorner: z.enum(["top-left", "top-right", "bottom-left", "bottom-right"]).default("bottom-right"),
-  musicTrack: z.enum(musicTracks.map(track => track.slug)).nullable().default(null),
+  musicTrack: z.union([z.enum(musicTracks.map(track => track.slug)), z.templateLiteral(["radio:", z.string().regex(/^[a-z0-9-]{1,80}$/)])]).nullable().default(null),
+  backgroundEffects: z.array(z.enum(effectSlugs)).max(effectSlugs.length).refine(value => new Set(value).size === value.length).default([]),
+  effectVolumes: z.partialRecord(z.enum(effectSlugs), z.number().min(0).max(1)).default({}),
   musicVolume: z.number().min(0).max(1).default(0),
   roomVolume: z.number().min(0).max(1).default(0),
   companionPreferences: localCompanionSchema.default(soloCompanions),
 }).strict();
-const inputSchema = z.object({ plannedMinutes: z.number().finite().positive().nullable(), themeSlug: z.string().min(1), task: z.string().nullable(), companions: localCompanionSchema.default(soloCompanions) }).strict();
+const inputSchema = z.object({ ...sessionDetailsShape,plannedMinutes: z.number().finite().positive().nullable(), themeSlug: z.string().min(1), task: z.string().nullable(), companions: localCompanionSchema.default(soloCompanions) }).strict();
 export const sessionSchema = z.object({
   id: z.string().min(1), startedAt: iso, endedAt: iso.nullable(),
+  roomId: z.uuid().nullable().optional(),
   ...inputSchema.shape, companions: companionSchema.default(soloCompanions), actualSeconds: z.number().int().min(0).max(21600),
   endedReason: z.enum(["completed", "stopped_early", "abandoned"]).nullable(), localDate: date,
 }).strict().refine((session) => session.endedAt === null
@@ -102,7 +112,8 @@ export class LocalRepository implements Repository {
   }
 
   private profile(): Profile {
-    return this.read("ss_profile", profileSchema, () => ({
+    const stored = this.read<Profile>("ss_profile", profileSchema, () => ({
+      mirrorSelfView:true,showOwnTile:true,shareNowPlaying:false,leaderboardOptIn:false,
       displayName: "", selectedTheme: "rain-desk", timezone: defaultTimezone(), showStreak: true,
       reduceMotion: false, webcamEnabled: false, ambienceEnabled: false,
       comebackShownForDate: null,
@@ -110,6 +121,8 @@ export class LocalRepository implements Repository {
       musicTrack: null, musicVolume: 0, roomVolume: 0,
       companionPreferences: soloCompanions(),
     }));
+    const tile=this.read('ss_personal_tile',tileSchema,()=>tileSchema.parse({mirrored:stored.mirrorSelfView,isVisible:stored.showOwnTile,shareNowPlaying:stored.shareNowPlaying}));
+    return {...stored,mirrorSelfView:tile.mirrored,showOwnTile:tile.isVisible,shareNowPlaying:tile.shareNowPlaying};
   }
   private sessions(): Session[] { return this.read("ss_sessions", sessionsSchema, () => []); }
   private streak(sessions: Session[]): StreakState {
@@ -151,6 +164,31 @@ export class LocalRepository implements Repository {
   }
 
   async getProfile(): Promise<Profile> { return this.profile(); }
+  async getEarnedAchievements() {
+    return this.mutate(() => {
+      const previous = this.read("ss_earned_achievements", z.array(z.object({ achievementId: z.string(), earnedAt: iso })), () => []);
+      const totals = summarizeSessions(this.sessions());
+      const ids = evaluateAchievements({ bestStreak: this.streak(this.sessions()).best, totalSeconds: totals.totalSeconds, sessionCount: totals.sessionCount }, new Set(previous.map(a => a.achievementId)), achievementDefinitions);
+      const next = [...previous, ...ids.map(achievementId => ({ achievementId, earnedAt: now().toISOString() }))];
+      this.write("ss_earned_achievements", next); return next;
+    });
+  }
+  async getCharacterCompanionHistory() {
+    const totals = new Map<string, { slug: string; totalSeconds: number; sessionCount: number }>();
+    for (const session of this.sessions().filter(s => s.endedAt)) for (const slug of session.companions.characterSlugs) {
+      const previous = totals.get(slug) ?? { slug, totalSeconds: 0, sessionCount: 0 };
+      totals.set(slug, { slug, totalSeconds: previous.totalSeconds + session.actualSeconds, sessionCount: previous.sessionCount + 1 });
+    }
+    return [...totals.values()].sort((a, b) => b.totalSeconds - a.totalSeconds || a.slug.localeCompare(b.slug));
+  }
+  async getTileStatusHistory(opts: { cursor?: string | null; limit: number }): Promise<TileHistoryPage> {
+    const limit = z.number().int().min(1).max(100).parse(opts.limit);
+    const events = this.read("ss_tile_events", z.array(tileStatusSchema), () => this.read("ss_personal_tile", tileSchema, () => tileSchema.parse({})).history.map((entry, i) => ({ ...entry, id: `legacy-${i}` })));
+    const sorted = events.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    const offset = opts.cursor ? sorted.findIndex(e => e.id === opts.cursor) + 1 : 0;
+    const items = sorted.slice(offset, offset + limit);
+    return { items, nextCursor: sorted.length > offset + limit ? items.at(-1)!.id : null };
+  }
   async getAchievements(): Promise<Award[]> {
     return this.mutate(() => {
       const previous = this.read("ss_awards", z.array(awardSchema), () => []);
@@ -165,6 +203,10 @@ export class LocalRepository implements Repository {
       const validated = tilePatchSchema.parse(patch);
       const history = validated.status !== undefined && validated.status !== current.status && validated.status
         ? [{ text: validated.status, createdAt: now().toISOString() }, ...current.history].slice(0,20) : current.history;
+      if (validated.status !== undefined && validated.status !== current.status) {
+        const events = this.read("ss_tile_events", z.array(tileStatusSchema), () => current.history.map((entry, i) => ({ ...entry, id: `legacy-${i}` })));
+        this.write("ss_tile_events", [{ id: crypto.randomUUID(), text: validated.status, createdAt: now().toISOString() }, ...events]);
+      }
       const next = tileSchema.parse({ ...current, ...validated, history }); this.write("ss_personal_tile", next); return next;
     });
   }
@@ -177,7 +219,7 @@ export class LocalRepository implements Repository {
     }));
     return { ...fields, displayName: this.profile().displayName || fields.displayName,
       id: "00000000-0000-4000-8000-000000000001", username: "ss_admin", joinedAt,
-      avatarPath: null, bannerPath: null, followers: 0, following: 0, isFollowing: false, isSelf: true, isLocal: true };
+      avatarPath: null, bannerPath: null, followers: 0, following: 0, highestBadgeId:null, isFollowing: false, isSelf: true, isLocal: true };
   }
   async getDirectoryProfile(): Promise<OwnProfile> { return this.directoryProfile(); }
   updateDirectoryProfile(input: ProfileEdit): Promise<OwnProfile> {
@@ -195,11 +237,14 @@ export class LocalRepository implements Repository {
     return { latestRoom: null, rooms: [], onlinePeople: [], capabilities: { humanRooms: false } };
   }
   updateProfile(patch: Partial<Profile>): Promise<Profile> {
-    return this.mutate(() => { const profile = profileSchema.parse({ ...this.profile(), ...patch }); this.write("ss_profile", profile); return profile; });
+    return this.mutate(() => { const profile = profileSchema.parse({ ...this.profile(), ...patch }); this.write("ss_profile", profile);
+      if(patch.mirrorSelfView!==undefined||patch.showOwnTile!==undefined||patch.shareNowPlaying!==undefined){const tile=this.read('ss_personal_tile',tileSchema,()=>tileSchema.parse({}));this.write('ss_personal_tile',{...tile,mirrored:profile.mirrorSelfView,isVisible:profile.showOwnTile,shareNowPlaying:profile.shareNowPlaying});}
+      return profile; });
   }
   async getActiveSession(): Promise<Session | null> { return this.active(this.sessions()); }
   async getSession(id: string): Promise<Session | null> { return this.sessions().find(session=>session.id===id)??null; }
   startSession(input: StartSessionInput): Promise<Session> {
+    if (input.visibility==='public'||input.roomId || input.companions?.mode === 'people' || input.companions?.mode === 'mixed') return Promise.reject(new CapabilityError('shared-room-access'));
     return this.mutate(() => {
       const sessions = this.sessions();
       const active = this.active(sessions);

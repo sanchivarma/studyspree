@@ -12,6 +12,27 @@ export function repositoryContract(name: string, create: () => Repository) {
     let repo: Repository;
     beforeEach(() => { vi.useFakeTimers(); vi.setSystemTime(new Date("2026-10-13T12:00:00Z")); repo = create(); });
     afterEach(() => { vi.useRealTimers(); vi.unstubAllEnvs(); });
+    it("persists independent background selections and rejects invalid effect IDs", async () => {
+      expect((await repo.getProfile()).backgroundEffects ?? []).toEqual([]);
+      await repo.updateProfile({ backgroundEffects: ["rain", "wind"], roomVolume: 0.4, effectVolumes: { rain: 0.75, wind: 0.2 } });
+      expect(await repo.getProfile()).toMatchObject({ backgroundEffects: ["rain", "wind"], roomVolume: 0.4, effectVolumes: { rain: 0.75, wind: 0.2 } });
+      await expect(repo.updateProfile({ backgroundEffects: ["rain", "rain"] })).rejects.toThrow();
+      await expect(repo.updateProfile({ effectVolumes: { rain: 2 } })).rejects.toThrow();
+    });
+    it("retains and paginates every status event",async()=>{
+      for(let i=0;i<25;i++){vi.advanceTimersByTime(1000);await repo.updatePersonalTile({status:`Reading ${i}`});}
+      const first=await repo.getTileStatusHistory({limit:20});expect(first.items).toHaveLength(20);expect(first.nextCursor).not.toBeNull();
+      const second=await repo.getTileStatusHistory({limit:20,cursor:first.nextCursor});expect(second.items).toHaveLength(5);
+      expect(new Set([...first.items,...second.items].map(e=>e.id)).size).toBe(25);
+      await repo.updatePersonalTile({status:""});expect((await repo.getTileStatusHistory({limit:1})).items[0].text).toBe("");
+    });
+    it("awards every achievement kind idempotently and separates virtual history",async()=>{
+      const session=await repo.startSession({...input,companions:{mode:"characters",characterSlugs:["male-01"]}});
+      vi.advanceTimersByTime(3600000);await repo.endSession(session.id,"stopped_early");
+      const awards=await repo.getEarnedAchievements();expect(awards.map(a=>a.achievementId)).toEqual(expect.arrayContaining(["streak-1","sessions-1","seconds-3600"]));
+      expect(await repo.getEarnedAchievements()).toEqual(awards);
+      expect(await repo.getCharacterCompanionHistory()).toEqual([{slug:"male-01",totalSeconds:3600,sessionCount:1}]);
+    });
 
     it("returns the same active session for concurrent starts", async () => {
       const [first, second] = await Promise.all([repo.startSession(input), repo.startSession({ ...input, plannedMinutes: 25 })]);

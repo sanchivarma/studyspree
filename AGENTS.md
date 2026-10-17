@@ -319,6 +319,8 @@ The user subsequently authorised the 17-feature roadmap in docs/FEATURE_CHECKLIS
 
 ## 14. Current status
 
+- **Sound-controls update (17 October 2026):** Music Volume and Background effects volume are separate. Cafe chatter, wind, real rainfall and thunderstorm use distinct verified CC0 recordings; brown and white noise remain original synthetic textures. Every effect has an independent persisted volume, multiplied by the master effects volume. Muting cancels playback/fades before releasing sources. Radio entries live in `src/lib/audio/radio-stations.json`; three Lofi Cafe official website embeds are configured with their published embedding permission. Embedded stations retain provider playback/volume controls; direct approved MP3 streams use the app slider. The legacy Music tracks section/options are removed from both session controls and Settings. Migrations 0043–0045 add validated owner-scoped preferences. No dependencies were added. Typecheck, lint, 396 unit tests, 248 database assertions and the 21-file licence ledger pass. See docs/AUDIO_RADIOS.md and docs/FIELD_RECORDINGS_LICENCE.md. This update does not mean all previously audited social contracts or provider journeys are complete.
+
 > **Update this section at the end of every phase.**
 
 - **Current phase:** all 17 authorized categories have code, but the fresh code-contract audit found substantive gaps. See docs/IMPLEMENTATION_AUDIT.md and the corrected docs/FEATURE_CHECKLIST.md; do not claim all 17 prompts are complete. This audit changes documentation, not application behavior.

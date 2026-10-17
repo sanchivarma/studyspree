@@ -1,3 +1,4 @@
+import {sessionDetailsShape} from "@/lib/session/setup";
 import { themeSlugs } from "@/lib/themes/registry";
 import { z } from "zod";
 import { profileSchema } from "./local";
@@ -19,9 +20,11 @@ const profilePatch = z.record(z.string(), z.unknown()).transform((raw, ctx) => {
 });
 export const repositoryRequestSchema = z.discriminatedUnion("op", [
     empty("profile"), empty("active"), empty("total"), empty("summary"), empty("streak"), empty("awards"), empty("tile"), empty("directory"), empty("dashboard"),
+    empty("earnedAchievements"), empty("characterHistory"),
+    z.object({ op: z.literal("tileHistory"), cursor: z.string().max(2048).nullable().optional(), limit: z.number().int().min(1).max(100) }).strict(),
     z.object({ op: z.literal("updateProfile"), patch: profilePatch }).strict(),
     z.object({ op: z.literal("updateDirectory"), input: z.unknown() }).strict(),
-    z.object({ op: z.literal("start"), input: z.object({ plannedMinutes: z.union([z.literal(5), z.literal(15), z.literal(25), z.literal(50)]).nullable(), themeSlug: z.enum(themeSlugs), task: z.string().trim().max(500).nullable(), companions: companionSchema.optional() }).strict() }).strict(),
+    z.object({ op: z.literal("start"), input: z.object({ ...sessionDetailsShape,plannedMinutes: z.union([z.literal(5), z.literal(15), z.literal(25), z.literal(30), z.literal(50), z.literal(60)]).nullable(), themeSlug: z.enum(themeSlugs), task: z.string().trim().max(500).nullable(), companions: companionSchema.optional(), roomId: z.uuid().nullable().optional() }).strict() }).strict(),
     z.object({ op: z.literal("finish"), id: z.uuid(), reason: z.enum(["completed", "stopped_early", "abandoned"]) }).strict(),
     z.object({ op: z.literal("heartbeat"), id: z.uuid() }).strict(),
     z.object({ op: z.literal("session"), id: z.uuid() }).strict(),
