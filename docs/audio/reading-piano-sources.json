@@ -1,0 +1,41 @@
+[
+  {
+    "file": "piano-chopin-nocturne-op9-no2-v1.mp3",
+    "title": "Chopin - Nocturne Op. 9 No. 2",
+    "performer": "Musopen (performer not identified on file page)",
+    "source": "https://commons.wikimedia.org/wiki/File:Nocturne_Op._9_no._2_in_E_flat_major.mp3",
+    "licence": "CC0 1.0",
+    "terms": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "commercialUse": true,
+    "checkedOn": "2026-10-19",
+    "bytes": 5533547,
+    "sha256": "0f835a0e7d785ece53d83364897d28e80185e687be51ac21b90861dc51184b4b",
+    "sourceSha256": "d6a289cd51123f0033fb6e4014277495340c6d3afa3a4e42e7cd89bcf634d917"
+  },
+  {
+    "file": "piano-satie-gymnopedie-no1-v1.mp3",
+    "title": "Satie - Gymnopedie No. 1",
+    "performer": "Robin Alciatore / Musopen",
+    "source": "https://commons.wikimedia.org/wiki/File:Erik_Satie_-_gymnopedies_-_la_1_ere._lent_et_douloureux.ogg",
+    "licence": "Public-domain dedication by recording author",
+    "terms": "https://creativecommons.org/publicdomain/mark/1.0/",
+    "commercialUse": true,
+    "checkedOn": "2026-10-19",
+    "bytes": 3673004,
+    "sha256": "4190abc3af55952f024aed881cad3335668c6291b808513f716637d725281556",
+    "sourceSha256": "419e37656856224227086df32d6d481a00a738961e08fca9f6147e472beea53e"
+  },
+  {
+    "file": "piano-beethoven-moonlight-i-v1.mp3",
+    "title": "Beethoven - Moonlight Sonata, movement I",
+    "performer": "Paul Pitman / Musopen",
+    "source": "https://commons.wikimedia.org/wiki/File:Ludwig_van_Beethoven_-_sonata_no._14_in_c_sharp_minor_%27moonlight%27,_op._27_no._2_-_i._adagio_sostenuto.ogg",
+    "licence": "Public-domain recording release; Musopen attribution retained",
+    "terms": "https://musopen.org/",
+    "commercialUse": true,
+    "checkedOn": "2026-10-19",
+    "bytes": 6716684,
+    "sha256": "32547c1ad1167cad0ae7cbac8c80e0a738e38cf3a72969598178f514d2306e27",
+    "sourceSha256": "035a31b8d67de4b0574110592a6f8ce2f6e51dfc7f884e16f918e47e327d7d66"
+  }
+]

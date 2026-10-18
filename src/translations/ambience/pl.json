@@ -1,5 +1,8 @@
 {
   "ambience": {
+    "piano-nocturne": "Chopin · Nokturn op. 9 nr 2",
+    "piano-gymnopedie": "Satie · Gymnopédie nr 1",
+    "piano-moonlight": "Beethoven · Sonata księżycowa I",
     "effectVolume": "Głośność: {effect}",
     "radioOff": "Wyłącz radio",
     "label": "Atmosfera",

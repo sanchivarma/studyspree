@@ -38,3 +38,7 @@ Files are immutable: use a new filename for a new version.
 | effect-buddhist-chant-v1.mp3 | Lenguaverde; Buddhist Nun Chants; Freesound #433920 | CC0 1.0 | 2026-10-18 | yes | docs/audio/requested-focus-audio.md |
 | effect-om-chant-v1.mp3 | ApeironMedia; Om.wav; Freesound #445246 | CC0 1.0 | 2026-10-18 | yes | docs/audio/requested-focus-audio.md |
 | effect-medieval-calm-v2.mp3 | RandomMind; Medieval: The Bard�s Tale; creator-published lute/flute loop | CC0 1.0 | 2026-10-18 | yes | docs/audio/requested-focus-audio.md |
+
+| piano-chopin-nocturne-op9-no2-v1.mp3 | Musopen (performer not identified on file page); https://commons.wikimedia.org/wiki/File:Nocturne_Op._9_no._2_in_E_flat_major.mp3 | CC0 1.0 | 2026-10-19 | yes | docs/audio/reading-piano.md |
+| piano-satie-gymnopedie-no1-v1.mp3 | Robin Alciatore / Musopen; https://commons.wikimedia.org/wiki/File:Erik_Satie_-_gymnopedies_-_la_1_ere._lent_et_douloureux.ogg | Public-domain dedication by recording author | 2026-10-19 | yes | docs/audio/reading-piano.md |
+| piano-beethoven-moonlight-i-v1.mp3 | Paul Pitman / Musopen; https://commons.wikimedia.org/wiki/File:Ludwig_van_Beethoven_-_sonata_no._14_in_c_sharp_minor_%27moonlight%27,_op._27_no._2_-_i._adagio_sostenuto.ogg | Public-domain recording release; Musopen attribution retained | 2026-10-19 | yes | docs/audio/reading-piano.md |

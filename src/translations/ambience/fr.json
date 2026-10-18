@@ -1,5 +1,8 @@
 {
   "ambience": {
+    "piano-nocturne": "Chopin · Nocturne op. 9 n° 2",
+    "piano-gymnopedie": "Satie · Gymnopédie n° 1",
+    "piano-moonlight": "Beethoven · Sonate au clair de lune I",
     "effectVolume": "Volume : {effect}",
     "radioOff": "Éteindre la radio",
     "label": "Ambiance",

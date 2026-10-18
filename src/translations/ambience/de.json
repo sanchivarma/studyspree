@@ -1,5 +1,8 @@
 {
   "ambience": {
+    "piano-nocturne": "Chopin · Nocturne op. 9 Nr. 2",
+    "piano-gymnopedie": "Satie · Gymnopédie Nr. 1",
+    "piano-moonlight": "Beethoven · Mondscheinsonate I",
     "effectVolume": "Lautstärke: {effect}",
     "radioOff": "Radio ausschalten",
     "label": "Atmosphäre",

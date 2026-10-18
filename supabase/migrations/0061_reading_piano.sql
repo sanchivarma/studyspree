@@ -1,0 +1,20 @@
+-- Three complete, locally hosted public-domain piano recordings. Existing mixes are preserved.
+alter table public.profiles drop constraint profiles_background_effects_check;
+alter table public.profiles drop constraint profiles_background_effects_unique;
+alter table public.profiles add constraint profiles_background_effects_check check(jsonb_typeof(background_effects)='array' and jsonb_array_length(background_effects)<=15 and background_effects <@ '["cafe","wind","rain","thunderstorm","brown-noise","white-noise","medieval-warrior","medieval-walk","medieval-knight","ocean","library","castle","piano-nocturne","piano-gymnopedie","piano-moonlight"]'::jsonb);
+alter table public.profiles add constraint profiles_background_effects_unique check(jsonb_array_length(background_effects)=(background_effects?'cafe')::integer+(background_effects?'wind')::integer+(background_effects?'rain')::integer+(background_effects?'thunderstorm')::integer+(background_effects?'brown-noise')::integer+(background_effects?'white-noise')::integer+(background_effects?'medieval-warrior')::integer+(background_effects?'medieval-walk')::integer+(background_effects?'medieval-knight')::integer+(background_effects?'ocean')::integer+(background_effects?'library')::integer+(background_effects?'castle')::integer+(background_effects?'piano-nocturne')::integer+(background_effects?'piano-gymnopedie')::integer+(background_effects?'piano-moonlight')::integer);
+create or replace function public.valid_effect_volumes(value jsonb) returns boolean language sql immutable set search_path=public as $$
+ select case when jsonb_typeof(value)<>'object' then false else not exists(select 1 from jsonb_each(value) e where e.key not in('cafe','wind','rain','thunderstorm','brown-noise','white-noise','medieval-warrior','medieval-walk','medieval-knight','ocean','library','castle','piano-nocturne','piano-gymnopedie','piano-moonlight') or case when jsonb_typeof(e.value)='number' then (e.value::text)::numeric not between 0 and 1 else true end) end
+$$;
+create or replace function auth_private.valid_room_controls(value jsonb) returns boolean language plpgsql immutable set search_path='' as $$
+declare audio jsonb:=value->'audio';effects jsonb:=audio->'backgroundEffects';characters jsonb:=value->'characterSlugs';
+begin
+ if jsonb_typeof(value)<>'object' or not(value ?& array['themeSlug','characterSlugs','audio']) or (select count(*) from jsonb_object_keys(value))<>3 or value->>'themeSlug' not in('rain-desk','night-shift','balcony-dusk','dorm-bunk','nature-day','nature-night','sci-fi','space') then return false;end if;
+ if not public.valid_companion_selection(jsonb_build_object('mode',case when jsonb_array_length(characters)=0 then 'people' else 'mixed' end,'characterSlugs',characters)) then return false;end if;
+ if jsonb_typeof(audio)<>'object' or (select count(*) from jsonb_object_keys(audio))<>5 or not(audio ?& array['musicTrack','musicVolume','roomVolume','backgroundEffects','effectVolumes']) then return false;end if;
+ if audio->'musicTrack'<>'null'::jsonb and (jsonb_typeof(audio->'musicTrack')<>'string' or not(audio->>'musicTrack' in('still-water','silent') or audio->>'musicTrack' ~ '^radio:[a-z0-9-]{1,80}$')) then return false;end if;
+ if jsonb_typeof(audio->'musicVolume')<>'number' or jsonb_typeof(audio->'roomVolume')<>'number' or (audio->>'musicVolume')::numeric not between 0 and 1 or (audio->>'roomVolume')::numeric not between 0 and 1 then return false;end if;
+ if jsonb_typeof(effects)<>'array' or not(effects <@ '["cafe","wind","rain","thunderstorm","brown-noise","white-noise","medieval-warrior","medieval-walk","medieval-knight","ocean","library","castle","piano-nocturne","piano-gymnopedie","piano-moonlight"]'::jsonb) or jsonb_array_length(effects)<>(select count(distinct entry) from jsonb_array_elements(effects) entry) then return false;end if;
+ return coalesce(public.valid_effect_volumes(audio->'effectVolumes'),false);
+exception when others then return false;
+end;$$;

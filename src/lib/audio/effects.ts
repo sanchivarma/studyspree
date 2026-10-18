@@ -1,6 +1,6 @@
 import { localPreviewAudio } from "./localPreview";
 
-export const effectSlugs = ["cafe", "wind", "rain", "thunderstorm", "brown-noise", "white-noise", "medieval-warrior", "medieval-walk", "medieval-knight", "ocean", "library", "castle"] as const;
+export const effectSlugs = ["cafe", "wind", "rain", "thunderstorm", "brown-noise", "white-noise", "medieval-warrior", "medieval-walk", "medieval-knight", "ocean", "library", "castle", "piano-nocturne", "piano-gymnopedie", "piano-moonlight"] as const;
 export type EffectSlug = typeof effectSlugs[number];
 export type EffectVolumes = Partial<Record<EffectSlug, number>>;
 const effectSources = {
@@ -16,6 +16,9 @@ const effectSources = {
   ocean: "/audio/effect-ocean-v1.mp3",
   library: "/audio/effect-library-v2.mp3",
   castle: "/audio/effect-castle-v1.mp3",
+  "piano-nocturne": "/audio/piano-chopin-nocturne-op9-no2-v1.mp3",
+  "piano-gymnopedie": "/audio/piano-satie-gymnopedie-no1-v1.mp3",
+  "piano-moonlight": "/audio/piano-beethoven-moonlight-i-v1.mp3",
 } satisfies Record<EffectSlug, string>;
 export const backgroundEffects = effectSlugs.filter(slug => process.env.NODE_ENV !== "production" || !Object.hasOwn(localPreviewAudio, slug)).map(slug => ({
   slug, src: effectSources[slug], labelKey: `ambience.${slug}` as const,

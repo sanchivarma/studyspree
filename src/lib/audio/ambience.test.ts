@@ -30,6 +30,18 @@ afterEach(() => { engine.destroy(); vi.useRealTimers(); vi.unstubAllGlobals(); }
 function loaded(from = 0) { mocks.sounds[from].options.onload?.(1); mocks.sounds[from + 1].options.onload?.(1); }
 
 describe("two independent, gesture-gated audio buses", () => {
+  it.each(["piano-nocturne", "piano-gymnopedie", "piano-moonlight"] as const)("starts %s independently after the first gesture", slug => {
+    engine.setBackgroundEffects([slug], { [slug]: 0.4 });
+    engine.setRoomVolume(0.5);
+    expect(mocks.sounds).toHaveLength(0);
+    engine.init();
+    expect(mocks.sounds).toHaveLength(2);
+    expect(mocks.sounds[0].options).toMatchObject({ format: ["mp3"], html5: false, loop: false });
+    loaded();
+    expect(mocks.sounds[0].play).toHaveBeenCalledOnce();
+    expect(mocks.sounds[0].fade).toHaveBeenCalledWith(0.5, 0.2, 500, 1);
+    expect(mocks.sounds[1].play).not.toHaveBeenCalled();
+  });
   it("plays an approved direct radio as one streaming source after a gesture", () => {
     radioStations.push({ id: "test-radio", name: "Test", website: "https://radio.example.test", permissionUrl: "https://radio.example.test/permission", embedUrl: null, streamUrl: "https://radio.example.test/live.mp3" });
     try {
