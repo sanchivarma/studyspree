@@ -27,7 +27,7 @@ export function WindowMotionCanvas({video,slug,visible}:{video:RefObject<HTMLVid
     gl.uniform1f(gl.getUniformLocation(program,"kind"),config.kind);
     const time=gl.getUniformLocation(program,"seconds");let frame=0,last=0,previous=0,painted=false;
     const draw=(timestamp:number)=>{
-      frame=requestAnimationFrame(draw);if(timestamp-last<1000/24)return;last=timestamp;
+      frame=requestAnimationFrame(draw);const interval=1000/30;if(timestamp-last<interval)return;last=timestamp-((timestamp-last)%interval);
       if(previous)phase.current+=Math.min((timestamp-previous)/1000,0.2);previous=timestamp;
       const source=video.current;if(!source||source.readyState<2||!source.videoWidth)return;
       gl.viewport(0,0,1280,720);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,source);
