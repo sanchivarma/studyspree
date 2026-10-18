@@ -6,7 +6,7 @@ export const soloSceneSchema = z.object({ desk: z.enum(deskSlugs), window: z.enu
 export type SoloScenePreferences = z.infer<typeof soloSceneSchema>;
 export const defaultSoloScene: SoloScenePreferences = { desk: "modern", window: "green-nature" };
 export const deskSource = (slug: SoloScenePreferences["desk"]) => `/solo/desks/${slug}-wide-v3.webp`;
-export const deskPreviewSource = (slug: SoloScenePreferences["desk"]) => `/solo/desks/${slug}-v1.webp`;
+export const deskPreviewSource = (slug: SoloScenePreferences["desk"]) => `/solo/desks/${slug}-original-fit-v1.webp`;
 export const windowSource = (slug: SoloScenePreferences["window"]) => `/solo/views/${slug}-${slug === "sailing-ships" ? "v2" : "v1"}.webp`;
 export function windowFrame(slug: SoloScenePreferences["window"]) {
   if(slug === "magic-academy") return "gothic";

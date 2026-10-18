@@ -4,7 +4,7 @@ import type { KeyboardEvent } from "react";
 import { useProfile } from "@/hooks/useProfile";
 import { useUpdateProfile } from "@/hooks/useUpdateProfile";
 import { useTranslation } from "@/hooks/useTranslation";
-import { defaultSoloScene, deskSlugs, windowSlugs, deskPreviewSource, windowSource } from "@/lib/soloScenes/catalog";
+import { defaultSoloScene, deskSlugs, windowSlugs, deskPreviewSource, windowSource, windowFrame } from "@/lib/soloScenes/catalog";
 
 export function SoloScenePicker({disabled=false}:{disabled?:boolean}) {
   const profile=useProfile(), update=useUpdateProfile(), {t}=useTranslation();
@@ -25,7 +25,7 @@ export function SoloScenePicker({disabled=false}:{disabled?:boolean}) {
     </fieldset>
     <fieldset disabled={disabled} onKeyDown={navigate}><legend className="mb-2 text-small font-semibold">{t("soloScene.window")}</legend>
       <div className="grid grid-cols-2 gap-2">{windowSlugs.map(slug=><button key={slug} type="button" aria-pressed={value.window===slug} onClick={()=>update.mutate({soloScene:{...value,window:slug}})} className={`${card} ${value.window===slug?"border-accent":"border-border"}`}>
-        <img src={windowSource(slug)} alt="" loading="lazy" className="aspect-video w-full object-cover"/><span className="block min-h-11 px-2 py-2 text-small">{t(`soloScene.window-${slug}`)}</span>
+        <span className="relative block aspect-video w-full overflow-hidden"><img src={windowSource(slug)} alt="" loading="lazy" className="absolute inset-0 size-full object-cover"/><img src={`/solo/frames/${windowFrame(slug)}-v2.webp`} alt="" loading="lazy" className="absolute inset-0 size-full object-fill"/></span><span className="block min-h-11 px-2 py-2 text-small">{t(`soloScene.window-${slug}`)}</span>
       </button>)}</div>
     </fieldset>
     {update.isError&&<p role="alert" className="text-small text-text-muted">{t("settings.saveError")}</p>}

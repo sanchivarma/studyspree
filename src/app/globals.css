@@ -133,7 +133,7 @@ body:has([data-theme-picker][data-page-visible="false"]) [data-slot="sheet-overl
 .solo-study-scene[data-frame="nautical"] { --window-frame:#493424; --window-trim:#ba9757; }
 .solo-window-surround { position:absolute; inset:0; width:100%; height:100%; object-fit:fill; }
 .solo-glass { position:absolute; inset:0; background:linear-gradient(113deg,transparent 58%,rgb(255 255 255 / 0.025) 59%,transparent 65%); box-shadow:inset 0 0 22px rgb(0 0 0 / 0.25); }
-.solo-desk { position:absolute; bottom:-2.5vw; left:0; z-index:20; width:100%; height:auto; }
+.solo-desk { position:absolute; bottom:-8vw; left:0; z-index:20; width:100%; height:auto; }
 .solo-outside-motion { position:absolute; color:rgb(235 249 255 / 0.65); animation-play-state:running; }
 .solo-study-scene[data-motion="paused"] .solo-outside-motion { animation-play-state:paused; }
 .solo-study-scene[data-video-ready="true"] .solo-outside-motion { visibility:hidden; animation-play-state:paused; }
