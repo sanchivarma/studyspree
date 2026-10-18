@@ -3,7 +3,7 @@
     "effectVolume": "Volume : {effect}",
     "radioOff": "Éteindre la radio",
     "label": "Ambiance",
-    "music": "Volume de la musique",
+    "radioVolume": "Volume de la radio",
     "room": "Volume des effets de fond",
     "tracks": "Pistes musicales",
     "off": "Désactivé",

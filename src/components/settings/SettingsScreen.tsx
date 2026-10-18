@@ -40,6 +40,7 @@ export function SettingsScreen() {
   const reducedMotion = useReducedMotion();
   const [timezoneChanged, setTimezoneChanged] = useState(false);
   const preferences = profile.data;
+  const radio = radioStations.find(station => `radio:${station.id}` === preferences?.musicTrack);
   const disabled = profile.isPending || !preferences;
   const theme = getTheme(preferences?.selectedTheme ?? "rain-desk");
   const timezones = useTimezones(preferences?.timezone);
@@ -82,10 +83,10 @@ export function SettingsScreen() {
       <PreferenceSwitch {...toggleProps} label={t("ambience.label")} checked={preferences?.ambienceEnabled ?? false}
         onChange={ambienceEnabled => update.mutate({ ambienceEnabled })} />
       <p className="mb-4 text-small text-text-muted">{t("ambience.originalNote")}</p>
-      <label className="block text-small">{t("ambience.music")}
+      {radio?.streamUrl && <label className="block text-small">{t("ambience.radioVolume")}
         <input type="range" min="0" max="1" step="0.05" disabled={disabled} value={preferences?.musicVolume ?? 0}
           onChange={event => update.mutate({ musicVolume: Number(event.target.value) })} className="block h-11 w-full accent-accent" />
-      </label>
+      </label>}
       <BackgroundEffectsPicker selected={preferences?.backgroundEffects ?? []} volumes={preferences?.effectVolumes ?? {}} disabled={disabled}
         onSelectionChange={backgroundEffects => update.mutate({ backgroundEffects })}
         onVolumeChange={(slug, volume) => update.mutate({ effectVolumes: { ...preferences?.effectVolumes, [slug]: volume } })} />

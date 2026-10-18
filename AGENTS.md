@@ -319,6 +319,8 @@ The user subsequently authorised the 17-feature roadmap in docs/FEATURE_CHECKLIS
 
 ## 14. Current status
 
+- **Radio volume controls (18 October 2026):** removed the redundant Music Volume slider from session controls and Settings. Official Lofi Cafe embeds retain a 640px internal viewport with their right-hand controls visible inside the narrow panel; this prevents the provider's responsive layout from hiding volume on phones. Direct-stream catalog entries use a contextual Radio volume control. Provider volume was verified visible and keyboard adjustable without starting playback; no audio sources or dependencies changed.
+
 - **Default-media CI regression (18 October 2026):** browser tests validate the original four 12-second scenes and expanded four 8-second scenes against their respective generator durations, sampling the actual end of each video for seam checks. Reused theme sound URLs are decoded once; distinct URLs still must have distinct fingerprints. Both media browser tests and the asset validator pass; published assets remain unchanged.
 
 - **Background effects master volume:** slider changes now update both live sources during a loop crossfade; the retiring source fades out within 100ms instead of retaining its old level. Zero releases all effect sources. A crossfade unit regression and the browser live-gain/mute/restore check pass.

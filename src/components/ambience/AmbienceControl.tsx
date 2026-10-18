@@ -6,6 +6,7 @@ import { useEffect, useState, type CSSProperties } from "react";
 import { useAmbience } from "@/hooks/useAmbience";
 import { useTranslation } from "@/hooks/useTranslation";
 import { BackgroundEffectsPicker } from "./BackgroundEffectsPicker";
+import { RadioPlayer } from "./RadioPlayer";
 import { radioStations } from "@/lib/audio/radio";
 import { cn } from "@/lib/utils";
 import { getTheme } from "@/lib/themes/registry";
@@ -36,10 +37,6 @@ export function AmbienceControl({ theme, onOpenChange, className }: { theme: str
         className="z-50 max-h-[calc(100dvh-6rem)] w-80 max-w-[calc(100dvw-2rem)] overflow-y-auto rounded-2xl border border-border bg-surface p-5 text-foreground shadow-lg data-[state=closed]:hidden">
         <h2 className="text-body font-semibold">{t("ambience.label")}</h2>
         <p className="mt-1 text-small text-text-muted">{t("ambience.originalNote")}</p>
-        <label className="mt-4 block text-small" htmlFor="music-volume">{t("ambience.music")}</label>
-        <input id="music-volume" type="range" min={0} max={1} step={0.05} disabled={Boolean(station?.embedUrl)} value={audio.musicVolume} onChange={event => audio.setMusicVolume(Number(event.target.value))}
-          className="h-11 w-full accent-accent" />
-        {station?.embedUrl && <p className="text-small text-text-muted">{t("ambience.playerVolume")}</p>}
         <BackgroundEffectsPicker selected={audio.backgroundEffects ?? []} volumes={audio.effectVolumes ?? {}}
           onSelectionChange={audio.setBackgroundEffects} onVolumeChange={audio.setEffectVolume} />
         <label className="block text-small" htmlFor="room-volume">{t("ambience.room")}</label>
@@ -52,7 +49,11 @@ export function AmbienceControl({ theme, onOpenChange, className }: { theme: str
           </label>)}
         </fieldset>
         <button type="button" onClick={() => audio.setMusicTrack(null)} className="mt-2 min-h-11 rounded-lg border border-border px-3 text-small hover:bg-surface-2">{t("ambience.radioOff")}</button>
-        {station?.embedUrl && visible && hasOpened && <iframe key={station.id} title={station.name} src={station.embedUrl} height={100} allow="autoplay" referrerPolicy="no-referrer" className="mt-3 w-full rounded-xl border-0" />}
+        {station?.streamUrl && <label className="mt-3 block text-small">{t("ambience.radioVolume")}
+          <input type="range" min={0} max={1} step={0.05} value={audio.musicVolume} onChange={event => audio.setMusicVolume(Number(event.target.value))} className="block h-11 w-full accent-accent" />
+        </label>}
+        {station?.embedUrl && <p className="mt-3 text-small text-text-muted">{t("ambience.playerVolume")}</p>}
+        {station?.embedUrl && visible && hasOpened && <RadioPlayer key={station.id} name={station.name} src={station.embedUrl} />}
         {station && <a href={station.website} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex min-h-11 items-center text-small underline">{t("ambience.stationWebsite")}</a>}
       </Popover.Content>
     </Popover.Portal>

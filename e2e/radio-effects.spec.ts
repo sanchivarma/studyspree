@@ -10,6 +10,28 @@ async function setSlider(page: Page, name: string, value: number) {
   await expect(slider).toHaveValue(String(value));
 }
 
+for (const width of [320, 1280]) test(`radio volume is visible and keyboard adjustable at ${width}px`, async ({ page }) => {
+  await page.setViewportSize({ width, height: 800 });
+  // Match the provider's 640px breakpoint without contacting its live stream.
+  await page.route("https://loficafe.net/**", route => route.fulfill({ contentType: "text/html", body: `
+    <style>body{margin:0}main{height:80px;display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:0 16px}
+    label{display:none}input{width:64px}@media(min-width:640px){label{display:block}}</style>
+    <main><button>Mute</button><label>Radio volume<input aria-label="Radio volume" type="range" min="0" max="1" step="0.1" value="0.8"></label><button>Play</button></main>` }));
+  await signIn(page); await startSession(page);
+  await page.getByRole("button", { name: "Sound", exact: true }).click();
+  await page.getByRole("radio", { name: /Lofi Cafe.*Studying/ }).check();
+  const volume = page.frameLocator('iframe[title="Lofi Cafe · Studying"]').getByRole("slider", { name: "Radio volume" });
+  await expect(volume).toBeVisible();
+  const player = page.getByTestId("radio-player"); await player.scrollIntoViewIfNeeded();
+  const bounds = await player.boundingBox(); const control = await volume.boundingBox();
+  expect(bounds).not.toBeNull(); expect(control).not.toBeNull();
+  expect(control!.x).toBeGreaterThanOrEqual(bounds!.x);
+  expect(control!.x + control!.width).toBeLessThanOrEqual(bounds!.x + bounds!.width);
+  await volume.focus(); await page.keyboard.press("ArrowLeft"); await expect(volume).toHaveValue("0.7");
+  await expect(page.getByRole("slider", { name: "Music Volume", exact: true })).toHaveCount(0);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
+
 test("multiselect effects persist; radio mounts on selection and survives closing the sound control", async ({ page }) => {
   // Test the integration contract without contacting an external provider.
   const frames: string[] = [];
@@ -30,7 +52,7 @@ test("multiselect effects persist; radio mounts on selection and survives closin
   await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("ss_profile") ?? "{}").effectVolumes)).toEqual({ rain: 0.75, wind: 0.2 });
   await page.getByRole("radio", { name: "Lofi Cafe · Studying", exact: true }).check();
   await expect(page.frameLocator('iframe[title="Lofi Cafe · Studying"]').getByRole("button", { name: "Play radio" })).toBeVisible();
-  await expect(page.getByRole("slider", { name: "Music Volume", exact: true })).toBeDisabled();
+  await expect(page.getByRole("slider", { name: "Music Volume", exact: true })).toHaveCount(0);
   await page.keyboard.press("Escape"); await expect(page.getByTestId("ambience-popover")).not.toBeVisible();
   await expect(page.locator('iframe[title="Lofi Cafe · Studying"]')).toHaveCount(1);
   await sound.click();

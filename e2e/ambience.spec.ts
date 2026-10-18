@@ -45,12 +45,11 @@ test("default off, gesture unlock, independent controls, debounced persistence a
   expect(requests).toEqual([]);
   await page.getByRole("button", { name: "Sound", exact: true }).click();
   await expect(page.getByTestId("ambience-popover")).toBeVisible();
-  await expect(page.getByRole("slider", { name: "Music Volume", exact: true })).toHaveValue("0");
+  await expect(page.getByRole("slider", { name: "Music Volume", exact: true })).toHaveCount(0);
   await expect(page.getByRole("slider", { name: "Background effects volume", exact: true })).toHaveValue("0");
   expect(await page.evaluate(() => (window as unknown as { audioAudit: { contexts: number } }).audioAudit.contexts)).toBe(1);
   await page.getByRole("checkbox", { name: "Rain", exact: true }).check(); await slider(page, "Background effects volume", 0.5);
-  await slider(page, "Music Volume", 0.2);
-  await expect.poll(() => preferences(page)).toMatchObject({ ambienceEnabled: true, musicTrack: null, musicVolume: 0.2, roomVolume: 0.5 });
+  await expect.poll(() => preferences(page)).toMatchObject({ ambienceEnabled: true, musicTrack: null, roomVolume: 0.5 });
   await expect.poll(() => requests.length).toBeGreaterThan(0);
   expect(requests.every(url => ["/audio/rain.webm", "/audio/effect-rain-v3.mp3"].includes(new URL(url).pathname))).toBe(true);
   await page.keyboard.press("Escape"); await expect(page.getByTestId("ambience-popover")).not.toBeVisible();
@@ -59,7 +58,7 @@ test("default off, gesture unlock, independent controls, debounced persistence a
   expect(await page.evaluate(() => (window as unknown as { audioAudit: { contexts: number } }).audioAudit.contexts)).toBe(0);
   const count = requests.length; await page.waitForTimeout(300); expect(requests).toHaveLength(count);
   await page.getByRole("button", { name: "Sound", exact: true }).click();
-  await expect(page.getByRole("slider", { name: "Music Volume", exact: true })).toHaveValue("0.2");
+  await expect(page.getByRole("slider", { name: "Music Volume", exact: true })).toHaveCount(0);
   await expect(page.getByRole("slider", { name: "Background effects volume", exact: true })).toHaveValue("0.5");
 });
 
@@ -107,7 +106,7 @@ for (const locale of ["en", "de", "fr", "pl", "it"]) test(`popover fits a phone,
     const { session } = JSON.parse(readFileSync(new URL(`../src/translations/session/${locale}.json`, import.meta.url), "utf8")) as { session: { sound: string } };
     await page.context().addCookies([{ name: "ss_locale", value: locale, url: "http://localhost:3000" }]);
     await page.goto(path); const trigger = page.getByRole("button", { name: session.sound, exact: true }); await trigger.click();
-    await expect(page.getByRole("slider", { name: ambience.music, exact: true })).toBeVisible();
+    await expect(page.getByRole("slider")).toHaveCount(7); // Six effects plus their master; no redundant music slider.
     await expect(page.getByRole("slider", { name: ambience.room, exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: ambience.radioOff, exact: true })).toBeVisible();
     await expect(page.getByRole("radio")).toHaveCount(3);

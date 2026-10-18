@@ -24,7 +24,8 @@ test("every setting saves without a Save button and survives refresh without cha
   await page.getByLabel("Display name", { exact: true }).fill("Alex");
   await page.getByRole("switch", { name: "Reduce motion", exact: true }).click();
   await page.getByRole("switch", { name: "Ambience", exact: true }).click();
-  await setVolume(page, "Music Volume", "0.4"); await setVolume(page, "Background effects volume", "0.6");
+  await expect(page.getByRole("slider", { name: "Music Volume", exact: true })).toHaveCount(0);
+  await setVolume(page, "Background effects volume", "0.6");
   await page.getByRole("checkbox", { name: "Rain", exact: true }).click();
   await expect(page.getByRole("checkbox", { name: "Rain", exact: true })).toBeChecked();
   await page.getByRole("combobox", { name: "Online radio", exact: true }).selectOption("radio:lofi-studying");
@@ -34,7 +35,7 @@ test("every setting saves without a Save button and survives refresh without cha
   await page.getByRole("button", { name: "Theme Rainy Desk", exact: true }).click();
   await page.getByTestId("theme-card-dorm-bunk").click();
   await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("ss_profile")!))).toMatchObject({
-    displayName: "Alex", reduceMotion: true, ambienceEnabled: true, musicVolume: .4, roomVolume: .6,
+    displayName: "Alex", reduceMotion: true, ambienceEnabled: true, roomVolume: .6,
     musicTrack: "radio:lofi-studying", showStreak: false, timezone: "Asia/Tokyo", selectedTheme: "dorm-bunk",
   });
   expect(await page.evaluate(() => localStorage.getItem("ss_sessions"))).toBe(history);
