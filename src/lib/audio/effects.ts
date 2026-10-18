@@ -8,7 +8,7 @@ const effectSources = {
   thunderstorm: "/audio/effect-thunderstorm-v2.mp3",
   "brown-noise": "/audio/effect-brown-noise-v1.wav",
   "white-noise": "/audio/effect-white-noise-v1.wav",
-  medieval: "/audio/effect-medieval-v1.mp3",
+  medieval: "/audio/effect-medieval-v2.mp3",
   library: "/audio/effect-library-v2.mp3",
   castle: "/audio/effect-castle-v1.mp3",
 } satisfies Record<EffectSlug, string>;

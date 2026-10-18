@@ -9,13 +9,19 @@ https://creativecommons.org/publicdomain/zero/1.0/
 | --- | --- | --- |
 | effect-cafe-v3.mp3 | oliverbrotzman | https://freesound.org/people/oliverbrotzman/sounds/125247/ |
 | effect-medieval-v1.mp3 | f-r-a-g-i-l-e | https://freesound.org/people/f-r-a-g-i-l-e/sounds/506266/ |
+| effect-medieval-v2.mp3 | Lukaszzz123 | https://freesound.org/people/Lukaszzz123/sounds/807187/ |
 | effect-library-v2.mp3 | xkeril | https://freesound.org/people/xkeril/sounds/620683/ |
 | effect-castle-v1.mp3 | tripjazz | https://freesound.org/people/tripjazz/sounds/394754/ |
 
 The café contains public coffee-shop conversations recorded on a busy Saturday.
 Its first three minutes are normalized to -16 LUFS with a -2 dBTP target, so
 100% can deliver a useful level instead of amplifying an unusually quiet file.
-Medieval is a gentle two-chord lute performance. Library is an excerpt of a
+The active Medieval strings option uses a slow violin recording, with softened
+high frequencies, subtle hall echo and a quieter -24 LUFS target. This is a
+medieval-inspired ambience treatment of the creator's "Classical slow violin",
+not a claim of an authentic historical performance. The previous two-chord lute
+file remains immutable for cached clients but is no longer selected.
+Library is an excerpt of a
 quiet university reading room, with pages, pens, chairs and ventilation.
 Castle hearth is a fireplace recording with low-pass filtering and a subtle
 hall echo, a designed castle-like soundscape rather than a claim of a recording
@@ -43,5 +49,6 @@ Already published assets are unchanged. No YouTube or radio audio was copied.
 | --- | --- | --- |
 | effect-cafe-v3.mp3 | b2b2dd2c491ebc4ba2ff79c1906a5ec764ccd76c525fdcf926846b1b567e96f6 | 9acee8e0d6bde09623d3a55911160be02c48e8dd2d5839e75fddc34ee0bd3758 |
 | effect-medieval-v1.mp3 | 6519ac01d4f78429343bfeef5be05b6cffaede6b2579b9d737c287abdd62ae64 | 77e1fe82130b6bde77d534370d3ecc31853ac47c083ffd65ad7254a403251506 |
+| effect-medieval-v2.mp3 | e9dfefa13073800d4ca08a8c128edc750a91a77fd831d86e8426711a8ca7e6ec | c7055e7cb2ce0843c50fb32f4d1d1cf2d180323dc43a2b5c9af2ab88808794ae |
 | effect-library-v2.mp3 | a7edd4688e867021c0a49156dcab3d15d43a737dbc0af75a02fa5596996f0d2e | 7b7cf7412ae8f50de6fee34266735a72d72555100815789312a61f40fe9ba8c4 |
 | effect-castle-v1.mp3 | d392cb5b057faf8ca3ed28ee0019a7bd9f159ff7627f1a5a8a951cfb7bed5ef7 | 534a326981fcc131b4c1bd5df0cc8296d4123c2a3eb5ce5ae456e67aa1b858c8 |

@@ -14,7 +14,7 @@ async function setSlider(page: Page, name: string, value: number) {
 test("medieval, library and castle have independent saved levels", async ({ page }) => {
   await signIn(page); const path = await startSession(page);
   await page.getByRole("button", { name: "Sound", exact: true }).click();
-  for (const [name, volume] of [["Medieval lute", 0.25], ["Library ambience", 0.65], ["Castle hearth", 0.4]] as const) {
+  for (const [name, volume] of [["Medieval strings", 0.25], ["Library ambience", 0.65], ["Castle hearth", 0.4]] as const) {
     await page.getByRole("checkbox", { name, exact: true }).check();
     await setSlider(page, `${name} volume`, volume);
   }
@@ -22,7 +22,7 @@ test("medieval, library and castle have independent saved levels", async ({ page
   await page.reload(); await expect(page.getByTestId("session-screen")).toBeVisible();
   expect(new URL(page.url()).pathname).toBe(path);
   await page.getByRole("button", { name: "Sound", exact: true }).click();
-  for (const [name, volume] of [["Medieval lute", 0.25], ["Library ambience", 0.65], ["Castle hearth", 0.4]] as const) {
+  for (const [name, volume] of [["Medieval strings", 0.25], ["Library ambience", 0.65], ["Castle hearth", 0.4]] as const) {
     await expect(page.getByRole("checkbox", { name, exact: true })).toBeChecked();
     await expect(page.getByRole("slider", { name: `${name} volume`, exact: true })).toHaveValue(String(volume));
   }

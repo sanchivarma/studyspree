@@ -28,5 +28,6 @@ Files are immutable: use a new filename for a new version.
 | effect-rain-v3.mp3 | Freesound #217236 by roofusj; HQ preview | CC0 1.0 | 2026-10-17 | yes | docs/FIELD_RECORDINGS_LICENCE.md |
 | effect-cafe-v3.mp3 | Freesound #125247 by oliverbrotzman; normalized busy café excerpt | CC0 1.0 | 2026-10-18 | yes | docs/audio/expanded-ambience.md |
 | effect-medieval-v1.mp3 | Freesound #506266 by f-r-a-g-i-l-e; normalized lute | CC0 1.0 | 2026-10-18 | yes | docs/audio/expanded-ambience.md |
+| effect-medieval-v2.mp3 | Freesound #807187 by Lukaszzz123; softened slow violin with gentle hall echo | CC0 1.0 | 2026-10-18 | yes | docs/audio/expanded-ambience.md |
 | effect-library-v2.mp3 | Freesound #620683 by xkeril; normalized quiet-library excerpt | CC0 1.0 | 2026-10-18 | yes | docs/audio/expanded-ambience.md |
 | effect-castle-v1.mp3 | Freesound #394754 by tripjazz; filtered fireplace with hall echo | CC0 1.0 | 2026-10-18 | yes | docs/audio/expanded-ambience.md |

@@ -18,7 +18,7 @@ test("effects decode to distinct audible signals and the new cafe is substantial
     }, src);
     expect(result.duration, src).toBeGreaterThan(10);
     expect(result.rms, src).toBeGreaterThan(0.001); expect(result.peak, src).toBeLessThan(1);
-    if (["/audio/effect-cafe-v3.mp3", "/audio/effect-medieval-v1.mp3", "/audio/effect-library-v2.mp3", "/audio/effect-castle-v1.mp3"].includes(src)) {
+    if (["/audio/effect-cafe-v3.mp3", "/audio/effect-medieval-v2.mp3", "/audio/effect-library-v2.mp3", "/audio/effect-castle-v1.mp3"].includes(src)) {
       expect(result.peak, src).toBeLessThan(0.95); // Normalized additions retain headroom.
     }
     expect(fingerprints.has(result.fingerprint), src).toBe(false); fingerprints.add(result.fingerprint);

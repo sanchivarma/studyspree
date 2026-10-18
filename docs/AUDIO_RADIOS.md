@@ -51,6 +51,6 @@ New profiles
 start with no selected effects and no playing music.
 
 The café now uses a louder normalized public coffee-shop recording. Medieval
-lute, Library ambience and Castle hearth add three independent effects, each
+strings (soft slow violin), Library ambience and Castle hearth add three independent effects, each
 with a saved level. See `docs/audio/expanded-ambience.md` for sources, licences,
 processing and the exact meaning of the designed castle-hearth soundscape.
