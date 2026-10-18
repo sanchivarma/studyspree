@@ -2,6 +2,48 @@
 
 ## Current animation review status — 18 October 2026
 
+### Active timing correction
+
+V11 is now active for the twelve realistic partners plus Idris, Elin and
+Einstein. It **only retimes the preceding source GIF frames**. It does not
+use the rejected v9/v10 poses, regenerate anatomy, interpolate, crop, mirror
+or resize. Original files remain immutable. Each first frame holds a quiet
+reading pose for a different 15–20-second interval; subsequent frame durations
+are 1.5 times their old duration (rounded to GIF's 10 ms timebase). Full cycles
+also differ, so the characters do not repeat together every five seconds.
+The same pause recurs at every loop boundary.
+
+| Partner | Reading pause | Full cycle |
+| --- | --- | --- |
+| Arun | 15.00s | 21.48s |
+| Lin | 15.34s | 23.98s |
+| Amina | 15.67s | 22.15s |
+| Omar | 16.01s | 22.49s |
+| Sofia | 16.35s | 22.83s |
+| Matt | 16.69s | 23.17s |
+| Minh | 17.02s | 23.50s |
+| Samira | 17.36s | 23.84s |
+| Timur | 17.70s | 26.10s |
+| Leilani | 18.03s | 26.43s |
+| Valeria | 18.37s | 26.77s |
+| Andre | 18.71s | 27.11s |
+| Idris | 19.04s | 27.44s |
+| Elin | 19.38s | 27.78s |
+| Einstein | 19.72s | 28.12s |
+
+`scripts/retime-companion-gifs.mjs` reproduces this timing-only revision,
+refuses existing outputs, preserves frame counts/dimensions and records each
+source SHA256 and encoded frame delay in `mediaRevisions.json`. The registry
+uses the new GIF URLs and retains the original matching posters. Tesla's
+separate slow 20-second writing video is unchanged. The illustrated and
+whimsical authored recordings are unchanged by this correction.
+
+This fixes frequency/staggering. Existing pose quality and the broader natural
+motion repair remain unresolved. The reading hold is a still source pose;
+it is not newly generated continuous natural human motion.
+
+### Previous experiments and quality findings
+
 The user rejected the v5/v9 realistic replacements because they looked
 glitchy. They are **not active**. The realistic registry has been restored to
 the preceding v1/v3/v4 GIFs. Historical media has not been changed during this

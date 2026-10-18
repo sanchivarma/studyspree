@@ -20,7 +20,7 @@ test("the original eight realistic partners animate in a session and preserve it
   const startedAt = await page.evaluate(() => JSON.parse(localStorage.getItem("ss_sessions")!)[0].startedAt);
   for (let n = 1; n <= 8; n++) {
     const image = page.getByTestId(`character-loop-realistic-0${n}`).getByTestId("character-animation");
-    await expect(image).toHaveAttribute("src", `/characters/realistic-0${n}/study-${n === 2 ? "v4" : "v3"}.gif`);
+    await expect(image).toHaveAttribute("src", `/characters/realistic-0${n}/study-v11.gif`);
     await expect.poll(() => image.evaluate(el => (el as HTMLImageElement).naturalWidth)).toBe(n === 2 ? 320 : 360);
   }
   // Sample actual rendered GIF pixels; metadata alone cannot prove browser playback.
@@ -33,7 +33,11 @@ test("the original eight realistic partners animate in a session and preserve it
       frames.push((await image.screenshot({ animations: "allow" })).toString("base64"));
       await page.waitForTimeout(450); // Sample distinct moments of this animation.
     }
-    expect(new Set(frames).size, `realistic-0${n} must visibly change`).toBeGreaterThan(1);
+    if (new Set(frames).size === 1) {
+      // Reading pauses are deliberately 15–20 seconds. Wait for the real
+      // action instead of requiring movement during the quiet reading hold.
+      await expect.poll(async () => (await image.screenshot({ animations: "allow" })).toString("base64"), { timeout: 30000, intervals: [500] }).not.toBe(frames[0]);
+    }
   }
   await page.reload();
   await expect(page.getByTestId("character-loop-realistic-08")).toHaveAttribute("data-animated", "true");
@@ -65,7 +69,7 @@ test("four expanded partners mix with existing styles, animate and persist", asy
       frames.push((await image.screenshot({ animations: "allow" })).toString("base64"));
       await page.waitForTimeout(250); // Compare actual browser-painted GIF frames.
     }
-    expect(new Set(frames).size, slug).toBeGreaterThan(1);
+    if (new Set(frames).size === 1) await expect.poll(async () => (await image.screenshot({ animations: "allow" })).toString("base64"), { timeout: 30000, intervals: [500] }).not.toBe(frames[0]);
   }
   await page.reload();
   await expect(page.getByTestId("character-loop-realistic-12")).toHaveAttribute("data-animated", "true");

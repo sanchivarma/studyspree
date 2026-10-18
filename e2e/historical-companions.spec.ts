@@ -70,7 +70,7 @@ test("historical partners animate, persist and leave the session timer intact", 
     const animation = tile.getByTestId("character-animation");
     await expect.poll(() => animation.evaluate(img => img instanceof HTMLVideoElement ? img.videoWidth : (img as HTMLImageElement).naturalWidth)).toBe(320);
     const firstFrame = await animation.screenshot();
-    await expect.poll(async () => (await animation.screenshot()).equals(firstFrame)).toBe(false);
+    await expect.poll(async () => (await animation.screenshot()).equals(firstFrame), { timeout: 30000, intervals: [500] }).toBe(false);
   }
   await page.reload();
   await expect(page.getByTestId("session-screen")).toBeVisible();

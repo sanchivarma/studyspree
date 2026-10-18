@@ -26,7 +26,8 @@ for (const slug of slugs) {
   const metadata = await sharp(bytes, { animated: true }).metadata();
   const legacyCadence = version === "v3" && realistic.includes(slug);
   const legacyDelays = [700,180,180,280,280,280,280,280,280,280,280,280,280,280,180,700];
-  if (metadata.loop !== 0 || metadata.pages !== expected.gifFrames || metadata.width !== expected.gifWidth || metadata.pageHeight !== expected.gifHeight || metadata.delay.some((ms, index) => ms !== (legacyCadence ? legacyDelays[index] : 50)) || metadata.delay.reduce((a, b) => a + b, 0) !== Math.round(expected.gifSeconds * 1000)) throw new Error(`${gifName}: unexpected dimensions, duration or cadence`);
+  if (metadata.loop !== 0 || metadata.pages !== expected.gifFrames || metadata.width !== expected.gifWidth || metadata.pageHeight !== expected.gifHeight || metadata.delay.some((ms, index) => ms !== (expected.gifDelays?.[index] ?? (legacyCadence ? legacyDelays[index] : 50))) || metadata.delay.reduce((a, b) => a + b, 0) !== Math.round(expected.gifSeconds * 1000)) throw new Error(`${gifName}: unexpected dimensions, duration or cadence`);
+  if (version === "v11" && (metadata.delay[0] < 15000 || metadata.delay[0] > 20000)) throw new Error(`${slug}: reading pause must be 15–20 seconds`);
   const hash = createHash("sha256").update(bytes).digest("hex");
   if (hashes.has(hash)) throw new Error(`${slug}: duplicate animation`);
   hashes.add(hash);

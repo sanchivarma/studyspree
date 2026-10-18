@@ -24,12 +24,11 @@ describe("virtual companion definitions", () => {
     expect(realistic.filter(value => value.presentation === "male")).toHaveLength(6);
     expect(realistic.filter(value => value.presentation === "female")).toHaveLength(6);
     for (const value of realistic) {
-      // The rejected interpolated replacements must not become active again.
-      const expectedVersion = value.slug === "realistic-02" ? "v4" : Number(value.slug.slice(-2)) >= 9 ? "v1" : "v3";
-      expect(value.assetVersion).toBe(expectedVersion);
-      expect(value.loopSeconds).toBe(expectedVersion === "v4" ? 5.45 : expectedVersion === "v1" ? 5.3 : 5.02);
+      // V11 retimes existing source frames; rejected generated poses stay inactive.
+      expect(value.assetVersion).toBe("v11");
+      expect(value.loopSeconds).toBeGreaterThan(20);
       expect(value.webm).toBeNull();
-      expect(value.gif).toBe(`/characters/${value.slug}/study-${expectedVersion}.gif`);
+      expect(value.gif).toBe(`/characters/${value.slug}/study-v11.gif`);
       expect(value.descriptionKey).toMatch(/realistic(Reading|Writing)$/);
     }
     expect(companionSchema.safeParse({ mode: "characters", characterSlugs: ["female-01", "moss-fox", "realistic-01", "realistic-09", "realistic-10", "realistic-11", "realistic-12"] }).success).toBe(true);
