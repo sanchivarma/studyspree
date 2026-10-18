@@ -64,7 +64,7 @@ test("default off, gesture unlock, independent controls, debounced persistence a
   await expect(page.getByRole("slider", { name: "Background effects volume", exact: true })).toHaveValue("0.5");
 });
 
-test("effects stay independent of theme, visibility fades and Finish releases gains without changing session data", async ({ page }) => {
+test("effects stay independent of theme, keep playing hidden and Finish releases gains without changing session data", async ({ page }) => {
   await instrument(page); await signIn(page); const path = await startSession(page);
   const initial = await page.evaluate(() => JSON.parse(localStorage.getItem("ss_sessions")!)[0].startedAt);
   const requests: string[] = []; page.on("request", request => { if (request.url().includes("/audio/")) requests.push(request.url()); });
@@ -80,7 +80,10 @@ test("effects stay independent of theme, visibility fades and Finish releases ga
   await page.evaluate(() => {
     Object.defineProperty(document, "hidden", { configurable: true, value: true }); document.dispatchEvent(new Event("visibilitychange"));
   });
-  await expect.poll(() => page.evaluate(() => (window as unknown as { audioAudit: { fades: number[] } }).audioAudit.fades.includes(0))).toBe(true);
+  // Observe beyond the previous 500ms visibility fade/pause deadline.
+  await page.waitForTimeout(800);
+  expect(await page.evaluate(() => (window as unknown as { audioAudit: { fades: number[] } }).audioAudit.fades.includes(0))).toBe(false);
+  expect(await page.evaluate(() => (window as unknown as { audioAudit: { playing: Set<AudioBufferSourceNode> } }).audioAudit.playing.size)).toBeGreaterThan(0);
   await page.evaluate(() => {
     Object.defineProperty(document, "hidden", { configurable: true, value: false }); document.dispatchEvent(new Event("visibilitychange"));
   });

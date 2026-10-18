@@ -221,7 +221,7 @@ A Playwright test greps the Complete screen for banned words. Don't work around 
 - Prompt 2.4 explicitly authorizes `stroke-dashoffset` animation for `DepletingRing`; this exception applies to that component only.
 - Never animate `width`, `height`, `top`, `left`, `margin`, `box-shadow`
 - One `requestAnimationFrame` loop per animated component, never one per element
-- Pause everything on `document.hidden`
+- Pause visual animation/video on `document.hidden`. Audio continues across tab/window visibility and focus changes, as explicitly requested by the user.
 - No layout shift: media containers have a defined aspect ratio
 
 ### Accessibility
@@ -318,6 +318,8 @@ The user subsequently authorised the 17-feature roadmap in docs/FEATURE_CHECKLIS
 ---
 
 ## 14. Current status
+
+- **Continuous audio and radio sizing (18 October 2026):** the user's latest requirement supersedes Phase 5's hidden-tab audio fading. Music, room ambience, background effects and radio now continue when the tab/window loses visibility or focus. The radio iframe remains mounted until station changes, Off or session exit. RadioPlayer proportionally scales the provider's right-hand controls to fill the panel, enlarging its volume bar and removing the left gap while preserving playback across resize. Visual scene/character visibility optimizations remain separate from audio. Typecheck, lint and 417 unit tests pass; four focused browser cases pass (the Finish journey passed unchanged on rerun after a dev-server timeout). The real embed was checked at desktop/mobile widths: its bar now occupies about 93/82px with a 7/6px left inset instead of the old blank area.
 
 - **Expanded ambience (18 October 2026):** café v3 replaces the active quiet café with a normalized CC0 busy-coffee-shop excerpt. Medieval lute, Library ambience (three-minute reading-room excerpt) and Castle hearth (filtered/reverberant fireplace) add three independent saved effects. All six permitted free Lofi Cafe embeds are in the JSON catalog. Migration 0049 expands selection/volume validation without rewriting saved history or existing preferences. Sources, processing and hashes are in docs/audio/expanded-ambience.md; the new decode/loudness regression is included in CI. No dependency was added. All 415 unit tests, 262 database assertions, 25 audio licence entries and 15 focused browser checks pass, including a measured café RMS increase of at least 1.5×. The final 14-case control run passed after restarting the development server and splitting refresh/next-session coverage into separate tests without removing assertions.
 

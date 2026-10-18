@@ -40,6 +40,20 @@ describe("two independent, gesture-gated audio buses", () => {
       engine.setMusicTrack(null); expect(mocks.sounds[0].unload).toHaveBeenCalledOnce();
     } finally { radioStations.pop(); }
   });
+  it("keeps approved direct radio playing and adjustable while the document is hidden", () => {
+    radioStations.push({ id: "background-radio", name: "Test", website: "https://radio.example.test", permissionUrl: "https://radio.example.test/permission", embedUrl: null, streamUrl: "https://radio.example.test/live.mp3" });
+    try {
+      Object.assign(document, { hidden: true });
+      engine.setMusicTrack("radio:background-radio"); engine.setMusicVolume(0.4);
+      expect(mocks.sounds).toHaveLength(0);
+      engine.init(); const radio = mocks.sounds[0];
+      expect(radio.play).toHaveBeenCalledOnce();
+      engine.setMusicVolume(0.2);
+      expect(radio.volume).toHaveBeenLastCalledWith(0.2);
+      expect(radio.pause).not.toHaveBeenCalled();
+      expect(radio.unload).not.toHaveBeenCalled();
+    } finally { radioStations.pop(); }
+  });
   it("mixes selected effects lazily, preserves music and releases removed sources", () => {
     engine.setBackgroundEffects(["rain", "wind"]); engine.setRoomVolume(0.6);
     expect(mocks.sounds).toHaveLength(0);
@@ -116,13 +130,25 @@ describe("two independent, gesture-gated audio buses", () => {
     expect(mocks.sounds[2].unload).toHaveBeenCalledOnce(); expect(mocks.sounds[3].unload).toHaveBeenCalledOnce();
     expect(mocks.sounds[4].options.src).toEqual(["/audio/keyboard-room-v1.webm"]);
   });
-  it("visibility fades to zero and pauses, then resumes at the selected volume", () => {
+  it("music and effects keep playing at their selected volume across visibility changes", () => {
+    engine.setMusicTrack("still-water"); engine.setMusicVolume(0.2);
+    engine.setBackgroundEffects(["rain"]);
+    engine.setRoomVolume(0.4); engine.init(); loaded(); loaded(2);
+    const notify = () => vi.mocked(document.addEventListener).mock.calls
+      .filter(([event]) => event === "visibilitychange").forEach(([, listener]) => (listener as () => void)());
+    Object.assign(document, { hidden: true }); notify(); vi.advanceTimersByTime(1000);
+    expect(mocks.sounds.every(sound => !sound.pause.mock.calls.length && !sound.unload.mock.calls.length)).toBe(true);
+    engine.setRoomVolume(0.3);
+    expect(mocks.sounds[2].fade).toHaveBeenLastCalledWith(0.5, 0.3, 100, 1);
+    Object.assign(document, { hidden: false }); notify();
+    expect(mocks.sounds.every(sound => sound.fade.mock.calls.every(([, target]) => target !== 0))).toBe(true);
+  });
+  it("explicit fade-out still pauses a bus and explicit fade-in restores it", () => {
     engine.init(); engine.setRoomForTheme("rain-desk"); engine.setRoomVolume(0.4); loaded();
-    const listener = vi.mocked(document.addEventListener).mock.calls[0][1] as () => void;
-    Object.assign(document, { hidden: true }); listener();
+    engine.fadeOutAll(500);
     expect(mocks.sounds[0].fade).toHaveBeenCalledWith(0.5, 0, 500, 1);
     vi.advanceTimersByTime(500); expect(mocks.sounds[0].pause).toHaveBeenCalledWith(1);
-    Object.assign(document, { hidden: false }); listener();
+    engine.fadeInAll(500);
     expect(mocks.sounds[0].fade).toHaveBeenCalledWith(0.5, 0.4, 500, 1);
   });
   it("unloads missing files silently and ignores stale callbacks after switching", () => {
@@ -136,7 +162,7 @@ describe("two independent, gesture-gated audio buses", () => {
     engine.init(); engine.setMusicTrack("unknown"); engine.setMusicVolume(2); expect(mocks.sounds).toHaveLength(0);
     engine.setRoomForTheme("rain-desk"); engine.setRoomVolume(-1); expect(mocks.sounds).toHaveLength(0);
     engine.setRoomVolume(2); loaded(); expect(mocks.sounds[0].fade).toHaveBeenCalledWith(0.5, 1, 500, 1);
-    engine.destroy(); expect(vi.getTimerCount()).toBe(0); expect(document.removeEventListener).toHaveBeenCalled();
+    engine.destroy(); expect(vi.getTimerCount()).toBe(0);
     expect(mocks.sounds.every(sound => sound.unload.mock.calls.length > 0)).toBe(true);
   });
 });

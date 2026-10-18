@@ -148,19 +148,15 @@ export class AmbienceEngine {
   private roomSource: string | null = null;
   private musicVolume = 0;
   private roomVolume = 0;
-  private readonly visibility = () => {
-    if (document.hidden) this.fadeOutAll(500); else this.fadeInAll(500);
-  };
 
   // Called synchronously from a user gesture. Importing this module or restoring
   // preferences never creates an AudioContext, a Howl, or an audio request.
+  // Visibility/focus changes never mute audio; playback ends through explicit controls.
   init() {
     if (typeof window === "undefined") return;
     if (!this.initialized) {
       this.initialized = true;
       Howler.volume(1);
-      document.addEventListener("visibilitychange", this.visibility);
-      if (document.hidden) this.fadeOutAll(0);
     }
     this.music.refresh(); this.room.refresh(); this.effects.forEach(bus => bus.refresh()); this.refreshRadio();
     // Howler may replace its context while unlocking a first Howl. Resume the
@@ -185,7 +181,7 @@ export class AmbienceEngine {
   }
   private refreshRadio() {
     const station = radioStations.find(station => station.id === this.radioSlug);
-    if (!this.initialized || !station?.streamUrl || this.musicVolume === 0 || document.hidden) { this.radio?.pause(); return; }
+    if (!this.initialized || !station?.streamUrl || this.musicVolume === 0) { this.radio?.pause(); return; }
     if (!this.radio) this.radio = new Howl({ src: [station.streamUrl], html5: true, format: ["mp3"], preload: false, autoplay: false, volume: this.musicVolume });
     this.radio.volume(this.musicVolume);
     if (!this.radio.playing()) this.radio.play();
@@ -197,16 +193,15 @@ export class AmbienceEngine {
     for (const [slug, bus] of this.effects) if (!this.selectedEffects.includes(slug)) { bus.reset(); this.effects.delete(slug); }
     for (const effect of backgroundEffects.filter(effect => this.selectedEffects!.includes(effect.slug))) {
       let bus = this.effects.get(effect.slug);
-      if (!bus) { bus = new AudioBus(() => this.initialized); this.effects.set(effect.slug, bus); if (typeof document !== "undefined" && document.hidden) bus.fadeOut(0); }
+      if (!bus) { bus = new AudioBus(() => this.initialized); this.effects.set(effect.slug, bus); }
       bus.configure(effect.src, this.roomVolume * clamp(this.effectVolumes[effect.slug] ?? 1) / Math.max(1, Math.sqrt(this.selectedEffects.length)));
     }
   }
   setMusicVolume(value: number) { this.musicVolume = clamp(value); this.music.configure(this.musicSource, this.musicVolume); this.refreshRadio(); }
   setRoomVolume(value: number) { this.roomVolume = clamp(value); if (this.selectedEffects === null) this.room.configure(this.roomSource, this.roomVolume); else this.setBackgroundEffects(this.selectedEffects); }
-  fadeOutAll(ms: number) { this.music.fadeOut(Math.max(0, ms)); this.room.fadeOut(Math.max(0, ms)); this.effects.forEach(bus => bus.fadeOut(Math.max(0, ms))); if (this.radio) { const radio = this.radio; radio.fade(Number(radio.volume()), 0, ms); radio.once("fade", () => { if (document.hidden) radio.pause(); }); } }
+  fadeOutAll(ms: number) { this.music.fadeOut(Math.max(0, ms)); this.room.fadeOut(Math.max(0, ms)); this.effects.forEach(bus => bus.fadeOut(Math.max(0, ms))); if (this.radio) { const radio = this.radio; radio.fade(Number(radio.volume()), 0, ms); radio.once("fade", () => radio.pause()); } }
   fadeInAll(ms: number) { this.music.resume(Math.max(0, ms)); this.room.resume(Math.max(0, ms)); this.effects.forEach(bus => bus.resume(Math.max(0, ms))); this.refreshRadio(); }
   destroy() {
-    if (typeof document !== "undefined") document.removeEventListener("visibilitychange", this.visibility);
     this.music.reset(); this.room.reset();
     this.effects.forEach(bus => bus.reset()); this.effects.clear(); this.selectedEffects = null;
     this.effectVolumes = {};

@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { test, expect, type Page } from "@playwright/test";
 import { signIn, startSession } from "./sessionFixtures";
 
@@ -31,9 +32,9 @@ for (const width of [320, 1280]) test(`radio volume is visible and keyboard adju
   await page.setViewportSize({ width, height: 800 });
   // Match the provider's 640px breakpoint without contacting its live stream.
   await page.route("https://loficafe.net/**", route => route.fulfill({ contentType: "text/html", body: `
-    <style>body{margin:0}main{height:80px;display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:0 16px}
-    label{display:none}input{width:64px}@media(min-width:640px){label{display:block}}</style>
-    <main><button>Mute</button><label>Radio volume<input aria-label="Radio volume" type="range" min="0" max="1" step="0.1" value="0.8"></label><button>Play</button></main>` }));
+    <style>*{box-sizing:border-box}body{margin:0}main{height:66px;display:flex;align-items:center;justify-content:flex-end;gap:6px;padding:0 17px}
+    button,a{height:32px;width:28px;flex-shrink:0}button:last-of-type{width:32px}label{display:none;width:64px}input{width:64px;margin:0}@media(min-width:640px){label{display:block}}</style>
+    <main><button aria-label="Mute">M</button><label><input aria-label="Radio volume" type="range" min="0" max="1" step="0.1" value="0.8"></label><button aria-label="Play">P</button><a href="https://loficafe.net/">O</a></main>` }));
   await signIn(page); await startSession(page);
   await page.getByRole("button", { name: "Sound", exact: true }).click();
   await page.getByRole("radio", { name: /Lofi Cafe.*Studying/ }).check();
@@ -44,9 +45,52 @@ for (const width of [320, 1280]) test(`radio volume is visible and keyboard adju
   expect(bounds).not.toBeNull(); expect(control).not.toBeNull();
   expect(control!.x).toBeGreaterThanOrEqual(bounds!.x);
   expect(control!.x + control!.width).toBeLessThanOrEqual(bounds!.x + bounds!.width);
+  expect(control!.width).toBeGreaterThan(bounds!.width * 0.3);
+  const mute = await page.frameLocator('iframe[title="Lofi Cafe · Studying"]').getByRole("button", { name: "Mute", exact: true }).boundingBox();
+  expect(mute!.x - bounds!.x).toBeGreaterThanOrEqual(0);
+  expect(mute!.x - bounds!.x).toBeLessThan(bounds!.width * 0.05);
   await volume.focus(); await page.keyboard.press("ArrowLeft"); await expect(volume).toHaveValue("0.7");
   await expect(page.getByRole("slider", { name: "Music Volume", exact: true })).toHaveCount(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
+
+test("radio playback survives closing controls, backgrounding and resizing without a reload", async ({ page }) => {
+  let loads = 0;
+  const audio = readFileSync(new URL("../public/audio/effect-medieval-v1.mp3", import.meta.url)).toString("base64");
+  await page.route("https://loficafe.net/**", route => {
+    loads++;
+    return route.fulfill({ contentType: "text/html", body: `
+      <style>body{margin:0;display:flex;justify-content:flex-end;padding:16px 17px}button{width:100px;height:32px}</style>
+      <audio id="radio" src="data:audio/mpeg;base64,${audio}" loop preload="none"></audio>
+      <button onclick="document.getElementById('radio').play()">Play radio</button>` });
+  });
+  await signIn(page); await startSession(page);
+  const sound = page.getByRole("button", { name: "Sound", exact: true }); await sound.click();
+  await page.getByRole("radio", { name: /Lofi Cafe.*Studying/ }).check();
+  const frame = page.frameLocator('iframe[title="Lofi Cafe · Studying"]');
+  await frame.getByRole("button", { name: "Play radio" }).click();
+  const time = () => frame.locator("audio").evaluate(audio => (audio as HTMLAudioElement).currentTime);
+  await expect.poll(time).toBeGreaterThan(0);
+  await sound.click();
+  const before = await time();
+  await page.evaluate(() => {
+    Object.defineProperty(document, "hidden", { configurable: true, value: true });
+    Object.defineProperty(document, "visibilityState", { configurable: true, value: "hidden" });
+    document.dispatchEvent(new Event("visibilitychange")); window.dispatchEvent(new Event("blur"));
+  });
+  await expect.poll(time).toBeGreaterThan(before + 0.5);
+  await page.setViewportSize({ width: 400, height: 800 });
+  await expect(frame.locator("audio")).toHaveJSProperty("paused", false);
+  await page.evaluate(() => {
+    Object.defineProperty(document, "hidden", { configurable: true, value: false });
+    Object.defineProperty(document, "visibilityState", { configurable: true, value: "visible" });
+    document.dispatchEvent(new Event("visibilitychange")); window.dispatchEvent(new Event("focus"));
+  });
+  await sound.click();
+  await expect(frame.locator("audio")).toHaveJSProperty("paused", false);
+  expect(loads).toBe(1);
+  await page.getByRole("button", { name: "Turn off radio", exact: true }).click();
+  await expect(page.locator('iframe[title="Lofi Cafe · Studying"]')).toHaveCount(0);
 });
 
 test("multiselect effects persist; radio mounts on selection and survives closing the sound control", async ({ page }) => {

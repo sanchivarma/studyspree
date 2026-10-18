@@ -21,12 +21,16 @@ SomaFM is deliberately excluded because its current terms prohibit new app embed
 
 Official embedded players retain their own play and volume controls. StudySpree
 does not show a separate Music Volume slider. Lofi Cafe hides its volume below
-a 640px iframe viewport, so RadioPlayer retains that viewport and aligns the
-right-hand controls inside the panel, including on phones. Station names are
+a 640px iframe viewport, so RadioPlayer retains that viewport and scales its
+right-hand control strip to fill the panel, including on phones. Its buttons
+and volume bar enlarge proportionally instead of leaving a blank left side.
+The provider owns the cross-origin slider; its internals are not restyled.
+Station names are
 shown in StudySpree's station list; no provider audio or scripts are modified.
-Closing the sound popover keeps the mounted player alive; changing station,
-selecting Off, hiding the browser tab or leaving the session unloads it. Returning
-to a hidden tab requires pressing the provider's Play button again. No provider
+Closing the sound popover, changing tabs, losing focus, moving or resizing the
+window keeps the same mounted player alive. Radio, music and background effects
+continue at the selected volume while the tab is hidden. Changing station,
+selecting Off or leaving the session unloads the player. No provider
 iframe is mounted before the user selects a station and opens sound controls.
 
 Direct streams use a contextual Radio volume slider and a single streaming Howl rather

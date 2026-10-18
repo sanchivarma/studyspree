@@ -2,7 +2,7 @@
 
 import { Popover } from "radix-ui";
 import { Volume2, VolumeX } from "lucide-react";
-import { useEffect, useState, type CSSProperties } from "react";
+import { useState, type CSSProperties } from "react";
 import { useAmbience } from "@/hooks/useAmbience";
 import { useTranslation } from "@/hooks/useTranslation";
 import { BackgroundEffectsPicker } from "./BackgroundEffectsPicker";
@@ -15,14 +15,8 @@ export function AmbienceControl({ theme, onOpenChange, className }: { theme: str
   const audio = useAmbience(theme);
   const { t } = useTranslation();
   const Icon = audio.isAudible ? Volume2 : VolumeX;
-  const [visible, setVisible] = useState(true);
   const [hasOpened, setHasOpened] = useState(false);
   const station = radioStations.find(station => `radio:${station.id}` === audio.musicTrack);
-  useEffect(() => {
-    const change = () => setVisible(!document.hidden);
-    change(); document.addEventListener("visibilitychange", change);
-    return () => document.removeEventListener("visibilitychange", change);
-  }, []);
   return <Popover.Root onOpenChange={open => { if (open) { setHasOpened(true); audio.unlock(); } onOpenChange(open); }}>
     <Popover.Trigger asChild>
       <button type="button" aria-label={t("session.sound")} title={t("session.sound")}
@@ -53,7 +47,7 @@ export function AmbienceControl({ theme, onOpenChange, className }: { theme: str
           <input type="range" min={0} max={1} step={0.05} value={audio.musicVolume} onChange={event => audio.setMusicVolume(Number(event.target.value))} className="block h-11 w-full accent-accent" />
         </label>}
         {station?.embedUrl && <p className="mt-3 text-small text-text-muted">{t("ambience.playerVolume")}</p>}
-        {station?.embedUrl && visible && hasOpened && <RadioPlayer key={station.id} name={station.name} src={station.embedUrl} />}
+        {station?.embedUrl && hasOpened && <RadioPlayer key={station.id} name={station.name} src={station.embedUrl} />}
         {station && <a href={station.website} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex min-h-11 items-center text-small underline">{t("ambience.stationWebsite")}</a>}
       </Popover.Content>
     </Popover.Portal>
