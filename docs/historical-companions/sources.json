@@ -1,0 +1,30 @@
+[
+  {
+    "slug": "medieval-scholar",
+    "sheet": "medieval-scholar-sheet.png",
+    "columns": 4,
+    "rows": 4,
+    "tool": "built-in imagegen"
+  },
+  {
+    "slug": "medieval-scribe",
+    "sheet": "medieval-scribe-sheet.png",
+    "columns": 4,
+    "rows": 4,
+    "tool": "built-in imagegen"
+  },
+  {
+    "slug": "einstein",
+    "sheet": "einstein-sheet.png",
+    "columns": 4,
+    "rows": 4,
+    "tool": "built-in imagegen"
+  },
+  {
+    "slug": "tesla",
+    "sheet": "tesla-sheet.png",
+    "columns": 4,
+    "rows": 4,
+    "tool": "built-in imagegen"
+  }
+]

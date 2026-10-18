@@ -4,7 +4,6 @@
     "radioOff": "Radio ausschalten",
     "label": "Atmosphäre",
     "radioVolume": "Radiolautstärke",
-    "medieval": "Mittelalterliche Streicher",
     "library": "Bibliotheksatmosphäre",
     "castle": "Burgkamin",
     "room": "Lautstärke der Hintergrundeffekte",
@@ -23,7 +22,6 @@
     "white-noise": "Weißes Rauschen",
     "playerVolume": "Nutze den Lautstärkeregler im Radio-Player unten. Drücke zum Hören auf Play.",
     "stationWebsite": "Website des Senders",
-    "medieval-flute": "Mittelalterliche Flöte",
-    "medieval-lyre": "Mittelalterliche Leier"
+    "ocean": "Sanfte Meereswellen"
   }
 }

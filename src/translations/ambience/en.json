@@ -13,7 +13,6 @@
     "effects": "Background effects",
     "radios": "Online radio",
     "cafe": "Cafe background",
-    "medieval": "Medieval strings",
     "library": "Library ambience",
     "castle": "Castle hearth",
     "wind": "Wind",
@@ -23,7 +22,6 @@
     "white-noise": "White noise",
     "playerVolume": "Use the radio player's volume control below. Press play to listen.",
     "stationWebsite": "Station website",
-    "medieval-flute": "Medieval flute",
-    "medieval-lyre": "Medieval lyre"
+    "ocean": "Gentle ocean"
   }
 }

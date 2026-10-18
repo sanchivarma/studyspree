@@ -8,8 +8,9 @@ const root = fileURLToPath(new URL("../public/characters/", import.meta.url));
 const ledger = await readFile(join(root, "LICENCES.md"), "utf8");
 const slugs = ["male", "female"].flatMap(gender => [1, 2, 3, 4].map(index => `${gender}-0${index}`));
 const dirs = (await readdir(root, { withFileTypes: true })).filter(entry => entry.isDirectory()).map(entry => entry.name).sort();
+const historical = ["medieval-scholar", "medieval-scribe", "einstein", "tesla"];
 const extra = ["moss-fox", "pip-owl", "momo-cloud", ...Array.from({ length: 12 }, (_, n) => `realistic-${String(n + 1).padStart(2, "0")}`)];
-if (JSON.stringify(dirs) !== JSON.stringify([...slugs, ...extra].sort())) throw new Error("Expected the eight illustrated adults, three whimsical partners and twelve realistic GIFs");
+if (JSON.stringify(dirs) !== JSON.stringify([...slugs, ...extra, ...historical].sort())) throw new Error("Expected the eight illustrated adults, three whimsical partners and twelve realistic GIFs plus four historical companions");
 const hashes = new Set();
 for (const slug of slugs) {
   const gifPath = join(root, slug, "study-v1.gif");
@@ -55,4 +56,24 @@ for (const slug of extra.filter(slug => slug.startsWith("realistic-"))) {
   if (!ledger.includes(`studyspree-ai-${slug}-${version}`)) throw new Error(`${slug}: missing provenance ID`);
   console.log(`${slug}: ${frames.size} distinct frames, ${expanded ? 5.3 : lin ? 5.45 : 5.02}s infinite GIF, ${bytes.length} bytes`);
 }
-console.log("Verified eight illustrated adults, three whimsical partners and twelve realistic studying GIFs.");
+
+
+for (const slug of historical) {
+  const version = slug === "tesla" ? "v5" : "v1";
+  const bytes = await readFile(join(root, slug, `study-${version}.gif`));
+  const metadata = await sharp(bytes, { animated: true }).metadata();
+  if (bytes.subarray(0,6).toString() !== "GIF89a" || metadata.loop !== 0 || metadata.pages !== (slug === "tesla" ? 400 : 106) || metadata.width !== 320 || metadata.pageHeight !== 240 || metadata.delay.some(delay => delay !== 50) || bytes.length > 2 * 1024 * 1024) throw new Error(`${slug}: invalid historical animation`);
+  const frames = new Set();
+  for (let page = 0; page < metadata.pages; page++) frames.add(createHash("sha256").update(await sharp(bytes, { page }).raw().toBuffer()).digest("hex"));
+  if (frames.size < 50) throw new Error(`${slug}: insufficient studying motion`);
+  const hash = createHash("sha256").update(bytes).digest("hex");
+  if (hashes.has(hash)) throw new Error(`${slug}: duplicate animation`);
+  hashes.add(hash);
+  const poster = await readFile(join(root, slug, `poster-${version}.webp`));
+  if ((await sharp(poster).metadata()).format !== "webp" || poster.length > 256 * 1024) throw new Error(`${slug}: invalid poster`);
+  for (const file of [`study-${version}.gif`, `poster-${version}.webp`]) if (!ledger.includes(`${slug}/${file}`)) throw new Error(`${slug}: missing licence row`);
+  if (!ledger.includes(`studyspree-ai-${slug}-${version}`)) throw new Error(`${slug}: missing provenance ID`);
+  console.log(`${slug}: ${frames.size} distinct frames; ${slug === "tesla" ? 20 : 5.3}s infinite loop; ${bytes.length} bytes`);
+}
+
+console.log("Verified eight illustrated adults, three whimsical partners, twelve realistic GIFs and four historical studying loops.");

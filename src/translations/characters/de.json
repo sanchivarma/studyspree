@@ -63,6 +63,15 @@
     "realistic-11": "Valeria",
     "andean": "Indigen-andine Herkunft",
     "realistic-12": "Andre",
-    "afroCaribbean": "Afrokaribisch"
+    "afroCaribbean": "Afrokaribisch",
+    "historical": "Historisch & mittelalterlich",
+    "medieval-scholar": "Idris der Gelehrte",
+    "medieval-scribe": "Elin die Schreiberin",
+    "einstein": "Albert Einstein",
+    "tesla": "Nikola Tesla",
+    "medieval-scholarDescription": "Schreibt mit Feder auf Pergament",
+    "medieval-scribeDescription": "Liest eine illuminierte Handschrift",
+    "einsteinDescription": "Animierte Darstellung: Physik mit einem schwarzen Loch im Hintergrund",
+    "teslaDescription": "Animierte Darstellung: schreibt im funkelnden Tesla-Käfig"
   }
 }

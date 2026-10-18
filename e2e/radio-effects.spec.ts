@@ -11,39 +11,24 @@ async function setSlider(page: Page, name: string, value: number) {
   await expect(slider).toHaveValue(String(value));
 }
 
-test("medieval, library and castle have independent saved levels", async ({ page }) => {
+test("ocean, library and castle have independent saved levels", async ({ page }) => {
   await signIn(page); const path = await startSession(page);
   await page.getByRole("button", { name: "Sound", exact: true }).click();
-  for (const [name, volume] of [["Medieval strings", 0.25], ["Library ambience", 0.65], ["Castle hearth", 0.4]] as const) {
+  await expect(page.getByRole("checkbox", { name: /medieval/i })).toHaveCount(0);
+  for (const [name, volume] of [["Gentle ocean", 0.25], ["Library ambience", 0.65], ["Castle hearth", 0.4]] as const) {
     await page.getByRole("checkbox", { name, exact: true }).check();
     await setSlider(page, `${name} volume`, volume);
   }
-  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("ss_profile") ?? "{}").effectVolumes)).toEqual({ medieval: 0.25, library: 0.65, castle: 0.4 });
+  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("ss_profile") ?? "{}").effectVolumes)).toEqual({ ocean: 0.25, library: 0.65, castle: 0.4 });
   await page.reload(); await expect(page.getByTestId("session-screen")).toBeVisible();
   expect(new URL(page.url()).pathname).toBe(path);
   await page.getByRole("button", { name: "Sound", exact: true }).click();
-  for (const [name, volume] of [["Medieval strings", 0.25], ["Library ambience", 0.65], ["Castle hearth", 0.4]] as const) {
+  for (const [name, volume] of [["Gentle ocean", 0.25], ["Library ambience", 0.65], ["Castle hearth", 0.4]] as const) {
     await expect(page.getByRole("checkbox", { name, exact: true })).toBeChecked();
     await expect(page.getByRole("slider", { name: `${name} volume`, exact: true })).toHaveValue(String(volume));
   }
 });
 
-test("three medieval options have independent saved levels", async ({ page }) => {
-  await signIn(page); const path = await startSession(page);
-  await page.getByRole("button", { name: "Sound", exact: true }).click();
-  for (const [name, volume] of [["Medieval strings", 0.25], ["Medieval flute", 0.65], ["Medieval lyre", 0.4]] as const) {
-    await page.getByRole("checkbox", { name, exact: true }).check();
-    await setSlider(page, `${name} volume`, volume);
-  }
-  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("ss_profile") ?? "{}").effectVolumes)).toEqual({ medieval: 0.25, "medieval-flute": 0.65, "medieval-lyre": 0.4 });
-  await page.reload(); await expect(page.getByTestId("session-screen")).toBeVisible();
-  expect(new URL(page.url()).pathname).toBe(path);
-  await page.getByRole("button", { name: "Sound", exact: true }).click();
-  for (const [name, volume] of [["Medieval strings", 0.25], ["Medieval flute", 0.65], ["Medieval lyre", 0.4]] as const) {
-    await expect(page.getByRole("checkbox", { name, exact: true })).toBeChecked();
-    await expect(page.getByRole("slider", { name: `${name} volume`, exact: true })).toHaveValue(String(volume));
-  }
-});
 
 for (const width of [320, 1280]) test(`radio volume is visible and keyboard adjustable at ${width}px`, async ({ page }) => {
   await page.setViewportSize({ width, height: 800 });

@@ -1,13 +1,14 @@
 export const humanCharacterSlugs = ["male-01", "male-02", "male-03", "male-04", "female-01", "female-02", "female-03", "female-04"] as const;
 export const realisticCharacterSlugs = ["realistic-01", "realistic-02", "realistic-03", "realistic-04", "realistic-05", "realistic-06", "realistic-07", "realistic-08", "realistic-09", "realistic-10", "realistic-11", "realistic-12"] as const;
-export const characterSlugs = [...humanCharacterSlugs, "moss-fox", "pip-owl", "momo-cloud", ...realisticCharacterSlugs] as const;
+export const historicalCharacterSlugs = ["medieval-scholar", "medieval-scribe", "einstein", "tesla"] as const;
+export const characterSlugs = [...humanCharacterSlugs, "moss-fox", "pip-owl", "momo-cloud", ...realisticCharacterSlugs, ...historicalCharacterSlugs] as const;
 export type CharacterSlug = typeof characterSlugs[number];
 export type CompanionMode = "solo" | "characters" | "people" | "mixed";
 export type CompanionPreferences = { mode: CompanionMode; characterSlugs: CharacterSlug[] };
 export type CharacterDefinition = {
   slug: CharacterSlug;
   presentation: "male" | "female" | "neutral";
-  style: "illustrated" | "whimsical" | "realistic";
+  style: "illustrated" | "whimsical" | "realistic" | "historical";
   nameKey: import("@/translations").TranslationKey;
   descriptionKey: import("@/translations").TranslationKey;
   backgroundKey?: import("@/translations").TranslationKey;

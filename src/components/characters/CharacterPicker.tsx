@@ -18,7 +18,7 @@ export function CharacterPicker({ selected, onChange }: { selected: CharacterSlu
   const cards = useRef<(HTMLButtonElement | null)[]>([]);
   return <fieldset>
     <legend className="mb-3 text-small text-text-muted">{t("characters.selected", { count: selected.length })}</legend>
-    <div aria-label={t("characters.styles")} className="mb-3 flex flex-wrap gap-2">{(["all", "illustrated", "whimsical", "realistic"] as const).map(value => <button key={value} type="button" aria-pressed={style === value} onClick={() => { setStyle(value); setFocused(0); }} className={cn("min-h-11 rounded-xl border px-3 text-small", style === value ? "border-accent bg-accent/10" : "border-border")}>{t(`characters.${value}`)}</button>)}</div>
+    <div aria-label={t("characters.styles")} className="mb-3 flex flex-wrap gap-2">{(["all", "illustrated", "whimsical", "realistic", "historical"] as const).map(value => <button key={value} type="button" aria-pressed={style === value} onClick={() => { setStyle(value); setFocused(0); }} className={cn("min-h-11 rounded-xl border px-3 text-small", style === value ? "border-accent bg-accent/10" : "border-border")}>{t(`characters.${value}`)}</button>)}</div>
     <p className="mb-3 text-small text-text-muted">{t("characters.limit")}</p>
     <div className="grid grid-cols-2 gap-3" data-testid="character-picker">
       {shown.map((character, index) => <button key={character.slug} type="button" ref={node => { cards.current[index] = node; }}

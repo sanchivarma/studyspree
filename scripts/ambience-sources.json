@@ -47,5 +47,13 @@
     "page": "https://freesound.org/people/Hedmarking/sounds/191883/",
     "preview": "https://cdn.freesound.org/previews/191/191883_3331686-hq.mp3",
     "filters": "atempo=0.85,highpass=f=80,lowpass=f=5500,aecho=0.8:0.85:90|170:0.08|0.05,loudnorm=I=-24:TP=-4:LRA=5"
+  },
+  {
+    "file": "effect-ocean-v1.mp3",
+    "creator": "dan.pugsley",
+    "title": "Waves lapping on rocks",
+    "page": "https://freesound.org/people/dan.pugsley/sounds/457956/",
+    "preview": "https://cdn.freesound.org/previews/457/457956_9574372-hq.mp3",
+    "filters": "highpass=f=60,lowpass=f=5000,loudnorm=I=-24:TP=-4:LRA=5"
   }
 ]

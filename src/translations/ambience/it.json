@@ -4,7 +4,6 @@
     "radioOff": "Spegni la radio",
     "label": "Atmosfera",
     "radioVolume": "Volume della radio",
-    "medieval": "Archi medievali",
     "library": "Atmosfera di biblioteca",
     "castle": "Camino del castello",
     "room": "Volume degli effetti di sottofondo",
@@ -23,7 +22,6 @@
     "white-noise": "Rumore bianco",
     "playerVolume": "Usa il volume del lettore radio qui sotto. Premi Riproduci per ascoltare.",
     "stationWebsite": "Sito della stazione",
-    "medieval-flute": "Flauto medievale",
-    "medieval-lyre": "Lira medievale"
+    "ocean": "Onde delicate"
   }
 }

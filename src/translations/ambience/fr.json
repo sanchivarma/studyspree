@@ -4,7 +4,6 @@
     "radioOff": "Éteindre la radio",
     "label": "Ambiance",
     "radioVolume": "Volume de la radio",
-    "medieval": "Cordes médiévales",
     "library": "Ambiance de bibliothèque",
     "castle": "Cheminée de château",
     "room": "Volume des effets de fond",
@@ -23,7 +22,6 @@
     "white-noise": "Bruit blanc",
     "playerVolume": "Utilisez le volume du lecteur radio ci-dessous. Lancez la lecture pour écouter.",
     "stationWebsite": "Site de la station",
-    "medieval-flute": "Flûte médiévale",
-    "medieval-lyre": "Lyre médiévale"
+    "ocean": "Vagues douces"
   }
 }

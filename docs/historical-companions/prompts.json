@@ -1,0 +1,26 @@
+[
+  {
+    "slug": "medieval-scholar",
+    "prompt": "Create a production animation sprite sheet for a virtual study partner: original fictional adult medieval male scholar, warm brown skin, short dark beard, simple burgundy wool tunic, sitting at wooden desk in a candlelit stone scriptorium, writing calmly with a feather quill on parchment beside an open bound manuscript. Painterly storybook realism, gentle warm light. EXACT 4 columns by 4 rows, 16 equally sized 4:3 frames, no margins, no gutters, no text or labels, total canvas 1536x1152. Every frame same locked camera, identical room and face and desk composition. Chronological animation left to right then top to bottom: quill hand progresses slowly over the parchment, subtle breathing and a blink, returns to original writing pose in final frame for seamless looping. Small real hand motion, stable anatomy, no modern objects, no electronics, no dramatic changes. Each cell must contain the entire same medium waist-up scene, not a single image spread across cells.",
+    "tool": "built-in imagegen",
+    "animation": "16 generated frames, motion-compensated interpolation to 20fps"
+  },
+  {
+    "slug": "medieval-scribe",
+    "prompt": "Create a production animation sprite sheet for a virtual study partner: original fictional adult medieval female scholar, olive skin, dark braided hair partly under a simple linen veil, muted teal wool gown, seated at wooden desk in a candlelit medieval stone library, reading an open illuminated vellum manuscript and tracing a line with one finger, a feather quill and inkpot beside it. Painterly storybook realism, gentle warm light. EXACT 4 columns by 4 rows, 16 equally sized 4:3 frames, no margins, no gutters, no text or labels, total canvas 1536x1152. Every frame same locked camera, identical room and face and desk composition. Chronological animation left to right then top to bottom: finger progresses slowly along a manuscript line, subtle breathing and a blink, returns to original reading pose in final frame for seamless looping. Small real hand motion, stable anatomy, no modern objects, no electronics, no dramatic changes. Each cell must contain the entire same medium waist-up scene, not a single image spread across cells.",
+    "tool": "built-in imagegen",
+    "animation": "16 generated frames, motion-compensated interpolation to 20fps"
+  },
+  {
+    "slug": "einstein",
+    "prompt": "Use case historical-scene, playful stylized animation frame sheet for virtual study companion. Albert Einstein recognizable as elderly historical scientist with wild white hair and mustache, cozy cream cardigan, busy writing physics in a paper notebook at a wooden desk. Behind his study window a whimsical miniature BLACK HOLE with gently curving golden accretion disc is bending starlight and tugging a single loose sheet of paper; Einstein calmly ignores it and keeps working. Soft painterly animated-film illustration, warm desk lamplight, not photograph, understated science humour. Exactly4 columns x4 rows,16 equal4:3 frames, total1536x1152, edge to edge no borders gutters text labels or numbers. Every cell entire same locked camera waist-up scene, identical desk face room window background framing scale. Chronological animation subtle pen hand writing, one blink, gently floating loose paper, final pose returns to first. Black hole static dim glow, no flashing or drastic change. No camera motion, no destructive scene, no fear, calm focused studying.",
+    "tool": "built-in imagegen",
+    "animation": "16 generated frames, motion-compensated interpolation to 20fps"
+  },
+  {
+    "slug": "tesla",
+    "prompt": "Use case historical-scene, playful stylized animation frame sheet for virtual study companion. Nikola Tesla recognizable as a slender adult historical inventor with neatly parted dark hair and mustache, dark Victorian suit, seated safely at a writing desk INSIDE a large Tesla coil cage, busily writing equations in a notebook, absorbed and ignoring small whimsical blue electrical sparks OUTSIDE the protective cage. Cozy playful painterly animated-film illustration, not photograph, not dangerous distress. Exactly 4 columns x4 rows,16 equal 4:3 frames, total1536x1152, edge to edge no borders gutters text labels or frame numbers. Every cell entire same locked camera waist-up Tesla with visible desk and cage bars around edges, distant coil and tiny blue sparks behind. Subtle real pen-hand movement, one blink, sparks change slightly, last pose returns to first. Identical person background framing scale across frames, no camera movement, no explosion, no flash, no bright strobing. Friendly understated science humour, busy focused studying.",
+    "tool": "built-in imagegen",
+    "animation": "16 generated frames, motion-compensated interpolation to 20fps"
+  }
+]

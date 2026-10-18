@@ -270,6 +270,7 @@ Never delete or skip a failing test to make a task pass. Fix the cause or ask.
 - Audio: every file in `public/audio/` **must** be listed in `public/audio/LICENCES.md`
 - **Never** add audio from YouTube, streaming services, or unlicensed sources
 - **Never** add real-person likenesses or copyrighted themes (Marvel, DC, Disney, anime IP, etc.)
+- User-authorized exception (18 October 2026): stylized historical Einstein and Tesla studying portrayals are permitted for this task; see docs/historical-companions/README.md.
 - Missing media files must fail **silently** to the gradient fallback — never crash, never show an error
 
 ---
@@ -318,6 +319,8 @@ The user subsequently authorised the 17-feature roadmap in docs/FEATURE_CHECKLIS
 ---
 
 ## 14. Current status
+
+- **Soothing sound and historical companions (18 October 2026):** retired the three medieval sound options and added a softened CC0 Gentle ocean recording. Legacy local and server preferences remove retired keys without resetting unrelated settings. Idris/Elin add original medieval studying GIFs; user-authorized stylized Einstein/Tesla portrayals add playful science scenes. All five languages and migrations 0051/0052 are included. Tesla was revised after user feedback to a fixed-background, slow 20-second writing cycle with lossless 30fps muted video and a 20fps GIF; active assets use immutable v5 names. Sources/prompts and processing are in docs/historical-companions. Typecheck/lint, 419 unit tests (35 affected tests rerun after final path changes), 267 database assertions, 29 audio licence entries, and four focused browser checks pass (ocean decoding/persistence, historical refresh/reduced-motion/Finish, and Tesla seam/stability). No dependencies added.
 
 - **Two additional medieval choices (18 October 2026):** Medieval flute and Medieval lyre add distinct CC0 recordings with softened frequencies, slower tempo and independent persisted levels. The existing Medieval strings asset, key and label are unchanged; its SHA256 was verified. Five-language labels and migration 0050 extend validated preferences without rewriting saved data. Provenance/hashes are in docs/audio/expanded-ambience.md. Typecheck, lint, 417 unit tests, 266 database assertions, the 28-file licence ledger and two focused browser checks (distinct audible decoding and three-medieval refresh persistence) pass. No dependencies added.
 

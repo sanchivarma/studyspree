@@ -1,4 +1,4 @@
-import { humanCharacterSlugs, realisticCharacterSlugs, type CharacterDefinition } from "@/types/characters";
+import { humanCharacterSlugs, realisticCharacterSlugs, historicalCharacterSlugs, type CharacterDefinition } from "@/types/characters";
 
 const backgrounds = ["southAsian", "eastAsian", "blackAfrican", "mena", "latinAmerican", "european", "southeastAsian", "mixedHeritage", "centralAsian", "pacificIslander", "andean", "afroCaribbean"] as const;
 const realisticVersion = (index: number) => index >= 8 ? "v1" : index === 1 ? "v4" : "v3";
@@ -28,6 +28,14 @@ export const characters: readonly CharacterDefinition[] = [...humanCharacterSlug
   activity: index === 1 || index >= 8 ? "writing" : "reading", gif: `/characters/${slug}/study-${realisticVersion(index)}.gif`,
   poster: `/characters/${slug}/poster-${realisticVersion(index)}.webp`, webm: null, mp4: null, loopSeconds: index >= 8 ? 5.3 : index === 1 ? 5.45 : 5.02,
   assetVersion: realisticVersion(index), licenceId: `studyspree-ai-${slug}-${realisticVersion(index)}`,
+})), ...historicalCharacterSlugs.map((slug): CharacterDefinition => ({
+  slug, presentation: slug === "medieval-scribe" ? "female" : "male", style: "historical",
+  nameKey: `characters.${slug}`, descriptionKey: `characters.${slug}Description`,
+  activity: slug === "medieval-scribe" ? "reading" : "writing",
+  gif: `/characters/${slug}/study-${slug === "tesla" ? "v5" : "v1"}.gif`, poster: `/characters/${slug}/poster-${slug === "tesla" ? "v5" : "v1"}.webp`,
+  webm: slug === "tesla" ? "/characters/tesla/study-v5.webm" : null,
+  mp4: slug === "tesla" ? "/characters/tesla/study-v5.mp4" : null,
+  loopSeconds: slug === "tesla" ? 20 : 5.3, assetVersion: slug === "tesla" ? "v5" : "v1", licenceId: `studyspree-ai-${slug}-${slug === "tesla" ? "v5" : "v1"}`,
 }))];
 
 export function getCharacter(slug: string): CharacterDefinition | null {

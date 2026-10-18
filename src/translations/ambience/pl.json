@@ -4,7 +4,6 @@
     "radioOff": "Wyłącz radio",
     "label": "Atmosfera",
     "radioVolume": "Głośność radia",
-    "medieval": "Średniowieczne smyczki",
     "library": "Atmosfera biblioteki",
     "castle": "Zamkowy kominek",
     "room": "Głośność efektów tła",
@@ -23,7 +22,6 @@
     "white-noise": "Szum biały",
     "playerVolume": "Użyj regulacji głośności w odtwarzaczu radia poniżej. Włącz odtwarzanie, aby słuchać.",
     "stationWebsite": "Strona stacji",
-    "medieval-flute": "Średniowieczny flet",
-    "medieval-lyre": "Średniowieczna lira"
+    "ocean": "Spokojne fale"
   }
 }

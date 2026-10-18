@@ -33,3 +33,4 @@ Files are immutable: use a new filename for a new version.
 | effect-castle-v1.mp3 | Freesound #394754 by tripjazz; filtered fireplace with hall echo | CC0 1.0 | 2026-10-18 | yes | docs/audio/expanded-ambience.md |
 | effect-medieval-flute-v1.mp3 | Freesound #506265 by f-r-a-g-i-l-e; softened gentle flute | CC0 1.0 | 2026-10-18 | yes | docs/audio/expanded-ambience.md |
 | effect-medieval-lyre-v1.mp3 | Freesound #191883 by Hedmarking; softened Iron Age lyre | CC0 1.0 | 2026-10-18 | yes | docs/audio/expanded-ambience.md |
+| effect-ocean-v1.mp3 | Freesound #457956 by dan.pugsley; softened waves lapping on rocks | CC0 1.0 | 2026-10-18 | yes | docs/audio/expanded-ambience.md |

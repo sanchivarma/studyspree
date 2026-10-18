@@ -2,7 +2,7 @@ import { z } from "zod";
 import { addMonths, format, parseISO, startOfMonth } from "date-fns";
 import { now } from "@/lib/clock";
 import { musicTracks } from "@/lib/audio/catalog";
-import { effectSlugs } from "@/lib/audio/effects";
+import { effectSlugs, removeRetiredEffects, removeRetiredEffectVolumes } from "@/lib/audio/effects";
 import { toLocalDate } from "@/lib/stats/localDate";
 import { defaultTimezone } from "@/lib/stats/defaultTimezone";
 import { aggregateSessions, summarizeSessions } from "@/lib/stats/aggregateSessions";
@@ -38,8 +38,8 @@ export const profileSchema = z.object({
   comebackShownForDate: date.nullable().default(null),
   webcamCorner: z.enum(["top-left", "top-right", "bottom-left", "bottom-right"]).default("bottom-right"),
   musicTrack: z.union([z.enum(musicTracks.map(track => track.slug)), z.templateLiteral(["radio:", z.string().regex(/^[a-z0-9-]{1,80}$/)])]).nullable().default(null),
-  backgroundEffects: z.array(z.enum(effectSlugs)).max(effectSlugs.length).refine(value => new Set(value).size === value.length).default([]),
-  effectVolumes: z.partialRecord(z.enum(effectSlugs), z.number().min(0).max(1)).default({}),
+  backgroundEffects: z.preprocess(removeRetiredEffects, z.array(z.enum(effectSlugs)).max(effectSlugs.length).refine(value => new Set(value).size === value.length).default([])),
+  effectVolumes: z.preprocess(removeRetiredEffectVolumes, z.partialRecord(z.enum(effectSlugs), z.number().min(0).max(1)).default({})),
   musicVolume: z.number().min(0).max(1).default(0),
   roomVolume: z.number().min(0).max(1).default(0),
   companionPreferences: localCompanionSchema.default(soloCompanions),

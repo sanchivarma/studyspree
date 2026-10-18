@@ -15,7 +15,7 @@ describe("virtual companion definitions", () => {
   });
   it("supports mixed styles, long illustrated loops and twelve realistic studying GIFs", () => {
     expect(characters.filter(value => value.style === "whimsical")).toHaveLength(3);
-    for (const value of characters.filter(value => value.style !== "realistic")) {
+    for (const value of characters.filter(value => value.style === "illustrated" || value.style === "whimsical")) {
       expect(value.loopSeconds).toBe(150); expect(value.webm).toMatch(/study-v2\.webm$/);
     }
     const realistic = characters.filter(value => value.style === "realistic");
@@ -28,6 +28,15 @@ describe("virtual companion definitions", () => {
       expect(value.descriptionKey).toMatch(/realistic(Reading|Writing)$/);
     }
     expect(companionSchema.safeParse({ mode: "characters", characterSlugs: ["female-01", "moss-fox", "realistic-01", "realistic-09", "realistic-10", "realistic-11", "realistic-12"] }).success).toBe(true);
+  });
+  it("includes four historical studying loops with separate identities", () => {
+    const historical = characters.filter(value => value.style === "historical");
+    expect(historical.map(value => value.slug)).toEqual(["medieval-scholar", "medieval-scribe", "einstein", "tesla"]);
+    expect(historical.find(value => value.slug === "medieval-scribe")?.presentation).toBe("female");
+    expect(historical.find(value => value.slug === "medieval-scholar")?.presentation).toBe("male");
+    expect(new Set(historical.map(value => value.gif)).size).toBe(4);
+    expect(getCharacter("tesla")).toMatchObject({ assetVersion: "v5", loopSeconds: 20, webm: "/characters/tesla/study-v5.webm" });
+    expect(companionSchema.safeParse({ mode: "characters", characterSlugs: historical.map(value => value.slug) }).success).toBe(true);
   });
   it("accepts the complete known cast for paginated sessions", () => {
     expect(companionSchema.safeParse({ mode: "characters", characterSlugs: [...characterSlugs] }).success).toBe(true);

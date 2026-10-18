@@ -1,6 +1,6 @@
 import { themes } from "@/lib/themes/registry";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { LocalRepository } from "./local";
+import { LocalRepository, profileSchema } from "./local";
 import type { Repository } from "./types";
 
 vi.mock("@/lib/clock", () => ({ now: () => new Date(Date.now()) }));
@@ -18,13 +18,15 @@ export function repositoryContract(name: string, create: () => Repository) {
       expect(await repo.getProfile()).toMatchObject({ backgroundEffects: ["rain", "wind"], roomVolume: 0.4, effectVolumes: { rain: 0.75, wind: 0.2 } });
       await expect(repo.updateProfile({ backgroundEffects: ["rain", "rain"] })).rejects.toThrow();
       await expect(repo.updateProfile({ effectVolumes: { rain: 2 } })).rejects.toThrow();
-      await repo.updateProfile({ backgroundEffects: ["medieval", "library", "castle"], effectVolumes: { medieval: 0.2, library: 0.7, castle: 0.4 } });
-      expect(await repo.getProfile()).toMatchObject({ backgroundEffects: ["medieval", "library", "castle"], effectVolumes: { medieval: 0.2, library: 0.7, castle: 0.4 } });
-      await expect(repo.updateProfile({ backgroundEffects: ["castle", "castle"] })).rejects.toThrow();
-      await repo.updateProfile({ backgroundEffects: ["medieval", "medieval-flute", "medieval-lyre"], effectVolumes: { medieval: 0.2, "medieval-flute": 0.35, "medieval-lyre": 0.6 } });
-      expect(await repo.getProfile()).toMatchObject({ backgroundEffects: ["medieval", "medieval-flute", "medieval-lyre"], effectVolumes: { medieval: 0.2, "medieval-flute": 0.35, "medieval-lyre": 0.6 } });
-      await expect(repo.updateProfile({ backgroundEffects: ["medieval-flute", "medieval-flute"] })).rejects.toThrow();
-      await expect(repo.updateProfile({ effectVolumes: { "medieval-lyre": 1.1 } })).rejects.toThrow();
+      await repo.updateProfile({ backgroundEffects: ["ocean", "library", "castle"], effectVolumes: { ocean: 0.2, library: 0.7, castle: 0.4 } });
+      expect(await repo.getProfile()).toMatchObject({ backgroundEffects: ["ocean", "library", "castle"], effectVolumes: { ocean: 0.2, library: 0.7, castle: 0.4 } });
+      await expect(repo.updateProfile({ backgroundEffects: ["ocean", "ocean"] })).rejects.toThrow();
+      await expect(repo.updateProfile({ effectVolumes: { ocean: 1.1 } })).rejects.toThrow();
+    });
+    it("removes retired sounds without resetting other saved preferences", async () => {
+      const profile = await repo.getProfile();
+      const result = profileSchema.parse({ ...profile, displayName: "Reader", backgroundEffects: ["rain", "medieval", "medieval-flute", "medieval-lyre"], effectVolumes: { rain: 0.7, medieval: 0.3, "medieval-flute": 0.5, "medieval-lyre": 0.4 }, roomVolume: 0.6 });
+      expect(result).toMatchObject({ displayName: "Reader", backgroundEffects: ["rain"], effectVolumes: { rain: 0.7 }, roomVolume: 0.6 });
     });
     it("retains and paginates every status event",async()=>{
       for(let i=0;i<25;i++){vi.advanceTimersByTime(1000);await repo.updatePersonalTile({status:`Reading ${i}`});}

@@ -63,6 +63,15 @@
     "realistic-11": "Valeria",
     "andean": "Origines autochtones andines",
     "realistic-12": "Andre",
-    "afroCaribbean": "Afro-caribéen"
+    "afroCaribbean": "Afro-caribéen",
+    "historical": "Histoire et Moyen Âge",
+    "medieval-scholar": "Idris le savant",
+    "medieval-scribe": "Elin la copiste",
+    "einstein": "Albert Einstein",
+    "tesla": "Nikola Tesla",
+    "medieval-scholarDescription": "Écrit à la plume sur du parchemin",
+    "medieval-scribeDescription": "Lit un manuscrit enluminé",
+    "einsteinDescription": "Portrait animé : physique, avec un trou noir en arrière-plan",
+    "teslaDescription": "Portrait animé : écrit dans une cage Tesla avec des étincelles"
   }
 }

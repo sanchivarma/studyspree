@@ -71,3 +71,18 @@ Each is under 0.31 MB, within the 8 MB per-file budget.
 | --- | --- | --- |
 | effect-medieval-flute-v1.mp3 | 43ca6b508f9d05eaf4fef957e3fdac106092dd514af60779caaf73264b58cc42 | 8eeb4950d13dea9766e4841908d7d604b018264d9bb22d95908a104ece6bb93f |
 | effect-medieval-lyre-v1.mp3 | dc42390f58d3d0b9508bddfd824580e4459e6f576fe74c4321972af3322535b5 | 28b6798831eaf4d6e5811020fd22641214c0e18740aac6144ed7a7f2277da696 |
+
+## Soothing replacement (18 October 2026)
+
+All three medieval choices are retired from the active catalog. Their immutable
+assets and licence evidence remain for cached clients. Saved selections and
+levels for those three keys are removed without resetting other preferences.
+Gentle ocean uses dan.pugsley's CC0 "Waves lapping on rocks", recorded in
+Sagres, Portugal: https://freesound.org/people/dan.pugsley/sounds/457956/
+The source page permits modification and commercial use. A 5 kHz low-pass
+softens the waves; normalization targets -24 LUFS / -4 dBTP. Exact source and
+filters are in scripts/ambience-sources.json. Runtime uses the existing loop crossfade.
+
+| Asset | Source SHA256 | Output SHA256 |
+| --- | --- | --- |
+| effect-ocean-v1.mp3 | ef7c91d6cea2657cb6854dc6bf4c3cb3c70b805ca7f9c865d908cb3e200516fe | 6dddfa175341f4dff6d4cf4499bc1ea0e6b285a74abad2a775c54d7e0a1b7235 |

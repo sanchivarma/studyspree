@@ -63,6 +63,15 @@
     "realistic-11": "Valeria",
     "andean": "Indigenous Andean",
     "realistic-12": "Andre",
-    "afroCaribbean": "Afro-Caribbean"
+    "afroCaribbean": "Afro-Caribbean",
+    "historical": "Historical & medieval",
+    "medieval-scholar": "Idris the Scholar",
+    "medieval-scribe": "Elin the Scribe",
+    "einstein": "Albert Einstein",
+    "tesla": "Nikola Tesla",
+    "medieval-scholarDescription": "Writing with quill and parchment",
+    "medieval-scribeDescription": "Reading an illuminated manuscript",
+    "einsteinDescription": "Animated portrayal: physics, with a black hole behind",
+    "teslaDescription": "Animated portrayal: writing inside a sparking Tesla cage"
   }
 }
