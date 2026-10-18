@@ -21,7 +21,7 @@ test("the left chat icon opens a right drawer and Escape preserves the session",
   const current = await page.evaluate(() => JSON.parse(localStorage.getItem("ss_sessions")!)[0]);
   expect(current.startedAt).toBe(original.startedAt);
   expect(current.endedAt).toBeNull();
-  await expect(page.getByRole("button", { name: "Copy link", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Copy link", exact: true })).toHaveCount(0);
   await page.getByRole("button", { name: "Choose companions", exact: true }).click();
   const picker = page.getByRole("dialog", { name: "Study companions", exact: true });
   await expect(picker).toBeVisible();

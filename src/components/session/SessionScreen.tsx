@@ -21,7 +21,6 @@ import { SelfView } from "@/components/webcam/SelfView";
 import { AmbienceControl } from "@/components/ambience/AmbienceControl";
 import { SessionCompanions } from "@/components/characters/SessionCompanions";
 import { usePersonalTile } from "@/hooks/usePersonalTile";
-import { ShareSessionControl } from "@/components/community/ShareSessionControl";
 import { SessionChat } from "./SessionChat";
 import { SessionStatusControl } from "./SessionStatusControl";
 import { SessionSelfCaption } from "./SessionSelfCaption";
@@ -32,7 +31,6 @@ export function SessionScreen({ session }: { session: Session }) {
   const [soundOpen, setSoundOpen] = useState(false);
   const [companionOpen, setCompanionOpen] = useState(false);
   const [selfPinned, setSelfPinned] = useState(false);
-  const [shareOpen, setShareOpen] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
   const chatButton = useRef<HTMLButtonElement>(null);
   const profile = useProfile();
@@ -53,28 +51,27 @@ export function SessionScreen({ session }: { session: Session }) {
   useSessionTitle(time);
   const { t } = useTranslation();
   const { isVisible: idleVisible } = useIdleVisibility();
-  const isVisible = sheetOpen || soundOpen || companionOpen || shareOpen || chatOpen || idleVisible;
+  const isVisible = sheetOpen || soundOpen || companionOpen || chatOpen || idleVisible;
   const isSelfInStage = selfPinned && camera.isReady && tile.data?.isVisible !== false;
   const style = { "--accent": getTheme(slug).accentColor } as CSSProperties;
   const fade = cn("transition-opacity duration-200 motion-reduce:transition-none", isVisible ? "opacity-100" : "pointer-events-none opacity-0");
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (sheetOpen || soundOpen || companionOpen || shareOpen || chatOpen || event.key !== "Escape" || event.defaultPrevented || event.repeat) return;
+      if (sheetOpen || soundOpen || companionOpen || chatOpen || event.key !== "Escape" || event.defaultPrevented || event.repeat) return;
       event.preventDefault();
       finish();
     };
     // Escape finishes when no drawer or popover is using it.
     window.addEventListener("keydown", handleKeyDown, true);
     return () => window.removeEventListener("keydown", handleKeyDown, true);
-  }, [finish, sheetOpen, soundOpen, companionOpen, shareOpen, chatOpen]);
+  }, [finish, sheetOpen, soundOpen, companionOpen, chatOpen]);
 
   return <section aria-label={t("session.label")} data-testid="session-screen" data-controls-visible={isVisible} style={style}
     className={cn("relative isolate h-dvh w-full overflow-hidden", !isVisible && "cursor-none")}>
     <ThemeScene slug={slug} priority />
     <SessionCompanions session={session} visible={isVisible} onOpenChange={setCompanionOpen} leading={isSelfInStage ? <SelfView caption={<SessionSelfCaption admin onOpenChange={setSheetOpen}/>} camera={camera} visible={isVisible} mirrored={tile.data?.mirrored ?? true} status={tile.data?.status ?? ""} stage onTogglePin={() => setSelfPinned(false)}/> : undefined}
       sideControls={<><button ref={chatButton} type="button" aria-label={t("room.chat")} aria-expanded={chatOpen} aria-controls="room-chat" onClick={() => setChatOpen(true)} className="flex size-11 items-center justify-center rounded-xl bg-background/60 focus-visible:outline-2 focus-visible:outline-accent"><MessageCircle aria-hidden="true" className="size-4"/></button><SessionStatusControl onOpenChange={setSheetOpen}/><PersonalTileSheet onOpenChange={setSheetOpen}/></>}/>
-    <div className="absolute top-2 left-2 z-30"><ShareSessionControl compact sessionId={session.id} onOpenChange={setShareOpen}/></div>
     {chatOpen && <SessionChat onClose={() => setChatOpen(false)} onRestoreFocus={() => chatButton.current?.focus()}/>}
     <div data-testid="session-controls" className="absolute right-3 bottom-2 left-[60px] flex h-[68px] items-center gap-3">
       <div className="min-w-0 flex-1">
