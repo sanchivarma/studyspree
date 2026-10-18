@@ -23,11 +23,15 @@ try {
   for (const entry of entries) {
     console.log(`Checking licence: ${entry.file}`);
     const page = await fetch(entry.page, { signal: AbortSignal.timeout(60000) }); const html = await page.text();
-    if (!page.ok || !html.includes("Creative Commons 0")) throw new Error(`Cannot verify CC0: ${entry.page}`);
+    if (!page.ok || !html.includes(entry.licenceEvidence ?? "Creative Commons 0")) throw new Error(`Cannot verify recorded licence: ${entry.page}`);
+    // Freesound's creator pages publish the permitted preview URL. Discovery
+    // avoids guessing a CDN filename; source/permission remain in the catalog.
+    const preview = entry.preview ?? html.match(/https:\/\/cdn\.freesound\.org\/previews\/[^"\s]+-hq\.mp3/)?.[0];
+    if (!preview) throw new Error(`No public preview found: ${entry.page}`);
     console.log(`Downloading: ${entry.file}`);
-    const response = await fetch(entry.preview, { signal: AbortSignal.timeout(180000),
+    const response = await fetch(preview, { signal: AbortSignal.timeout(180000),
       headers: entry.previewBytes ? { Range: `bytes=0-${entry.previewBytes - 1}` } : undefined });
-    if (!response.ok) throw new Error(`Download error: ${entry.preview}`);
+    if (!response.ok) throw new Error(`Download error: ${preview}`);
     if (entry.previewBytes && response.status !== 206) throw new Error("Source server did not honor the excerpt request");
     const source = Buffer.from(await response.arrayBuffer());
     const input = join(scratch, entry.file); await writeFile(input, source, { flag: "wx" });

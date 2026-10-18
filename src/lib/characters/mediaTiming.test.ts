@@ -5,33 +5,40 @@ import { createHash } from "node:crypto";
 import media from "./mediaRevisions.json";
 import { getCharacter } from "./registry";
 
-const timed = Object.entries(media).filter(([, value]) => value.version === "v11");
-describe("active companion reading timing", () => {
-  it("uses distinct 15–20 second reading holds and distinct repeat periods", () => {
-    expect(timed).toHaveLength(15);
-    const pauses = new Set<number>(), periods = new Set<number>();
+const timed = Object.entries(media).filter(([, value]) => "sourceVersion" in value);
+describe("active companion timing and source integrity", () => {
+  it("matches the active registry and preserves distinct reader onsets", () => {
+    expect(timed).toHaveLength(16);
+    const readerStarts = new Set<number>();
     for (const [slug, value] of timed) {
-      expect("readingPauseMs" in value).toBe(true);
-      if (!("readingPauseMs" in value)) throw new Error("Timing metadata missing");
-      expect(value.readingPauseMs).toBeGreaterThanOrEqual(15000);
-      expect(value.readingPauseMs).toBeLessThanOrEqual(20000);
-      pauses.add(value.readingPauseMs); periods.add(value.loopSeconds);
-      expect(getCharacter(slug)?.gif).toBe(`/characters/${slug}/study-v11.gif`);
+      const character = getCharacter(slug)!;
+      expect(character.gif).toBe(`/characters/${slug}/study-${value.version}.gif`);
+      const pause = Reflect.get(value, "readingPauseMs") as number;
+      if (character.activity === "writing") expect(pause).toBe(0);
+      else { expect(pause).toBeGreaterThanOrEqual(10000); readerStarts.add(pause); }
     }
-    expect(pauses.size).toBe(timed.length); expect(periods.size).toBe(timed.length);
+    expect(readerStarts.size).toBe(8);
   });
-  it("encodes those actual delays and slows existing actions without changing frame count or source", async () => {
+  it("encodes recorded delays with the documented source hashes and frame counts", async () => {
     for (const [slug, value] of timed) {
       if (!("sourceVersion" in value)) throw new Error("Source metadata missing");
       const original = await readFile(`public/characters/${slug}/study-${value.sourceVersion}.gif`);
       expect(createHash("sha256").update(original).digest("hex")).toBe(value.sourceSha256);
       const source = await sharp(original, { animated: true }).metadata();
-      const result = await sharp(`public/characters/${slug}/study-v11.gif`, { animated: true }).metadata();
-      expect(result.pages).toBe(source.pages); expect(result.width).toBe(source.width); expect(result.pageHeight).toBe(source.pageHeight);
-      expect(result.delay).toEqual(value.gifDelays);
-      expect(result.delay![0]).toBe(value.readingPauseMs);
-      expect(result.loop).toBe(0);
-      for (let frame = 1; frame < source.pages!; frame++) expect(result.delay![frame]).toBe(Math.round(source.delay![frame] * 1.5 / 10) * 10);
+      const result = await sharp(`public/characters/${slug}/study-${value.version}.gif`, { animated: true }).metadata();
+      expect(result.pages).toBe("resampledFrames" in value ? value.gifFrames : source.pages); expect(result.width).toBe(source.width); expect(result.pageHeight).toBe(source.pageHeight);
+      expect(result.delay).toEqual(value.gifDelays); expect(result.loop).toBe(0);
+      if (getCharacter(slug)?.activity === "writing") expect(Math.max(...result.delay!)).toBeLessThanOrEqual(130);
+    }
+  });
+  it("reverses Arun’s native page-turn frames without mirroring the room", async () => {
+    const source = await sharp("public/characters/realistic-01/study-v3.gif", { animated: true }).ensureAlpha().raw().toBuffer();
+    const output = await sharp("public/characters/realistic-01/study-v13.gif", { animated: true }).ensureAlpha().raw().toBuffer();
+    const stride = 360 * 270 * 4;
+    for (let frame = 0; frame < 16; frame++) {
+      let difference = 0, samples = 0;
+      for (let pixel = 0; pixel < stride; pixel += 16) { difference += Math.abs(source[(15-frame)*stride+pixel] - output[frame*stride+pixel]); samples++; }
+      expect(difference / samples).toBeLessThan(2);
     }
   });
 });

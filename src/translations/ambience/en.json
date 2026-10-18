@@ -22,6 +22,12 @@
     "white-noise": "White noise",
     "playerVolume": "Use the radio player's volume control below. Press play to listen.",
     "stationWebsite": "Station website",
-    "ocean": "Gentle ocean"
+    "ocean": "Gentle ocean",
+    "medieval-warrior": "Medieval Warrior",
+    "medieval-walk": "Medieval Walk",
+    "medieval-knight": "Medieval Knight",
+    "localPreview": "Local preview",
+    "source": "Source",
+    "licenceUnspecified": "Licence not specified"
   }
 }

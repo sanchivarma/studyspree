@@ -25,8 +25,10 @@ export function repositoryContract(name: string, create: () => Repository) {
     });
     it("removes retired sounds without resetting other saved preferences", async () => {
       const profile = await repo.getProfile();
-      const result = profileSchema.parse({ ...profile, displayName: "Reader", backgroundEffects: ["rain", "medieval", "medieval-flute", "medieval-lyre"], effectVolumes: { rain: 0.7, medieval: 0.3, "medieval-flute": 0.5, "medieval-lyre": 0.4 }, roomVolume: 0.6 });
+      const result = profileSchema.parse({ ...profile, displayName: "Reader", backgroundEffects: ["rain", "medieval", "medieval-flute", "medieval-lyre", "buddhist-chant", "om-chant", "tibetan-chant"], effectVolumes: { rain: 0.7, medieval: 0.3, "medieval-flute": 0.5, "medieval-lyre": 0.4, "buddhist-chant":0.5, "om-chant":0.4, "tibetan-chant":0.2 }, roomVolume: 0.6 });
       expect(result).toMatchObject({ displayName: "Reader", backgroundEffects: ["rain"], effectVolumes: { rain: 0.7 }, roomVolume: 0.6 });
+      await repo.updateProfile({ backgroundEffects: ["medieval-warrior", "medieval-walk", "medieval-knight"], effectVolumes: { "medieval-warrior": 0.2, "medieval-walk": 0.6, "medieval-knight": 0.4 } });
+      expect(await repo.getProfile()).toMatchObject({ backgroundEffects: ["medieval-warrior", "medieval-walk", "medieval-knight"], effectVolumes: { "medieval-warrior": 0.2, "medieval-walk": 0.6, "medieval-knight": 0.4 } });
     });
     it("advances companion status rotation once per new session and retains personal status", async () => {
       await repo.updatePersonalTile({ status: "Review chapter five by Friday" });

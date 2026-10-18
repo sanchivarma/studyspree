@@ -14,7 +14,7 @@ async function setSlider(page: Page, name: string, value: number) {
 test("ocean, library and castle have independent saved levels", async ({ page }) => {
   await signIn(page); const path = await startSession(page);
   await page.getByRole("button", { name: "Sound", exact: true }).click();
-  await expect(page.getByRole("checkbox", { name: /medieval/i })).toHaveCount(0);
+  await expect(page.getByRole("checkbox", { name: "Medieval Warrior", exact: true })).toBeVisible();
   for (const [name, volume] of [["Gentle ocean", 0.25], ["Library ambience", 0.65], ["Castle hearth", 0.4]] as const) {
     await page.getByRole("checkbox", { name, exact: true }).check();
     await setSlider(page, `${name} volume`, volume);

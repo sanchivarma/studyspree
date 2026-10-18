@@ -1,3 +1,5 @@
+Current acceptance evidence: see [FEATURE_COMPLETION.md](FEATURE_COMPLETION.md). This older baseline records prior findings; it does not supersede that ledger.
+
 # StudySpree feature implementation checklist
 
 Requested order: **17 → 1 → 6 → 5 → 7 → 4 → 15 → 2 → 3 → 8 → 9 → 10 → 11 → 12 → 13 → 14 → 16**.

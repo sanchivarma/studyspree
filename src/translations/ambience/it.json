@@ -22,6 +22,12 @@
     "white-noise": "Rumore bianco",
     "playerVolume": "Usa il volume del lettore radio qui sotto. Premi Riproduci per ascoltare.",
     "stationWebsite": "Sito della stazione",
-    "ocean": "Onde delicate"
+    "ocean": "Onde delicate",
+    "medieval-warrior": "Medieval Warrior",
+    "medieval-walk": "Medieval Walk",
+    "medieval-knight": "Medieval Knight",
+    "localPreview": "Anteprima locale",
+    "source": "Fonte",
+    "licenceUnspecified": "Licenza non specificata"
   }
 }

@@ -74,13 +74,14 @@ export async function executeCommunity(input: z.infer<typeof communityRequestSch
         let cursor = null;
         if (query.cursor) {
             try {
-                cursor = z.object({ snapshotAt: z.iso.datetime({ offset: true }), offset: z.number().int().min(0).max(100000) }).strict().parse(JSON.parse(query.cursor));
+                cursor = z.object({ snapshotAt: z.iso.datetime({ offset: true }), afterRank: z.number().int().min(0), metric: z.enum(["time", "streak"]), period: z.enum(["week", "all"]) }).strict().parse(JSON.parse(query.cursor));
+                if (cursor.metric !== (query.metric ?? "time") || cursor.period !== (query.period ?? "week")) throw new Error("Cursor filters changed");
             }
             catch {
                 throw new CommunityServerError(400, "invalid");
             }
         }
-        const response = await client.rpc("community_leaderboard", { p_metric: query.metric ?? "time", p_period: query.period ?? "week", p_cursor: cursor! });
+        const response = await client.rpc("community_leaderboard_page", { p_metric: query.metric ?? "time", p_period: query.period ?? "week", p_limit: query.limit ?? 20, p_cursor: cursor! });
         if (response.error)
             throw new CommunityServerError(400, "unavailable");
         return communityStateSchema.parse(response.data);

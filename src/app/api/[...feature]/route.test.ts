@@ -2,6 +2,7 @@ import { beforeEach, expect, it, vi } from "vitest";
 const mocks = vi.hoisted(() => ({ study: vi.fn(), community: vi.fn() }));
 vi.mock("@/lib/repo/serverStudy", () => ({ executeStudy: mocks.study, StudyError: class extends Error { constructor(public status: number) { super(); } } }));
 vi.mock("@/lib/community/server", () => ({ executeCommunity: mocks.community, CommunityServerError: class extends Error { constructor(public status: number) { super(); } } }));
+vi.mock("@/lib/community/serverPatch", () => ({ executeResourcePatch: vi.fn() }));
 vi.mock("@/lib/profiles/serverRepository", () => ({ serverProfileRepository: {}, ProfileAccessError: class extends Error {} }));
 import { GET, POST, DELETE } from "./route";
 import { StudyError } from "@/lib/repo/serverStudy";

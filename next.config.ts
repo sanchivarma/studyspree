@@ -11,6 +11,7 @@ export default function nextConfig(phase: string): NextConfig {
     // Keep production builds separate; route-group changes require fresh route discovery.
     distDir: phase === PHASE_DEVELOPMENT_SERVER ? process.env.STUDYSPREE_VERIFY === "1" ? ".next-verify" : ".next-dev" : ".next",
     outputFileTracingRoot: process.cwd(),
+    outputFileTracingExcludes: { "/*": ["./.local/audio/**"] },
     env: { SCENE_MEDIA_MANIFEST: JSON.stringify(Object.fromEntries(themes.map((theme) => [theme.slug, {
       poster: existsSync(join(process.cwd(), "public", theme.poster)),
       webm: existsSync(join(process.cwd(), "public", theme.webm)),

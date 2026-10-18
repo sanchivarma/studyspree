@@ -34,3 +34,7 @@ Files are immutable: use a new filename for a new version.
 | effect-medieval-flute-v1.mp3 | Freesound #506265 by f-r-a-g-i-l-e; softened gentle flute | CC0 1.0 | 2026-10-18 | yes | docs/audio/expanded-ambience.md |
 | effect-medieval-lyre-v1.mp3 | Freesound #191883 by Hedmarking; softened Iron Age lyre | CC0 1.0 | 2026-10-18 | yes | docs/audio/expanded-ambience.md |
 | effect-ocean-v1.mp3 | Freesound #457956 by dan.pugsley; softened waves lapping on rocks | CC0 1.0 | 2026-10-18 | yes | docs/audio/expanded-ambience.md |
+| effect-medieval-calm-v1.mp3 | RandomMind; Medieval: Exploration; creator-published OpenGameArt instrumental | CC0 1.0 | 2026-10-18 | yes | docs/audio/requested-focus-audio.md |
+| effect-buddhist-chant-v1.mp3 | Lenguaverde; Buddhist Nun Chants; Freesound #433920 | CC0 1.0 | 2026-10-18 | yes | docs/audio/requested-focus-audio.md |
+| effect-om-chant-v1.mp3 | ApeironMedia; Om.wav; Freesound #445246 | CC0 1.0 | 2026-10-18 | yes | docs/audio/requested-focus-audio.md |
+| effect-medieval-calm-v2.mp3 | RandomMind; Medieval: The Bard�s Tale; creator-published lute/flute loop | CC0 1.0 | 2026-10-18 | yes | docs/audio/requested-focus-audio.md |

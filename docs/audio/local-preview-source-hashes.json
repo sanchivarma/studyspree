@@ -1,0 +1,32 @@
+[
+  {
+    "file": "medieval-warrior-v1.mp3",
+    "title": "ebunny - Knight of Flowers",
+    "creator": "ebunny",
+    "source": "https://archive.org/download/jamendo-557142/01-2148250-ebunny-Knight%20of%20Flowers.mp3",
+    "licence": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+    "bytes": 4251459,
+    "sha256": "fec806288ec35ab2cffe50fe1e89d3c3dcc4957ac9da7b89fd778862d91b5021",
+    "productionPermitted": false
+  },
+  {
+    "file": "medieval-walk-v1.mp3",
+    "title": "ebunny - White Knight (Guitar)",
+    "creator": "ebunny",
+    "source": "https://archive.org/download/jamendo-456140/01-1887695-ebunny-White%20Knight%20_Guitar_.mp3",
+    "licence": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+    "bytes": 4283264,
+    "sha256": "4028dd525b9b435d5d3fb934d8195a3a2fb6a9ad63c47bae1aba8ae9483ea94f",
+    "productionPermitted": false
+  },
+  {
+    "file": "medieval-knight-v1.mp3",
+    "title": "ebunny - White Knight",
+    "creator": "ebunny",
+    "source": "https://archive.org/download/jamendo-354239/01-1371888-ebunny-White%20Knight.mp3",
+    "licence": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+    "bytes": 3396480,
+    "sha256": "1b595f66c9b8beb1093ef2c77f828f48e271edd34d80d53686abe60525c9f3bb",
+    "productionPermitted": false
+  }
+]

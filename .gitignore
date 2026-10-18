@@ -7,6 +7,7 @@
 /test-results/
 /playwright-report/
 /.tmp/
+/.local/audio/
 *.tsbuildinfo
 next-env.d.ts
 .env*

@@ -22,6 +22,12 @@
     "white-noise": "Weißes Rauschen",
     "playerVolume": "Nutze den Lautstärkeregler im Radio-Player unten. Drücke zum Hören auf Play.",
     "stationWebsite": "Website des Senders",
-    "ocean": "Sanfte Meereswellen"
+    "ocean": "Sanfte Meereswellen",
+    "medieval-warrior": "Medieval Warrior",
+    "medieval-walk": "Medieval Walk",
+    "medieval-knight": "Medieval Knight",
+    "localPreview": "Lokale Vorschau",
+    "source": "Quelle",
+    "licenceUnspecified": "Lizenz nicht angegeben"
   }
 }

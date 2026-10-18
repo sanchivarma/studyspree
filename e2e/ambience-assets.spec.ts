@@ -1,12 +1,17 @@
 import { expect, test } from "@playwright/test";
 import { backgroundEffects } from "../src/lib/audio/effects";
+import { localPreviewAudio } from "../src/lib/audio/localPreview";
 
 test("effects decode to distinct audible signals and the new cafe is substantially louder", async ({ page }) => {
   test.setTimeout(60000);
   await page.goto("/login");
   const levels = new Map<string, number>(); const fingerprints = new Set<string>();
-  for (const src of ["/audio/effect-cafe-v2.mp3", ...backgroundEffects.map(effect => effect.src)]) {
-    const response = await page.request.get(src);
+  // Permanent production-asset assertions remain strict. The user's exact
+  // noncommercial recordings have separate optional local-preview checks.
+  for (const src of ["/audio/effect-cafe-v2.mp3", ...backgroundEffects.filter(effect => !Object.hasOwn(localPreviewAudio, effect.slug)).map(effect => effect.src)]) {
+    // Next's development server can close a reused connection while streaming
+    // assets; retry transport resets without relaxing any decoding assertions.
+    const response = await page.request.get(src, { maxRetries: 2 });
     expect(response.ok(), src).toBe(true); expect((await response.body()).length, src).toBeLessThan(8000000);
     const result = await page.evaluate(async src => {
       const bytes = await (await fetch(src)).arrayBuffer();

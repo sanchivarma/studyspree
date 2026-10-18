@@ -20,7 +20,7 @@ test("the original eight realistic partners animate in a session and preserve it
   const startedAt = await page.evaluate(() => JSON.parse(localStorage.getItem("ss_sessions")!)[0].startedAt);
   for (let n = 1; n <= 8; n++) {
     const image = page.getByTestId(`character-loop-realistic-0${n}`).getByTestId("character-animation");
-    await expect(image).toHaveAttribute("src", `/characters/realistic-0${n}/study-v11.gif`);
+    await expect(image).toHaveAttribute("src", `/characters/realistic-0${n}/study-${n === 1 ? "v13" : "v12"}.gif`);
     await expect.poll(() => image.evaluate(el => (el as HTMLImageElement).naturalWidth)).toBe(n === 2 ? 320 : 360);
   }
   // Sample actual rendered GIF pixels; metadata alone cannot prove browser playback.
@@ -83,7 +83,7 @@ test("four expanded partners mix with existing styles, animate and persist", asy
 test("a missing realistic GIF keeps its poster and session usable", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
   let blocked = 0;
-  await page.route("**/realistic-02/study-v11.gif", route => { blocked++; return route.abort(); });
+  await page.route("**/realistic-02/study-v12.gif", route => { blocked++; return route.abort(); });
   await signIn(page); await page.goto("/study");
   await page.getByRole("button", { name: "Choose companions", exact: true }).click();
   await page.getByRole("button", { name: "Virtual partners", exact: true }).click();

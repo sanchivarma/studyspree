@@ -56,7 +56,7 @@ export function restRead(path:string[],search:URLSearchParams):{area:CommunityAr
  else if(resource==='feed'){area='feed';query.filter=search.get('view')??'following';}
  else if(resource==='scheduled-sessions'){area='schedule';if(id)query.id=uuid.parse(id);}
  else if(resource==='tasks'||resource==='notifications'||resource==='search')area=resource;
- else if(resource==='leaderboards'){area='leaderboards';query.metric=search.get('metric')==='best-streak'?'streak':'time';query.period=search.get('period')==='all-time'?'all':'week';}
+ else if(resource==='leaderboards'){area='leaderboards';query.metric=z.enum(['study-seconds','best-streak']).parse(search.get('metric')??'study-seconds')==='best-streak'?'streak':'time';query.period=z.enum(['all-time','last-7-days']).parse(search.get('period')??'last-7-days')==='all-time'?'all':'week';}
  else if(resource==='profile'&&id==='focus-partners')area='partners';
  else throw new Error('Unknown resource');
  if(search.has('category'))query.filter=search.get('category')==='deep-focus'?'deep':search.get('category');

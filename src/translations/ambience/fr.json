@@ -22,6 +22,12 @@
     "white-noise": "Bruit blanc",
     "playerVolume": "Utilisez le volume du lecteur radio ci-dessous. Lancez la lecture pour écouter.",
     "stationWebsite": "Site de la station",
-    "ocean": "Vagues douces"
+    "ocean": "Vagues douces",
+    "medieval-warrior": "Medieval Warrior",
+    "medieval-walk": "Medieval Walk",
+    "medieval-knight": "Medieval Knight",
+    "localPreview": "Aper�u local",
+    "source": "Source",
+    "licenceUnspecified": "Licence non pr�cis�e"
   }
 }

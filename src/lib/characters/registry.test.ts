@@ -24,11 +24,12 @@ describe("virtual companion definitions", () => {
     expect(realistic.filter(value => value.presentation === "male")).toHaveLength(6);
     expect(realistic.filter(value => value.presentation === "female")).toHaveLength(6);
     for (const value of realistic) {
-      // V11 retimes existing source frames; rejected generated poses stay inactive.
-      expect(value.assetVersion).toBe("v11");
-      expect(value.loopSeconds).toBeGreaterThan(20);
+      // Writers never receive a reading hold. Readers turn after staggered gaps.
+      expect(value.assetVersion).toBe(value.slug === "realistic-01" ? "v13" : "v12");
+      expect(value.loopSeconds).toBeGreaterThanOrEqual(10);
+      expect(value.loopSeconds).toBeLessThanOrEqual(15);
       expect(value.webm).toBeNull();
-      expect(value.gif).toBe(`/characters/${value.slug}/study-v11.gif`);
+      expect(value.gif).toBe(`/characters/${value.slug}/study-${value.assetVersion}.gif`);
       expect(value.descriptionKey).toMatch(/realistic(Reading|Writing)$/);
     }
     expect(companionSchema.safeParse({ mode: "characters", characterSlugs: ["female-01", "moss-fox", "realistic-01", "realistic-09", "realistic-10", "realistic-11", "realistic-12"] }).success).toBe(true);
@@ -39,7 +40,8 @@ describe("virtual companion definitions", () => {
     expect(historical.find(value => value.slug === "medieval-scribe")?.presentation).toBe("female");
     expect(historical.find(value => value.slug === "medieval-scholar")?.presentation).toBe("male");
     expect(new Set(historical.map(value => value.gif)).size).toBe(4);
-    expect(getCharacter("tesla")).toMatchObject({ assetVersion: "v5", loopSeconds: 20, webm: "/characters/tesla/study-v5.webm" });
+    expect(getCharacter("tesla")).toMatchObject({ assetVersion: "v24", loopSeconds: 13, webm: "/characters/tesla/study-v24.webm" });
+    expect(getCharacter("einstein")?.webm).toBe("/characters/einstein/study-v24.webm");
     expect(companionSchema.safeParse({ mode: "characters", characterSlugs: historical.map(value => value.slug) }).success).toBe(true);
   });
   it("accepts the complete known cast for paginated sessions", () => {

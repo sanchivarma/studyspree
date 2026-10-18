@@ -1,3 +1,5 @@
+CURRENT WRITING REVISION: v24 uses isolated original hand/pen cutouts over hidden clean plates generated with the built-in image_gen tool. The exact prompts are in hand-cleanplate-prompts.json; saved plates are einstein-hand-cleanplate-v1.png and tesla-hand-cleanplate-v1.png. Only pixels underneath the writing silhouette are used. The rest of the generated images never replace the scene. Existing approved Einstein background is preserved; Tesla discharges were subsequently revised at the user's request. Continuous 2D wrist strokes advance across the page and lift on return. This is a 2D animated rig, not newly generated source video.
+
 # Historical study companions
 
 Four assets generated with the built-in imagegen tool on 18 October 2026.

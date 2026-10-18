@@ -22,6 +22,12 @@
     "white-noise": "Szum biały",
     "playerVolume": "Użyj regulacji głośności w odtwarzaczu radia poniżej. Włącz odtwarzanie, aby słuchać.",
     "stationWebsite": "Strona stacji",
-    "ocean": "Spokojne fale"
+    "ocean": "Spokojne fale",
+    "medieval-warrior": "Medieval Warrior",
+    "medieval-walk": "Medieval Walk",
+    "medieval-knight": "Medieval Knight",
+    "localPreview": "Podglad lokalny",
+    "source": "Zr�dlo",
+    "licenceUnspecified": "Nie podano licencji"
   }
 }

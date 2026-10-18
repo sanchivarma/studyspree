@@ -7,6 +7,8 @@ import {serverProfileRepository,ProfileAccessError} from '@/lib/profiles/serverR
 import {profileEditSchema} from '@/lib/profiles/schemas';
 import {statsRangeSchema} from '@/lib/stats/ranges';
 import { requireRestMethod, RestRouteError } from '@/lib/community/restRoutes';
+import { executeResourcePatch } from '@/lib/community/serverPatch';
+import { patchResources, type PatchResource } from '@/lib/community/patches';
 type Context={params:Promise<{feature:string[]}>};
 const headers={'Cache-Control':'private, no-store'};
 async function handle(request:Request,context:Context){
@@ -37,7 +39,8 @@ async function handle(request:Request,context:Context){
     const client=await import('@/lib/auth/server').then(m=>m.createAuthClient());const identity=await client.auth.getUser();if(!identity.data.user)throw new StudyError(401);
     const person=await client.rpc('read_visible_profile_by_id',{p_id:z.uuid().parse(path[1])});if(!person.data)throw new StudyError(404);
     result=await serverProfileRepository.follow(z.object({username:z.string()}).parse(person.data).username,method!=='DELETE');
-   }else result=await executeCommunity({operation:'mutate',command:restCommand(method,path,raw)});
+   }else if(method==='PATCH'&&path.length===2&&patchResources.includes(path[0] as PatchResource))result=await executeResourcePatch(path[0] as PatchResource,path[1],raw);
+   else result=await executeCommunity({operation:'mutate',command:restCommand(method,path,raw)});
   }
   return Response.json(result,{headers});
  }catch(error){const status=error instanceof RestRouteError?error.status:error instanceof CommunityServerError?error.status:error instanceof StudyError?error.status:error instanceof ProfileAccessError?error.code==='unauthorized'?401:400:error instanceof z.ZodError||error instanceof SyntaxError?400:error instanceof Error&&error.message.startsWith('Unknown')?404:503;return Response.json({error:status===401?'accountRequired':status===403?'forbidden':status===400?'invalid':status===405?'methodNotAllowed':status===404?'notFound':'unavailable'},{status,headers:{...headers,...(error instanceof RestRouteError&&error.status===405?{Allow:error.allowed.join(', ')}:{})}});}

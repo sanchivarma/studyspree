@@ -31,11 +31,11 @@ export function AmbienceControl({ theme, onOpenChange, className }: { theme: str
         className="z-50 max-h-[calc(100dvh-6rem)] w-80 max-w-[calc(100dvw-2rem)] overflow-y-auto rounded-2xl border border-border bg-surface p-5 text-foreground shadow-lg data-[state=closed]:hidden">
         <h2 className="text-body font-semibold">{t("ambience.label")}</h2>
         <p className="mt-1 text-small text-text-muted">{t("ambience.originalNote")}</p>
-        <BackgroundEffectsPicker selected={audio.backgroundEffects ?? []} volumes={audio.effectVolumes ?? {}}
-          onSelectionChange={audio.setBackgroundEffects} onVolumeChange={audio.setEffectVolume} />
-        <label className="block text-small" htmlFor="room-volume">{t("ambience.room")}</label>
+        <label className="mt-4 block text-small" htmlFor="room-volume">{t("ambience.room")}</label>
         <input id="room-volume" type="range" min={0} max={1} step={0.05} disabled={!audio.backgroundEffects?.length} value={audio.roomVolume} onChange={event => audio.setRoomVolume(Number(event.target.value))}
           className="h-11 w-full accent-accent" />
+        <BackgroundEffectsPicker selected={audio.backgroundEffects ?? []} volumes={audio.effectVolumes ?? {}}
+          onSelectionChange={audio.setBackgroundEffects} onVolumeChange={audio.setEffectVolume} />
         <fieldset className="mt-4"><legend className="text-small font-semibold">{t("ambience.radios")}</legend>
           {radioStations.map(station => <label key={station.id} className="flex min-h-11 cursor-pointer items-center gap-3 text-small">
             <input type="radio" name="music-track" checked={audio.musicTrack === `radio:${station.id}`} onChange={() => audio.setMusicTrack(`radio:${station.id}`)} className="size-4 accent-accent" />

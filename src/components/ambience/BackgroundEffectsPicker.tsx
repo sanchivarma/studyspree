@@ -3,6 +3,7 @@
 import { useId } from "react";
 import { backgroundEffects, type EffectSlug, type EffectVolumes } from "@/lib/audio/effects";
 import { useTranslation } from "@/hooks/useTranslation";
+import { localPreviewAudio } from "@/lib/audio/localPreview";
 
 type Props = {
   selected: readonly EffectSlug[];
@@ -32,5 +33,10 @@ export function BackgroundEffectsPicker({ selected, volumes, disabled, onSelecti
       </div>
       <span aria-hidden="true" className="w-8 shrink-0 text-right text-small tabular-nums text-text-muted">{Math.round((volumes[effect.slug] ?? 1) * 100)}%</span>
     </div>)}
+    {Object.entries(localPreviewAudio).filter(([slug]) => selected.includes(slug as EffectSlug)).map(([slug, recording]) => <p key={slug} className="mt-2 text-xs text-text-muted">
+      {t("ambience.localPreview")}{" · "}{recording.creator ? `${recording.creator} — ` : ""}{recording.title}{" · "}
+      <a href={recording.source} target="_blank" rel="noreferrer" className="underline focus-visible:outline focus-visible:outline-2">{t("ambience.source")}</a>{" · "}
+      {recording.licence ? <a href={recording.licence} target="_blank" rel="noreferrer" className="underline focus-visible:outline focus-visible:outline-2">{recording.licenceName}</a> : t("ambience.licenceUnspecified")}
+    </p>)}
   </fieldset>;
 }

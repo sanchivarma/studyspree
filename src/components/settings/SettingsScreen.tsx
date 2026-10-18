@@ -87,13 +87,13 @@ export function SettingsScreen() {
         <input type="range" min="0" max="1" step="0.05" disabled={disabled} value={preferences?.musicVolume ?? 0}
           onChange={event => update.mutate({ musicVolume: Number(event.target.value) })} className="block h-11 w-full accent-accent" />
       </label>}
-      <BackgroundEffectsPicker selected={preferences?.backgroundEffects ?? []} volumes={preferences?.effectVolumes ?? {}} disabled={disabled}
-        onSelectionChange={backgroundEffects => update.mutate({ backgroundEffects })}
-        onVolumeChange={(slug, volume) => update.mutate({ effectVolumes: { ...preferences?.effectVolumes, [slug]: volume } })} />
       <label className="mt-2 block text-small">{t("ambience.room")}
         <input type="range" min="0" max="1" step="0.05" disabled={disabled} value={preferences?.roomVolume ?? 0}
           onChange={event => update.mutate({ roomVolume: Number(event.target.value) })} className="block h-11 w-full accent-accent" />
       </label>
+      <BackgroundEffectsPicker selected={preferences?.backgroundEffects ?? []} volumes={preferences?.effectVolumes ?? {}} disabled={disabled}
+        onSelectionChange={backgroundEffects => update.mutate({ backgroundEffects })}
+        onVolumeChange={(slug, volume) => update.mutate({ effectVolumes: { ...preferences?.effectVolumes, [slug]: volume } })} />
       <label className="mt-2 block text-small">{t("ambience.radios")}
         <select disabled={disabled} value={preferences?.musicTrack ?? ""} className={fieldClass}
           onChange={event => { const value = event.target.value; const station = radioStations.find(station => `radio:${station.id}` === value); update.mutate({ musicTrack: station ? `radio:${station.id}` : null }); }}>

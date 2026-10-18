@@ -1,6 +1,41 @@
+CURRENT: Einstein/Tesla use immutable v24. The original hand and pen are a single rigid cutout with a generated hidden clean plate, not blended/distorted source poses. They write left to right across a line, lift the pen, and return. Clothing/resting hands stay fixed. Einstein retains the approved v20 black-hole background. Tesla now has sharp, tower-anchored 200ms discharges at varied intervals, with no slow arc drift or full-screen flash. One fixed source palette prevents GIF colour flicker. See scripts/rig-scientist-hands.mjs and docs/historical-companions/hand-cleanplate-prompts.json.
+
+CURRENT (18 October 2026): Einstein/Tesla use immutable v20, thirteen-second loops with 30fps muted video and 20fps GIF fallback. Writing uses localized temporal blending between native frames; no optical flow, spatial mirroring or anatomy generation. Tesla's blue arcs drift slowly with a gentle glow; cage geometry is held fixed. Einstein's black-hole halo moves gently. Existing native hand/pen poses still limit realism. Arun uses reversed native chronology v13, other realistic partners v12.
+
 # Study motion and statuses
 
-## Current animation review status — 18 October 2026
+## Latest background and direction correction
+
+Arun v13 reverses the native v3 action frame order (15 down to 0), changing the page movement from viewer-right-to-left to viewer-left-to-right. The person, lettering and room are not mirrored. The ten-second reading interval and thirteen-second cycle remain.
+
+Einstein and Tesla use v14 GIF/WebM/MP4 files. Their first native frame supplies a stable background and face; a feathered hands/pen/book region retains original writing frames. The black hole and cage no longer deform or flash between inconsistent poses. This intentionally stabilizes those backgrounds rather than inventing new coherent motion. Einstein remains 12.72 seconds; Tesla remains 13 seconds. Scripts/stabilize-scientist-backgrounds.mjs reproduces the edit. Unit checks compare background pixels and confirm writing-area changes.
+
+
+## Current correction: activity-specific timing
+
+The latest user request supersedes v11�s long holds. All twelve realistic
+partners plus Einstein now use v12. Writers have no artificial reading hold:
+Lin 10.9s, Timur 11.66s, Leilani 12.72s, Valeria 13.78s, Andre 10.6s, Einstein
+12.72s; Idris also writes continuously over 11.66s. Frame delays are uniform
+100�130ms. Tesla uses a 13-second muted video/GIF derived from the previous
+slow v5 source. His original matching poster is retained.
+
+Realistic readers use 13�14.38-second loops. Their page-turn actions start
+after distinct reading intervals: 10s, 10.23s, 10.46s, 10.69s, 10.92s, 11.15s,
+11.38s. No mirror, crop, pose generation or optical-flow synthesis was added.
+This is a playback-cadence correction, **not a claim of smooth source motion**.
+The seven readers still contain only sixteen original poses, and source
+anatomical defects remain. The user declined to supply/connect new motion
+sources and asked to fix what is possible. Genuinely continuous natural
+10�15-second motion cannot be recovered from these missing source poses.
+
+Seventy-five unused assets were archived outside public; the rejected native
+pose review script was also archived. Active assets, source GIFs, licence
+history and regression fixtures remain. See docs/MEDIA_CLEANUP.md. The earlier
+v11/review sections below are historical records; their retired public URLs
+are no longer shipped.
+
+## Previous animation review status — 18 October 2026
 
 ### Active timing correction
 

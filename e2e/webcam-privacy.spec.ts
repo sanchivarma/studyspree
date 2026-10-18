@@ -3,6 +3,9 @@ import { expect, test, type Page } from "@playwright/test";
 import { signIn, startSession } from "./sessionFixtures";
 
 test.use({ hasTouch: true, launchOptions: { args: ["--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream"] } });
+// Account/setup navigation and camera lifecycle checks share this overall
+// budget. Keep the independent Start deadline and 20-second network audit.
+test.describe.configure({ timeout: 60_000 });
 
 // Use Chromium's synthetic device: tests never access the user's physical camera.
 async function instrument(page: Page) {

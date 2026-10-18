@@ -1,3 +1,5 @@
+Current acceptance evidence: see [FEATURE_COMPLETION.md](FEATURE_COMPLETION.md). This older baseline records prior findings; it does not supersede that ledger.
+
 # Audit against the 17 code-level prompts
 
 Audit date: 17 October 2026. Source baseline: commit `60b1f17`.

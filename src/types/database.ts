@@ -969,6 +969,54 @@ export type Database = {
                 Relationships: [
                 ];
             };
+            "post_reaction_intervals": {
+                Row: {
+                    "ended_at": string | null;
+                    "id": number;
+                    "post_id": string;
+                    "started_at": string;
+                    "user_id": string;
+                };
+                ComputedFields: never;
+                Insert: {
+                    "ended_at"?: string | null;
+                    "id"?: never;
+                    "post_id": string;
+                    "started_at": string;
+                    "user_id": string;
+                };
+                Update: {
+                    "ended_at"?: string | null;
+                    "id"?: never;
+                    "post_id"?: string;
+                    "started_at"?: string;
+                    "user_id"?: string;
+                };
+                Relationships: [
+                    {
+                        foreignKeyName: "post_reaction_intervals_post_id_fkey";
+                        columns: [
+                            "post_id"
+                        ];
+                        isOneToOne: false;
+                        referencedRelation: "feed_posts";
+                        referencedColumns: [
+                            "id"
+                        ];
+                    },
+                    {
+                        foreignKeyName: "post_reaction_intervals_user_id_fkey";
+                        columns: [
+                            "user_id"
+                        ];
+                        isOneToOne: false;
+                        referencedRelation: "profiles";
+                        referencedColumns: [
+                            "id"
+                        ];
+                    }
+                ];
+            };
             "post_reactions": {
                 Row: {
                     "created_at": string;
@@ -2339,6 +2387,15 @@ export type Database = {
                 };
                 Returns: Json;
             };
+            "community_leaderboard_page": {
+                Args: {
+                    "p_cursor"?: Json;
+                    "p_limit": number;
+                    "p_metric": string;
+                    "p_period": string;
+                };
+                Returns: Json;
+            };
             "community_mutate": {
                 Args: {
                     "p_action": string;
@@ -2378,6 +2435,14 @@ export type Database = {
                 Args: {
                     "p_action": string;
                     "p_data": Json;
+                };
+                Returns: Json;
+            };
+            "community_patch": {
+                Args: {
+                    "p_id": string;
+                    "p_patch": Json;
+                    "p_resource": string;
                 };
                 Returns: Json;
             };

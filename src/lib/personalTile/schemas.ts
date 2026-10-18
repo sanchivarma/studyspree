@@ -3,7 +3,7 @@ export const tileSchema = z.object({
     mirrored: z.boolean().default(true), isVisible: z.boolean().default(true),
     status: z.string().trim().max(200).default(""),
     shareNowPlaying: z.boolean().default(false),
-    history: z.array(z.object({ text: z.string().max(200), createdAt: z.iso.datetime() }).strict()).max(20).default([]),
+    history: z.array(z.object({ text: z.string().max(200), createdAt: z.iso.datetime({ offset: true }).transform(value => new Date(value).toISOString()) }).strict()).max(20).default([]),
 }).strict();
 export const tilePatchSchema = z.object({ mirrored: z.boolean().optional(), isVisible: z.boolean().optional(), status: z.string().trim().max(200).optional(), shareNowPlaying: z.boolean().optional() }).strict();
 export type PersonalTile = z.infer<typeof tileSchema>;

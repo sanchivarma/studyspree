@@ -38,8 +38,8 @@ export const characters: readonly CharacterDefinition[] = [...humanCharacterSlug
   nameKey: `characters.${slug}`, descriptionKey: `characters.${slug}Description`,
   activity: slug === "medieval-scribe" ? "reading" : "writing",
   gif: `/characters/${slug}/study-${versionFor(slug, slug === "tesla" ? "v5" : "v1")}.gif`, poster: `/characters/${slug}/poster-${revisions[slug]?.posterVersion ?? (slug === "tesla" ? "v5" : "v1")}.webp`,
-  webm: slug === "tesla" ? "/characters/tesla/study-v5.webm" : null,
-  mp4: slug === "tesla" ? "/characters/tesla/study-v5.mp4" : null,
+  webm: (revisions[slug]?.video ?? slug === "tesla") ? `/characters/${slug}/study-${versionFor(slug, "v5")}.webm` : null,
+  mp4: (revisions[slug]?.video ?? slug === "tesla") ? `/characters/${slug}/study-${versionFor(slug, "v5")}.mp4` : null,
   loopSeconds: revisions[slug]?.loopSeconds ?? (slug === "tesla" ? 20 : 5.3), assetVersion: versionFor(slug, slug === "tesla" ? "v5" : "v1"), licenceId: `studyspree-ai-${slug}-${versionFor(slug, slug === "tesla" ? "v5" : "v1")}`,
 }))];
 

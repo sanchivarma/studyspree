@@ -1,0 +1,15 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-10-18",
+  "purpose": "Hidden hand/pen removal clean plates; original approved backgrounds are never replaced.",
+  "prompts": [
+    {
+      "slug": "einstein",
+      "prompt": "Use case: precise-object-edit. Edit target: the supplied Einstein study illustration. Create a clean plate for 2D hand animation. Remove ONLY the writing hand on the viewer's left and the black pen it holds, reconstructing the warm beige sweater and cream notebook paper behind that hand. Keep the resting hand on the viewer's right unchanged. Keep every other element, exact framing, camera, face, desk, book shape and black-hole background unchanged. No replacement hand, no new objects, no text. Preserve exact 4:3 composition and pixel alignment. This is a static hidden underlay, not animation. The removed hand is roughly x=84..124 y=150..180 and pen x=95..124 y=136..177 on the 320x240 original."
+    },
+    {
+      "slug": "tesla",
+      "prompt": "Use case: precise-object-edit. Edit target: supplied Tesla study illustration. Create a clean plate for 2D hand animation. Remove ONLY the writing hand on viewer's left and its pen; reconstruct dark navy jacket/white cuff and cream notebook paper underneath. Keep the resting hand on viewer's right unchanged. Keep exact framing and composition, face, book, desk, cage, tower and electricity unchanged. Do not add a new hand or pen, no new objects or text. Preserve 4:3 composition and pixel alignment. Static hidden underlay, not animation. Removed writing hand roughly x=68..116 y=166..194 and pen x=91..115 y=146..193 on 320x240 original."
+    }
+  ]
+}
