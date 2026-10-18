@@ -13,6 +13,7 @@
     "goal": "Objectif de la session (facultatif)",
     "goalNotice": "Votre objectif sera partagé à votre arrivée. Laissez le champ vide pour le garder privé.",
     "goalPosted": "Objectif de la session",
-    "chatLimit": "Patientez un instant avant d’envoyer d’autres messages."
+    "chatLimit": "Patientez un instant avant d’envoyer d’autres messages.",
+    "admin": "Admin"
   }
 }

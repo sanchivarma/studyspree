@@ -3,7 +3,7 @@ import { expect, it } from "vitest";
 
 it("keeps the preserved background outside revised Tesla electricity, sweater and resting hand steady while the writing hand moves", async () => {
   for (const slug of ["einstein", "tesla"]) {
-    const path = `public/characters/${slug}/study-v24.gif`;
+    const path = `public/characters/${slug}/study-v27.gif`;
     const metadata = await sharp(path, { animated: true }).metadata();
     const raw = await sharp(path, { animated: true }).ensureAlpha().raw().toBuffer();
     const approved = await sharp(`public/characters/${slug}/study-v20.gif`, { animated: true }).ensureAlpha().raw().toBuffer();

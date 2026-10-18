@@ -1,0 +1,19 @@
+{
+  "roomControls": {
+    "hostSound": "You control the room's music and shared settings.",
+    "guestSound": "The creator controls the room's sound. Make requests in chat.",
+    "alwaysSilent": "Room audio and microphones are always off here.",
+    "muteLocally": "Mute on my device",
+    "listen": "Listen on my device",
+    "defaultTitle": "StudySpree Default Study",
+    "alwaysOpen": "Open 24/7",
+    "peopleOnly": "Real people · no virtual partners",
+    "capacity": "{n} / 60 people",
+    "privacyTitle": "Study together, protect each other's privacy",
+    "privacy1": "Camera sharing is optional and asks for separate permission.",
+    "privacy2": "Never record, screenshot or redistribute anyone's camera.",
+    "privacy3": "Keep personal details private and use respectful, study-related chat.",
+    "requestHint": "Want a different song or setting? Ask the session creator here.",
+    "creatorOnly": "Shared settings are controlled by the session creator."
+  }
+}

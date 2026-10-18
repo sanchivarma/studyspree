@@ -13,6 +13,7 @@
     "goal": "Cel sesji (opcjonalnie)",
     "goalNotice": "Twój cel zostanie udostępniony po dołączeniu. Pozostaw pole puste, aby zachować go dla siebie.",
     "goalPosted": "Cel sesji",
-    "chatLimit": "Poczekaj chwilę przed wysłaniem kolejnych wiadomości."
+    "chatLimit": "Poczekaj chwilę przed wysłaniem kolejnych wiadomości.",
+    "admin": "Admin"
   }
 }

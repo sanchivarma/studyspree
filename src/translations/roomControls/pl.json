@@ -1,0 +1,19 @@
+{
+  "roomControls": {
+    "hostSound": "Sterujesz muzyką i wspólnymi ustawieniami pokoju.",
+    "guestSound": "Twórca steruje dźwiękiem. Prośby możesz pisać na czacie.",
+    "alwaysSilent": "Dźwięk pokoju i mikrofony są tu zawsze wyłączone.",
+    "muteLocally": "Wycisz na moim urządzeniu",
+    "listen": "Słuchaj na moim urządzeniu",
+    "defaultTitle": "Domyślny pokój nauki StudySpree",
+    "alwaysOpen": "Otwarty całą dobę",
+    "peopleOnly": "Prawdziwi ludzie · bez wirtualnych partnerów",
+    "capacity": "{n} / 60 osób",
+    "privacyTitle": "Uczmy się razem, szanując prywatność",
+    "privacy1": "Udostępnianie kamery jest dobrowolne i wymaga osobnej zgody.",
+    "privacy2": "Nie nagrywaj, nie fotografuj ani nie udostępniaj obrazu innych osób.",
+    "privacy3": "Chroń dane osobowe i rozmawiaj z szacunkiem o nauce.",
+    "requestHint": "Chcesz inny utwór lub ustawienie? Zapytaj twórcę na czacie.",
+    "creatorOnly": "Wspólnymi ustawieniami steruje twórca sesji."
+  }
+}

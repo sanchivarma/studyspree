@@ -1,3 +1,4 @@
+import { roomControlsSchema } from "./roomControls";
 import { z } from "zod";
 import { characterSlugs } from "@/types/characters";
 const id = z.uuid();
@@ -20,6 +21,7 @@ export const communityCommandSchema = z.discriminatedUnion("action", [
     command("contact.list.create", { title, members: z.array(id).max(100) }), command("contact.list.remove", { id }),
     command("calendar.create", { title, startsAt: z.iso.datetime({ offset: true }), endsAt: z.iso.datetime({ offset: true }), contacts: z.array(id).max(100), lists: z.array(id).max(20) }),
     command("calendar.respond", { id, accept: z.boolean() }), command("session.share", { id }),
+    command("room.controls", { id, controls: roomControlsSchema }),
     command("room.kick",{id,targetId:id}),
     command("group.invite", { id }), command("group.invite.revoke", { id }), command("room.invite.revoke", { id }), command("invite.accept", { token: z.string().regex(/^[a-f0-9]{64}$/) }),
     command("message.read", { id, messageId: id }),
@@ -29,7 +31,7 @@ export const communityCommandSchema = z.discriminatedUnion("action", [
     command("preferences", { allowMessages: z.boolean().optional(), leaderboardOptIn: z.boolean().optional(), sharePresence: z.boolean().optional() }),
     command("block.set", { targetId: id, value: z.boolean() }), command("report.create", { kind: z.enum(["person", "post", "message", "buddy", "room", "group"]), targetId: id, reason: z.string().trim().min(1).max(1000) }),
     command("group.create", { title, body: z.string().trim().max(2000), private: z.boolean() }), command("group.update", { id, title, body: z.string().trim().max(2000) }), command("group.join", { id }), command("group.leave", { id }), command("group.approve", member), command("group.remove", member), command("group.transfer", member), command("group.role", { ...member, role: z.enum(["member", "moderator"]) }),
-    command("room.create", { title, body: z.string().trim().max(1000), category: z.enum(["pomodoro", "deep", "chill", "cram"]), private: z.boolean(), visibility: visibility.optional(), capacity: z.number().int().min(1).max(1000), groupId: id.optional() }), command("room.update", { id, title, body: z.string().trim().max(1000), capacity: z.number().int().min(1).max(1000) }),
+    command("room.create", { title, body: z.string().trim().max(1000), category: z.enum(["pomodoro", "deep", "chill", "cram"]), private: z.boolean(), visibility: visibility.optional(), capacity: z.number().int().min(1).max(60), groupId: id.optional() }), command("room.update", { id, title, body: z.string().trim().max(1000), capacity: z.number().int().min(1).max(60) }),
     command("room.join", { id, goal: z.string().trim().max(500).optional() }),
     command("room.chat.send", { id, body: z.string().trim().min(1).max(1000), clientId: id }),
     command("room.heartbeat", { id }), command("room.leave", { id }), command("room.share", toggle), command("room.status", { id, body: z.string().trim().max(200) }),
@@ -40,7 +42,7 @@ export const communityCommandSchema = z.discriminatedUnion("action", [
     command("thread.direct", { targetId: id }), command("thread.create", { title, members: z.array(id).min(1).max(49).refine(values => new Set(values).size === values.length) }), command("thread.leave", { id }),
     command("message.send", { id, body, clientId: id, parentId: id.optional() }), command("message.edit", { id, body }), command("message.remove", { id }), command("message.save", toggle),
     command("post.create", { body, clientId: id.optional(), visibility: z.enum(["public", "followers", "private", "group"]).optional(), groupId: id.optional(), parentId: id.optional(), attachments: z.array(attachmentSchema).max(4).optional() }), command("post.edit", { id, body }), command("post.remove", { id }), command("post.react", { id, emoji: z.enum(["heart", "support", "celebrate"]).nullable() }), command("post.save", toggle),
-    command("event.create", { title, startsAt: z.iso.datetime({ offset: true }), minutes: z.union([z.literal(30), z.literal(60)]), capacity: z.number().int().min(1).max(1000), groupId: id.optional(), mode: z.enum(["people", "private-characters"]).optional(), timezone: z.string().max(100).optional(), characterSlugs: z.array(z.enum(characterSlugs)).max(characterSlugs.length).optional() }), command("event.update", { id, title, startsAt: z.iso.datetime({ offset: true }), minutes: z.union([z.literal(30), z.literal(60)]), capacity: z.number().int().min(1).max(1000), mode: z.enum(["people", "private-characters"]), timezone: z.string().max(100), characterSlugs: z.array(z.enum(characterSlugs)).max(characterSlugs.length) }), command("event.start", { id }), command("event.book", { id }), command("event.unbook", { id }), command("event.cancel", { id }),
+    command("event.create", { title, startsAt: z.iso.datetime({ offset: true }), minutes: z.union([z.literal(30), z.literal(60)]), capacity: z.number().int().min(1).max(60), groupId: id.optional(), mode: z.enum(["people", "private-characters"]).optional(), timezone: z.string().max(100).optional(), characterSlugs: z.array(z.enum(characterSlugs)).max(characterSlugs.length).optional() }), command("event.update", { id, title, startsAt: z.iso.datetime({ offset: true }), minutes: z.union([z.literal(30), z.literal(60)]), capacity: z.number().int().min(1).max(60), mode: z.enum(["people", "private-characters"]), timezone: z.string().max(100), characterSlugs: z.array(z.enum(characterSlugs)).max(characterSlugs.length) }), command("event.start", { id }), command("event.book", { id }), command("event.unbook", { id }), command("event.cancel", { id }),
 ]);
 export type CommunityCommand = z.infer<typeof communityCommandSchema>;
 export const personSchema = z.object({ id, username: z.string(), displayName: z.string(), avatarPath: z.string().nullable() });

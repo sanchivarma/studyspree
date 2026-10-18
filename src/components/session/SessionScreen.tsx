@@ -24,6 +24,7 @@ import { usePersonalTile } from "@/hooks/usePersonalTile";
 import { ShareSessionControl } from "@/components/community/ShareSessionControl";
 import { SessionChat } from "./SessionChat";
 import { SessionStatusControl } from "./SessionStatusControl";
+import { SessionSelfCaption } from "./SessionSelfCaption";
 import { PersonalTileSheet } from "./PersonalTileSheet";
 
 export function SessionScreen({ session }: { session: Session }) {
@@ -71,7 +72,7 @@ export function SessionScreen({ session }: { session: Session }) {
   return <section aria-label={t("session.label")} data-testid="session-screen" data-controls-visible={isVisible} style={style}
     className={cn("relative isolate h-dvh w-full overflow-hidden", !isVisible && "cursor-none")}>
     <ThemeScene slug={slug} priority />
-    <SessionCompanions session={session} visible={isVisible} onOpenChange={setCompanionOpen} leading={isSelfInStage ? <SelfView camera={camera} visible={isVisible} mirrored={tile.data?.mirrored ?? true} status={tile.data?.status ?? ""} stage onTogglePin={() => setSelfPinned(false)}/> : undefined}
+    <SessionCompanions session={session} visible={isVisible} onOpenChange={setCompanionOpen} leading={isSelfInStage ? <SelfView caption={<SessionSelfCaption admin onOpenChange={setSheetOpen}/>} camera={camera} visible={isVisible} mirrored={tile.data?.mirrored ?? true} status={tile.data?.status ?? ""} stage onTogglePin={() => setSelfPinned(false)}/> : undefined}
       sideControls={<><button ref={chatButton} type="button" aria-label={t("room.chat")} aria-expanded={chatOpen} aria-controls="room-chat" onClick={() => setChatOpen(true)} className="flex size-11 items-center justify-center rounded-xl bg-background/60 focus-visible:outline-2 focus-visible:outline-accent"><MessageCircle aria-hidden="true" className="size-4"/></button><SessionStatusControl onOpenChange={setSheetOpen}/><PersonalTileSheet onOpenChange={setSheetOpen}/></>}/>
     <div className="absolute top-2 left-2 z-30"><ShareSessionControl compact sessionId={session.id} onOpenChange={setShareOpen}/></div>
     {chatOpen && <SessionChat onClose={() => setChatOpen(false)} onRestoreFocus={() => chatButton.current?.focus()}/>}
@@ -96,6 +97,6 @@ export function SessionScreen({ session }: { session: Session }) {
         <button type="button" aria-label={t("study.switchTheme")} title={t("study.switchTheme")} className="absolute bottom-16 left-2 flex size-11 items-center justify-center rounded-xl text-foreground/60 hover:bg-background/30"><Shuffle aria-hidden="true" className="size-4"/></button>
       </ThemeSheet>
     </div>
-    {!isSelfInStage && <SelfView compactIdle camera={camera} visible={(camera.isReady ? isVisible : true) && (tile.data?.isVisible ?? true)} mirrored={tile.data?.mirrored ?? true} status={tile.data?.status ?? ""} bottomInset={session.companions.characterSlugs.length > 20 ? 128 : 84} onTogglePin={() => setSelfPinned(true)}/>}
+    {!isSelfInStage && <SelfView caption={<SessionSelfCaption admin onOpenChange={setSheetOpen}/>} compactIdle camera={camera} visible={(camera.isReady ? isVisible : true) && (tile.data?.isVisible ?? true)} mirrored={tile.data?.mirrored ?? true} status={tile.data?.status ?? ""} bottomInset={session.companions.characterSlugs.length > 20 ? 128 : 84} onTogglePin={() => setSelfPinned(true)}/>}
   </section>;
 }

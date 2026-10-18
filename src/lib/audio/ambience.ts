@@ -32,8 +32,10 @@ class AudioBus {
       for (let index = 0; index < 2; index++) {
         this.sounds.push(new Howl({
           src: [source], format: [source.endsWith(".wav") ? "wav" : source.endsWith(".mp3") ? "mp3" : "webm"],
-          // Local music uses native playback; assets are already on this machine.
-          html5: source.startsWith("/api/local-audio/"), preload: false, autoplay: false, loop: false, volume: 0,
+          // Finite effects/music share the gesture-unlocked Web Audio context.
+          // Native HTML audio created after its unlock event waited for a second
+          // interaction. Live radio streams use their separate HTML5 bus below.
+          html5: false, preload: false, autoplay: false, loop: false, volume: 0,
           onload: () => {
             if (!valid()) return;
             this.loaded++;

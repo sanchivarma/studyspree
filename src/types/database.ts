@@ -1998,14 +1998,16 @@ export type Database = {
                 Row: {
                     "capacity": number;
                     "category": string;
+                    "controls": NonNullable<Json>;
                     "created_at": string;
                     "description": string;
                     "group_id": string | null;
                     "id": string;
                     "is_closed": boolean;
                     "is_private": boolean;
+                    "is_system": boolean;
                     "name": string;
-                    "owner_id": string;
+                    "owner_id": string | null;
                     "session_rules": string | null;
                     "source_session_id": string | null;
                     "visibility": string;
@@ -2014,14 +2016,16 @@ export type Database = {
                 Insert: {
                     "capacity"?: number;
                     "category"?: string;
+                    "controls"?: NonNullable<Json>;
                     "created_at"?: string;
                     "description"?: string;
                     "group_id"?: string | null;
                     "id"?: string;
                     "is_closed"?: boolean;
                     "is_private"?: boolean;
+                    "is_system"?: boolean;
                     "name": string;
-                    "owner_id": string;
+                    "owner_id"?: string | null;
                     "session_rules"?: string | null;
                     "source_session_id"?: string | null;
                     "visibility"?: string;
@@ -2029,14 +2033,16 @@ export type Database = {
                 Update: {
                     "capacity"?: number;
                     "category"?: string;
+                    "controls"?: NonNullable<Json>;
                     "created_at"?: string;
                     "description"?: string;
                     "group_id"?: string | null;
                     "id"?: string;
                     "is_closed"?: boolean;
                     "is_private"?: boolean;
+                    "is_system"?: boolean;
                     "name"?: string;
-                    "owner_id"?: string;
+                    "owner_id"?: string | null;
                     "session_rules"?: string | null;
                     "source_session_id"?: string | null;
                     "visibility"?: string;
@@ -2438,6 +2444,13 @@ export type Database = {
                 };
                 Returns: Json;
             };
+            "community_mutate_v59": {
+                Args: {
+                    "p_action": string;
+                    "p_data": Json;
+                };
+                Returns: Json;
+            };
             "community_patch": {
                 Args: {
                     "p_id": string;
@@ -2482,6 +2495,13 @@ export type Database = {
                 Returns: Json;
             };
             "community_read_v39": {
+                Args: {
+                    "p_area": string;
+                    "p_query"?: Json;
+                };
+                Returns: Json;
+            };
+            "community_read_v59": {
                 Args: {
                     "p_area": string;
                     "p_query"?: Json;

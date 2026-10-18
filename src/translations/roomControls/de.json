@@ -1,0 +1,19 @@
+{
+  "roomControls": {
+    "hostSound": "Du steuerst die Musik und gemeinsamen Einstellungen.",
+    "guestSound": "Die erstellende Person steuert den Ton. Wünsche kannst du im Chat äußern.",
+    "alwaysSilent": "Raumton und Mikrofone bleiben hier immer aus.",
+    "muteLocally": "Auf meinem Gerät stummschalten",
+    "listen": "Auf meinem Gerät anhören",
+    "defaultTitle": "StudySpree Standard-Lernraum",
+    "alwaysOpen": "Rund um die Uhr offen",
+    "peopleOnly": "Echte Menschen · keine virtuellen Partner",
+    "capacity": "{n} / 60 Personen",
+    "privacyTitle": "Gemeinsam lernen, Privatsphäre schützen",
+    "privacy1": "Die Kamera ist freiwillig und erfordert eine separate Zustimmung.",
+    "privacy2": "Kameras anderer niemals aufnehmen, fotografieren oder weiterverbreiten.",
+    "privacy3": "Persönliche Angaben privat halten und respektvoll über das Lernen chatten.",
+    "requestHint": "Ein anderer Song oder eine Einstellung? Frage im Chat.",
+    "creatorOnly": "Gemeinsame Einstellungen werden von der erstellenden Person gesteuert."
+  }
+}

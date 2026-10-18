@@ -13,6 +13,7 @@
     "goal": "Session goal (optional)",
     "goalNotice": "Your goal will be posted to the room when you join. Leave it empty to keep it private.",
     "goalPosted": "Session goal",
-    "chatLimit": "Please wait a moment before sending more messages."
+    "chatLimit": "Please wait a moment before sending more messages.",
+    "admin": "Admin"
   }
 }

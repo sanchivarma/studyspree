@@ -4,8 +4,9 @@ import { FeatureDrawer } from "@/components/layout/FeatureDrawer";
 import { usePersonalTile } from "@/hooks/usePersonalTile";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useCommunityMutation } from "@/hooks/useCommunityMutation";
+import type { ReactElement } from "react";
 
-export function SessionStatusControl({ onOpenChange, roomId }: { onOpenChange?: (open: boolean) => void; roomId?: string }) {
+export function SessionStatusControl({ onOpenChange, roomId, trigger, username }: { onOpenChange?: (open: boolean) => void; roomId?: string; trigger?: ReactElement; username?: string }) {
   const { t } = useTranslation();
   const tile = usePersonalTile();
   const publication = useCommunityMutation();
@@ -13,11 +14,12 @@ export function SessionStatusControl({ onOpenChange, roomId }: { onOpenChange?: 
     if (roomId) publication.mutate({ action: "room.status", data: { id: roomId, body: status } });
   } });
   return <FeatureDrawer title={t("characters.myStatus")} onOpenChange={open => { onOpenChange?.(open); tile.mutation.reset(); }}
-    trigger={<button type="button" aria-label={t("characters.myStatus")} className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-background/60 focus-visible:outline-2 focus-visible:outline-accent"><PencilLine aria-hidden="true" className="size-4"/></button>}>
+    trigger={trigger ?? <button type="button" aria-label={t("characters.myStatus")} className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-background/60 focus-visible:outline-2 focus-visible:outline-accent"><PencilLine aria-hidden="true" className="size-4"/></button>}>
     <form onSubmit={event => {
       event.preventDefault();
       save(String(new FormData(event.currentTarget).get("status") ?? ""));
     }}>
+      {username && <label className="mb-3 block text-small">{t("common.username")}<input readOnly value={username} className="mt-2 min-h-11 w-full rounded-xl border border-border bg-background px-3"/></label>}
       <label htmlFor="session-status" className="block text-small">{t("characters.statusPrompt")}</label>
       <input id="session-status" key={tile.data?.status} name="status" maxLength={200} defaultValue={tile.data?.status ?? ""} disabled={!tile.data} className="mt-2 min-h-11 w-full rounded-xl border border-border bg-background px-3 focus-visible:outline-2 focus-visible:outline-accent"/>
       <p className="mt-2 text-small text-text-muted">{t("characters.statusRemembered")}</p>

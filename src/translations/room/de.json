@@ -13,6 +13,7 @@
     "goal": "Sitzungsziel (optional)",
     "goalNotice": "Dein Ziel wird beim Beitritt im Raum geteilt. Lass das Feld leer, um es privat zu halten.",
     "goalPosted": "Sitzungsziel",
-    "chatLimit": "Warte bitte einen Moment, bevor du weitere Nachrichten sendest."
+    "chatLimit": "Warte bitte einen Moment, bevor du weitere Nachrichten sendest.",
+    "admin": "Admin"
   }
 }

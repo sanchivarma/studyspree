@@ -40,8 +40,8 @@ describe("virtual companion definitions", () => {
     expect(historical.find(value => value.slug === "medieval-scribe")?.presentation).toBe("female");
     expect(historical.find(value => value.slug === "medieval-scholar")?.presentation).toBe("male");
     expect(new Set(historical.map(value => value.gif)).size).toBe(4);
-    expect(getCharacter("tesla")).toMatchObject({ assetVersion: "v24", loopSeconds: 13, webm: "/characters/tesla/study-v24.webm" });
-    expect(getCharacter("einstein")?.webm).toBe("/characters/einstein/study-v24.webm");
+    expect(getCharacter("tesla")).toMatchObject({ assetVersion: "v27", loopSeconds: 13, webm: "/characters/tesla/study-v27.webm" });
+    expect(getCharacter("einstein")?.webm).toBe("/characters/einstein/study-v27.webm");
     expect(companionSchema.safeParse({ mode: "characters", characterSlugs: historical.map(value => value.slug) }).success).toBe(true);
   });
   it("accepts the complete known cast for paginated sessions", () => {

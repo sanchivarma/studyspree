@@ -1,0 +1,19 @@
+{
+  "roomControls": {
+    "hostSound": "Controlli la musica e le impostazioni condivise.",
+    "guestSound": "Il creatore controlla l’audio. Fai le tue richieste in chat.",
+    "alwaysSilent": "L’audio della stanza e i microfoni restano sempre spenti.",
+    "muteLocally": "Disattiva sul mio dispositivo",
+    "listen": "Ascolta sul mio dispositivo",
+    "defaultTitle": "Sala studio predefinita StudySpree",
+    "alwaysOpen": "Aperta 24 ore su 24",
+    "peopleOnly": "Persone reali · nessun compagno virtuale",
+    "capacity": "{n} / 60 persone",
+    "privacyTitle": "Studiare insieme rispettando la privacy",
+    "privacy1": "La videocamera è facoltativa e richiede un consenso separato.",
+    "privacy2": "Non registrare, fotografare o ridistribuire la videocamera altrui.",
+    "privacy3": "Proteggi i dati personali e usa una chat rispettosa dedicata allo studio.",
+    "requestHint": "Vuoi un altro brano o una diversa impostazione? Chiedilo al creatore in chat.",
+    "creatorOnly": "Le impostazioni condivise sono controllate dal creatore."
+  }
+}

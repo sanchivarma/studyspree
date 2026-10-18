@@ -8,7 +8,7 @@
  */
 "use client";
 
-import { useRef, useState, useSyncExternalStore, type PointerEvent } from "react";
+import { useRef, useState, useSyncExternalStore, type PointerEvent, type ReactNode } from "react";
 import { Camera, CameraOff, Grip, Pin, PinOff, X } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
@@ -29,7 +29,7 @@ const positions: Record<WebcamCorner, string> = {
   "bottom-right": "bottom-20 right-4 sm:bottom-6 sm:right-6",
 };
 
-export function SelfView({ camera, visible, mirrored = true, status = "", stage = false, onTogglePin, className, compactIdle = false, bottomInset }: { camera: ReturnType<typeof useLocalCamera>; visible: boolean; mirrored?: boolean; status?: string; stage?: boolean; onTogglePin?: () => void; className?: string; compactIdle?: boolean; bottomInset?: number }) {
+export function SelfView({ camera, visible, mirrored = true, status = "", stage = false, onTogglePin, className, compactIdle = false, bottomInset, caption }: { camera: ReturnType<typeof useLocalCamera>; visible: boolean; mirrored?: boolean; status?: string; stage?: boolean; onTogglePin?: () => void; className?: string; compactIdle?: boolean; bottomInset?: number; caption?: ReactNode }) {
   const { t } = useTranslation();
   const reducedMotion = useReducedMotion();
   const [width, height] = useSyncExternalStore(subscribeResize, viewport, serverViewport).split(":").map(Number);
@@ -48,18 +48,19 @@ export function SelfView({ camera, visible, mirrored = true, status = "", stage 
     camera.moveTo(`${event.clientY < height / 2 ? "top" : "bottom"}-${event.clientX < width / 2 ? "left" : "right"}`);
   };
   if (stage && camera.isReady) return <div data-testid="self-view-pinned" className="ph-no-capture relative min-h-40 overflow-hidden rounded-lg bg-surface">
-    <video ref={camera.videoRef} data-testid="local-camera-video" autoPlay muted playsInline aria-label={t("webcam.preview")} className="ph-no-capture absolute inset-0 h-full w-full object-cover" style={{ transform: mirrored ? "scaleX(-1)" : undefined }}/>
+    <video ref={camera.videoRef} data-testid="local-camera-video" autoPlay muted playsInline aria-label={t("webcam.preview")} className={cn("ph-no-capture absolute inset-x-0 top-0 w-full object-cover", caption ? "h-[calc(100%-3rem)]" : "h-full")} style={{ transform: mirrored ? "scaleX(-1)" : undefined }}/>
     <div className={cn("absolute top-1 right-1 flex gap-1", !visible && "pointer-events-none opacity-0")}>
       <button type="button" onClick={onTogglePin} aria-label={t("calendar.unpinSelf")} className="flex size-11 items-center justify-center rounded-xl bg-background/75"><PinOff className="size-4"/></button>
       <button type="button" onClick={camera.disable} aria-label={t("webcam.disable")} className="flex size-11 items-center justify-center rounded-xl bg-background/75"><CameraOff className="size-4"/></button>
     </div>
+    {caption && <div className="absolute inset-x-0 bottom-0 h-12">{caption}</div>}
   </div>;
   return <div data-testid="self-view" data-corner={camera.corner} data-expanded={expanded}
     onPointerEnter={event => { if (camera.isReady && event.pointerType === "mouse") setHovered(true); }}
     onPointerMove={event => { if (camera.isReady && event.pointerType === "mouse" && !drag.current) setHovered(true); }}
     onPointerLeave={() => setHovered(false)}
     className={cn("ph-no-capture absolute z-20 transition-opacity duration-200 motion-reduce:transition-none", compact ? "top-16 left-2 size-11" : cn("h-[90px] w-[120px]", positions[camera.corner]), visible ? "opacity-100" : "pointer-events-none opacity-0", className)}
-    style={{ transform: `translate3d(${offset.x}px, ${offset.y}px, 0)`, bottom: !compact && camera.corner.startsWith("bottom") ? bottomInset : undefined }}>
+    style={{ transform: `translate3d(${offset.x}px, ${offset.y}px, 0)`, bottom: !compact && camera.corner.startsWith("bottom") ? bottomInset === undefined ? undefined : bottomInset + (caption ? 48 : 0) : undefined }}>
     {camera.isReady ? <>
       <button type="button" aria-label={t(expanded ? "webcam.collapse" : "webcam.expand")} aria-expanded={expanded}
         onClick={() => setTappedOpen(value => !value)}
@@ -95,7 +96,8 @@ export function SelfView({ camera, visible, mirrored = true, status = "", stage 
       className={cn("absolute left-0 flex size-11 touch-none items-center justify-center rounded-xl bg-background/70 text-text-muted hover:text-foreground", compact ? "top-11" : "top-0")}>
       <Grip aria-hidden="true" className="size-4" />
     </button>
-    {status && <p className="absolute right-0 bottom-0 left-0 truncate rounded-b-xl bg-background/80 px-2 py-1 text-[11px]">{status}</p>}
+    {caption && camera.isReady && <div className="absolute top-full inset-x-0 mt-1">{caption}</div>}
+    {!caption && status && <p className="absolute right-0 bottom-0 left-0 truncate rounded-b-xl bg-background/80 px-2 py-1 text-[11px]">{status}</p>}
     {camera.isReady && onTogglePin && <button type="button" onClick={onTogglePin} aria-label={t("calendar.pinSelf")} className="absolute right-0 bottom-0 flex size-11 items-center justify-center rounded-xl bg-background/75"><Pin className="size-4"/></button>}
     {camera.permissionNote && <div role="status" data-testid="camera-permission-note"
       className={cn("absolute z-30 flex w-[min(288px,calc(100dvw-2rem))] items-center gap-1 rounded-xl bg-surface px-3 text-small text-foreground", isLeft ? "left-0" : "right-0", isTop ? "top-full mt-2" : "bottom-full mb-2")}>
