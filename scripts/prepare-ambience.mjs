@@ -13,7 +13,7 @@ const entries = process.argv[3] ? catalog.filter(entry => entry.file === process
 if (!entries.length) throw new Error("No matching catalog asset");
 const output = new URL("../public/audio/", import.meta.url);
 for (const entry of entries) {
-  if (!/^effect-[a-z]+-v\d+\.mp3$/.test(entry.file)) throw new Error("Invalid output filename");
+  if (!/^effect-[a-z]+(?:-[a-z]+)*-v\d+\.mp3$/.test(entry.file)) throw new Error("Invalid output filename");
   try { await access(new URL(entry.file, output)); throw new Error(`Immutable asset exists: ${entry.file}. Choose a new version.`); }
   catch (error) { if (error.code !== "ENOENT") throw error; }
 }

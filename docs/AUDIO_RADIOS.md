@@ -54,3 +54,7 @@ The café now uses a louder normalized public coffee-shop recording. Medieval
 strings (soft slow violin), Library ambience and Castle hearth add three independent effects, each
 with a saved level. See `docs/audio/expanded-ambience.md` for sources, licences,
 processing and the exact meaning of the designed castle-hearth soundscape.
+
+Additional Medieval flute and Medieval lyre effects have independent saved levels.
+Medieval strings remains unchanged. Source permissions and processing are in
+[audio/expanded-ambience.md](audio/expanded-ambience.md).

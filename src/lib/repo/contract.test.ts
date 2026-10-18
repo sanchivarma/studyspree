@@ -21,6 +21,10 @@ export function repositoryContract(name: string, create: () => Repository) {
       await repo.updateProfile({ backgroundEffects: ["medieval", "library", "castle"], effectVolumes: { medieval: 0.2, library: 0.7, castle: 0.4 } });
       expect(await repo.getProfile()).toMatchObject({ backgroundEffects: ["medieval", "library", "castle"], effectVolumes: { medieval: 0.2, library: 0.7, castle: 0.4 } });
       await expect(repo.updateProfile({ backgroundEffects: ["castle", "castle"] })).rejects.toThrow();
+      await repo.updateProfile({ backgroundEffects: ["medieval", "medieval-flute", "medieval-lyre"], effectVolumes: { medieval: 0.2, "medieval-flute": 0.35, "medieval-lyre": 0.6 } });
+      expect(await repo.getProfile()).toMatchObject({ backgroundEffects: ["medieval", "medieval-flute", "medieval-lyre"], effectVolumes: { medieval: 0.2, "medieval-flute": 0.35, "medieval-lyre": 0.6 } });
+      await expect(repo.updateProfile({ backgroundEffects: ["medieval-flute", "medieval-flute"] })).rejects.toThrow();
+      await expect(repo.updateProfile({ effectVolumes: { "medieval-lyre": 1.1 } })).rejects.toThrow();
     });
     it("retains and paginates every status event",async()=>{
       for(let i=0;i<25;i++){vi.advanceTimersByTime(1000);await repo.updatePersonalTile({status:`Reading ${i}`});}
