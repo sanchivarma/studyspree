@@ -1,0 +1,163 @@
+[
+  {
+    "id": "streak-1",
+    "kind": "streak",
+    "threshold": 1,
+    "nameKey": "roadmap.streakBadge",
+    "descriptionKey": "roadmap.streakRequirement"
+  },
+  {
+    "id": "streak-2",
+    "kind": "streak",
+    "threshold": 2,
+    "nameKey": "roadmap.streakBadge",
+    "descriptionKey": "roadmap.streakRequirement"
+  },
+  {
+    "id": "streak-3",
+    "kind": "streak",
+    "threshold": 3,
+    "nameKey": "roadmap.streakBadge",
+    "descriptionKey": "roadmap.streakRequirement"
+  },
+  {
+    "id": "streak-5",
+    "kind": "streak",
+    "threshold": 5,
+    "nameKey": "roadmap.streakBadge",
+    "descriptionKey": "roadmap.streakRequirement"
+  },
+  {
+    "id": "streak-7",
+    "kind": "streak",
+    "threshold": 7,
+    "nameKey": "roadmap.streakBadge",
+    "descriptionKey": "roadmap.streakRequirement"
+  },
+  {
+    "id": "streak-10",
+    "kind": "streak",
+    "threshold": 10,
+    "nameKey": "roadmap.streakBadge",
+    "descriptionKey": "roadmap.streakRequirement"
+  },
+  {
+    "id": "streak-25",
+    "kind": "streak",
+    "threshold": 25,
+    "nameKey": "roadmap.streakBadge",
+    "descriptionKey": "roadmap.streakRequirement"
+  },
+  {
+    "id": "streak-50",
+    "kind": "streak",
+    "threshold": 50,
+    "nameKey": "roadmap.streakBadge",
+    "descriptionKey": "roadmap.streakRequirement"
+  },
+  {
+    "id": "streak-75",
+    "kind": "streak",
+    "threshold": 75,
+    "nameKey": "roadmap.streakBadge",
+    "descriptionKey": "roadmap.streakRequirement"
+  },
+  {
+    "id": "streak-100",
+    "kind": "streak",
+    "threshold": 100,
+    "nameKey": "roadmap.streakBadge",
+    "descriptionKey": "roadmap.streakRequirement"
+  },
+  {
+    "id": "streak-200",
+    "kind": "streak",
+    "threshold": 200,
+    "nameKey": "roadmap.streakBadge",
+    "descriptionKey": "roadmap.streakRequirement"
+  },
+  {
+    "id": "streak-300",
+    "kind": "streak",
+    "threshold": 300,
+    "nameKey": "roadmap.streakBadge",
+    "descriptionKey": "roadmap.streakRequirement"
+  },
+  {
+    "id": "streak-400",
+    "kind": "streak",
+    "threshold": 400,
+    "nameKey": "roadmap.streakBadge",
+    "descriptionKey": "roadmap.streakRequirement"
+  },
+  {
+    "id": "streak-500",
+    "kind": "streak",
+    "threshold": 500,
+    "nameKey": "roadmap.streakBadge",
+    "descriptionKey": "roadmap.streakRequirement"
+  },
+  {
+    "id": "streak-600",
+    "kind": "streak",
+    "threshold": 600,
+    "nameKey": "roadmap.streakBadge",
+    "descriptionKey": "roadmap.streakRequirement"
+  },
+  {
+    "id": "seconds-3600",
+    "kind": "study-seconds",
+    "threshold": 3600,
+    "nameKey": "roadmap.timeBadge",
+    "descriptionKey": "roadmap.timeRequirement"
+  },
+  {
+    "id": "seconds-36000",
+    "kind": "study-seconds",
+    "threshold": 36000,
+    "nameKey": "roadmap.timeBadge",
+    "descriptionKey": "roadmap.timeRequirement"
+  },
+  {
+    "id": "seconds-180000",
+    "kind": "study-seconds",
+    "threshold": 180000,
+    "nameKey": "roadmap.timeBadge",
+    "descriptionKey": "roadmap.timeRequirement"
+  },
+  {
+    "id": "seconds-360000",
+    "kind": "study-seconds",
+    "threshold": 360000,
+    "nameKey": "roadmap.timeBadge",
+    "descriptionKey": "roadmap.timeRequirement"
+  },
+  {
+    "id": "sessions-1",
+    "kind": "session-count",
+    "threshold": 1,
+    "nameKey": "roadmap.sessionBadge",
+    "descriptionKey": "roadmap.sessionRequirement"
+  },
+  {
+    "id": "sessions-10",
+    "kind": "session-count",
+    "threshold": 10,
+    "nameKey": "roadmap.sessionBadge",
+    "descriptionKey": "roadmap.sessionRequirement"
+  },
+  {
+    "id": "sessions-50",
+    "kind": "session-count",
+    "threshold": 50,
+    "nameKey": "roadmap.sessionBadge",
+    "descriptionKey": "roadmap.sessionRequirement"
+  },
+  {
+    "id": "sessions-100",
+    "kind": "session-count",
+    "threshold": 100,
+    "nameKey": "roadmap.sessionBadge",
+    "descriptionKey": "roadmap.sessionRequirement"
+  }
+]

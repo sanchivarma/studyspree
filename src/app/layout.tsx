@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import localFont from "next/font/local";
 import { Providers } from "./providers";
 import "./globals.css";
 import { cookies } from "next/headers";
 import { isLocale, translate } from "@/translations";
 import { getSceneMediaManifest } from "@/lib/themes/mediaManifest";
 
-const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-inter" });
+const inter = localFont({ src: "../../public/fonts/InterVariable-v1.woff2", weight: "100 900", display: "swap", variable: "--font-inter" });
 
 async function getLocale() {
   const value = (await cookies()).get("ss_locale")?.value;

@@ -1,7 +1,10 @@
+import { z } from "zod";
+import definitions from "./definitions.json";
 import type { AchievementDefinition } from "@/types/achievements";
-import { streakMilestones } from "./eligibility";
-export const achievementDefinitions: readonly AchievementDefinition[] = [
-  ...streakMilestones.map(threshold => ({ id: `streak-${threshold}`, kind: "streak" as const, threshold, nameKey: "roadmap.streakBadge", descriptionKey: "roadmap.streakRequirement" })),
-  ...[3600, 36000, 180000, 360000].map(threshold => ({ id: `seconds-${threshold}`, kind: "study-seconds" as const, threshold, nameKey: "roadmap.timeBadge", descriptionKey: "roadmap.timeRequirement" })),
-  ...[1, 10, 50, 100].map(threshold => ({ id: `sessions-${threshold}`, kind: "session-count" as const, threshold, nameKey: "roadmap.sessionBadge", descriptionKey: "roadmap.sessionRequirement" })),
-];
+
+const definitionSchema = z.object({
+  id: z.string().regex(/^[a-z0-9-]+$/), kind: z.enum(["streak", "study-seconds", "session-count"]),
+  threshold: z.number().int().positive(), nameKey: z.string().regex(/^[a-zA-Z.]+$/), descriptionKey: z.string().regex(/^[a-zA-Z.]+$/),
+}).strict();
+export const achievementDefinitions: readonly AchievementDefinition[] = z.array(definitionSchema)
+  .refine(values => new Set(values.map(value => value.id)).size === values.length).parse(definitions);

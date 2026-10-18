@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { getPublicAuthConfig } from "@/lib/auth/publicConfig";
+import { authReturnCookie, safeAuthReturnTo } from "@/lib/auth/returnTo";
 
 export async function middleware(request: NextRequest) {
   const authConfig = getPublicAuthConfig();
@@ -24,6 +25,8 @@ export async function middleware(request: NextRequest) {
   if (!publicPage && !offlinePreview && (identity.error || !identity.data?.claims)) {
     const redirect = NextResponse.redirect(new URL("/login", request.url));
     response.cookies.getAll().forEach(cookie => redirect.cookies.set(cookie));
+    const returnTo = safeAuthReturnTo(path + request.nextUrl.search);
+    if (returnTo) redirect.cookies.set(authReturnCookie, returnTo, { httpOnly: true, sameSite: "lax", path: "/", maxAge: 1800, secure: process.env.NODE_ENV === "production" });
     redirect.headers.set("Cache-Control", "private, no-store");
     return redirect;
   }

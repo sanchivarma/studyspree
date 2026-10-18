@@ -9,7 +9,10 @@ test('public Start creates one timer, lists on Home and copies a joining URL',as
  await page.goto('/study');await page.getByLabel('Session title',{exact:true}).fill(title);
  await page.getByLabel('Session rules (optional)',{exact:true}).fill('Keep it calm.');
  await page.getByRole('radio',{name:'Public',exact:true}).check();
+ const started=page.waitForResponse(response=>response.url().endsWith('/api/repository')&&response.request().postDataJSON()?.op==='start');
  await page.getByRole('button',{name:'Start',exact:true}).click();
+ const startResponse=await started;expect(startResponse.status()).toBe(200);
+ const startedSession=await startResponse.json();expect(startedSession.visibility).toBe('public');expect(startedSession.roomId).toMatch(/^[a-f0-9-]{36}$/);
  await expect(page).toHaveURL(/\/rooms\/[a-f0-9-]+$/,{timeout:15000});
  const roomUrl=page.url();
  const active=await page.request.post('/api/repository',{data:{op:'active'}});const before=await active.json();expect(before.title).toBe(title);

@@ -1,11 +1,13 @@
 import {z} from 'zod';
 import {communityCommandSchema,communityQuerySchema,type CommunityArea,type CommunityCommand} from './schemas';
+import { requireRestMethod, RestRouteError } from './restRoutes';
 const uuid=z.uuid();
 /** Translate public REST names into the same validated commands used by the UI. Unknown keys remain and are rejected. */
 export function restCommand(method:string,path:string[],input:unknown):CommunityCommand {
+ requireRestMethod(path,method);
  const raw=z.record(z.string(),z.unknown()).parse(input);const data={...raw};const [resource,target,operation]=path;
- const attachId=()=>{if(data.id!==undefined&&data.id!==target)throw new Error('Mismatched ID');data.id=uuid.parse(target);};
- const rename=(from:string,to:string)=>{if(Object.hasOwn(data,from)){if(Object.hasOwn(data,to))throw new Error('Duplicate field');data[to]=data[from];delete data[from];}};
+ const attachId=()=>{if(data.id!==undefined&&data.id!==target)throw new RestRouteError(400);data.id=uuid.parse(target);};
+ const rename=(from:string,to:string)=>{if(Object.hasOwn(data,from)){if(Object.hasOwn(data,to))throw new RestRouteError(400);data[to]=data[from];delete data[from];}};
  let action='';
  if(resource==='rooms'||resource==='spaces'){
   if(!target&&method==='POST'){action='room.create';rename('name','title');rename('description','body');data.body??='';data.private??=data.visibility!=='public'&&data.visibility!==undefined;data.category=data.category==='deep-focus'?'deep':data.category;}
@@ -39,9 +41,10 @@ export function restCommand(method:string,path:string[],input:unknown):Community
  return communityCommandSchema.parse({action,data});
 }
 export function restRead(path:string[],search:URLSearchParams):{area:CommunityArea;query:z.infer<typeof communityQuerySchema>} {
+ requireRestMethod(path,'GET');
  const [resource,id,operation]=path;let area:CommunityArea;
  const query:Record<string,unknown>={};
- for(const key of ['q','cursor','filter','from','to','date','groupId'])if(search.has(key))query[key]=search.get(key);
+ for(const key of ['q','cursor','filter','from','to','date','groupId','parentId'])if(search.has(key))query[key]=search.get(key);
  if(search.has('limit'))query.limit=Number(search.get('limit'));
  if(resource==='rooms'){area=operation==='participants'?'roomParticipants':'room';query.id=uuid.parse(id);}
  else if(resource==='public-sessions')area='publicSessions';

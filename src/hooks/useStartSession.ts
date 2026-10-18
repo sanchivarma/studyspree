@@ -14,11 +14,14 @@ export function useStartSession(onStarted?: (session: Session) => void) {
   const router = useRouter();
   return useMutation({
     mutationFn: (input: StartSessionInput) => repo.startSession(input),
-    onSuccess: async (session) => {
+    onSuccess: (session) => {
       useCompletionStore.getState().clear();
       onStarted?.(session);
       useSessionStore.getState().setFinishing(false);
-      await queryClient.invalidateQueries({ queryKey: queryKeys.activeSession() });
+      // The repository response is authoritative. A background refresh must not
+      // hold navigation behind another network round trip after Start succeeds.
+      queryClient.setQueryData(queryKeys.activeSession(), session);
+      void queryClient.invalidateQueries({ queryKey: queryKeys.activeSession() });
       router.push(session.visibility === "public" && session.roomId ? `/rooms/${session.roomId}` : `/session/${session.id}`);
     },
   });

@@ -6,6 +6,7 @@ import { authenticate } from "@/app/(auth)/actions";
 import { repo } from "@/lib/repo";
 import { queryKeys } from "@/lib/queryKeys";
 import type { OnboardingInput } from "@/lib/auth/schemas";
+import { safeAuthReturnTo } from "@/lib/auth/returnTo";
 
 export function useOnboarding() {
   const router = useRouter();
@@ -14,11 +15,12 @@ export function useOnboarding() {
     mutationFn: async (input: OnboardingInput) => {
       const result = await authenticate("onboard", input);
       if (result.status !== "success") throw new Error("onboarding_update");
-      return repo.updateProfile({ ...input, webcamEnabled: false, ambienceEnabled: false });
+      const profile = await repo.updateProfile({ ...input, webcamEnabled: false, ambienceEnabled: false });
+      return { profile, destination: safeAuthReturnTo(result.navigate) ?? "/" };
     },
-    onSuccess: profile => {
+    onSuccess: ({ profile, destination }) => {
       client.setQueryData(queryKeys.profile(), profile);
-      router.replace("/"); router.refresh();
+      router.replace(destination); router.refresh();
     },
   });
 }

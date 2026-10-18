@@ -3,7 +3,7 @@ import { randomUUID } from "node:crypto";
 import { expect, type Page } from "@playwright/test";
 import { z } from "zod";
 
-export async function createLocalAccount(page: Page, displayName: string) {
+export async function createLocalAccount(page: Page, displayName: string, destination?: string) {
   const environment = readFileSync(new URL("../../.env.local", import.meta.url), "utf8");
   const raw = environment.match(/^NEXT_PUBLIC_SUPABASE_URL=(.*)$/m)?.[1].trim().replace(/^["']|["']$/g, "");
   if (!raw || !["localhost", "127.0.0.1"].includes(new URL(raw).hostname)) throw new Error("Local Supabase is required; external email is never requested.");
@@ -41,5 +41,6 @@ export async function createLocalAccount(page: Page, displayName: string) {
   await page.getByRole("button", { name: "Continue", exact: true }).click();
   await page.getByRole("button", { name: "Continue", exact: true }).click();
   await page.getByRole("button", { name: "Continue to StudySpree", exact: true }).click();
-  await expect(page).toHaveURL(/\/$/, { timeout: 15000 });
+  if (destination) await expect(page).toHaveURL(new URL(destination, page.url()).href, { timeout: 15000 });
+  else await expect(page).toHaveURL(/\/$/, { timeout: 15000 });
 }

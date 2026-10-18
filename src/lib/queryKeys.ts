@@ -1,4 +1,5 @@
 export const queryKeys = {
+  integrations: { spotify: () => ["integrations", "spotify"] as const },
   entitlements: () => ["entitlements"] as const,
   delivery: () => ["community-delivery"] as const,
   community:{all:()=>["community"] as const,read:(area:string,query:object)=>["community",area,query] as const},

@@ -8,10 +8,10 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { useCommunityMutation } from "@/hooks/useCommunityMutation";
 import { attachmentSchema, type CommunityArea, type CommunityItem, type CommunityCommand } from "@/lib/community/schemas";
 import { z } from "zod";
-import { buttonClass, fieldClass, CommunityComposer } from "./CommunityComposer";
+import { buttonClass, fieldClass } from "./CommunityComposer";
+import { ThreadPanel } from "@/components/conversations/ThreadPanel";
 import { formatDuration } from "@/lib/stats/presentation";
 import { now } from "@/lib/clock";
-import { useState } from "react";
 export function CommunityCard({ area, item, viewerId, timezone }: {
     area: CommunityArea;
     item: CommunityItem;
@@ -21,7 +21,6 @@ export function CommunityCard({ area, item, viewerId, timezone }: {
     const { t, locale } = useTranslation();
     const mutation = useCommunityMutation();
     const router = useRouter();
-    const [reply, setReply] = useState(false);
     const data = item.data;
     const own = item.ownerId === viewerId;
     const run = (command: CommunityCommand) => mutation.mutate(command);
@@ -53,9 +52,8 @@ export function CommunityCard({ area, item, viewerId, timezone }: {
   {(area === "feed" || area === "messages") && <div className="flex flex-wrap gap-2">
    <button className={buttonClass} onClick={() => run({ action: area === "feed" ? "post.save" : "message.save", data: { id: item.id, value: data.saved !== true } })} disabled={mutation.isPending}>{t(data.saved === true ? "community.unsave" : "community.saveItem")}</button>
    {area === "feed" && <><Link className={buttonClass} href={`/feed/${item.id}`}>{t("community.replies", { n: Number(data.replies ?? 0) })}</Link>{(["heart", "support", "celebrate"] as const).map((emoji, index) => <button key={emoji} className={buttonClass} aria-label={`${t("community.react")} ${["♥", "☘", "🎉"][index]}`} aria-pressed={data.reaction === emoji} onClick={() => run({ action: "post.react", data: { id: item.id, emoji: data.reaction === emoji ? null : emoji } })}>{["♥", "☘", "🎉"][index]}</button>)}<span className="self-center tabular-nums">{String(data.reactions ?? 0)}</span></>}
-   {area === "messages" && data.removed !== true && <button className={buttonClass} onClick={() => setReply(value => !value)}>{t("community.reply")}</button>}
+   {area === "messages" && data.removed !== true && <ThreadPanel parent={item} timezone={timezone} />}
   </div>}
-  {reply && area === "messages" && <CommunityComposer area="messages" id={String(data.threadId)} parentId={item.id}/>}
   {own && ["feed", "messages"].includes(area) && data.removed !== true && <details><summary className="min-h-11 cursor-pointer text-small text-accent">{t("community.edit")}</summary><form onSubmit={event => { event.preventDefault(); run({ action: area === "feed" ? "post.edit" : "message.edit", data: { id: item.id, body: String(new FormData(event.currentTarget).get("body") ?? "") } }); }}><textarea name="body" aria-label={t("community.body")} defaultValue={item.body} required maxLength={4000} className={fieldClass}/><button className={buttonClass}>{t("community.save")}</button></form></details>}
   {own && area === "buddies" && <details><summary className="min-h-11 cursor-pointer">{t("community.edit")}</summary><BuddyListingForm listing={item}/></details>}
   {own && area === "schedule" && data.cancelled !== true && <details><summary className="min-h-11 cursor-pointer">{t("community.edit")}</summary><CreateScheduledSession event={item}/></details>}

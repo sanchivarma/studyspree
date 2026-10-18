@@ -1,9 +1,10 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
-  config: vi.fn(), rpc: vi.fn(), getUser: vi.fn(), signIn: vi.fn(), signUp: vi.fn(), oauth: vi.fn(), reset: vi.fn(), update: vi.fn(), logout: vi.fn(), single: vi.fn(), from: vi.fn(), magic: vi.fn(), profileUpdate: vi.fn(),
+  config: vi.fn(), rpc: vi.fn(), getUser: vi.fn(), signIn: vi.fn(), signUp: vi.fn(), oauth: vi.fn(), reset: vi.fn(), update: vi.fn(), logout: vi.fn(), single: vi.fn(), from: vi.fn(), magic: vi.fn(), profileUpdate: vi.fn(), returnTo: vi.fn(),
 }));
 vi.mock("server-only", () => ({}));
+vi.mock("@/lib/auth/returnToServer", () => ({ consumeAuthReturnTo: mocks.returnTo, clearAuthReturnTo: vi.fn() }));
 vi.mock("@/lib/auth/devAdmin", () => ({ getDevAdminProfile: async () => null, loginDevAdmin: async () => null, clearDevAdminSession: async () => false }));
 vi.mock("@/lib/auth/config", () => ({ getAuthConfig: mocks.config, getSiteUrl: () => "http://localhost:3000" }));
 vi.mock("@/lib/auth/server", () => ({ createAuthClient: async () => ({
@@ -15,6 +16,7 @@ import { authRepository } from "./authRepository";
 describe("Supabase auth repository", () => {
   beforeEach(() => {
     vi.resetAllMocks();
+    mocks.returnTo.mockResolvedValue("/");
     mocks.config.mockReturnValue({ url: "https://example.supabase.co", key: "test-key" });
     vi.stubEnv("SUPABASE_USERNAME_LOOKUP_SECRET", "test-secret-not-a-real-key-0000000000");
     mocks.signIn.mockResolvedValue({ error: null });

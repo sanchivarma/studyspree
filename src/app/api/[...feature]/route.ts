@@ -6,12 +6,14 @@ import {hasClientDuration,repositoryRequestSchema} from '@/lib/repo/remoteSchema
 import {serverProfileRepository,ProfileAccessError} from '@/lib/profiles/serverRepository';
 import {profileEditSchema} from '@/lib/profiles/schemas';
 import {statsRangeSchema} from '@/lib/stats/ranges';
+import { requireRestMethod, RestRouteError } from '@/lib/community/restRoutes';
 type Context={params:Promise<{feature:string[]}>};
 const headers={'Cache-Control':'private, no-store'};
 async function handle(request:Request,context:Context){
  try{
   const path=(await context.params).feature;const url=new URL(request.url);const method=request.method;
   if(request.headers.get('origin')&&request.headers.get('origin')!==url.origin)return Response.json({error:'forbidden'},{status:403,headers});
+  requireRestMethod(path,method);
   const name=path.join('/');let result:unknown;
   if(method==='GET'){
    if(name==='dashboard')result=await executeStudy({op:'dashboard'});
@@ -38,6 +40,6 @@ async function handle(request:Request,context:Context){
    }else result=await executeCommunity({operation:'mutate',command:restCommand(method,path,raw)});
   }
   return Response.json(result,{headers});
- }catch(error){const status=error instanceof CommunityServerError?error.status:error instanceof StudyError?error.status:error instanceof ProfileAccessError?error.code==='unauthorized'?401:400:error instanceof z.ZodError||error instanceof SyntaxError?400:error instanceof Error&&error.message.startsWith('Unknown')?404:503;return Response.json({error:status===401?'accountRequired':status===403?'forbidden':status===400?'invalid':'unavailable'},{status,headers});}
+ }catch(error){const status=error instanceof RestRouteError?error.status:error instanceof CommunityServerError?error.status:error instanceof StudyError?error.status:error instanceof ProfileAccessError?error.code==='unauthorized'?401:400:error instanceof z.ZodError||error instanceof SyntaxError?400:error instanceof Error&&error.message.startsWith('Unknown')?404:503;return Response.json({error:status===401?'accountRequired':status===403?'forbidden':status===400?'invalid':status===405?'methodNotAllowed':status===404?'notFound':'unavailable'},{status,headers:{...headers,...(error instanceof RestRouteError&&error.status===405?{Allow:error.allowed.join(', ')}:{})}});}
 }
 export {handle as GET,handle as POST,handle as PUT,handle as PATCH,handle as DELETE};

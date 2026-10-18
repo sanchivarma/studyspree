@@ -7,6 +7,7 @@ import type { AuthProfile } from "@/lib/auth/schemas";
 import type { AuthOperation, AuthResult } from "@/lib/auth/types";
 import { getDevAdminProfile, loginDevAdmin, clearDevAdminSession } from "@/lib/auth/devAdmin";
 import { readAccount, completeOnboarding } from "@/lib/db/accounts";
+import { consumeAuthReturnTo, clearAuthReturnTo } from "@/lib/auth/returnToServer";
 
 export interface AuthRepository {
   getProfile(): Promise<AuthProfile | null>;
@@ -23,6 +24,7 @@ export const authRepository: AuthRepository = {
   },
 
   async execute(operation, input) {
+    if (operation === "logout") await clearAuthReturnTo();
     if (operation === "login") {
       const preview = await loginDevAdmin(input);
       if (preview) return preview;
@@ -42,7 +44,7 @@ export const authRepository: AuthRepository = {
       case "onboard": {
         const parsed = onboardingSchema.safeParse(input);
         if (!parsed.success) return { status: "error", message: "common.invalidFields" };
-        return await completeOnboarding(client, parsed.data) ? { status: "success", navigate: "/" } : { status: "error", message: "common.authError" };
+        return await completeOnboarding(client, parsed.data) ? { status: "success", navigate: await consumeAuthReturnTo() } : { status: "error", message: "common.authError" };
       }
       case "login": {
         const parsed = loginSchema.safeParse(input);
@@ -56,7 +58,7 @@ export const authRepository: AuthRepository = {
         const result = await client.auth.signInWithPassword({ email: email.success ? email.data : "unknown@invalid.example", password: parsed.data.password });
         if (result.error) return { status: "error", message: result.error.code === "invalid_credentials" ? "login.invalidCredentials" : "common.authError" };
         const profile = await readAccount(client);
-        return profile ? { status: "success", navigate: profile.onboarding_complete ? "/" : "/onboarding" } : { status: "error", message: "common.authError" };
+        return profile ? { status: "success", navigate: profile.onboarding_complete ? await consumeAuthReturnTo() : "/onboarding" } : { status: "error", message: "common.authError" };
       }
       case "register": {
         const parsed = registrationSchema.safeParse(input);

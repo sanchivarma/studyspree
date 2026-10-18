@@ -1,10 +1,12 @@
 "use client";
-import { useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { useProfile } from "@/hooks/useProfile";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useCommunityMutation } from "@/hooks/useCommunityMutation";
 import { useCommunityUpload } from "@/hooks/useCommunityUpload";
 import { useCommunity } from "@/hooks/useCommunity";
+import { usePendingDeliveries } from "@/hooks/usePendingDeliveries";
+import { nextDeliveryAttempt, type DeliveryAttempt } from "@/lib/community/delivery";
 import { communityCommandSchema, type Attachment, type CommunityArea, type CommunityCommand } from "@/lib/community/schemas";
 import { resolveCalendarTime } from "@/lib/community/calendar";
 import { formatInTimeZone } from "date-fns-tz";
@@ -21,6 +23,7 @@ export function CommunityComposer({ area, id, groupId, parentId, canPost = true 
     canPost?: boolean;
 }) {
     const { t } = useTranslation();
+    const bodyId = useId();
     const profile = useProfile();
     const mutation = useCommunityMutation();
     const upload = useCommunityUpload();
@@ -29,7 +32,8 @@ export function CommunityComposer({ area, id, groupId, parentId, canPost = true 
     const [recipientQuery, setRecipientQuery] = useState("");
     const [selected, setSelected] = useState<string[]>([]);
     const recipients = useCommunity("recipients", { q: recipientQuery }, area === "conversations" && recipientQuery.length > 1);
-    const clientId = useRef<string | null>(null);
+    const attempt = useRef<DeliveryAttempt | null>(null);
+    const deliveries = usePendingDeliveries();
     const posting = useRef(false);
     const zone = profile.data?.timezone ?? "UTC";
     const today = formatInTimeZone(now(), zone, "yyyy-MM-dd");
@@ -47,6 +51,10 @@ export function CommunityComposer({ area, id, groupId, parentId, canPost = true 
             const text = (name: string) => String(data.get(name) ?? "").trim();
             const title = text("title");
             const body = text("body");
+            if (isTextOnly) {
+                const delivered = new Set(deliveries.flatMap(delivery => delivery.status === "success" && delivery.command && (delivery.command.action === "message.send" || delivery.command.action === "post.create") && delivery.command.data.clientId ? [delivery.command.data.clientId] : []));
+                attempt.current = nextDeliveryAttempt(attempt.current, JSON.stringify({ area, id, parentId, groupId, body, attachments, visibility: text("visibility") }), delivered, () => crypto.randomUUID());
+            }
             let command: CommunityCommand;
             try {
                 switch (area) {
@@ -69,12 +77,10 @@ export function CommunityComposer({ area, id, groupId, parentId, canPost = true 
                         command = { action: "thread.create", data: { title, members: selected } };
                         break;
                     case "messages":
-                        clientId.current ??= crypto.randomUUID();
-                        command = { action: "message.send", data: { id: id!, body, clientId: clientId.current, ...(parentId ? { parentId } : {}) } };
+                        command = { action: "message.send", data: { id: id!, body, clientId: attempt.current!.clientId, ...(parentId ? { parentId } : {}) } };
                         break;
                     case "feed":
-                        clientId.current ??= crypto.randomUUID();
-                        command = communityCommandSchema.parse({ action: "post.create", data: { body, clientId: clientId.current, visibility: groupId ? "group" : text("visibility"), ...(groupId ? { groupId } : {}), ...(id ? { parentId: id } : {}), attachments } });
+                        command = communityCommandSchema.parse({ action: "post.create", data: { body, clientId: attempt.current!.clientId, visibility: groupId ? "group" : text("visibility"), ...(groupId ? { groupId } : {}), ...(id ? { parentId: id } : {}), attachments } });
                         break;
                     case "schedule": {
                         let startsAt: string;
@@ -92,14 +98,14 @@ export function CommunityComposer({ area, id, groupId, parentId, canPost = true 
                 }
                 communityCommandSchema.parse(command);
                 posting.current = true;
-                mutation.mutate(command, { onSuccess: () => { form.reset(); setAttachments([]); setSelected([]); clientId.current = null; }, onSettled: () => { posting.current = false; } });
+                mutation.mutate(command, { onSuccess: () => { form.reset(); setAttachments([]); setSelected([]); attempt.current = null; }, onSettled: () => { posting.current = false; } });
             }
             catch {
                 setError("community.invalid");
             }
         }}>
   {!isTextOnly && <label className="block">{t("community.title")}<input name="title" required maxLength={area === "tasks" ? 300 : 100} className={fieldClass}/></label>}
-  {showBody && <div><label htmlFor={`compose-${area}-${id ?? "new"}`}>{t("community.body")}</label><textarea id={`compose-${area}-${id ?? "new"}`} name="body" required={isTextOnly || area === "feedback" || area === "buddies"} maxLength={area === "groups" ? 2000 : area === "spaces" ? 1000 : 4000} rows={isTextOnly ? 3 : 4} className={fieldClass}/></div>}
+  {showBody && <div><label htmlFor={bodyId}>{t("community.body")}</label><textarea id={bodyId} name="body" required={isTextOnly || area === "feedback" || area === "buddies"} maxLength={area === "groups" ? 2000 : area === "spaces" ? 1000 : 4000} rows={isTextOnly ? 3 : 4} className={fieldClass}/></div>}
   {area === "tasks" && <label className="block">{t("community.date")}<input name="date" type="date" required defaultValue={today} className={fieldClass}/></label>}
   {area === "feedback" && <label className="block">{t("community.category")}<select name="kind" className={fieldClass}><option value="idea">{t("community.idea")}</option><option value="issue">{t("community.issue")}</option></select></label>}
   {(area === "groups" || area === "spaces") && <label className="flex min-h-11 items-center gap-3"><input name="private" type="checkbox" className="size-5 accent-accent"/>{t("community.private")}</label>}

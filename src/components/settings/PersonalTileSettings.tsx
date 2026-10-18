@@ -2,10 +2,12 @@
 import { usePersonalTile } from "@/hooks/usePersonalTile";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useTileStatusHistory } from "@/hooks/useTileStatusHistory";
+import { useMusicIntegration } from "@/hooks/useMusicIntegration";
 export function PersonalTileSettings() {
     const tile = usePersonalTile();
     const { t } = useTranslation();
     const history = useTileStatusHistory();
+    const music = useMusicIntegration();
     return <section className="mt-4 rounded-2xl border border-border bg-surface p-5">
     <h2 className="font-semibold">{t("personalTile.title")}</h2>
     {(["mirrored", "isVisible"] as const).map(key => <label key={key} className="flex min-h-14 items-center justify-between gap-3">
@@ -19,7 +21,7 @@ export function PersonalTileSettings() {
     </form>
     <p className="text-small text-text-muted">{t("personalTile.privacy")}</p>
     <p className="mt-3 text-small">{t("roadmap.spotifyUnavailable")}</p>
-    <label className="flex min-h-11 items-center gap-3"><input type="checkbox" disabled checked={tile.data?.shareNowPlaying ?? false}/>{t("roadmap.shareNowPlaying")}</label>
+    <label className="flex min-h-11 items-center gap-3"><input type="checkbox" disabled={!music.data?.available || !music.data.connected} checked={tile.data?.shareNowPlaying ?? false} onChange={event => tile.mutation.mutate({ shareNowPlaying: event.target.checked })}/>{t("roadmap.shareNowPlaying")}</label>
     <details className="mt-3"><summary className="min-h-11 cursor-pointer">{t("personalTile.history")}</summary><ul className="space-y-2">{history.data?.pages.flatMap(p => p.items).map(entry => <li key={entry.id} className="break-words text-small">{entry.text || t("roadmap.clearStatus")}</li>)}</ul>{history.hasNextPage && <button className="min-h-11 px-3" type="button" onClick={() => void history.fetchNextPage()}>{t("community.loadMore")}</button>}{history.isError && <p role="alert">{t("profile.error")}</p>}</details>
     {tile.mutation.isError && <p role="alert">{t("profile.error")}</p>}
   </section>;

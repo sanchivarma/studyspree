@@ -6,7 +6,7 @@ import { queryKeys } from "@/lib/queryKeys";
 import { repo } from "@/lib/repo";
 import { useSessionStore } from "@/stores/sessionStore";
 import { useCompletionStore } from "@/stores/completionStore";
-import type { Profile } from "@/types/domain";
+import type { Profile, Session } from "@/types/domain";
 import { now } from "@/lib/clock";
 import { toLocalDate } from "@/lib/stats/localDate";
 
@@ -26,7 +26,12 @@ export function useEndSession() {
         : (await repo.getDayStats(today, today)).find(day => day.date === today)?.totalSeconds ?? 0;
       useCompletionStore.getState().remember({ ...result, profile, today, todayTotalSeconds });
       const { session } = result;
-      await Promise.all([
+      // Banked values come from the repository. Seed the lifetime hero before
+      // routing, so a slow background query cannot hold Finish or show less time.
+      queryClient.setQueryData<number>(queryKeys.stats.total(), current => Math.max(current ?? 0, result.totalSecondsAllTime));
+      queryClient.setQueryData<Session | null>(queryKeys.activeSession(), current => current?.id === session.id ? null : current);
+      queryClient.setQueryData(queryKeys.stats.session(session.id), session);
+      void Promise.all([
         queryClient.invalidateQueries({ queryKey: queryKeys.activeSession() }),
         queryClient.invalidateQueries({ queryKey: queryKeys.stats.all() }),
         queryClient.invalidateQueries({ queryKey: queryKeys.streak() }),
