@@ -1,5 +1,8 @@
 [
   { "id": "lofi-studying", "name": "Lofi Cafe · Studying", "website": "https://loficafe.net/", "embedUrl": "https://loficafe.net/embed/studying", "streamUrl": null, "permissionUrl": "https://loficafe.net/embed" },
   { "id": "lofi-working", "name": "Lofi Cafe · Working", "website": "https://loficafe.net/", "embedUrl": "https://loficafe.net/embed/working", "streamUrl": null, "permissionUrl": "https://loficafe.net/embed" },
-  { "id": "lofi-sleeping", "name": "Lofi Cafe · Sleeping", "website": "https://loficafe.net/", "embedUrl": "https://loficafe.net/embed/sleeping", "streamUrl": null, "permissionUrl": "https://loficafe.net/embed" }
+  { "id": "lofi-sleeping", "name": "Lofi Cafe · Sleeping", "website": "https://loficafe.net/", "embedUrl": "https://loficafe.net/embed/sleeping", "streamUrl": null, "permissionUrl": "https://loficafe.net/embed" },
+  { "id": "lofi-chilling", "name": "Lofi Cafe · Chilling", "website": "https://loficafe.net/", "embedUrl": "https://loficafe.net/embed/chilling", "streamUrl": null, "permissionUrl": "https://loficafe.net/embed" },
+  { "id": "lofi-gaming", "name": "Lofi Cafe · Gaming", "website": "https://loficafe.net/", "embedUrl": "https://loficafe.net/embed/gaming", "streamUrl": null, "permissionUrl": "https://loficafe.net/embed" },
+  { "id": "lofi-japanese", "name": "Lofi Cafe · Japanese Lofi", "website": "https://loficafe.net/", "embedUrl": "https://loficafe.net/embed/japanese-lofi", "streamUrl": null, "permissionUrl": "https://loficafe.net/embed" }
 ]

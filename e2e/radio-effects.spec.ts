@@ -10,6 +10,23 @@ async function setSlider(page: Page, name: string, value: number) {
   await expect(slider).toHaveValue(String(value));
 }
 
+test("medieval, library and castle have independent saved levels", async ({ page }) => {
+  await signIn(page); const path = await startSession(page);
+  await page.getByRole("button", { name: "Sound", exact: true }).click();
+  for (const [name, volume] of [["Medieval lute", 0.25], ["Library ambience", 0.65], ["Castle hearth", 0.4]] as const) {
+    await page.getByRole("checkbox", { name, exact: true }).check();
+    await setSlider(page, `${name} volume`, volume);
+  }
+  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("ss_profile") ?? "{}").effectVolumes)).toEqual({ medieval: 0.25, library: 0.65, castle: 0.4 });
+  await page.reload(); await expect(page.getByTestId("session-screen")).toBeVisible();
+  expect(new URL(page.url()).pathname).toBe(path);
+  await page.getByRole("button", { name: "Sound", exact: true }).click();
+  for (const [name, volume] of [["Medieval lute", 0.25], ["Library ambience", 0.65], ["Castle hearth", 0.4]] as const) {
+    await expect(page.getByRole("checkbox", { name, exact: true })).toBeChecked();
+    await expect(page.getByRole("slider", { name: `${name} volume`, exact: true })).toHaveValue(String(volume));
+  }
+});
+
 for (const width of [320, 1280]) test(`radio volume is visible and keyboard adjustable at ${width}px`, async ({ page }) => {
   await page.setViewportSize({ width, height: 800 });
   // Match the provider's 640px breakpoint without contacting its live stream.
@@ -60,11 +77,22 @@ test("multiselect effects persist; radio mounts on selection and survives closin
   await expect(page.locator("iframe")).toHaveCount(0);
   await page.keyboard.press("Escape");
   await page.reload(); await expect(page.getByTestId("session-screen")).toBeVisible();
+  expect(new URL(page.url()).pathname).toBe(path);
   await sound.click(); await expect(page.getByRole("checkbox", { name: "Rain", exact: true })).toBeChecked();
   await expect(page.getByRole("checkbox", { name: "Wind", exact: true })).toBeChecked();
   await expect(page.getByRole("slider", { name: "Rain volume", exact: true })).toHaveValue("0.75");
   await expect(page.getByRole("slider", { name: "Wind volume", exact: true })).toHaveValue("0.2");
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem("ss_sessions")!)[0].startedAt)).toBe(startedAt);
+});
+
+test("favorite effect levels carry into the next session", async ({ page }) => {
+  await signIn(page); const path = await startSession(page);
+  const sound = page.getByRole("button", { name: "Sound", exact: true });
+  await sound.click();
+  await page.getByRole("checkbox", { name: "Wind", exact: true }).check();
+  await page.getByRole("checkbox", { name: "Rain", exact: true }).check();
+  await setSlider(page, "Rain volume", 0.75); await setSlider(page, "Wind volume", 0.2);
+  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("ss_profile") ?? "{}").effectVolumes)).toEqual({ rain: 0.75, wind: 0.2 });
   await page.keyboard.press("Escape"); await page.getByRole("button", { name: "Finish", exact: true }).click();
   await expect(page).toHaveURL(`${path}/complete`, { timeout: 15000 });
   const nextPath = await startSession(page);

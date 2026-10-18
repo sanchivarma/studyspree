@@ -3,7 +3,7 @@ import { radioStations, radioStationsSchema } from "./radio";
 
 describe("editable radio catalog", () => {
   it("ships distinct permitted HTTPS player entries", () => {
-    expect(radioStations).toHaveLength(3);
+    expect(radioStations).toHaveLength(6);
     expect(radioStations.every(station => station.permissionUrl && station.embedUrl)).toBe(true);
   });
   it("rejects duplicate IDs, unsafe URLs and ambiguous playback methods", () => {

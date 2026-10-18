@@ -1,0 +1,6 @@
+[
+  { "file": "effect-cafe-v3.mp3", "creator": "oliverbrotzman", "title": "CoffeeShopChatter.wav", "page": "https://freesound.org/people/oliverbrotzman/sounds/125247/", "preview": "https://cdn.freesound.org/previews/125/125247_1812576-hq.mp3", "filters": "highpass=f=70,lowpass=f=12000,loudnorm=I=-16:TP=-2:LRA=7" },
+  { "file": "effect-medieval-v1.mp3", "creator": "f-r-a-g-i-l-e", "title": "Medieval Lute Chords", "page": "https://freesound.org/people/f-r-a-g-i-l-e/sounds/506266/", "preview": "https://cdn.freesound.org/previews/506/506266_8466114-hq.mp3", "filters": "loudnorm=I=-22:TP=-3:LRA=7" },
+  { "file": "effect-library-v2.mp3", "creator": "xkeril", "title": "Quiet library ambience", "page": "https://freesound.org/people/xkeril/sounds/620683/", "preview": "https://cdn.freesound.org/previews/620/620683_13504080-hq.mp3", "previewBytes": 5000000, "filters": "highpass=f=70,loudnorm=I=-22:TP=-3:LRA=7" },
+  { "file": "effect-castle-v1.mp3", "creator": "tripjazz", "title": "Fireplace", "page": "https://freesound.org/people/tripjazz/sounds/394754/", "preview": "https://cdn.freesound.org/previews/394/394754_7473420-hq.mp3", "filters": "highpass=f=70,lowpass=f=4000,aecho=0.7:0.8:80|160:0.15|0.1,loudnorm=I=-22:TP=-3:LRA=7" }
+]

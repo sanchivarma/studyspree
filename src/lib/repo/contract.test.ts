@@ -18,6 +18,9 @@ export function repositoryContract(name: string, create: () => Repository) {
       expect(await repo.getProfile()).toMatchObject({ backgroundEffects: ["rain", "wind"], roomVolume: 0.4, effectVolumes: { rain: 0.75, wind: 0.2 } });
       await expect(repo.updateProfile({ backgroundEffects: ["rain", "rain"] })).rejects.toThrow();
       await expect(repo.updateProfile({ effectVolumes: { rain: 2 } })).rejects.toThrow();
+      await repo.updateProfile({ backgroundEffects: ["medieval", "library", "castle"], effectVolumes: { medieval: 0.2, library: 0.7, castle: 0.4 } });
+      expect(await repo.getProfile()).toMatchObject({ backgroundEffects: ["medieval", "library", "castle"], effectVolumes: { medieval: 0.2, library: 0.7, castle: 0.4 } });
+      await expect(repo.updateProfile({ backgroundEffects: ["castle", "castle"] })).rejects.toThrow();
     });
     it("retains and paginates every status event",async()=>{
       for(let i=0;i<25;i++){vi.advanceTimersByTime(1000);await repo.updatePersonalTile({status:`Reading ${i}`});}

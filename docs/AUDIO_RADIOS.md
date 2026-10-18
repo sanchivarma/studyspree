@@ -13,7 +13,10 @@ Each row includes `id`, `name`, `website`, `permissionUrl`, and one of:
 Record the provider's actual permission page in `permissionUrl`; a public stream
 URL alone does not grant embedding permission. Do not extract streams from
 official players. The initial Studying, Working and Sleeping entries use Lofi
-Cafe's published website embeds: https://loficafe.net/embed (checked 2026-10-17).
+Cafe's published website embeds: https://loficafe.net/embed (checked 2026-10-18).
+All six free stations are included: Studying, Working, Sleeping, Chilling,
+Gaming and Japanese Lofi. These are actual in-app players with provider play
+and volume controls; no paid radio account or StudySpree stream hosting is needed.
 SomaFM is deliberately excluded because its current terms prohibit new app embeds.
 
 Official embedded players retain their own play and volume controls. StudySpree
@@ -42,3 +45,8 @@ repository (`background_effects`, `effect_volumes` for server accounts). Muting
 the master stops and unloads each source without discarding saved relative levels.
 New profiles
 start with no selected effects and no playing music.
+
+The café now uses a louder normalized public coffee-shop recording. Medieval
+lute, Library ambience and Castle hearth add three independent effects, each
+with a saved level. See `docs/audio/expanded-ambience.md` for sources, licences,
+processing and the exact meaning of the designed castle-hearth soundscape.

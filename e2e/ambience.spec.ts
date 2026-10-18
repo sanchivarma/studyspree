@@ -1,6 +1,8 @@
 import { readFileSync } from "node:fs";
 import { expect, test, type Page } from "@playwright/test";
 import { signIn, startSession } from "./sessionFixtures";
+import { backgroundEffects } from "../src/lib/audio/effects";
+const radioStationCount = (JSON.parse(readFileSync(new URL("../src/lib/audio/radio-stations.json", import.meta.url), "utf8")) as unknown[]).length;
 
 async function instrument(page: Page) {
   await page.addInitScript(() => {
@@ -106,10 +108,10 @@ for (const locale of ["en", "de", "fr", "pl", "it"]) test(`popover fits a phone,
     const { session } = JSON.parse(readFileSync(new URL(`../src/translations/session/${locale}.json`, import.meta.url), "utf8")) as { session: { sound: string } };
     await page.context().addCookies([{ name: "ss_locale", value: locale, url: "http://localhost:3000" }]);
     await page.goto(path); const trigger = page.getByRole("button", { name: session.sound, exact: true }); await trigger.click();
-    await expect(page.getByRole("slider")).toHaveCount(7); // Six effects plus their master; no redundant music slider.
+    await expect(page.getByRole("slider")).toHaveCount(backgroundEffects.length + 1);
     await expect(page.getByRole("slider", { name: ambience.room, exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: ambience.radioOff, exact: true })).toBeVisible();
-    await expect(page.getByRole("radio")).toHaveCount(3);
+    await expect(page.getByRole("radio")).toHaveCount(radioStationCount);
     await expect(page.getByText(ambience.tracks, { exact: true })).toHaveCount(0);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
     if (locale === "en") await page.screenshot({ path: "test-results/ambience-mobile.png" });

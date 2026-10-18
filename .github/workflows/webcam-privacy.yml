@@ -39,7 +39,7 @@ jobs:
       - run: npm run check:character-assets
       - run: npm run check:default-media
       - name: Decode original themes and audible ambience
-        run: npm run test:e2e -- e2e/default-media.spec.ts
+        run: npm run test:e2e -- e2e/default-media.spec.ts e2e/ambience-assets.spec.ts
       - name: Verify virtual study companions
         run: npm run test:e2e -- e2e/characters.spec.ts e2e/companion-styles.spec.ts
       - name: Enforce webcam privacy
