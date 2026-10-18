@@ -69,6 +69,13 @@ a fresh version.
 
 ## Check the loop seam
 
+The four original scenes target 12-second loops. Nature Day, Nature Night,
+Sci-Fi Observatory and Deep Space target 8-second loops. Browser tests check
+each theme against its generator's duration and compare the opening frame to
+the actual final frame, rather than assuming every clip is 12 seconds long.
+Room-sound mappings may share a recording across themes; the audio decoding
+test checks each unique asset URL and rejects duplicate bytes across distinct URLs.
+
 Play **each encoded video** with looping enabled for **three minutes**. Watch
 the transition from the last frame back to the first: the theme's pose,
 lighting, camera position, and background movement should continue smoothly.

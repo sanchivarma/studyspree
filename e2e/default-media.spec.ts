@@ -1,6 +1,13 @@
 import { expect, test } from "@playwright/test";
-import { themes } from "../src/lib/themes/registry";
+import { themes, type ThemeSlug } from "../src/lib/themes/registry";
 import { roomSounds, musicTracks } from "../src/lib/audio/catalog";
+
+// The original generator records twelve seconds; generate-extra-themes.mjs
+// records eight. Keep explicit coverage so a new theme needs a duration check.
+const sceneSeconds = {
+  "rain-desk": 12, "night-shift": 12, "balcony-dusk": 12, "dorm-bunk": 12,
+  "nature-day": 8, "nature-night": 8, "sci-fi": 8, "space": 8,
+} satisfies Record<ThemeSlug, number>;
 
 test("all original scene files decode, remain muted, fit the budget and loop without a visual jump", async ({ page }) => {
   test.setTimeout(60000);
@@ -23,22 +30,25 @@ test("all original scene files decode, remain muted, fit the budget and loop wit
           const seek = new Promise<void>(resolve => { movie.onseeked = () => resolve(); }); movie.currentTime = time; await seek;
           ctx.drawImage(movie, 0, 0, 160, 90); return ctx.getImageData(0, 0, 160, 90).data;
         };
-        const start = await sample(0.05), end = await sample(Math.min(11.95, movie.duration - 0.05));
+      const start = await sample(0.05), end = await sample(movie.duration - 0.05);
         let difference = 0;
         for (let i = 0; i < start.length; i++) if (i % 4 !== 3) difference += Math.abs(start[i] - end[i]);
         const result = { width: movie.videoWidth, height: movie.videoHeight, duration: movie.duration, seamDifference: difference / (160 * 90 * 3) };
         movie.removeAttribute("src"); movie.load(); return result;
       }, src);
-      expect(result.width).toBe(1280); expect(result.height).toBe(720);
-      expect(result.duration).toBeGreaterThan(11); expect(result.duration).toBeLessThan(14);
-      expect(result.seamDifference).toBeLessThan(12);
+      expect(result.width, src).toBe(1280); expect(result.height, src).toBe(720);
+      expect(result.duration, src).toBeGreaterThan(sceneSeconds[theme.slug] - 1);
+      expect(result.duration, src).toBeLessThan(sceneSeconds[theme.slug] + 2);
+      expect(result.seamDifference, src).toBeLessThan(12);
     }
   }
 });
 
 test("room sounds and original music decode to audible, distinct signals", async ({ page }) => {
   await page.goto("/login");
-  const sources = [...Object.values(roomSounds), musicTracks.find(track => track.slug === "still-water")!.src];
+  // Theme-to-sound mappings deliberately reuse recordings. Decode each unique
+  // URL once; still reject identical bytes served under different asset URLs.
+  const sources = [...new Set([...Object.values(roomSounds), musicTracks.find(track => track.slug === "still-water")!.src])];
   const fingerprints = new Set<string>();
   for (const src of sources) {
     const result = await page.evaluate(async src => {
@@ -52,8 +62,8 @@ test("room sounds and original music decode to audible, distinct signals", async
       for (const sample of samples) { energy += sample * sample; peak = Math.max(peak, Math.abs(sample)); }
       return { duration: buffer.duration, rms: Math.sqrt(energy / samples.length), peak, fingerprint };
     }, src);
-    expect(result.duration).toBeGreaterThan(15);
-    expect(result.rms).toBeGreaterThan(0.001); expect(result.peak).toBeLessThan(0.9);
-    expect(fingerprints.has(result.fingerprint)).toBe(false); fingerprints.add(result.fingerprint);
+    expect(result.duration, src).toBeGreaterThan(15);
+    expect(result.rms, src).toBeGreaterThan(0.001); expect(result.peak, src).toBeLessThan(0.9);
+    expect(fingerprints.has(result.fingerprint), src).toBe(false); fingerprints.add(result.fingerprint);
   }
 });
