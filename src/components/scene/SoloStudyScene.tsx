@@ -32,7 +32,7 @@ export function SoloStudyScene({ preferences }: { preferences: SoloScenePreferen
       </div>}
       <div className="solo-glass"/>
     </div>
-    <img key={`frame:${windowFrame(view)}`} src={`/solo/frames/${windowFrame(view)}-v1.webp`} alt="" className="solo-window-surround" fetchPriority="high"/>
+    <img key={`frame:${windowFrame(view)}`} src={`/solo/frames/${windowFrame(view)}-v2.webp`} alt="" className="solo-window-surround" fetchPriority="high"/>
     <img key={`desk:${preferences.desk}`} src={deskSource(preferences.desk)} alt="" className="solo-desk" fetchPriority="high" onError={event => { event.currentTarget.style.visibility = "hidden"; }}/>
   </div>;
 }
