@@ -1,6 +1,6 @@
 import { localPreviewAudio } from "./localPreview";
 
-export const effectSlugs = ["cafe", "wind", "rain", "thunderstorm", "brown-noise", "white-noise", "medieval-warrior", "medieval-walk", "medieval-knight", "ocean", "library", "castle", "piano-nocturne", "piano-gymnopedie", "piano-moonlight"] as const;
+export const effectSlugs = ["cafe", "wind", "rain", "thunderstorm", "brown-noise", "white-noise", "medieval-warrior", "medieval-walk", "medieval-knight", "ocean", "library", "castle", "piano-nocturne", "piano-gymnopedie", "piano-moonlight", "ambient-432hz", "ambient-528hz", "ambient-963hz"] as const;
 export type EffectSlug = typeof effectSlugs[number];
 export type EffectVolumes = Partial<Record<EffectSlug, number>>;
 const effectSources = {
@@ -19,6 +19,9 @@ const effectSources = {
   "piano-nocturne": "/audio/piano-chopin-nocturne-op9-no2-v1.mp3",
   "piano-gymnopedie": "/audio/piano-satie-gymnopedie-no1-v1.mp3",
   "piano-moonlight": "/audio/piano-beethoven-moonlight-i-v1.mp3",
+  "ambient-432hz": "/audio/ambient-432hz-v1.wav",
+  "ambient-528hz": "/audio/ambient-528hz-v1.wav",
+  "ambient-963hz": "/audio/ambient-963hz-v1.wav",
 } satisfies Record<EffectSlug, string>;
 export const backgroundEffects = effectSlugs.filter(slug => process.env.NODE_ENV !== "production" || !Object.hasOwn(localPreviewAudio, slug)).map(slug => ({
   slug, src: effectSources[slug], labelKey: `ambience.${slug}` as const,

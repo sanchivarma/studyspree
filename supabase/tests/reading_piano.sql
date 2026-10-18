@@ -1,7 +1,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path=public,extensions;
-select plan(6);
+select plan(10);
 insert into auth.users(id,email,raw_app_meta_data,raw_user_meta_data) values
 ('a8610000-0000-4000-8000-000000000001','piano@example.test','{"provider":"email"}','{"username":"piano_test"}');
 set local role authenticated;
@@ -10,8 +10,12 @@ select lives_ok($$update profiles set background_effects='["piano-nocturne","pia
 select is((select effect_volumes->>'piano-nocturne' from profiles where id=auth.uid()),'0.25','Piano level retained');
 select throws_ok($$update profiles set background_effects='["piano-nocturne","piano-nocturne"]' where id=auth.uid()$$,'23514',null,'Duplicate piano choices rejected');
 select throws_ok($$update profiles set effect_volumes='{"piano-moonlight":1.1}' where id=auth.uid()$$,'23514',null,'Piano volume remains bounded');
+select lives_ok($$update profiles set background_effects='["ambient-432hz","ambient-528hz","ambient-963hz"]',effect_volumes='{"ambient-432hz":0.2,"ambient-528hz":0.3,"ambient-963hz":0.4}' where id=auth.uid()$$,'Owner can save three frequency beds and levels');
+select throws_ok($$update profiles set background_effects='["ambient-432hz","ambient-432hz"]' where id=auth.uid()$$,'23514',null,'Duplicate frequency beds rejected');
+select throws_ok($$update profiles set effect_volumes='{"ambient-963hz":-0.1}' where id=auth.uid()$$,'23514',null,'Frequency level remains bounded');
 reset role;
 select ok(auth_private.valid_room_controls('{"themeSlug":"rain-desk","characterSlugs":[],"audio":{"musicTrack":null,"musicVolume":0,"roomVolume":0.4,"backgroundEffects":["piano-nocturne","piano-gymnopedie","piano-moonlight"],"effectVolumes":{"piano-nocturne":0.25}}}'::jsonb),'Shared controls accept the same piano choices');
 select ok(not auth_private.valid_room_controls('{"themeSlug":"rain-desk","characterSlugs":[],"audio":{"musicTrack":null,"musicVolume":0,"roomVolume":0.4,"backgroundEffects":["piano-nocturne","piano-nocturne"],"effectVolumes":{}}}'::jsonb),'Shared controls reject duplicate piano choices');
+select ok(auth_private.valid_room_controls('{"themeSlug":"rain-desk","characterSlugs":[],"audio":{"musicTrack":null,"musicVolume":0,"roomVolume":0.4,"backgroundEffects":["ambient-432hz","ambient-528hz","ambient-963hz"],"effectVolumes":{"ambient-432hz":0.2}}}'::jsonb),'Shared controls accept the frequency beds');
 select * from finish();
 rollback;

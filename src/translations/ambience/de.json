@@ -1,5 +1,8 @@
 {
   "ambience": {
+    "ambient-432hz": "432 Hz · Sanfte Klangfläche",
+    "ambient-528hz": "528 Hz · Sanfte Klangfläche",
+    "ambient-963hz": "963 Hz · Sanfte Klangfläche",
     "piano-nocturne": "Chopin · Nocturne op. 9 Nr. 2",
     "piano-gymnopedie": "Satie · Gymnopédie Nr. 1",
     "piano-moonlight": "Beethoven · Mondscheinsonate I",

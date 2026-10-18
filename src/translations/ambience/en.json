@@ -1,5 +1,8 @@
 {
   "ambience": {
+    "ambient-432hz": "432 Hz · Soft ambience",
+    "ambient-528hz": "528 Hz · Soft ambience",
+    "ambient-963hz": "963 Hz · Soft ambience",
     "effectVolume": "{effect} volume",
     "radioOff": "Turn off radio",
     "label": "Ambience",

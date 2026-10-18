@@ -42,3 +42,7 @@ Files are immutable: use a new filename for a new version.
 | piano-chopin-nocturne-op9-no2-v1.mp3 | Musopen (performer not identified on file page); https://commons.wikimedia.org/wiki/File:Nocturne_Op._9_no._2_in_E_flat_major.mp3 | CC0 1.0 | 2026-10-19 | yes | docs/audio/reading-piano.md |
 | piano-satie-gymnopedie-no1-v1.mp3 | Robin Alciatore / Musopen; https://commons.wikimedia.org/wiki/File:Erik_Satie_-_gymnopedies_-_la_1_ere._lent_et_douloureux.ogg | Public-domain dedication by recording author | 2026-10-19 | yes | docs/audio/reading-piano.md |
 | piano-beethoven-moonlight-i-v1.mp3 | Paul Pitman / Musopen; https://commons.wikimedia.org/wiki/File:Ludwig_van_Beethoven_-_sonata_no._14_in_c_sharp_minor_%27moonlight%27,_op._27_no._2_-_i._adagio_sostenuto.ogg | Public-domain recording release; Musopen attribution retained | 2026-10-19 | yes | docs/audio/reading-piano.md |
+
+| ambient-432hz-v1.wav | Original additive synthesis; scripts/generate-frequency-beds.mjs | CC0-1.0 | 2026-10-19 | yes | docs/audio/frequency-beds.md |
+| ambient-528hz-v1.wav | Original additive synthesis; scripts/generate-frequency-beds.mjs | CC0-1.0 | 2026-10-19 | yes | docs/audio/frequency-beds.md |
+| ambient-963hz-v1.wav | Original additive synthesis; scripts/generate-frequency-beds.mjs | CC0-1.0 | 2026-10-19 | yes | docs/audio/frequency-beds.md |

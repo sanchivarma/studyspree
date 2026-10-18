@@ -7,11 +7,9 @@ const pieces = [
   { name: "Beethoven · Moonlight Sonata I", slug: "piano-moonlight", file: "piano-beethoven-moonlight-i-v1.mp3", seconds: 335 },
 ] as const;
 
-test("three locally bundled piano performances decode fully and their levels persist without source links", async ({ page }) => {
+test("three locally bundled piano performances decode fully", async ({ page }) => {
   test.setTimeout(90000);
-  await signIn(page);
-  await page.goto("/settings");
-  const effects = page.getByRole("group", { name: "Background effects", exact: true });
+  await page.goto("/login");
   for (const piece of pieces) {
     const result = await page.evaluate(async file => {
       const response = await fetch(`/audio/${file}`);
@@ -27,6 +25,23 @@ test("three locally bundled piano performances decode fully and their levels per
     expect(result.duration).toBeLessThan(piece.seconds + 3);
     expect(result.rms).toBeGreaterThan(0.001);
     expect(result.peak).toBeLessThan(0.9);
+  }
+  for(const frequency of [432,528,963]) {
+    const result = await page.evaluate(async frequency => {
+      const response = await fetch(`/audio/ambient-${frequency}hz-v1.wav`);
+      const audio = await new OfflineAudioContext(1,44100,44100).decodeAudioData(await response.arrayBuffer());
+      return { duration: audio.duration, channels: audio.numberOfChannels };
+    },frequency);
+    expect(result).toEqual({ duration: 24, channels: 1 });
+  }
+});
+
+test("piano levels persist without source links", async ({ page }) => {
+  test.setTimeout(90000);
+  await signIn(page);
+  await page.goto("/settings");
+  const effects = page.getByRole("group", { name: "Background effects", exact: true });
+  for (const piece of pieces) {
     await effects.getByRole("checkbox", { name: piece.name, exact: true }).check();
     const slider = effects.getByRole("slider", { name: `${piece.name} volume`, exact: true });
     await slider.fill("0.35");
