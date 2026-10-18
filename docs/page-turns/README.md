@@ -13,13 +13,33 @@ The source sheets also vary in framing. The numeric audit below establishes
 file integrity, not acceptable visual quality. Do not describe these assets
 as visually approved or smooth on the strength of that audit.
 
-One isolated Arun candidate is available as `action-v10-review.gif` and
+The isolated Arun candidate is available as `action-v10-review.gif` and
 `study-v10-review.gif` under `public/characters/realistic-01`. It displays
 native generated poses without optical-flow or cross-dissolve synthesis,
 with a fixed upper scene. The full cycle holds the initial reading pose for
-17 seconds. This candidate is not selected in the registry; user review is
-pending before propagating this technique to other characters. It is still
-synthetic animation, not recorded natural human motion.
+17 seconds. The user reviewed it and rejected it as still jerky or distorted.
+It is not selected in the registry. Do not propagate this technique to other
+characters or present it as an acceptable repair. It is synthetic animation,
+not recorded natural human motion.
+
+The user confirmed both deformation and pauses/jumps. The preceding v3 GIFs
+have 16 source poses and explicit frame delays of 180, 280 and 700 ms. Those
+holds are part of the media, not evidence that React is restarting playback.
+The browser regression checks that timer ticks and idle captions retain the
+same animation element. Encoding these poses into a higher-frame-rate file
+would not supply the missing coherent human motion.
+
+Next asset production needs a continuous video/animation source rather than
+another still-sheet/morphing attempt. An image-to-video connection was found
+through Runway discovery, but it is not connected. No generation was run and
+no credits were spent. After connection, inspect supported generation options,
+credits/cost and terms before choosing the actual production settings.
+The first source-motion candidate should preserve Arun's fictional identity,
+show natural quiet reading and one page turn left to right from the viewer's
+position, with a locked camera, consistent face/hands/book, no dialogue,
+no cuts, no zoom or artificial strobing. Inspect the full action at normal
+speed and the loop boundary before registering any replacement. The wider
+cast, including historical partners, remains unresolved.
 
 The following v9 production notes document the rejected experiment, not
 the active realistic media. Source prompts/sheets remain for provenance.
