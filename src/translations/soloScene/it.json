@@ -1,0 +1,31 @@
+{
+  "soloScene": {
+    "title": "Finestra di studio in solitaria",
+    "soloRequired": "Disponibile in modalità Solo.",
+    "desk": "Scrivania",
+    "window": "Vista dalla finestra",
+    "preview": "Anteprima della scena",
+    "desk-modern": "Scrivania moderna",
+    "desk-medieval": "Scrivania medievale",
+    "desk-shakespearean": "Scrivania shakespeariana",
+    "desk-pirate": "Scrivania da pirata",
+    "desk-sherlock": "Scrivania di Sherlock",
+    "desk-kings": "Scrivania del re",
+    "desk-student": "Scrivania da studente",
+    "desk-scientist": "Scrivania da scienziato",
+    "desk-submarine": "Scrivania del sottomarino",
+    "desk-space-shuttle": "Scrivania dello shuttle",
+    "window-old-castle": "Vecchio castello",
+    "window-castle-garden": "Giardini del castello",
+    "window-green-nature": "Natura verdeggiante",
+    "window-clouds": "Nuvole in movimento",
+    "window-sailing-ships": "Velieri",
+    "window-sea": "Mare",
+    "window-mountains": "Montagne",
+    "window-space": "Spazio",
+    "window-underwater": "Sott’acqua",
+    "window-blackhole": "Buco nero",
+    "window-rivendell": "Gran Burrone",
+    "window-magic-academy": "Accademia di magia"
+  }
+}

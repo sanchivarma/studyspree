@@ -116,7 +116,7 @@ export function StartScreen({ displayName, initialHour, initialMode }: { display
       <div aria-hidden="true" className="start-screen-scrim pointer-events-none absolute inset-0" />
       <AccountControls />
 
-      <div className="relative mx-auto w-full max-w-[480px] px-6 pt-24 pb-20 md:pb-6">
+      <div className="relative z-30 mx-auto w-full max-w-[480px] px-6 pt-24 pb-20 md:pb-6">
         <p className="mb-6 text-small text-text-muted">{greeting}</p>
         <Sheet open={companionOpen} onOpenChange={setCompanionOpen}>
           <SheetTrigger asChild><button type="button" aria-label={t("characters.change")} className="mb-4 flex min-h-11 w-full items-center gap-3 rounded-xl border border-border bg-background/40 px-4 text-small">

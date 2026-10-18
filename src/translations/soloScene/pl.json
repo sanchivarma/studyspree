@@ -1,0 +1,31 @@
+{
+  "soloScene": {
+    "title": "Okno do nauki solo",
+    "soloRequired": "Dostępne w trybie Solo.",
+    "desk": "Biurko",
+    "window": "Widok za oknem",
+    "preview": "Podgląd sceny",
+    "desk-modern": "Nowoczesne biurko",
+    "desk-medieval": "Średniowieczne biurko",
+    "desk-shakespearean": "Biurko szekspirowskie",
+    "desk-pirate": "Biurko pirata",
+    "desk-sherlock": "Biurko Sherlocka",
+    "desk-kings": "Królewskie biurko",
+    "desk-student": "Biurko studenta",
+    "desk-scientist": "Biurko naukowca",
+    "desk-submarine": "Biurko w łodzi podwodnej",
+    "desk-space-shuttle": "Biurko w promie kosmicznym",
+    "window-old-castle": "Stary zamek",
+    "window-castle-garden": "Ogrody zamkowe",
+    "window-green-nature": "Zielona przyroda",
+    "window-clouds": "Płynące chmury",
+    "window-sailing-ships": "Żaglowce",
+    "window-sea": "Morze",
+    "window-mountains": "Góry",
+    "window-space": "Kosmos",
+    "window-underwater": "Pod wodą",
+    "window-blackhole": "Czarna dziura",
+    "window-rivendell": "Rivendell",
+    "window-magic-academy": "Akademia magii"
+  }
+}

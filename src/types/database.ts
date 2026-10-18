@@ -1216,6 +1216,7 @@ export type Database = {
                     "selected_theme": string;
                     "share_presence": boolean;
                     "show_streak": boolean;
+                    "solo_scene": NonNullable<Json>;
                     "timezone": string;
                     "username": string;
                     "webcam_corner": string;
@@ -1244,6 +1245,7 @@ export type Database = {
                     "selected_theme"?: string;
                     "share_presence"?: boolean;
                     "show_streak"?: boolean;
+                    "solo_scene"?: NonNullable<Json>;
                     "timezone"?: string;
                     "username": string;
                     "webcam_corner"?: string;
@@ -1271,6 +1273,7 @@ export type Database = {
                     "selected_theme"?: string;
                     "share_presence"?: boolean;
                     "show_streak"?: boolean;
+                    "solo_scene"?: NonNullable<Json>;
                     "timezone"?: string;
                     "username"?: string;
                     "webcam_corner"?: string;

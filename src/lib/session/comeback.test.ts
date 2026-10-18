@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { comebackDaysAway } from "./comeback";
 import type { Profile, Session } from "@/types/domain";
 
-const profile: Profile = { mirrorSelfView:true,showOwnTile:true,shareNowPlaying:false,leaderboardOptIn:false, displayName: "Alex", selectedTheme: "rain-desk", timezone: "Europe/Berlin", showStreak: true, reduceMotion: false, webcamEnabled: false, webcamCorner: "bottom-right", ambienceEnabled: false, musicTrack: null, musicVolume: 0, roomVolume: 0, comebackShownForDate: null, companionPreferences: { mode: "solo", characterSlugs: [] } };
+const profile: Profile = { soloScene:{desk:"modern",window:"green-nature"}, mirrorSelfView:true,showOwnTile:true,shareNowPlaying:false,leaderboardOptIn:false, displayName: "Alex", selectedTheme: "rain-desk", timezone: "Europe/Berlin", showStreak: true, reduceMotion: false, webcamEnabled: false, webcamCorner: "bottom-right", ambienceEnabled: false, musicTrack: null, musicVolume: 0, roomVolume: 0, comebackShownForDate: null, companionPreferences: { mode: "solo", characterSlugs: [] } };
 const session: Session = { id: "prior", startedAt: "2026-10-10T12:00:00Z", endedAt: "2026-10-10T12:25:00Z", localDate: "2026-10-10", actualSeconds: 1500, plannedMinutes: 25, themeSlug: "rain-desk", endedReason: "completed", task: null, companions: { mode: "solo", characterSlugs: [] } };
 describe("comeback calendar eligibility", () => {
   it.each([["2026-10-10", null], ["2026-10-12", null], ["2026-10-13", 3], ["2026-10-20", 10], ["2026-10-09", null]])("checks %s without timestamp arithmetic", (today, expected) => {

@@ -6,6 +6,7 @@ import { CharacterPicker } from "./CharacterPicker";
 import { cn } from "@/lib/utils";
 import { useAccountMode } from "@/hooks/useAccountMode";
 import { useRouter } from "next/navigation";
+import { SoloScenePicker } from "@/components/scene/SoloScenePicker";
 
 export function CompanionModePicker({ value, onChange, allowPeople = true }: { value: CompanionPreferences; onChange: (value: CompanionPreferences) => void; allowPeople?: boolean }) {
   const { t } = useTranslation();
@@ -21,6 +22,7 @@ export function CompanionModePicker({ value, onChange, allowPeople = true }: { v
         </button>)}
       </div>
     </fieldset>
+    {value.mode === "solo" && <SoloScenePicker/>}
     {value.mode === "characters" && <CharacterPicker selected={value.characterSlugs} onChange={characterSlugs => onChange(characterSlugs.length ? { mode: "characters", characterSlugs } : { mode: "solo", characterSlugs: [] })} />}
   </div>;
 }

@@ -35,7 +35,7 @@ export function SessionCompanions({ session, visible, onOpenChange, leading, sid
       </figure> })) : []),
   ];
   return <>
-    {tiles.length > 0 && <ParticipantGrid tiles={tiles} testId="session-companions" controlsVisible={visible} className="absolute top-1 right-1 bottom-[84px] left-[60px]"/>}
+    {tiles.length > 0 && <ParticipantGrid tiles={tiles} testId="session-companions" controlsVisible={visible} className="absolute top-1 right-1 bottom-[64px] left-[60px]"/>}
     <div data-testid="companion-side-controls" className="absolute top-[156px] bottom-[124px] left-2 z-30 flex w-11 flex-col gap-2 overflow-y-auto [scrollbar-width:none] [&>button]:shrink-0">
       {companions.characterSlugs.length > 0 && <button type="button" onClick={() => setHidden(value => !value)} aria-label={t(hidden ? "characters.show" : "characters.hide")} className="flex size-11 items-center justify-center rounded-xl bg-background/40">{hidden ? <Eye className="size-4" /> : <EyeOff className="size-4" />}</button>}
       <FeatureDrawer title={t('characters.title')} side={desktop?'right':'bottom'} onOpenChange={onOpenChange} trigger={<button type="button" aria-label={t("characters.change")} className="flex size-11 items-center justify-center rounded-xl bg-background/40"><Users className="size-4" /></button>}>

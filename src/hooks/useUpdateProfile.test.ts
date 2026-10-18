@@ -15,7 +15,7 @@ vi.mock("@tanstack/react-query", async original => ({
 vi.mock("@/lib/repo", () => ({ repo: { updateProfile: vi.fn() } }));
 type Context = { previous: Profile | undefined; patch: Partial<Profile>; edit: symbol };
 type Options = UseMutationOptions<Profile, Error, Partial<Profile>, Context>;
-const original: Profile = { mirrorSelfView:true,showOwnTile:true,shareNowPlaying:false,leaderboardOptIn:false, displayName: "Sanchi", selectedTheme: "rain-desk", timezone: "Europe/Berlin", showStreak: true,
+const original: Profile = { soloScene:{desk:"modern",window:"green-nature"}, mirrorSelfView:true,showOwnTile:true,shareNowPlaying:false,leaderboardOptIn:false, displayName: "Sanchi", selectedTheme: "rain-desk", timezone: "Europe/Berlin", showStreak: true,
   reduceMotion: false, webcamEnabled: false, webcamCorner: "bottom-right", ambienceEnabled: false,
   musicTrack: null, musicVolume: 0, roomVolume: 0, comebackShownForDate: null, companionPreferences: { mode: "solo", characterSlugs: [] } };
 let options: Options;

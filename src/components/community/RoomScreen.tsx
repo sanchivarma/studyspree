@@ -140,7 +140,7 @@ export function RoomScreen({ id }: {
       {!joined && <header className="flex flex-wrap items-center justify-between gap-3"><h1 className="text-title">{state?.resource?.title ?? t("room.title")}</h1><ShareSessionControl roomId={id}/><Link className={buttonClass} href="/spaces">{t("spaces.title")}</Link></header>}
       {result.isError ? <p role="alert">{t("community.forbidden")}</p> : !state ? <p role="status">{t("community.loading")}</p> : joined ? <>
         <div className="flex min-h-0 flex-1 gap-1">
-          <aside data-testid="room-side-controls" className="flex w-[52px] shrink-0 flex-col items-center gap-1 overflow-y-auto py-1 [scrollbar-width:none]">
+          <aside data-testid="room-side-controls" className="flex w-[52px] shrink-0 flex-col items-center gap-1 overflow-y-auto rounded-xl border-r border-border/40 bg-background/25 backdrop-blur-md py-1 [scrollbar-width:none]">
             <Link href="/spaces" aria-label={t("spaces.title")} className={sideButton}><ArrowLeft aria-hidden="true" className="size-4"/></Link>
             <button type="button" aria-label={t("community.grid")} aria-pressed={!pinned} onClick={() => setPinned(false)} className={sideButton}><Grid2X2 aria-hidden="true" className="size-4"/></button>
             <button type="button" aria-label={t("community.pinned")} aria-pressed={pinned} onClick={() => setPinned(true)} className={sideButton}><Pin aria-hidden="true" className="size-4"/></button>
@@ -154,7 +154,7 @@ export function RoomScreen({ id }: {
           </aside>
           <ParticipantGrid tiles={tiles} testId="room-video-grid" className="flex-1"/>
         </div>
-        <footer className="flex h-[76px] shrink-0 items-center gap-3 pl-[56px] pr-2">{active.data && <RoomTimer session={active.data} leave={leave}/>}<span className="sr-only">{t("community.peopleOnline", { n: people.length })}</span></footer>
+        <footer className="flex h-[76px] shrink-0 items-center gap-3 rounded-xl border-t border-border/40 bg-background/25 backdrop-blur-md pl-[56px] pr-2">{active.data && <RoomTimer session={active.data} leave={leave}/>}<span className="sr-only">{t("community.peopleOnline", { n: people.length })}</span></footer>
       </> : <>
         {options}
         {active.data && <Link className={buttonClass} href={`/session/${active.data.id}`}>{t("characters.characters")}</Link>}
