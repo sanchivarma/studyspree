@@ -42,6 +42,16 @@ This fixes frequency/staggering. Existing pose quality and the broader natural
 motion repair remain unresolved. The reading hold is a still source pose;
 it is not newly generated continuous natural human motion.
 
+Verification: typecheck/lint, 427 unit tests and the 27-file asset audit pass.
+Nine focused browser cases pass across the final runs, including actual
+painted GIF stability during the initial reading hold, staggered action
+onsets for Arun/Matt/Elin, realistic/historical playback and refresh,
+reduced motion, missing-media fallback, retained animation elements, cold
+Start under twenty seconds and timestamp-derived Finish after refresh.
+An initial cold-navigation test reached for its media before the session
+route loaded; it now explicitly waits for the session screen. Missing-GIF
+coverage was updated to abort the active v11 URL and verify interception.
+
 ### Previous experiments and quality findings
 
 The user rejected the v5/v9 realistic replacements because they looked

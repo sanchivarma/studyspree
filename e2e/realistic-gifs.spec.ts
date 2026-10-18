@@ -82,7 +82,8 @@ test("four expanded partners mix with existing styles, animate and persist", asy
 
 test("a missing realistic GIF keeps its poster and session usable", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
-  await page.route("**/realistic-02/study-v4.gif", route => route.abort());
+  let blocked = 0;
+  await page.route("**/realistic-02/study-v11.gif", route => { blocked++; return route.abort(); });
   await signIn(page); await page.goto("/study");
   await page.getByRole("button", { name: "Choose companions", exact: true }).click();
   await page.getByRole("button", { name: "Virtual partners", exact: true }).click();
@@ -91,6 +92,7 @@ test("a missing realistic GIF keeps its poster and session usable", async ({ pag
   await page.getByRole("button", { name: "Close", exact: true }).click();
   await page.getByRole("button", { name: "Start", exact: true }).click();
   const tile = page.getByTestId("character-loop-realistic-02");
+  await expect.poll(() => blocked).toBeGreaterThan(0);
   await expect(tile).toHaveAttribute("data-animated", "false");
   await expect(tile.locator('img[src$="poster-v4.webp"]')).toBeVisible();
   await expect(page.getByRole("button", { name: "Finish", exact: true })).toBeEnabled();

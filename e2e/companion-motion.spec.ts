@@ -18,6 +18,7 @@ test("restored realistic media stays mounted through timer ticks and idle captio
   await page.getByTestId("character-card-male-01").click();
   await page.getByRole("button", { name: "Close", exact: true }).click();
   await page.getByRole("button", { name: "Start", exact: true }).click();
+  await expect(page.getByTestId("session-screen")).toBeVisible({ timeout: 15000 });
   const stage = page.getByTestId("session-companions");
   const arun = stage.getByTestId("character-loop-realistic-01").getByTestId("character-animation");
   await expect(arun).toHaveAttribute("src", "/characters/realistic-01/study-v11.gif");
