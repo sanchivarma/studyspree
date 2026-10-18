@@ -301,26 +301,26 @@
   },
   {
     "slug": "einstein",
-    "version": "v24",
+    "version": "v30",
     "gifFrames": 260,
     "gifSeconds": 13,
     "gifFps": 20,
-    "gifBytes": 381408,
+    "gifBytes": 373945,
     "sampledDistinctFrames": 64,
-    "largestSampledFrameStep": 0.163,
+    "largestSampledFrameStep": 0.168,
     "runtimeVideo": true,
-    "sha256": "f5c453a5d812c41a0e66166c962c0d9c2b5e715b6e12f91510a5a6f43f5cf173"
+    "sha256": "e75385f36b0d47ac1cce5b2aa51e2dcbe19ca63ba7a76bf2e98823c472e4864c"
   },
   {
     "slug": "tesla",
-    "version": "v24",
+    "version": "v30",
     "gifFrames": 260,
     "gifSeconds": 13,
     "gifFps": 20,
-    "gifBytes": 300103,
+    "gifBytes": 292110,
     "sampledDistinctFrames": 64,
-    "largestSampledFrameStep": 0.564,
+    "largestSampledFrameStep": 0.268,
     "runtimeVideo": true,
-    "sha256": "a348eb0d8428855639572065f494797241efd7bc66b5fc7d450d77ef5f286f94"
+    "sha256": "71d87b5258f18fddd835c3f8073d0be3f6660e299514b9b90d2af9350e6cff4a"
   }
 ]

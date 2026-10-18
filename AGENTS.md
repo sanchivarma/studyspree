@@ -320,6 +320,8 @@ The user subsequently authorised the 17-feature roadmap in docs/FEATURE_CHECKLIS
 
 ## 14. Current status
 
+- **Wrist correction v30:** Einstein and Tesla retain a full-width native wrist connection anchored at the cuff throughout writing and pen return. Rejected detached-hand and synthetic bridge candidates are inactive. Backgrounds, line travel and loop duration remain unchanged. See docs/historical-companions/README.md.
+
 - **Final scientist motion v24:** isolated original hand/pen rigs replace the rejected sweater/body movement and morphing writing frames. Both advance left-to-right across the page and lift on return. Built-in image_gen produced hidden clean plates only; prompts and selected plates are in docs/historical-companions. Einstein keeps the approved v20 background; Tesla uses short 200ms tower-anchored discharges by subsequent user instruction. A fixed source GIF palette prevents static-colour changes. Religious audio choices remain retired by migration 0059. No new dependency.
 
 - **Latest user correction:** religious audio options Buddhist/OM/Tibetan are removed from the catalog, translations, local serving and saved selections (migration 0059). Medieval Warrior/Walk/Knight remain exact local preview downloads. Einstein/Tesla now use immutable v20: 13-second loops, localized writing-frame smoothing, 30fps video/20fps GIF, steady faces/cage and slow background movement. Source-pose realism remains limited; do not claim regenerated natural anatomy.

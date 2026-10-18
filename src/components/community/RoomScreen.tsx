@@ -23,7 +23,6 @@ import { useRoomPresence } from "@/hooks/useRoomPresence";
 import { useSessionCompanions } from "@/hooks/useSessionCompanions";
 import { useRoomMedia } from "@/hooks/useRoomMedia";
 import { useActiveSession } from "@/hooks/useActiveSession";
-import { useProfile } from "@/hooks/useProfile";
 import { useIdleVisibility } from "@/hooks/useIdleVisibility";
 import { usePersonalTile } from "@/hooks/usePersonalTile";
 import { useSessionTimer } from "@/hooks/useSessionTimer";
@@ -64,7 +63,6 @@ export function RoomScreen({ id }: {
     id: string;
 }) {
     const { t,locale } = useTranslation();
-    const profile = useProfile();
     const tile = usePersonalTile();
     const { isVisible: tileChromeVisible } = useIdleVisibility();
     const active = useActiveSession();
