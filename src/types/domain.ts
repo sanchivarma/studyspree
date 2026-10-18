@@ -25,6 +25,7 @@ export type Session = {
 export type DayStat = { date: string; totalSeconds: number; sessionCount: number };
 export type WebcamCorner = "top-left" | "top-right" | "bottom-left" | "bottom-right";
 export type Profile = {
+  soloScene: import("@/lib/soloScenes/catalog").SoloScenePreferences;
   mirrorSelfView: boolean;
   showOwnTile: boolean;
   shareNowPlaying: boolean;

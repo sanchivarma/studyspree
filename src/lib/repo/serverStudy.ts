@@ -30,7 +30,7 @@ async function profile(client: Client, id: string) {
         mirrorSelfView:tile.mirrored,showOwnTile:tile.isVisible,shareNowPlaying:tile.shareNowPlaying,leaderboardOptIn:p.leaderboard_opt_in,
         reduceMotion: p.reduce_motion, webcamEnabled: p.webcam_enabled, webcamCorner: p.webcam_corner, ambienceEnabled: p.ambience_enabled,
         musicTrack: p.music_track, backgroundEffects: p.background_effects, effectVolumes: p.effect_volumes, musicVolume: p.music_volume, roomVolume: p.room_volume, comebackShownForDate: p.comeback_shown_for_date,
-        companionPreferences: p.companion_preferences });
+        companionPreferences: p.companion_preferences, soloScene: p.solo_scene });
 }
 async function streak(client: Client, id: string) {
     const response = await client.from("streaks").select("*").eq("user_id", id).single();
@@ -52,6 +52,7 @@ export async function executeStudy(input: Input) {
             const mapping = { displayName: "display_name", selectedTheme: "selected_theme", timezone: "timezone", showStreak: "show_streak", reduceMotion: "reduce_motion", webcamEnabled: "webcam_enabled", webcamCorner: "webcam_corner", ambienceEnabled: "ambience_enabled", musicTrack: "music_track", musicVolume: "music_volume", roomVolume: "room_volume", comebackShownForDate: "comeback_shown_for_date", companionPreferences: "companion_preferences" } as const;
             const update: Database["public"]["Tables"]["profiles"]["Update"] = {};
             if (p.backgroundEffects !== undefined) update.background_effects = profileSchema.shape.backgroundEffects.parse(p.backgroundEffects);
+            if (p.soloScene !== undefined) update.solo_scene = profileSchema.shape.soloScene.parse(p.soloScene);
             if (p.effectVolumes !== undefined) update.effect_volumes = profileSchema.shape.effectVolumes.parse(p.effectVolumes);
             for (const [key, value] of Object.entries(p))
                 if(key in mapping)Reflect.set(update, mapping[key as keyof typeof mapping], value);

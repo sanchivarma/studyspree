@@ -122,6 +122,36 @@ body:has([data-theme-picker][data-page-visible="false"]) [data-slot="sheet-overl
   50% { transform: translate3d(1%, -1%, 0) scale(1.025); opacity: 1; }
 }
 
+/* The seated POV is fixed. Only scenery outside the glass moves. */
+.solo-study-scene { position:absolute; inset:0; overflow:hidden; pointer-events:none; background:var(--bg); --window-frame:#42392f; --window-trim:#a69b88; }
+.solo-window { position:absolute; inset:0 0 14%; overflow:hidden; border:clamp(5px,0.65vw,11px) solid var(--window-frame); background:linear-gradient(155deg,#293d48,#121b24); box-shadow:inset 0 0 0 2px var(--window-trim); }
+.solo-study-scene[data-frame="modern"] { --window-frame:#343638; --window-trim:#a9afb0; }
+.solo-study-scene[data-frame="medieval"] { --window-frame:#71695c; --window-trim:#b8a58b; }
+.solo-study-scene[data-frame="gothic"] { --window-frame:#554f47; --window-trim:#b1a18b; }
+.solo-study-scene[data-frame="elven"] { --window-frame:#c2b494; --window-trim:#eee0bc; }
+.solo-study-scene[data-frame="metal"] { --window-frame:#40484f; --window-trim:#9aaab4; }
+.solo-study-scene[data-frame="nautical"] { --window-frame:#493424; --window-trim:#ba9757; }
+.solo-study-scene:is([data-frame="medieval"],[data-frame="gothic"]) .solo-window { border-radius:14% 14% 0 0 / 8% 8% 0 0; }
+.solo-study-scene[data-frame="elven"] .solo-window { border-radius:35% 35% 0 0 / 12% 12% 0 0; }
+.solo-study-scene[data-frame="metal"] .solo-window { border-radius:3%; border-style:ridge; }
+.solo-window-bar { position:absolute; inset:0 auto 0 50%; width:clamp(3px,0.35vw,6px); background:var(--window-frame); box-shadow:1px 0 0 var(--window-trim); }
+.solo-study-scene[data-frame="modern"] .solo-window-bar { left:32%; }
+.solo-study-scene[data-frame="elven"] .solo-window-bar { transform:rotate(4deg); border-radius:100%; }
+.solo-glass { position:absolute; inset:0; background:linear-gradient(113deg,transparent 58%,rgb(255 255 255 / 0.025) 59%,transparent 65%); box-shadow:inset 0 0 22px rgb(0 0 0 / 0.25); }
+.solo-desk { position:absolute; inset:auto 0 0; width:100%; height:45%; object-fit:fill; }
+.solo-outside-motion { position:absolute; color:rgb(235 249 255 / 0.65); animation-play-state:running; }
+.solo-study-scene[data-motion="paused"] .solo-outside-motion { animation-play-state:paused; }
+.solo-clouds { top:1%; left:-8%; width:110%; height:30%; object-fit:contain; opacity:0.24; animation:solo-cloud-drift 120s ease-in-out infinite alternate; }
+.solo-ship { left:36%; top:39%; width:9%; height:13%; object-fit:contain; opacity:0.8; animation:solo-sail 180s linear infinite; }
+.solo-stars { inset:0; width:100%; height:100%; opacity:0.45; animation:solo-star-drift 100s ease-in-out infinite alternate; }
+.solo-bubbles { inset:0; width:100%; height:120%; opacity:0.35; animation:solo-bubble-drift 90s ease-in-out infinite alternate; }
+.solo-water-light { inset:54% -5% -5%; opacity:0.18; background:repeating-linear-gradient(177deg,transparent 0 23px,rgb(245 249 255 / 0.06) 24px,transparent 26px); animation:solo-water-drift 38s ease-in-out infinite alternate; }
+@keyframes solo-cloud-drift { from {transform:translate3d(-3%,0,0);} to {transform:translate3d(5%,1%,0);} }
+@keyframes solo-sail { 0% {transform:translate3d(-12vw,0,0);opacity:0;} 8%,92% {opacity:0.8;} 100% {transform:translate3d(25vw,1px,0);opacity:0;} }
+@keyframes solo-star-drift { from {transform:translate3d(0,0,0);opacity:0.3;} to {transform:translate3d(0.4%,-0.4%,0);opacity:0.6;} }
+@keyframes solo-bubble-drift { from {transform:translate3d(0,0,0);} to {transform:translate3d(1%,-12%,0);} }
+@keyframes solo-water-drift { from {transform:translate3d(-1%,0,0);opacity:0.12;} to {transform:translate3d(1%,1%,0);opacity:0.25;} }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation: none !important;

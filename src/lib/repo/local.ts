@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { soloSceneSchema, defaultSoloScene } from "@/lib/soloScenes/catalog";
 import { addMonths, format, parseISO, startOfMonth } from "date-fns";
 import { now } from "@/lib/clock";
 import { musicTracks } from "@/lib/audio/catalog";
@@ -31,6 +32,7 @@ const timezone = z.string().refine((value) => {
   try { new Intl.DateTimeFormat("en", { timeZone: value }); return true; } catch { return false; }
 });
 export const profileSchema = z.object({
+  soloScene: soloSceneSchema.default(defaultSoloScene),
   mirrorSelfView:z.boolean().default(true),showOwnTile:z.boolean().default(true),shareNowPlaying:z.boolean().default(false),leaderboardOptIn:z.boolean().default(false),
   displayName: z.string(), selectedTheme: z.string().min(1), timezone,
   showStreak: z.boolean(), reduceMotion: z.boolean(), webcamEnabled: z.boolean(), ambienceEnabled: z.boolean(),
@@ -114,6 +116,7 @@ export class LocalRepository implements Repository {
 
   private profile(): Profile {
     const stored = this.read<Profile>("ss_profile", profileSchema, () => ({
+      soloScene: { ...defaultSoloScene },
       mirrorSelfView:true,showOwnTile:true,shareNowPlaying:false,leaderboardOptIn:false,
       displayName: "", selectedTheme: "rain-desk", timezone: defaultTimezone(), showStreak: true,
       reduceMotion: false, webcamEnabled: false, ambienceEnabled: false,

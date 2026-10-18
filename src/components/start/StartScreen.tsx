@@ -10,6 +10,8 @@ import type { CompanionPreferences } from "@/types/characters";
 import { soloCompanions } from "@/lib/characters/schemas";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetClose, SheetTrigger } from "@/components/ui/sheet";
 import { ThemeScene } from "@/components/scene/ThemeScene";
+import { SoloStudyScene } from "@/components/scene/SoloStudyScene";
+import { defaultSoloScene } from "@/lib/soloScenes/catalog";
 import { ThemeSheet } from "@/components/scene/ThemeSheet";
 import { getTheme } from "@/lib/themes/registry";
 import { cn } from "@/lib/utils";
@@ -110,7 +112,7 @@ export function StartScreen({ displayName, initialHour, initialMode }: { display
       className="relative isolate flex min-h-[calc(100dvh-3.5rem)] flex-col justify-end md:min-h-dvh"
       style={style}
     >
-      <ThemeScene slug={slug} priority />
+      {companions.mode === "solo" ? <SoloStudyScene preferences={profile.data?.soloScene ?? defaultSoloScene}/> : <ThemeScene slug={slug} priority />}
       <div aria-hidden="true" className="start-screen-scrim pointer-events-none absolute inset-0" />
       <AccountControls />
 

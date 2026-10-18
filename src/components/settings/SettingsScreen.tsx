@@ -15,6 +15,7 @@ import { getTheme } from "@/lib/themes/registry";
 import { BackgroundEffectsPicker } from "@/components/ambience/BackgroundEffectsPicker";
 import { radioStations } from "@/lib/audio/radio";
 import { PersonalTileSettings } from "./PersonalTileSettings";
+import { SoloSceneSettings } from "./SoloSceneSettings";
 
 function PreferenceSwitch({ label, checked, disabled, reducedMotion, onChange }: {
   label: string; checked: boolean; disabled: boolean; reducedMotion: boolean; onChange: (value: boolean) => void;
@@ -51,6 +52,7 @@ export function SettingsScreen() {
     <AccountControls />
     <h1 className="mb-6 text-title">{t("common.settings")}</h1>
     <PersonalTileSettings />
+    <SoloSceneSettings />
     {(update.error || cameraSaveError) && <p role="alert" className="mb-4 text-small text-text-muted">{t("settings.saveError")}</p>}
     <section className={cardClass}>
       <h2 className="text-body font-semibold">{t("settings.profile")}</h2>
