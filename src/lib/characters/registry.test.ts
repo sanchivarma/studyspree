@@ -11,12 +11,12 @@ describe("virtual companion definitions", () => {
     expect(illustrated.filter(value => value.presentation === "female")).toHaveLength(4);
     expect(new Set(illustrated.map(value => value.gif)).size).toBe(8);
     expect(getCharacter("rain-desk")).toBeNull();
-    for (const character of illustrated) expect(character.gif).toBe(`/characters/${character.slug}/study-v1.gif`);
+    for (const character of illustrated) expect(character.gif).toBe(`/characters/${character.slug}/study-v3.gif`);
   });
   it("supports mixed styles, long illustrated loops and twelve realistic studying GIFs", () => {
     expect(characters.filter(value => value.style === "whimsical")).toHaveLength(3);
     for (const value of characters.filter(value => value.style === "illustrated" || value.style === "whimsical")) {
-      expect(value.loopSeconds).toBe(150); expect(value.webm).toMatch(/study-v2\.webm$/);
+      expect(value.loopSeconds).toBe(150); expect(value.webm).toMatch(/study-v3\.webm$/);
     }
     const realistic = characters.filter(value => value.style === "realistic");
     expect(realistic).toHaveLength(12);
@@ -24,7 +24,12 @@ describe("virtual companion definitions", () => {
     expect(realistic.filter(value => value.presentation === "male")).toHaveLength(6);
     expect(realistic.filter(value => value.presentation === "female")).toHaveLength(6);
     for (const value of realistic) {
-      expect(value.loopSeconds).toBe(value.assetVersion === "v1" ? 5.3 : value.slug === "realistic-02" ? 5.45 : 5.02); expect(value.webm).toBeNull(); expect(value.gif).toMatch(/study-v[134]\.gif$/);
+      // The rejected interpolated replacements must not become active again.
+      const expectedVersion = value.slug === "realistic-02" ? "v4" : Number(value.slug.slice(-2)) >= 9 ? "v1" : "v3";
+      expect(value.assetVersion).toBe(expectedVersion);
+      expect(value.loopSeconds).toBe(expectedVersion === "v4" ? 5.45 : expectedVersion === "v1" ? 5.3 : 5.02);
+      expect(value.webm).toBeNull();
+      expect(value.gif).toBe(`/characters/${value.slug}/study-${expectedVersion}.gif`);
       expect(value.descriptionKey).toMatch(/realistic(Reading|Writing)$/);
     }
     expect(companionSchema.safeParse({ mode: "characters", characterSlugs: ["female-01", "moss-fox", "realistic-01", "realistic-09", "realistic-10", "realistic-11", "realistic-12"] }).success).toBe(true);

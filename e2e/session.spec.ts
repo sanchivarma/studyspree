@@ -45,6 +45,9 @@ test("five seconds of inactivity hides controls, dims the progress bar and input
   await expect(details).toHaveCSS("opacity", "0");
   await expect(ring.locator("..")).toHaveCSS("opacity", "0.4");
   await expect(screen).toHaveCSS("cursor", "none");
+  await expect(page.getByRole("button", { name: "Choose companions", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Sound", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "My status", exact: true })).toBeVisible();
 
   await page.mouse.move(20, 20);
   await expect(screen).toHaveAttribute("data-controls-visible", "true");
@@ -60,7 +63,7 @@ test("five seconds of inactivity hides controls, dims the progress bar and input
   await expect(controls).toHaveCSS("opacity", "1");
   await page.clock.fastForward(5000);
   await page.keyboard.press("Tab");
-  await expect(page.getByRole("button", { name: "Finish", exact: true })).toBeFocused();
+  await expect(page.getByRole("button", { name: "Choose companions", exact: true })).toBeFocused();
   await expect(screen).toHaveAttribute("data-controls-visible", "true");
   await expect(page.getByTestId("session-time")).toHaveText("4:40 left");
   await page.clock.fastForward(5000);

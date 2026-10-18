@@ -1,0 +1,112 @@
+{
+  "male-01": {
+    "version": "v3",
+    "posterVersion": "v1",
+    "loopSeconds": 150,
+    "gifSeconds": 4,
+    "gifFrames": 80,
+    "gifWidth": 480,
+    "gifHeight": 360,
+    "video": true
+  },
+  "male-02": {
+    "version": "v3",
+    "posterVersion": "v1",
+    "loopSeconds": 150,
+    "gifSeconds": 4,
+    "gifFrames": 80,
+    "gifWidth": 480,
+    "gifHeight": 360,
+    "video": true
+  },
+  "male-03": {
+    "version": "v3",
+    "posterVersion": "v1",
+    "loopSeconds": 150,
+    "gifSeconds": 4,
+    "gifFrames": 80,
+    "gifWidth": 480,
+    "gifHeight": 360,
+    "video": true
+  },
+  "male-04": {
+    "version": "v3",
+    "posterVersion": "v1",
+    "loopSeconds": 150,
+    "gifSeconds": 4,
+    "gifFrames": 80,
+    "gifWidth": 480,
+    "gifHeight": 360,
+    "video": true
+  },
+  "female-01": {
+    "version": "v3",
+    "posterVersion": "v1",
+    "loopSeconds": 150,
+    "gifSeconds": 4,
+    "gifFrames": 80,
+    "gifWidth": 480,
+    "gifHeight": 360,
+    "video": true
+  },
+  "female-02": {
+    "version": "v3",
+    "posterVersion": "v1",
+    "loopSeconds": 150,
+    "gifSeconds": 4,
+    "gifFrames": 80,
+    "gifWidth": 480,
+    "gifHeight": 360,
+    "video": true
+  },
+  "female-03": {
+    "version": "v3",
+    "posterVersion": "v1",
+    "loopSeconds": 150,
+    "gifSeconds": 4,
+    "gifFrames": 80,
+    "gifWidth": 480,
+    "gifHeight": 360,
+    "video": true
+  },
+  "female-04": {
+    "version": "v3",
+    "posterVersion": "v1",
+    "loopSeconds": 150,
+    "gifSeconds": 4,
+    "gifFrames": 80,
+    "gifWidth": 480,
+    "gifHeight": 360,
+    "video": true
+  },
+  "moss-fox": {
+    "version": "v3",
+    "posterVersion": "v1",
+    "loopSeconds": 150,
+    "gifSeconds": 4,
+    "gifFrames": 80,
+    "gifWidth": 320,
+    "gifHeight": 240,
+    "video": true
+  },
+  "pip-owl": {
+    "version": "v3",
+    "posterVersion": "v1",
+    "loopSeconds": 150,
+    "gifSeconds": 4,
+    "gifFrames": 80,
+    "gifWidth": 320,
+    "gifHeight": 240,
+    "video": true
+  },
+  "momo-cloud": {
+    "version": "v3",
+    "posterVersion": "v1",
+    "loopSeconds": 150,
+    "gifSeconds": 4,
+    "gifFrames": 80,
+    "gifWidth": 320,
+    "gifHeight": 240,
+    "video": true
+  }
+}

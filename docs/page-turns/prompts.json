@@ -1,0 +1,42 @@
+[
+  {
+    "slug": "realistic-01",
+    "prompt": "Create an animation sprite sheet using the reference fictional Arun's identity and blue sweater. EXACT EIGHT COLUMNS and EIGHT ROWS, 64 equal 4:3 cells, NO gutters borders or labels. Sheet fills canvas edge to edge, total canvas 2048x1536. Every tiny frame same fixed camera library desk and face. One very slow single English-book page turn from SCREEN LEFT TO SCREEN RIGHT, as seen by the viewer. His hand at the LEFT edge lifts ONE THIN LEFT PAGE and carries it gradually across the spine to the RIGHT. Same hand throughout, other hand rests motionless on desk. Face and upper body completely fixed. Cells1-8 resting reading. Cells9-24 left page corner rises in VERY SMALL incremental steps. Cells25-40 page arcs slowly across center to the right, same hand following page edge. Cells41-52 lays the page down onto RIGHT stack. Cells53-64 hand returns to initial LEFT rest and reads. Covers/spine/desk stay fixed; page is paper not book cover; no whole book lift. No hand swaps, extra hands, morphing or head turns. Neighboring cells differ by only a few pixels of hand/page motion. Photographic realistic fiction, not a real person. Exactly8x8 equal complete scenes, all64 cells fully inside canvas. Clean repeated grid, not collage.",
+    "tool": "built-in imagegen",
+    "reference": "public/characters/realistic-01/poster-v3.webp",
+    "source": "realistic-01-dense-sheet.png",
+    "direction": "viewer-left-to-right"
+  },
+  {
+    "slug": "realistic-07",
+    "prompt": "Reference fictional Minh identity and blue-gray shirt. Create EXACT8 COLUMNS x8 ROWS animation sheet,64 equal4:3 cells,2048x1536canvas,no gaps/borders/labels,all64fullscenes entirelyinsidecanvas. Fixed camera face room desk. A single slow page turn from SCREEN LEFT to SCREEN RIGHT viewed by us: his hand on LEFT lifts one thin LEFT page, carries it across fixed book spine, lays it on RIGHT stack; SAME HAND THROUGHOUT, other hand rests. Frames1-8 reading;9-24 corner rises a few pixels perframe;25-40 page gradually arcs left-to-right, samehandfollowsedge;41-52 paper settlesright;53-64 handreturnsleftrest reading. Covers flat, no booklift, no extra hands or handswaps, no headturns or camera shifts. Photorealistic fictional adult. Every adjacent cell differs by only a fewpixels. All64frames, exactly8completecolumns8completerows.",
+    "tool": "built-in imagegen",
+    "reference": "public/characters/realistic-07/poster-v3.webp",
+    "source": "realistic-07-dense-sheet.png",
+    "direction": "viewer-left-to-right"
+  },
+  {
+    "slug": "realistic-05",
+    "prompt": "Reference fictional Sofia identity and burgundy sweater. Create EXACT8 COLUMNS x8 ROWS animation sheet,64 equal4:3 cells,2048x1536canvas,no gaps/borders/labels,all64fullscenes entirelyinsidecanvas. Fixed camera face room desk. A single slow page turn from SCREEN LEFT to SCREEN RIGHT viewed by us: her hand on LEFT lifts one thin LEFT page, carries it across fixed book spine, lays it on RIGHT stack; SAME HAND THROUGHOUT, other hand rests. Frames1-8 reading;9-24 corner rises a few pixels perframe;25-40 page gradually arcs left-to-right, samehandfollowsedge;41-52 paper settlesright;53-64 handreturnsleftrest reading. Covers flat, no booklift, no extra hands or handswaps, no headturns or camera shifts. Photorealistic fictional adult. Every adjacent cell differs by only a fewpixels. All64frames, exactly8completecolumns8completerows.",
+    "tool": "built-in imagegen",
+    "reference": "public/characters/realistic-05/poster-v3.webp",
+    "source": "realistic-05-dense-sheet.png",
+    "direction": "viewer-left-to-right"
+  },
+  {
+    "slug": "realistic-08",
+    "prompt": "Reference fictional Samira identity, curly hair, mustard cardigan and blacktop. Create EXACT8 COLUMNS x8 ROWS animation sheet,64 equal4:3 cells,2048x1536canvas,no gaps/borders/labels,all64fullscenes entirelyinsidecanvas. Fixed camera face room desk. A single slow page turn from SCREEN LEFT to SCREEN RIGHT viewed by us: her hand on LEFT lifts one thin LEFT page, carries it across fixed book spine, lays it on RIGHT stack; SAME HAND THROUGHOUT, other hand rests. Frames1-8 reading;9-24 corner rises a few pixels perframe;25-40 page gradually arcs left-to-right, samehandfollowsedge;41-52 paper settlesright;53-64 handreturnsleftrest reading. Covers flat, no booklift, no extra hands or handswaps, no headturns or camera shifts. Photorealistic fictional adult. Every adjacent cell differs by only a fewpixels. All64frames, exactly8completecolumns8completerows.",
+    "tool": "built-in imagegen",
+    "reference": "public/characters/realistic-08/poster-v3.webp",
+    "source": "realistic-08-dense-sheet.png",
+    "direction": "viewer-left-to-right"
+  },
+  {
+    "slug": "realistic-06",
+    "prompt": "Reference fictional Matt identity, short light-brown hair, lightstubble,darkgreen sweater. EXACT6columns by6rows animation sheet:36 equal4:3 fullframes,canvas1536x1536,no gutters borders labels;all36 completecellsinsidecanvas. Fixed face/head/room/desk/camera, photorealistic. One slow thin book page turn from SCREEN LEFT TO SCREEN RIGHT as seen by viewer. SAME hand on LEFT lifts one thin LEFT page and carries it over fixed spine to RIGHT stack;otherhandrests. Frames1-6restreading;7-12liftleftcornergradually;13-18onepagecurvesupovercenter;19-24samehandlaysleafonRIGHT;25-30releasesleafreturnsLEFT;31-36restagain. Small neighbouring posechanges, no extra hands/hand swaps or coverlift. Entirepersonwaistupbothhandsbookvisibleineveryframe. Absolutely samecompositionacrossallframes, consistent anatomy, busycalmstudying.",
+    "tool": "built-in imagegen",
+    "reference": "public/characters/realistic-06/poster-v3.webp",
+    "source": "realistic-06-dense-sheet.png",
+    "direction": "viewer-left-to-right"
+  }
+]

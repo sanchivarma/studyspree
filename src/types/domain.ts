@@ -15,6 +15,7 @@ export type Session = {
   localDate: string;
   task: string | null;
   companions: CompanionPreferences;
+  companionStatusCycle?: number;
   roomId?: string | null;
   title?:string;
   rules?:string|null;

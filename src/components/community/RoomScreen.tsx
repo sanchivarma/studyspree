@@ -7,6 +7,8 @@ import { z } from "zod";
 import { Eye, EyeOff, Users, X, Grid2X2, Pin, MessageCircle, Video, VideoOff, Settings, MoreHorizontal, ArrowLeft } from "lucide-react";
 import { Popover } from "radix-ui";
 import { ParticipantGrid, type ParticipantTile } from "@/components/session/ParticipantGrid";
+import { CharacterCaption } from "@/components/characters/CharacterCaption";
+import { SessionStatusControl } from "@/components/session/SessionStatusControl";
 import { CharacterPicker } from "@/components/characters/CharacterPicker";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { SessionProgress } from "@/components/timer/SessionProgress";
@@ -18,6 +20,7 @@ import { useSessionCompanions } from "@/hooks/useSessionCompanions";
 import { useRoomMedia } from "@/hooks/useRoomMedia";
 import { useActiveSession } from "@/hooks/useActiveSession";
 import { useProfile } from "@/hooks/useProfile";
+import { useIdleVisibility } from "@/hooks/useIdleVisibility";
 import { usePersonalTile } from "@/hooks/usePersonalTile";
 import { useSessionTimer } from "@/hooks/useSessionTimer";
 import { useEndSession } from "@/hooks/useEndSession";
@@ -59,6 +62,7 @@ export function RoomScreen({ id }: {
     const { t,locale } = useTranslation();
     const profile = useProfile();
     const tile = usePersonalTile();
+    const { isVisible: tileChromeVisible } = useIdleVisibility();
     const active = useActiveSession();
     const result = useCommunity("room", { id });
     const state = result.data?.pages[0];
@@ -107,9 +111,9 @@ export function RoomScreen({ id }: {
         const pinLabel = t(person.id === state?.viewerId ? pin ? "calendar.unpinSelf" : "calendar.pinSelf" : pin ? "community.unpin" : "community.pin");
         return { id: `person:${person.id}`, content: <article data-person-id={person.id} className="relative h-full min-h-0 overflow-hidden rounded-lg bg-surface">
           <div className="absolute inset-0 flex items-center justify-center bg-surface-2">{track ? <RoomVideo track={track} mirrored={person.id === state?.viewerId && (tile.data?.mirrored ?? true)}/> : <span className="truncate px-2 text-small">{person.displayName}</span>}</div>
-          <button type="button" aria-label={t("characters.hidePerson", { name: person.displayName })} onClick={() => setHiddenPeople(current => [...current, person.id])} className="absolute top-0 right-0 z-10 flex size-11 items-center justify-center rounded-lg bg-background/70"><X aria-hidden="true" className="size-4"/></button>
-          <button type="button" aria-label={pinLabel} aria-pressed={Boolean(pin)} disabled={mutation.isPending} onClick={() => togglePin(id,person.id)} className="absolute top-0 left-0 z-10 flex size-11 items-center justify-center rounded-lg bg-background/70"><Pin aria-hidden="true" className={pin ? "size-4 text-accent" : "size-4"}/></button>
-          <div className="absolute right-0 bottom-0 left-0 flex items-center gap-1 bg-background/75 pl-2"><p className="min-w-0 flex-1 truncate text-[11px]">{person.displayName}{p.status && ` ? ${p.status}`}</p>
+          <button type="button" aria-label={t("characters.hidePerson", { name: person.displayName })} onClick={() => setHiddenPeople(current => [...current, person.id])} tabIndex={tileChromeVisible ? 0 : -1} aria-hidden={!tileChromeVisible} className={`absolute top-0 right-0 z-10 flex size-11 items-center justify-center rounded-lg bg-background/70 transition-opacity duration-200 ${tileChromeVisible ? "" : "pointer-events-none opacity-0"}`}><X aria-hidden="true" className="size-4"/></button>
+          <button type="button" aria-label={pinLabel} aria-pressed={Boolean(pin)} disabled={mutation.isPending} onClick={() => togglePin(id,person.id)} tabIndex={tileChromeVisible ? 0 : -1} aria-hidden={!tileChromeVisible} className={`absolute top-0 left-0 z-10 flex size-11 items-center justify-center rounded-lg bg-background/70 transition-opacity duration-200 ${tileChromeVisible ? "" : "pointer-events-none opacity-0"}`}><Pin aria-hidden="true" className={pin ? "size-4 text-accent" : "size-4"}/></button>
+          <div aria-hidden={!tileChromeVisible} className={`absolute right-0 bottom-0 left-0 flex items-center gap-1 bg-background/75 pl-2 transition-opacity duration-200 ${tileChromeVisible ? "" : "pointer-events-none opacity-0"}`}><p className="min-w-0 flex-1 truncate text-[11px]"><span className="block truncate">{person.displayName}</span><span className="block truncate text-foreground/65">{person.id === state?.viewerId ? tile.data?.status ?? p.status : p.status}</span></p>
             <Popover.Root><Popover.Trigger asChild><button type="button" aria-label={`${t("characters.tileOptions")} ${person.displayName}`} className="flex size-11 shrink-0 items-center justify-center"><MoreHorizontal aria-hidden="true" className="size-4"/></button></Popover.Trigger><Popover.Portal><Popover.Content onKeyDown={event => event.stopPropagation()} collisionPadding={12} className="z-50 max-h-[70dvh] w-64 overflow-y-auto rounded-xl border border-border bg-surface p-3">
               <p className="break-words text-small">{p.status}</p>
               {state?.context.manager === true && person.id !== state.viewerId && <button className={buttonClass} onClick={() => mutation.mutate({ action: "room.kick", data: { id, targetId: person.id } })}>{t("community.remove")}</button>}
@@ -118,7 +122,7 @@ export function RoomScreen({ id }: {
           </div>
         </article> };
       }),
-      ...(!hideVirtual ? characters.map(slug => ({ id: slug, content: <figure className="relative h-full min-h-0"><CharacterLoop slug={slug} priority className="h-full !aspect-auto !rounded-lg"/><button type="button" disabled={selection.isPending} aria-label={t("characters.remove", { name: t(`characters.${slug}`) })} onClick={() => choose(slug)} className="absolute top-0 right-0 flex size-11 items-center justify-center rounded-lg bg-background/70"><X aria-hidden="true" className="size-4"/></button><figcaption className="absolute right-0 bottom-0 left-0 truncate bg-background/75 px-2 text-[11px]">{t(`characters.${slug}`)}</figcaption></figure> })) : []),
+      ...(!hideVirtual ? characters.map(slug => ({ id: slug, content: <figure className="relative h-full min-h-0"><CharacterLoop slug={slug} priority className="h-full !aspect-auto !rounded-lg"/><button type="button" disabled={selection.isPending} aria-label={t("characters.remove", { name: t(`characters.${slug}`) })} onClick={() => choose(slug)} tabIndex={tileChromeVisible ? 0 : -1} aria-hidden={!tileChromeVisible} className={`absolute top-0 right-0 flex size-11 items-center justify-center rounded-lg bg-background/70 transition-opacity duration-200 ${tileChromeVisible ? "" : "pointer-events-none opacity-0"}`}><X aria-hidden="true" className="size-4"/></button><CharacterCaption slug={slug} sessionId={active.data?.id ?? id} cycle={active.data?.companionStatusCycle} visible={tileChromeVisible}/></figure> })) : []),
     ];
     const selector = <CharacterPicker selected={characters} onChange={changeCharacters}/>;
     const options = <div className="space-y-3">
@@ -145,6 +149,7 @@ export function RoomScreen({ id }: {
             <button ref={chatTrigger} type="button" aria-label={t("room.chat")} aria-expanded={chatOpen} aria-controls="room-chat" onClick={() => setChatOpen(value => !value)} className={sideButton}><MessageCircle aria-hidden="true" className="size-4"/></button>
             <button type="button" aria-label={t(sharing ? "community.hideCamera" : "community.shareCamera")} disabled={mutation.isPending} onClick={() => mutation.mutate({ action: "room.share", data: { id, value: !sharing } })} className={sideButton}>{sharing ? <VideoOff className="size-4"/> : <Video className="size-4"/>}</button>
             <Sheet><SheetTrigger asChild><button type="button" aria-label={t("characters.roomOptions")} className={sideButton}><Settings aria-hidden="true" className="size-4"/></button></SheetTrigger><SheetContent side="right" showCloseButton={false} onKeyDown={event => event.stopPropagation()} className="overflow-y-auto bg-background p-4"><SheetHeader><SheetTitle>{t("characters.roomOptions")}</SheetTitle><SheetDescription>{state.resource?.title ?? t("room.title")}</SheetDescription></SheetHeader><SheetClose asChild><button aria-label={t("scene.close")} className="absolute top-2 right-2 flex size-11 items-center justify-center"><X className="size-4"/></button></SheetClose>{options}</SheetContent></Sheet>
+            <SessionStatusControl roomId={id}/>
             <ShareSessionControl compact roomId={id}/>
           </aside>
           <ParticipantGrid tiles={tiles} testId="room-video-grid" className="flex-1"/>

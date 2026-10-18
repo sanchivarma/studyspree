@@ -58,9 +58,9 @@ test("reduced-motion companions render static posters with no animation requests
 test("missing long video and GIF fall back to the poster and Finish remains usable", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await signIn(page);
-  await page.route("**/characters/*/study-v1.gif", route => route.abort());
-  await page.route("**/characters/*/study-v2.webm", route => route.abort());
-  await page.route("**/characters/*/study-v2.mp4", route => route.abort());
+  await page.route("**/characters/*/study-*.gif", route => route.abort());
+  await page.route("**/characters/*/study-*.webm", route => route.abort());
+  await page.route("**/characters/*/study-*.mp4", route => route.abort());
   await choosePartners(page);
   await page.getByRole("button", { name: "Start", exact: true }).click();
   const loop = page.getByTestId("session-companions").getByTestId("character-loop-male-01");

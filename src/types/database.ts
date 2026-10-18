@@ -1714,6 +1714,7 @@ export type Database = {
             "sessions": {
                 Row: {
                     "actual_seconds": number;
+                    "companion_status_cycle": number;
                     "companions": NonNullable<Json>;
                     "ended_at": string | null;
                     "ended_reason": string | null;
@@ -1737,6 +1738,7 @@ export type Database = {
                 ComputedFields: never;
                 Insert: {
                     "actual_seconds"?: number;
+                    "companion_status_cycle"?: number;
                     "companions"?: NonNullable<Json>;
                     "ended_at"?: string | null;
                     "ended_reason"?: string | null;
@@ -1759,6 +1761,7 @@ export type Database = {
                 };
                 Update: {
                     "actual_seconds"?: number;
+                    "companion_status_cycle"?: number;
                     "companions"?: NonNullable<Json>;
                     "ended_at"?: string | null;
                     "ended_reason"?: string | null;
@@ -2433,6 +2436,7 @@ export type Database = {
                 };
                 Returns: {
                     "actual_seconds": number;
+                    "companion_status_cycle": number;
                     "companions": NonNullable<Json>;
                     "ended_at": string | null;
                     "ended_reason": string | null;
@@ -2557,6 +2561,7 @@ export type Database = {
                 };
                 Returns: {
                     "actual_seconds": number;
+                    "companion_status_cycle": number;
                     "companions": NonNullable<Json>;
                     "ended_at": string | null;
                     "ended_reason": string | null;
@@ -2597,6 +2602,7 @@ export type Database = {
                 };
                 Returns: {
                     "actual_seconds": number;
+                    "companion_status_cycle": number;
                     "companions": NonNullable<Json>;
                     "ended_at": string | null;
                     "ended_reason": string | null;
@@ -2633,6 +2639,7 @@ export type Database = {
                 };
                 Returns: {
                     "actual_seconds": number;
+                    "companion_status_cycle": number;
                     "companions": NonNullable<Json>;
                     "ended_at": string | null;
                     "ended_reason": string | null;

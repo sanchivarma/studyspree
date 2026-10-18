@@ -47,6 +47,7 @@ export const profileSchema = z.object({
 const inputSchema = z.object({ ...sessionDetailsShape,plannedMinutes: z.number().finite().positive().nullable(), themeSlug: z.string().min(1), task: z.string().nullable(), companions: localCompanionSchema.default(soloCompanions) }).strict();
 export const sessionSchema = z.object({
   id: z.string().min(1), startedAt: iso, endedAt: iso.nullable(),
+  companionStatusCycle: z.number().int().nonnegative().optional(),
   roomId: z.uuid().nullable().optional(),
   ...inputSchema.shape, companions: companionSchema.default(soloCompanions), actualSeconds: z.number().int().min(0).max(21600),
   endedReason: z.enum(["completed", "stopped_early", "abandoned"]).nullable(), localDate: date,
@@ -249,7 +250,7 @@ export class LocalRepository implements Repository {
       const sessions = this.sessions();
       const active = this.active(sessions);
       if (active) return active;
-      const session = this.createSession(input, now(), crypto.randomUUID());
+      const session = { ...this.createSession(input, now(), crypto.randomUUID()), companionStatusCycle: sessions.reduce((highest, item) => Math.max(highest, item.companionStatusCycle ?? -1), -1) + 1 };
       this.write("ss_sessions", [...sessions, session]);
       this.write("ss_active", { id: session.id, lastHeartbeatAt: session.startedAt });
       return session;

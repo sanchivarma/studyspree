@@ -28,6 +28,19 @@ export function repositoryContract(name: string, create: () => Repository) {
       const result = profileSchema.parse({ ...profile, displayName: "Reader", backgroundEffects: ["rain", "medieval", "medieval-flute", "medieval-lyre"], effectVolumes: { rain: 0.7, medieval: 0.3, "medieval-flute": 0.5, "medieval-lyre": 0.4 }, roomVolume: 0.6 });
       expect(result).toMatchObject({ displayName: "Reader", backgroundEffects: ["rain"], effectVolumes: { rain: 0.7 }, roomVolume: 0.6 });
     });
+    it("advances companion status rotation once per new session and retains personal status", async () => {
+      await repo.updatePersonalTile({ status: "Review chapter five by Friday" });
+      const first = await repo.startSession(input);
+      expect(first.companionStatusCycle).toBe(0);
+      expect((await repo.startSession(input)).companionStatusCycle).toBe(0);
+      await repo.endSession(first.id, "stopped_early");
+      const second = await repo.startSession(input);
+      expect(second.companionStatusCycle).toBe(1);
+      expect((await repo.getSession(first.id))?.companionStatusCycle).toBe(0);
+      expect((await repo.getPersonalTile()).status).toBe("Review chapter five by Friday");
+      await repo.endSession(second.id, "stopped_early");
+      await expect(repo.startSession({ ...input, companionStatusCycle: 40 } as typeof input)).rejects.toThrow();
+    });
     it("retains and paginates every status event",async()=>{
       for(let i=0;i<25;i++){vi.advanceTimersByTime(1000);await repo.updatePersonalTile({status:`Reading ${i}`});}
       const first=await repo.getTileStatusHistory({limit:20});expect(first.items).toHaveLength(20);expect(first.nextCursor).not.toBeNull();

@@ -1,0 +1,51 @@
+import { expect, test } from "@playwright/test";
+import { signIn, freezeClock, settleClock } from "./sessionFixtures";
+
+test("statuses rotate by session, personal status persists, and idle labels hide while navigation stays", async ({ page }) => {
+  test.setTimeout(60000);
+  await signIn(page); await freezeClock(page);
+  await page.goto("/study");
+  await page.getByRole("button", { name: "Choose companions", exact: true }).click();
+  await page.getByRole("button", { name: "Virtual partners", exact: true }).click();
+  for (const slug of ["realistic-01", "realistic-06"]) await page.getByTestId(`character-card-${slug}`).click();
+  await page.getByTestId("character-card-male-01").click();
+  await page.getByRole("button", { name: "Close", exact: true }).click();
+  await page.getByRole("button", { name: "Start", exact: true }).click();
+  await settleClock(page, "session-screen", 16);
+  const caption = page.getByTestId("character-caption-realistic-01");
+  const status = page.getByTestId("character-status-realistic-01");
+  const firstStatus = await status.textContent();
+  expect(firstStatus?.length).toBeGreaterThan(5);
+  await expect(page.getByTestId("character-caption-realistic-06")).toContainText("Matt");
+  await page.getByRole("button", { name: "My status", exact: true }).click();
+  const drawer = page.getByRole("dialog", { name: "My status", exact: true });
+  await drawer.getByLabel("What are you working on?", { exact: true }).fill("Review chapter five by Friday");
+  await drawer.getByRole("button", { name: "Save status", exact: true }).click();
+  await expect.poll(async () => { await page.clock.runFor(20); return drawer.getByRole("status").textContent(); }).toBe("Status saved.");
+  await drawer.getByRole("button", { name: "Close", exact: true }).click();
+  // Let the closing drawer finish returning keyboard focus before idling.
+  await page.clock.runFor(300);
+  await expect(page.getByTestId("my-session-status")).toHaveText("Review chapter five by Friday");
+  const snapshot = await page.evaluate(() => JSON.parse(localStorage.getItem("ss_sessions")!)[0]);
+  await page.clock.fastForward(5200);
+  await expect(caption).toHaveCSS("opacity", "0");
+  await expect(page.getByRole("button", { name: "Remove Arun", exact: true, includeHidden: true })).toHaveCSS("opacity", "0");
+  for (const name of ["Choose companions", "My status", "Sound"]) await expect(page.getByRole("button", { name, exact: true })).toBeVisible();
+  await page.mouse.move(30, 30);
+  await expect(caption).toHaveCSS("opacity", "1");
+  await page.reload(); await settleClock(page, "session-screen", 16);
+  await expect(status).toHaveText(firstStatus!);
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("ss_sessions")!)[0].startedAt)).toBe(snapshot.startedAt);
+  await page.getByRole("button", { name: "Finish", exact: true }).click();
+  await settleClock(page, "complete-screen", 16);
+  await page.goto("/study");
+  await expect.poll(async () => {
+    await page.clock.runFor(16);
+    return page.getByRole("button", { name: "Choose companions", exact: true }).textContent();
+  }).toContain("2 selected");
+  await page.getByRole("button", { name: "Start", exact: true }).click();
+  await settleClock(page, "session-screen", 16);
+  await expect(status).not.toHaveText(firstStatus!);
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("ss_sessions")!).at(-1).companionStatusCycle)).toBe(snapshot.companionStatusCycle + 1);
+  await expect(page.getByTestId("my-session-status")).toHaveText("Review chapter five by Friday");
+});
