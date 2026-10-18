@@ -4,16 +4,16 @@ import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
 
 const ffmpeg = process.argv[2] ?? "ffmpeg";
-const version = process.argv[3] ?? "v28";
+const version = process.argv[3] ?? "v30";
 if (!/^v\d+$/.test(version)) throw new Error("Invalid immutable output version");
 const definitions = {
   einstein: {
-    wrist: [83, 172], cuff: [79, 160, 179], handJoint: [88, 159, 179], skinSample: [87, 160, 178], stable: [65, 130, 205, 210],
-    paths: ["M79 166 Q82 159 91 157 L97 152 Q107 152 118 162 L120 169 Q119 177 106 179 L85 179 Q79 177 79 172Z", "M94 138 Q95 136 97 138 L112 158 L124 176 L121 178 L109 160Z"],
+    wrist: [83, 172], anchorX: 75, jointX: 94, stable: [65, 130, 205, 210],
+    paths: ["M76 158 Q81 158 86 163 Q88 159 92 157 L97 152 Q107 152 118 162 L120 169 Q119 177 106 179 L88 179 L76 179Z", "M94 138 Q95 136 97 138 L112 158 L124 176 L121 178 L109 160Z"],
   },
   tesla: {
-    wrist: [68, 184], cuff: [69, 176, 194], handJoint: [78, 175, 194], skinSample: [77, 176, 192], stable: [45, 140, 215, 215],
-    paths: ["M68 182 Q71 174 81 173 L89 165 Q94 163 101 169 L112 175 Q116 182 112 190 L105 193 L80 194 Q68 193 68 189Z", "M91 148 L94 148 L103 173 L114 192 L112 194 L101 176Z"],
+    wrist: [68, 184], anchorX: 61, jointX: 85, stable: [45, 140, 215, 215],
+    paths: ["M61 177 Q65 173 73 173 Q77 175 83 173 L89 165 Q94 163 101 169 L112 175 Q116 182 112 190 L105 193 L81 194 L61 194Z", "M91 148 L94 148 L103 173 L114 192 L112 194 L101 176Z"],
   },
 };
 let ledger = await readFile("public/characters/LICENCES.md", "utf8");
@@ -88,8 +88,6 @@ for (const [slug, definition] of Object.entries(definitions)) {
       const lift=line<0.84 ? 0 : -2.2*Math.sin(Math.PI*(line-0.84)/0.16);
       const cosine = Math.cos(angle), sine = Math.sin(angle);
       const forward=(x,y)=>[definition.wrist[0]+drift+(x-definition.wrist[0])*cosine-(y-definition.wrist[1])*sine,definition.wrist[1]+lift+(x-definition.wrist[0])*sine+(y-definition.wrist[1])*cosine];
-      const jointTop=forward(definition.handJoint[0],definition.handJoint[1]);
-      const jointBottom=forward(definition.handJoint[0],definition.handJoint[2]);
       if(slug === "tesla"){
         const seconds=frame/fps, strike=strikeTimes.findIndex(time=>seconds>=time&&seconds<time+0.2);
         const pulse=strike<0?0:Math.pow(1-(seconds-strikeTimes[strike])/0.2,1.5);
@@ -98,23 +96,24 @@ for (const [slug, definition] of Object.entries(definitions)) {
       for (let y = top; y < bottom; y++) for (let x = left; x < right; x++) {
         const p = (y*width+x)*4, fill = envelope[y*width+x]/255;
         for (let c=0;c<3;c++) output[p+c] = Math.round(original[p+c]*(1-fill)+plate[p+c]*fill);
-        // Anatomical wrist: its full 18-20px cross-section joins the fixed cuff
-        // to the moving hand. Native skin texture spans a softly tapered shape;
-        // the old narrow cylindrical connector and isolated hand are not used.
-        const jointX=(jointTop[0]+jointBottom[0])/2;
-        if(x>=definition.cuff[0]&&x<jointX){
-          const u=(x-definition.cuff[0])/(jointX-definition.cuff[0]);
-          const top=definition.cuff[1]*(1-u)+jointTop[1]*u-0.65*Math.sin(Math.PI*u);
-          const bottom=definition.cuff[2]*(1-u)+jointBottom[1]*u+0.4*Math.sin(Math.PI*u);
-          if(y>=top&&y<bottom){
-            const v=(y-top)/(bottom-top),edge=Math.min(1,(y-top)/0.65,(bottom-y)/0.65);
-            for(let c=0;c<3;c++)output[p+c]=Math.round(output[p+c]*(1-edge)+sample(original,definition.skinSample[0]+u*1.5,definition.skinSample[1]+v*(definition.skinSample[2]-definition.skinSample[1]),c)*edge);
-          }
+        // A continuous native cuff/wrist/hand mesh. The sleeve edge stays
+        // anchored while displacement increases across the original wrist.
+        // This preserves its actual width, contour and shading instead of
+        // synthesizing a rod or a flat skin-coloured bridge.
+        let sx=x, sy=y;
+        for(let iteration=0;iteration<12;iteration++){
+          const t=Math.max(0,Math.min(1,(sx-definition.anchorX)/(definition.jointX-definition.anchorX)));
+          const weight=t*t*(3-2*t);
+          const moved=forward(sx,sy);
+          sx+=x-(sx+(moved[0]-sx)*weight);
+          sy+=y-(sy+(moved[1]-sy)*weight);
         }
-        const dx=x-definition.wrist[0]-drift, dy=y-definition.wrist[1]-lift;
-        const sx=definition.wrist[0]+dx*cosine+dy*sine, sy=definition.wrist[1]-dx*sine+dy*cosine;
         const alpha=sample(mask,sx,sy,3)/255;
         if(alpha)for(let c=0;c<3;c++)output[p+c]=Math.round(output[p+c]*(1-alpha)+sample(original,sx,sy,c)*alpha);
+        // Foreground occlusion keeps the fixed inkpot/cuff in front of the
+        // forearm. Neither object is accidentally carried by the hand cutout.
+        if(slug === "einstein" && x<82 && y>=151 && y<205)for(let c=0;c<3;c++)output[p+c]=original[p+c];
+
       }
       frames.push(output);
     }

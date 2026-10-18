@@ -1196,7 +1196,7 @@
     "video": false
   },
   "einstein": {
-    "version": "v27",
+    "version": "v30",
     "posterVersion": "v1",
     "loopSeconds": 13,
     "gifSeconds": 13,
@@ -1478,7 +1478,7 @@
     ],
     "resampledFrames": true,
     "backgroundMotion": "one-degree-periodic-orbit",
-    "writingSmoothing": "isolated-rigid-hand-and-pen-no-pose-morph",
+    "writingSmoothing": "native-wrist-mesh-with-anchored-cuff",
     "backgroundPreservedFrom": "v20",
     "stableBodyRegion": [
       65,
@@ -1489,7 +1489,7 @@
     "writingTravel": "two-left-to-right-lines-with-pen-lift"
   },
   "tesla": {
-    "version": "v27",
+    "version": "v30",
     "posterVersion": "v5",
     "loopSeconds": 13,
     "gifSeconds": 13,
@@ -1771,7 +1771,7 @@
     ],
     "resampledFrames": true,
     "backgroundMotion": "short-sharp-coil-discharges",
-    "writingSmoothing": "isolated-rigid-hand-and-pen-no-pose-morph",
+    "writingSmoothing": "native-wrist-mesh-with-anchored-cuff",
     "backgroundPreservedFrom": null,
     "stableBodyRegion": [
       45,

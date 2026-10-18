@@ -9,7 +9,7 @@ for (const scientist of ["tesla", "einstein"]) test(`${scientist} uses a gently 
       video.muted = true;
       video.style.cssText = "position:fixed;top:0;left:0;width:320px;height:240px;z-index:9999";
       document.body.append(video);
-      video.src = `/characters/${scientist}/study-v27.${extension}`;
+      video.src = `/characters/${scientist}/study-v30.${extension}`;
       await new Promise<void>((resolve, reject) => { video.onloadeddata = () => resolve(); video.onerror = () => reject(new Error("Video did not decode")); });
       const canvas = document.createElement("canvas"); canvas.width = 160; canvas.height = 120;
       const context = canvas.getContext("2d")!;

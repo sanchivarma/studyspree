@@ -3,7 +3,7 @@ import { expect, it } from "vitest";
 
 it("keeps the preserved background outside revised Tesla electricity, sweater and resting hand steady while the writing hand moves", async () => {
   for (const slug of ["einstein", "tesla"]) {
-    const path = `public/characters/${slug}/study-v27.gif`;
+    const path = `public/characters/${slug}/study-v30.gif`;
     const metadata = await sharp(path, { animated: true }).metadata();
     const raw = await sharp(path, { animated: true }).ensureAlpha().raw().toBuffer();
     const approved = await sharp(`public/characters/${slug}/study-v20.gif`, { animated: true }).ensureAlpha().raw().toBuffer();
@@ -26,5 +26,11 @@ it("keeps the preserved background outside revised Tesla electricity, sweater an
     expect(hand/handSamples, `${slug}: visible writing`).toBeGreaterThan(0.5);
     expect(metadata.delay).toEqual(Array(260).fill(50));
     expect(metadata.loop).toBe(0);
+    // The wrist must connect the stationary cuff to the moving hand throughout
+    // the sweep, including the pen-lift return. A dark gap here is a floating hand.
+    const wrist = slug === "einstein" ? { from: 83, to: 94, y: 172 } : { from: 70, to: 88, y: 185 };
+    for(let frame=0;frame<metadata.pages!;frame++) for(let x=wrist.from;x<=wrist.to;x++) {
+      expect(raw[frame*stride+(wrist.y*width+x)*4], `${slug}: connected wrist at frame ${frame}, x ${x}`).toBeGreaterThan(90);
+    }
   }
 });

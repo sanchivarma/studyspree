@@ -37,6 +37,7 @@ export function RoomChat({ roomId, onClose, onRestoreFocus }: { roomId: string; 
         <p className="mt-1 whitespace-pre-wrap break-words text-small">{item.body}</p>
       </article>)}
     </div>
+    <p className="px-3 py-2 text-xs text-text-muted">{t("roomControls.requestHint")}</p>
     <form className="space-y-2 border-t border-border p-3" onSubmit={event => {
       event.preventDefault(); if (!body.trim() || mutation.isPending) return;
       mutation.mutate({ action: "room.chat.send", data: { id: roomId, body, clientId: requestId.current } }, { onSuccess: () => { setBody(""); requestId.current = crypto.randomUUID(); stickToBottom.current = true; input.current?.focus(); } });

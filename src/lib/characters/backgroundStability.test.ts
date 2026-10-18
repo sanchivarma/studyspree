@@ -22,8 +22,8 @@ it("keeps scientist backgrounds fixed while the native writing area changes", as
 
 it("adds slow background movement with a steady foreground and a quiet seam", async () => {
   for (const slug of ["einstein", "tesla"]) {
-    const metadata = await sharp(`public/characters/${slug}/study-v27.gif`, { animated: true }).metadata();
-    const raw = await sharp(`public/characters/${slug}/study-v27.gif`, { animated: true }).ensureAlpha().raw().toBuffer();
+    const metadata = await sharp(`public/characters/${slug}/study-v30.gif`, { animated: true }).metadata();
+    const raw = await sharp(`public/characters/${slug}/study-v30.gif`, { animated: true }).ensureAlpha().raw().toBuffer();
     const width = metadata.width!, stride = width * metadata.pageHeight! * 4;
     const difference = (a: number, b: number, left: number, right: number) => {
       let total = 0, count = 0;
