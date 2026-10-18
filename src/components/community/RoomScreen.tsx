@@ -151,7 +151,6 @@ export function RoomScreen({ id }: {
             <Sheet><SheetTrigger asChild><button type="button" aria-label={t("characters.roomOptions")} className={sideButton}><Settings aria-hidden="true" className="size-4"/></button></SheetTrigger><SheetContent side="right" showCloseButton={false} onKeyDown={event => event.stopPropagation()} className="overflow-y-auto bg-background p-4"><SheetHeader><SheetTitle>{t("characters.roomOptions")}</SheetTitle><SheetDescription>{state.resource?.title ?? t("room.title")}</SheetDescription></SheetHeader><SheetClose asChild><button aria-label={t("scene.close")} className="absolute top-2 right-2 flex size-11 items-center justify-center"><X className="size-4"/></button></SheetClose>{options}</SheetContent></Sheet>
             <RoomAmbienceControl id={id} controls={controls} isCreator={isCreator} locked={isSystem} className={sideButton}/>
             <SessionStatusControl roomId={id}/>
-            <ShareSessionControl compact roomId={id}/>
           </aside>
           <ParticipantGrid tiles={tiles} testId="room-video-grid" className="flex-1"/>
         </div>
