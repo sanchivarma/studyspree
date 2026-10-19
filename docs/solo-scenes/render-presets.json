@@ -62,18 +62,18 @@
     "slug": "castle-garden",
     "source": ".tmp/solo-filmed/cloud-fixed.mp4",
     "duration": 24,
-    "version": "filmed-v8",
+    "version": "filmed-v9",
     "rotateSeam": true,
     "inputs": [
       "public/solo/views/castle-garden-art-v6.webp",
       ".tmp/solo-revisions/garden-sky-v8-mask.png",
       ".tmp/solo-revisions/garden-basin-v8-mask.png",
-      ".tmp/solo-revisions/garden-cascade-v8-mask.png"
+      ".tmp/solo-revisions/garden-cascade-v9-mask.png"
     ],
     "videoInputs": [
       ".tmp/solo-filmed/falls-wide.mp4",
       ".tmp/solo-filmed/sea-wide.mp4"
     ],
-    "composite": "[0:v]trim=start=1,scale=1280:720,setpts=2*(PTS-STARTPTS),minterpolate=fps=30:mi_mode=blend,eq=saturation=0.8:brightness=0.02,setsar=1,format=gbrp[sky];[1:v]scale=1280:720,setsar=1,fps=30,format=gbrp[still];[2:v]fps=30,format=gbrp[skyMask];[3:v]fps=30,format=gbrp[basinMask];[4:v]fps=30,format=gbrp[fallMask];[still][sky][skyMask]maskedmerge[background];[5:v]trim=start=1,crop=iw*0.08:ih*0.3:iw*0.23:ih*0.4,scale=70:46,setpts=1.5*(PTS-STARTPTS),minterpolate=fps=30:mi_mode=blend,eq=saturation=0:contrast=1.1:brightness=0.08,pad=1280:720:618:426:black,setsar=1,format=gbrp[cascade];[background][cascade][fallMask]maskedmerge,split[scenery][light];[6:v]trim=start=1,crop=iw*0.5:ih*0.25:iw*0.25:ih*0.55,scale=1280:720,setpts=1.5*(PTS-STARTPTS),fps=30,eq=saturation=0:contrast=0.6:brightness=0.15,setsar=1,format=gbrp[water];[light][water]blend=all_mode=softlight[reflection];[scenery][reflection][basinMask]maskedmerge[base]"
+    "composite": "[0:v]trim=start=1,scale=1280:720,setpts=2*(PTS-STARTPTS),minterpolate=fps=30:mi_mode=blend,eq=saturation=0.8:brightness=0.02,setsar=1,format=gbrp[sky];[1:v]scale=1280:720,setsar=1,fps=30,format=gbrp[still];[2:v]fps=30,format=gbrp[skyMask];[3:v]fps=30,format=gbrp[basinMask];[4:v]fps=30,format=gbrp[fallMask];[still][sky][skyMask]maskedmerge,split[background][fallLight];[5:v]trim=start=1,crop=iw*0.08:ih*0.3:iw*0.23:ih*0.4,scale=70:60,setpts=1.5*(PTS-STARTPTS),minterpolate=fps=30:mi_mode=blend,eq=saturation=0:contrast=1.6:brightness=-0.12,pad=1280:720:618:426:black,setsar=1,format=gbrp[cascade];[fallLight][cascade]blend=all_mode=screen[litWater];[background][litWater][fallMask]maskedmerge,split[scenery][light];[6:v]trim=start=1,crop=iw*0.5:ih*0.25:iw*0.25:ih*0.55,scale=1280:720,setpts=1.5*(PTS-STARTPTS),fps=30,eq=saturation=0:contrast=0.6:brightness=0.15,setsar=1,format=gbrp[water];[light][water]blend=all_mode=softlight[reflection];[scenery][reflection][basinMask]maskedmerge[base]"
   }
 ]

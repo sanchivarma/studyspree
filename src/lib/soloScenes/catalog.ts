@@ -17,7 +17,8 @@ const windowMediaVersion = (slug: SoloScenePreferences["window"]) => {
   if (slug === "old-castle" || slug === "mountains") return "filmed-v2";
   if (slug === "waterfall") return "filmed-v5";
   if (slug === "underwater") return "filmed-v7";
-  if (slug === "magic-academy" || slug === "castle-garden") return "filmed-v8";
+  if (slug === "castle-garden") return "filmed-v9";
+  if (slug === "magic-academy") return "filmed-v8";
   return "filmed-v6";
 };
 const mediaSlug = (slug: SoloScenePreferences["window"]) => slug === "waterfall" ? "rivendell" : slug;

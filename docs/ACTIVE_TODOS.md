@@ -10,7 +10,7 @@ Work proceeds one item at a time, beginning with the current session/solo view.
 - [ ] Restore original table designs/props in full-width, proportionally rendered artwork; inspect all nine retained choices (Sherlock retired).
 - [ ] Named table/window previews in Study companions → Solo and Settings; persist selections.
 - [ ] Realistic view-matched apartment, medieval, castle, elven, ship, shuttle and submarine window surrounds.
-- [x] Ten silent local outdoor loops: browser decode, visible-motion and playback-boundary checks pass; every MP4 is below 8 MB.
+- [x] Nine silent local outdoor loops: browser decode, visible-motion and playback-boundary checks pass; every MP4 is below 8 MB.
 - [x] Remove whole-view displacement and synthetic moving-picture overlays; retain approved Mountains and Old Castle unchanged.
 - [x] Record selected footage licences, exact source URLs and SHA-256 checksums; cancel the inaccessible Pixabay candidate.
 - [ ] User visual acceptance of all replacement views. Magic Academy and Sailing Ships are layered scenes; two additional ships now move over open water.
@@ -68,14 +68,15 @@ complete. Detailed evidence and limitations remain in FEATURE_COMPLETION.md.
 
 - [x] Rename Rivendell to Waterfall in all five languages and saved preferences.
 - [x] Remove Green Nature, Moving Clouds and Sherlock from both pickers; preserve other profile fields when upgrading retired choices.
-- [x] Magic Academy: slow native cloud layer and five localized, gently flickering window lights.
-- [x] Black Hole: use the original v1 artwork/colour, local disk-light motion, and remove its frame in both the scene and picker.
+- [x] Magic Academy: stronger slow native clouds and sixteen individually staggered, softly glowing window lights.
+- [x] Black Hole removed from all pickers, translations, active render recipes and public assets. Saved choices migrate to Sea without resetting other preferences.
 - [x] Space: locally stored NASA galaxy visualization, without a rotating planet.
 - [x] Sea: distant turquoise coastal footage with a fixed viewpoint.
 - [x] Sailing Ships: two moving ship layers positioned over open water between window posts; corrected water mask excludes land.
-- [x] Castle Garden: user-authorized original estate garden, period gowns/suits, Georgian study window and isolated sky/fountain-light motion. Figures remain static.
-- [x] Underwater: broad natural open-ocean seabed, replacing the aquarium.
+- [x] Castle Garden: preserve the approved estate; strengthen cloud motion and add translucent falling water down the central fountain into moving basin reflections. Figures remain static.
+- [x] Underwater: broad natural ocean seabed with three occasional, staggered distant fish passes and attached tail motion.
 - [x] All outdoor playback slowed to 0.65x; hidden-tab pause, reduced motion and timer independence preserved.
 - [x] Pirate lantern and Shakespearean candlestick flicker; table artwork/position retained.
 - [x] Migrations 0066/0067 applied without resetting data; current scene constraint/ownership tests pass.
 - [x] Typecheck, lint, 449 unit tests, media-loop and Solo-flow browser tests pass; cold-start test passes on rerun after concurrent encode/test load.
+- [x] Latest removal migration 0068 applied; all 320 database assertions pass. Fish and lights pause in hidden tabs and are omitted with reduced motion.

@@ -320,6 +320,8 @@ The user subsequently authorised the 17-feature roadmap in docs/FEATURE_CHECKLIS
 
 ## 14. Current status
 
+- **Solo detail revision (19 October 2026):** Magic Academy has sixteen staggered glowing windows and stronger slow native clouds; Underwater has occasional distant fish with attached tail motion. Castle Garden retains its approved estate artwork with stronger clouds, falling water localized to the central fountain and moving basin reflections. Black Hole is retired from choices, translations, render recipes and public media; migration 0068 maps saved selections to Sea without resetting other preferences. Hidden-tab pause and reduced-motion behavior remain intact. No dependencies added.
+
 - **Wrist correction v30:** Einstein and Tesla retain a full-width native wrist connection anchored at the cuff throughout writing and pen return. Rejected detached-hand and synthetic bridge candidates are inactive. Backgrounds, line travel and loop duration remain unchanged. See docs/historical-companions/README.md.
 
 - **Final scientist motion v24:** isolated original hand/pen rigs replace the rejected sweater/body movement and morphing writing frames. Both advance left-to-right across the page and lift on return. Built-in image_gen produced hidden clean plates only; prompts and selected plates are in docs/historical-companions. Einstein keeps the approved v20 background; Tesla uses short 200ms tower-anchored discharges by subsequent user instruction. A fixed source GIF palette prevents static-colour changes. Religious audio choices remain retired by migration 0059. No new dependency.
