@@ -10,9 +10,12 @@ Work proceeds one item at a time, beginning with the current session/solo view.
 - [ ] Restore original table designs/props in full-width, proportionally rendered artwork; inspect all ten.
 - [ ] Named table/window previews in Study companions → Solo and Settings; persist selections.
 - [ ] Realistic view-matched apartment, medieval, castle, elven, ship, shuttle and submarine window surrounds.
-- [ ] Twelve silent local outdoor loops, smooth seams and visible slow motion in every view.
+- [x] Twelve silent local outdoor loops: browser decode, visible-motion and playback-boundary checks pass; every MP4 is below 8 MB.
+- [x] Remove whole-view displacement and synthetic moving-picture overlays; retain approved Mountains and Old Castle unchanged.
+- [x] Record selected footage licences, exact source URLs and SHA-256 checksums; cancel the inaccessible Pixabay candidate.
+- [ ] User visual acceptance of all replacement views. Magic Academy and Sailing Ships are layered scenes; ships remain stationary while the water moves.
 - [ ] Layered foliage movement, water ripples, waterfalls, cloud drift, black-hole motion and slow Earth movement.
-- [ ] Different photographic fish species swimming underwater.
+- [x] Different photographic fish species swimming underwater, with fixed-camera aquarium footage slowed twice.
 - [ ] Fix duplicate React keys and check repeated scene switching produces no console errors.
 - [ ] Latest control style: 25% background opacity WITH blur, shorter bottom bar, table ABOVE blur, controls above table.
 - [ ] Responsive geometry, reduced motion, hidden-tab pause, missing-media fallback and timer continuity.
@@ -48,6 +51,12 @@ complete. Detailed evidence and limitations remain in FEATURE_COMPLETION.md.
 - [ ] 16 — Entitlements: trusted interval accounting, enforcement and honest unconfigured billing.
 
 ## Most recent evidence
+
+- Current scenery replacement: typecheck/lint and 448 unit tests passed; targeted scene tests rerun after final media selection.
+- All twelve active MP4s pass browser decoding, nonzero motion, per-file budget and seam checks. Layered scenes also pass a stationary-architecture pixel check.
+- All 13 webcam privacy checks pass, including the twenty-second network audit. No webcam implementation was changed.
+- Anonymous `/solo/` asset requests now bypass login redirects and return video bytes; protected app routes retain their existing auth checks.
+- Rejected replacement candidates are archived outside public delivery. Desks, window frames and control-bar styling are unchanged in this task.
 
 - 448 unit tests passed before the final foreground/motion refinements; rerun relevant tests and required full checks after those changes.
 - Piano/frequency assets decode locally; licence gate covers 31 audio files.

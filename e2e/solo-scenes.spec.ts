@@ -28,7 +28,9 @@ test("solo POV preserves choices, fills the window, pauses motion and leaves the
   await picker.getByRole("button",{name:"Pirate table",exact:true}).click();
   await page.getByRole("button",{name:"Close",exact:true}).click();
   await expect(scene.getByTestId("solo-window-video")).toBeVisible();
-  await expect(scene.getByTestId("window-motion-canvas")).toHaveCSS("opacity","1");
+  // Native photographed motion must not pass through the rejected image-warp shader.
+  await expect(scene.locator("canvas")).toHaveCount(0);
+  await expect.poll(()=>scene.getByTestId("solo-window-video").evaluate(element=>(element as HTMLVideoElement).currentTime)).toBeGreaterThan(0.1);
   for(const size of [{width:1440,height:900},{width:390,height:844}]) {
     await page.setViewportSize(size);
     const bounds=await page.getByTestId("solo-window").boundingBox();
@@ -41,6 +43,7 @@ test("solo POV preserves choices, fills the window, pauses motion and leaves the
   }
   await page.emulateMedia({reducedMotion:"reduce"});
   await expect(scene).toHaveAttribute("data-motion","paused");
+  await expect(scene.locator("video")).toHaveCount(0);
   await page.getByRole("button",{name:"Start",exact:true}).click();
   await expect(page.getByTestId("session-screen")).toBeVisible({timeout:20000});
   await expect(page.getByTestId("session-bottom-backplate")).toHaveCSS("height","64px");

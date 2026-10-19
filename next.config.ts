@@ -19,7 +19,7 @@ export default function nextConfig(phase: string): NextConfig {
     }]))) },
     async headers() {
       // Assets are immutable; a new version must ship under a new filename.
-      return ["/themes/:path*", "/characters/:path*", "/audio/:path*"].map((source) => ({ source,
+      return ["/themes/:path*", "/characters/:path*", "/audio/:path*", "/solo/:path*"].map((source) => ({ source,
         headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
       }));
     },

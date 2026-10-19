@@ -7,7 +7,16 @@ export type SoloScenePreferences = z.infer<typeof soloSceneSchema>;
 export const defaultSoloScene: SoloScenePreferences = { desk: "modern", window: "green-nature" };
 export const deskSource = (slug: SoloScenePreferences["desk"]) => `/solo/desks/${slug}-wide-v3.webp`;
 export const deskPreviewSource = (slug: SoloScenePreferences["desk"]) => `/solo/desks/${slug}-original-fit-v1.webp`;
-export const windowSource = (slug: SoloScenePreferences["window"]) => `/solo/views/${slug}-${slug === "sailing-ships" ? "v2" : "v1"}.webp`;
+// Preserve the two clips explicitly approved by the user. Replacements use new
+// immutable names so browser/CDN caches cannot replay the rejected animation.
+const windowMediaVersion = (slug: SoloScenePreferences["window"]) => {
+  if (slug === "old-castle" || slug === "mountains") return "filmed-v2";
+  if (["castle-garden", "clouds", "rivendell", "underwater"].includes(slug)) return "filmed-v5";
+  if (slug === "magic-academy" || slug === "sailing-ships" || slug === "space" || slug === "blackhole") return "filmed-v4";
+  return "filmed-v3";
+};
+export const windowSource = (slug: SoloScenePreferences["window"]) => `/solo/views/${slug}-${windowMediaVersion(slug)}.webp`;
+export const windowVideoSource = (slug: SoloScenePreferences["window"]) => `/solo/views/${slug}-${windowMediaVersion(slug)}.mp4`;
 export function windowFrame(slug: SoloScenePreferences["window"]) {
   if(slug === "magic-academy") return "gothic";
   if(slug === "rivendell") return "elven";

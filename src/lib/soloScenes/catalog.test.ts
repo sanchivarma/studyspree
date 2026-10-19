@@ -1,7 +1,7 @@
 import { expect, it } from "vitest";
 import sharp from "sharp";
 import { readFileSync } from "node:fs";
-import { defaultSoloScene, deskSlugs, windowSlugs, deskSource, windowSource, windowFrame } from "./catalog";
+import { defaultSoloScene, deskSlugs, windowSlugs, deskSource, windowSource, windowVideoSource, windowFrame } from "./catalog";
 import { LocalRepository } from "@/lib/repo/local";
 
 it("upgrades old profiles, remembers independent choices, and preserves the running timer", async () => {
@@ -24,4 +24,11 @@ it("ships ten distinct alpha desks and twelve complete views within asset budget
   for(const slug of windowSlugs){const bytes=readFileSync(`public${windowSource(slug)}`),meta=await sharp(bytes).metadata();expect(bytes.length).toBeLessThan(1500000);expect(meta.width).toBeGreaterThanOrEqual(1280);}
   expect(windowFrame("magic-academy")).toBe("gothic");expect(windowFrame("rivendell")).toBe("elven");
   expect(windowFrame("underwater")).toBe("submarine");expect(windowFrame("old-castle")).toBe("medieval");expect(windowFrame("green-nature")).toBe("modern");
+  expect(windowVideoSource("old-castle")).toBe("/solo/views/old-castle-filmed-v2.mp4");
+  expect(windowVideoSource("mountains")).toBe("/solo/views/mountains-filmed-v2.mp4");
+  for(const slug of windowSlugs){
+    const bytes=readFileSync(`public${windowVideoSource(slug)}`);
+    expect(bytes.length,slug).toBeLessThan(8000000);
+    expect(bytes.toString("ascii",4,8),slug).toBe("ftyp");
+  }
 });

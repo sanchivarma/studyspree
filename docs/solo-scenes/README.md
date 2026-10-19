@@ -1,35 +1,62 @@
 # Solo study scenes
 
-Ten independently selected desks and twelve window views are persisted in the
-existing profile repository. The scene appears on Study and the running session
-when companion mode is Solo. Settings disables the controls in other modes;
-Study companions → Solo offers named still-image preview cards for both lists.
-Changing visuals never changes the session ID, start time or banked history.
+Ten original desks and twelve independent window choices are persisted through
+profile repositories. Study companions ? Solo contains named preview cards.
+Visual changes never write session timestamps or banked history.
 
-The foreground desks were rebuilt as version 2 after the user rejected stretched
-artwork. They use full-canvas transparent foregrounds and `object-fit: cover`,
-preserving their aspect ratio rather than squeezing them into a short rectangle.
-Seven photographic window surrounds replace the rejected CSS divider: apartment,
-medieval, castle, elven, spacecraft, submarine and nautical frames. They include
-real material textures, perimeter depth and sills. The scene is seated POV.
+Desks use original-design `*-wide-v3.webp` artwork, width 100%, height auto.
+Seven `frames/*-v2.webp` assemblies remain fixed above the outdoor media. Control
+bars retain 25% background opacity with blur; the desk remains above that blur.
 
-All twelve outdoor views have 24-second silent local MP4 loops. The landscape
-and foreground stay fixed while composited clouds, stars, underwater particles
-or a small photographic ship move slowly. The ship scene was revised to look
-photographic. These are layered environmental animations, not captured video.
-Reduced motion uses static images, hidden tabs pause video, and unavailable
-video retains the poster. Missing media never blocks Start or Finish.
+## Outdoor motion ? 19 October 2026
 
-Assets are in `public/solo/{desks,views,frames,motion}`. Built-in image_gen
-generated the raster artwork; exact selected prompts are in `prompts.json`.
-Generation-service terms apply. No third-party photography or footage was copied.
-Rivendell is a user-requested generated fantasy portrayal; this record does not
-assert rights in the source franchise. The Hogwarts generation was rejected by
-the image tool; the user explicitly approved an **original magic academy** instead.
-The app labels that replacement accurately. No image-to-video service or new
-dependency was used. `scripts/prepare-solo-motion.mjs` makes the MP4s with the
-existing FFmpeg. Each video is below 8 MB; still images below 1.5 MB.
+The rejected WebGL displacement shader and moving still-image overlays have
+been removed completely. No runtime canvas, zoom, pan or video transform is
+used. The user approved Mountains and Old Castle; those `filmed-v2` files stay
+unchanged. Other choices use new immutable `filmed-v3` / `filmed-v4` / `filmed-v5` filenames and matching
+first-frame posters, preventing stale cached animations.
 
-Side and bottom session control backplates use the user's final requested
-30% background opacity, with backdrop blur. They are pointer-transparent; the
-interactive controls remain above them.
+Selected filmed views show distant scenery from steady viewpoints. Castle
+Gardens uses the Alhambra and its surrounding vegetation; Nature uses a forest
+lake; Clouds uses countryside beneath moving clouds; Sea uses a coastal vista;
+Underwater uses a broad aquarium view, slowed twice with temporal frame blending;
+the Rivendell-inspired choice uses a
+forest waterfall behind the retained elven window. These are not recordings of
+fictional places. Other filmed source timing is retained, with no optical-flow interpolation.
+
+Two views combine original fixed artwork with real photographed motion:
+Magic Academy has a conservative sky matte containing cloud footage; the
+castle and mountains do not move. Sailing Ships has a feathered wave-light layer;
+ships and coastline remain stationary. It does NOT yet depict ships travelling
+across the bay. These are layered scenes, not fully photographed footage.
+
+Space uses NASA's slow Blue Marble rotation at a smaller constant size. Black
+Hole uses NASA's stationary accretion-disk visualization slowed four times,
+with temporal frame blending rather than geometric warping. Both include a
+stationary credited Hubble deep-field background. They are artistic scientific
+visualization composites, not photographs of those objects, and do not claim
+a physically complete model of lensing the added background galaxies.
+
+`scripts/prepare-filmed-solo.mjs` encodes silent local H.264 media under 8 MB.
+Natural shots have a 600 ms end-to-start dissolve; astronomy uses source loops.
+A selection of loops rotates its start point into uninterrupted footage so the
+playback boundary does not coincide with the source-end dissolve.
+A dissolve reduces a seam; it is not a claim of perfectly repeated natural
+motion. Video files are atomically published after encoding. Hidden tabs pause
+visuals; reduced motion mounts no video; missing video retains its poster.
+
+Source, creator, licence, modifications and checksums are recorded in
+`filmed-sources.json` and `public/solo/LICENCES.md`. Only commercially permitted
+sources are selected. Mixkit Restricted License candidates are excluded. The
+Pixabay download attempt was cancelled by the user and its clip is not bundled.
+Retained original image-generation prompts remain in `prompts.json`.
+
+## Reproducing the selected encodes
+
+Download the exact source URLs in `filmed-sources.json` to their `sourceFile`
+paths; cache the credited Hubble JPEG as `.tmp/solo-nasa/deep-field.jpg`.
+Run `node scripts/prepare-solo-layers.mjs`, then
+`node scripts/prepare-filmed-solo.mjs <ffmpeg> docs/solo-scenes/render-presets.json`.
+The encoder retains existing immutable files. Choose a new version when changing
+a preset. The two user-approved v2 clips are deliberately absent from this
+replacement manifest.

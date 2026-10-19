@@ -1,0 +1,99 @@
+[
+  {
+    "slug": "castle-garden",
+    "source": ".tmp/solo-filmed/garden-mixkit.mp4",
+    "duration": 11.93,
+    "start": 1,
+    "version": "filmed-v5",
+    "fps": 30,
+    "rotateSeam": true
+  },
+  {
+    "slug": "green-nature",
+    "source": ".tmp/solo-filmed/green-lake.mp4",
+    "duration": 16.56,
+    "start": 1,
+    "version": "filmed-v3",
+    "fps": 25
+  },
+  {
+    "slug": "clouds",
+    "source": ".tmp/solo-filmed/cloud-fixed.mp4",
+    "duration": 24,
+    "start": 1,
+    "version": "filmed-v5",
+    "fps": 30,
+    "rotateSeam": true
+  },
+  {
+    "slug": "sea",
+    "source": ".tmp/solo-filmed/ocean-fixed.mp4",
+    "duration": 19.53,
+    "start": 1,
+    "version": "filmed-v3",
+    "fps": 30
+  },
+  {
+    "slug": "underwater",
+    "source": ".tmp/solo-filmed/aquarium-fixed.mp4",
+    "duration": 21,
+    "start": 1,
+    "version": "filmed-v5",
+    "fps": 30,
+    "rotateSeam": true,
+    "composite": "[0:v]trim=start=1,setpts=2*(PTS-STARTPTS),minterpolate=fps=30:mi_mode=blend,scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,setsar=1,format=yuv420p[base]"
+  },
+  {
+    "slug": "rivendell",
+    "source": ".tmp/solo-filmed/falls-wide.mp4",
+    "duration": 24,
+    "start": 1,
+    "version": "filmed-v5",
+    "fps": 30,
+    "rotateSeam": true
+  },
+  {
+    "slug": "magic-academy",
+    "source": ".tmp/solo-filmed/cloud-fixed.mp4",
+    "duration": 24,
+    "version": "filmed-v4",
+    "inputs": [
+      "public/solo/views/magic-academy-v1.webp",
+      ".tmp/solo-filmed/academy-sky-mask-v2.png"
+    ],
+    "composite": "[0:v]trim=start=1,setpts=PTS-STARTPTS,scale=1280:720,setsar=1,fps=30,format=gbrp[sky];[1:v]scale=1280:720,setsar=1,fps=30,format=gbrp[still];[2:v]scale=1280:720,format=gbrp,fps=30[mask];[still][sky][mask]maskedmerge[base]"
+  },
+  {
+    "slug": "sailing-ships",
+    "source": ".tmp/solo-filmed/sea-wide.mp4",
+    "duration": 20,
+    "version": "filmed-v4",
+    "inputs": [
+      "public/solo/views/sailing-ships-v2.webp",
+      ".tmp/solo-filmed/ship-water-mask-v2.png"
+    ],
+    "composite": "[0:v]trim=start=1,setpts=PTS-STARTPTS,scale=1280:720,setsar=1,fps=30,eq=saturation=0:contrast=0.35:brightness=0.25,format=gbrp[water];[1:v]scale=1280:720,setsar=1,fps=30,format=gbrp,split[still][light];[2:v]scale=1280:720,format=gbrp,fps=30[mask];[light][water]blend=all_mode=softlight[reflection];[still][reflection][mask]maskedmerge[base]"
+  },
+  {
+    "slug": "space",
+    "source": ".tmp/solo-nasa/earth-slow.webm",
+    "duration": 119.966,
+    "version": "filmed-v4",
+    "nativeLoop": true,
+    "inputs": [
+      ".tmp/solo-filmed/earth-stars-v2.png"
+    ],
+    "composite": "[0:v]scale=704:396,pad=1280:720:288:162:black,setsar=1,fps=30,colorlevels=rimin=0.06:gimin=0.06:bimin=0.06,format=gbrp[planet];[1:v]scale=1280:720,setsar=1,fps=30,format=gbrp[stars];[stars][planet]blend=all_mode=lighten[base]"
+  },
+  {
+    "slug": "blackhole",
+    "source": ".tmp/solo-nasa/blackhole.mp4",
+    "duration": 21.9,
+    "version": "filmed-v4",
+    "nativeLoop": true,
+    "inputs": [
+      ".tmp/solo-filmed/blackhole-stars-v2.png"
+    ],
+    "composite": "[0:v]setpts=4*(PTS-STARTPTS),minterpolate=fps=30:mi_mode=blend,scale=728:420,pad=1280:720:276:150:black,setsar=1,format=gbrp[hole];[1:v]scale=1280:720,setsar=1,fps=30,format=gbrp[stars];[stars][hole]blend=all_mode=lighten[base]"
+  }
+]
