@@ -26,18 +26,6 @@
     "rotateSeam": true
   },
   {
-    "slug": "magic-academy",
-    "source": ".tmp/solo-filmed/cloud-fixed.mp4",
-    "duration": 40,
-    "version": "filmed-v6",
-    "inputs": [
-      "public/solo/views/magic-academy-v1.webp",
-      ".tmp/solo-filmed/academy-sky-mask-v2.png"
-    ],
-    "composite": "[0:v]trim=start=1,scale=1280:720,setpts=2*(PTS-STARTPTS),minterpolate=fps=30:mi_mode=blend,setsar=1,fps=30,format=gbrp[sky];[1:v]scale=1280:720,setsar=1,fps=30,format=gbrp[still];[2:v]scale=1280:720,format=gbrp,fps=30[mask];[still][sky][mask]maskedmerge[base]",
-    "rotateSeam": true
-  },
-  {
     "slug": "sailing-ships",
     "source": ".tmp/solo-filmed/sea-wide.mp4",
     "duration": 20,
@@ -47,22 +35,6 @@
       ".tmp/solo-revisions/ship-water-mask.png"
     ],
     "composite": "[0:v]trim=start=1,setpts=PTS-STARTPTS,scale=1280:720,setsar=1,fps=30,eq=saturation=0:contrast=0.35:brightness=0.25,format=gbrp[water];[1:v]scale=1280:720,setsar=1,fps=30,format=gbrp,split[still][light];[2:v]scale=1280:720,format=gbrp,fps=30[mask];[light][water]blend=all_mode=softlight[reflection];[still][reflection][mask]maskedmerge[base]"
-  },
-  {
-    "slug": "castle-garden",
-    "source": ".tmp/solo-filmed/cloud-fixed.mp4",
-    "duration": 40,
-    "version": "filmed-v6",
-    "rotateSeam": true,
-    "inputs": [
-      "public/solo/views/castle-garden-art-v6.webp",
-      ".tmp/solo-revisions/garden-sky-mask.png",
-      ".tmp/solo-revisions/garden-water-mask.png"
-    ],
-    "videoInputs": [
-      ".tmp/solo-filmed/falls-wide.mp4"
-    ],
-    "composite": "[0:v]trim=start=1,scale=1280:720,setpts=2*(PTS-STARTPTS),minterpolate=fps=30:mi_mode=blend,setsar=1,format=gbrp[sky];[1:v]scale=1280:720,setsar=1,fps=30,format=gbrp[still];[2:v]format=gbrp,fps=30[skyMask];[3:v]format=gbrp,fps=30[waterMask];[still][sky][skyMask]maskedmerge,split[scenery][light];[4:v]trim=start=1,setpts=2*(PTS-STARTPTS),scale=1280:720,setsar=1,fps=30,eq=saturation=0:contrast=0.2:brightness=0.3,format=gbrp[water];[light][water]blend=all_mode=softlight[glimmer];[scenery][glimmer][waterMask]maskedmerge[base]"
   },
   {
     "slug": "underwater",
@@ -75,16 +47,33 @@
     "composite": "[0:v]trim=start=0.5,scale=1280:720,setpts=2*(PTS-STARTPTS),minterpolate=fps=30:mi_mode=blend,setsar=1,format=yuv420p[base]"
   },
   {
-    "slug": "blackhole",
-    "source": ".tmp/solo-nasa/blackhole.mp4",
-    "duration": 10.9,
-    "fps": 30,
-    "version": "filmed-v7",
-    "nativeLoop": true,
+    "slug": "magic-academy",
+    "source": ".tmp/solo-filmed/cloud-fixed.mp4",
+    "duration": 24,
+    "version": "filmed-v8",
+    "rotateSeam": true,
     "inputs": [
-      "public/solo/views/blackhole-art-v7.webp",
-      ".tmp/solo-revisions/blackhole-disk-mask.png"
+      "public/solo/views/magic-academy-v1.webp",
+      ".tmp/solo-revisions/academy-sky-v8-mask.png"
     ],
-    "composite": "[0:v]scale=1280:600,pad=1280:720:0:0:black,setpts=2*(PTS-STARTPTS),minterpolate=fps=30:mi_mode=blend,eq=saturation=0:contrast=0.28:brightness=0.3,setsar=1,format=gbrp[gas];[1:v]fps=30,format=gbrp,split[still][light];[2:v]fps=30,format=gbrp[mask];[light][gas]blend=all_mode=softlight[flow];[still][flow][mask]maskedmerge[base]"
+    "composite": "[0:v]trim=start=1,scale=1280:720,setpts=2*(PTS-STARTPTS),minterpolate=fps=30:mi_mode=blend,eq=saturation=0.8:contrast=1.05,colorbalance=rm=0.08:gm=0.04:bm=-0.04,setsar=1,format=gbrp[sky];[1:v]scale=1280:720,setsar=1,fps=30,format=gbrp[still];[2:v]fps=30,format=gbrp[mask];[still][sky][mask]maskedmerge[base]"
+  },
+  {
+    "slug": "castle-garden",
+    "source": ".tmp/solo-filmed/cloud-fixed.mp4",
+    "duration": 24,
+    "version": "filmed-v8",
+    "rotateSeam": true,
+    "inputs": [
+      "public/solo/views/castle-garden-art-v6.webp",
+      ".tmp/solo-revisions/garden-sky-v8-mask.png",
+      ".tmp/solo-revisions/garden-basin-v8-mask.png",
+      ".tmp/solo-revisions/garden-cascade-v8-mask.png"
+    ],
+    "videoInputs": [
+      ".tmp/solo-filmed/falls-wide.mp4",
+      ".tmp/solo-filmed/sea-wide.mp4"
+    ],
+    "composite": "[0:v]trim=start=1,scale=1280:720,setpts=2*(PTS-STARTPTS),minterpolate=fps=30:mi_mode=blend,eq=saturation=0.8:brightness=0.02,setsar=1,format=gbrp[sky];[1:v]scale=1280:720,setsar=1,fps=30,format=gbrp[still];[2:v]fps=30,format=gbrp[skyMask];[3:v]fps=30,format=gbrp[basinMask];[4:v]fps=30,format=gbrp[fallMask];[still][sky][skyMask]maskedmerge[background];[5:v]trim=start=1,crop=iw*0.08:ih*0.3:iw*0.23:ih*0.4,scale=70:46,setpts=1.5*(PTS-STARTPTS),minterpolate=fps=30:mi_mode=blend,eq=saturation=0:contrast=1.1:brightness=0.08,pad=1280:720:618:426:black,setsar=1,format=gbrp[cascade];[background][cascade][fallMask]maskedmerge,split[scenery][light];[6:v]trim=start=1,crop=iw*0.5:ih*0.25:iw*0.25:ih*0.55,scale=1280:720,setpts=1.5*(PTS-STARTPTS),fps=30,eq=saturation=0:contrast=0.6:brightness=0.15,setsar=1,format=gbrp[water];[light][water]blend=all_mode=softlight[reflection];[scenery][reflection][basinMask]maskedmerge[base]"
   }
 ]

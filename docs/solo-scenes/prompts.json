@@ -95,11 +95,6 @@
     "prompt": "Use case: stylized-concept. Asset: immersive landscape visible through a large study window. a tranquil clear underwater vista beyond a research station, blue water, sunbeams from above, distant coral and a few small fish, calm and beautiful. Original premium cinematic semi-realistic environmental illustration with fine natural detail, coherent perspective, soothing tones, realistic soft illumination and spacious composition. Wide 16:9 landscape, edge-to-edge scenery only. The viewer is seated looking straight forward. No interior, desk, frame, window mullions, people, text, watermark, logo or UI. Main scenery in the centre and middle distance; a calm horizon, visual depth. This will fill more than 80% of a quiet study screen."
   },
   {
-    "kind": "views",
-    "slug": "blackhole",
-    "prompt": "Use case: stylized-concept. Asset: immersive landscape visible through a large study window. a majestic scientifically inspired black hole with a golden accretion disk bending around the dark centre, a deep field of stars, beautiful cinematic astronomical vista, no danger or violent flashes. Original premium cinematic semi-realistic environmental illustration with fine natural detail, coherent perspective, soothing tones, realistic soft illumination and spacious composition. Wide 16:9 landscape, edge-to-edge scenery only. The viewer is seated looking straight forward. No interior, desk, frame, window mullions, people, text, watermark, logo or UI. Main scenery in the centre and middle distance; a calm horizon, visual depth. This will fill more than 80% of a quiet study screen."
-  },
-  {
     "slug": "rivendell",
     "prompt": "A wide cinematic semi-realistic view of Rivendell from Lord of the Rings: elegant elven architecture nestled in a lush steep valley, graceful bridges, cascading waterfalls, autumn trees, soft distant mist, warm morning light. Calm reading atmosphere. No people, text, logos, interiors, window frames or desks. Wide 16:9 composition, straight ahead seated eye level, richly detailed landscape only."
   },

@@ -18,8 +18,8 @@ it("upgrades old profiles, remembers independent choices, and preserves the runn
   await expect(repo.updateProfile({soloScene:{desk:"modern",window:"unknown"} as never})).rejects.toThrow();
 });
 
-it("ships nine distinct alpha desks and ten complete views within asset budgets", async () => {
-  expect(deskSlugs).toHaveLength(9);expect(windowSlugs).toHaveLength(10);
+it("ships nine distinct alpha desks and nine complete views within asset budgets", async () => {
+  expect(deskSlugs).toHaveLength(9);expect(windowSlugs).toHaveLength(9);
   for(const slug of deskSlugs){const bytes=readFileSync(`public${deskSource(slug)}`),meta=await sharp(bytes).metadata();expect(bytes.length).toBeLessThan(1500000);expect(meta.hasAlpha).toBe(true);}
   for(const slug of windowSlugs){const bytes=readFileSync(`public${windowSource(slug)}`),meta=await sharp(bytes).metadata();expect(bytes.length).toBeLessThan(1500000);expect(meta.width).toBeGreaterThanOrEqual(1280);}
   expect(windowFrame("magic-academy")).toBe("gothic");expect(windowFrame("waterfall")).toBe("elven");
@@ -41,6 +41,7 @@ it("upgrades retired window choices without changing the selected desk", () => {
   expect(soloSceneSchema.parse({desk:"sherlock",window:"clouds"})).toEqual({desk:"modern",window:"sea"});
   expect(windowSlugs).not.toContain("clouds");
   expect(deskSlugs).not.toContain("sherlock");
-  expect(windowFrame("blackhole")).toBeNull();
+  expect(soloSceneSchema.parse({desk:"pirate",window:"blackhole"})).toEqual({desk:"pirate",window:"sea"});
+  expect(windowSlugs).not.toContain("blackhole");
   expect(windowFrame("castle-garden")).toBe("georgian");
 });

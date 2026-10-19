@@ -1,10 +1,10 @@
 import { z } from "zod";
 
 export const deskSlugs = ["modern", "medieval", "shakespearean", "pirate", "kings", "student", "scientist", "submarine", "space-shuttle"] as const;
-export const windowSlugs = ["old-castle", "castle-garden", "sailing-ships", "sea", "mountains", "space", "underwater", "blackhole", "magic-academy", "waterfall"] as const;
+export const windowSlugs = ["old-castle", "castle-garden", "sailing-ships", "sea", "mountains", "space", "underwater", "magic-academy", "waterfall"] as const;
 // Upgrade saved choices without discarding the rest of the profile.
-const savedWindow = z.enum([...windowSlugs, "green-nature", "clouds", "rivendell"])
-  .transform(value => value === "green-nature" || value === "clouds" ? "sea" : value === "rivendell" ? "waterfall" : value);
+const savedWindow = z.enum([...windowSlugs, "green-nature", "clouds", "blackhole", "rivendell"])
+  .transform(value => value === "green-nature" || value === "clouds" || value === "blackhole" ? "sea" : value === "rivendell" ? "waterfall" : value);
 const savedDesk = z.enum([...deskSlugs, "sherlock"]).transform(value => value === "sherlock" ? "modern" : value);
 export const soloSceneSchema = z.object({ desk: savedDesk, window: savedWindow }).strict();
 export type SoloScenePreferences = z.infer<typeof soloSceneSchema>;
@@ -16,14 +16,14 @@ export const deskPreviewSource = (slug: SoloScenePreferences["desk"]) => `/solo/
 const windowMediaVersion = (slug: SoloScenePreferences["window"]) => {
   if (slug === "old-castle" || slug === "mountains") return "filmed-v2";
   if (slug === "waterfall") return "filmed-v5";
-  if (slug === "blackhole" || slug === "underwater") return "filmed-v7";
+  if (slug === "underwater") return "filmed-v7";
+  if (slug === "magic-academy" || slug === "castle-garden") return "filmed-v8";
   return "filmed-v6";
 };
 const mediaSlug = (slug: SoloScenePreferences["window"]) => slug === "waterfall" ? "rivendell" : slug;
 export const windowSource = (slug: SoloScenePreferences["window"]) => `/solo/views/${mediaSlug(slug)}-${windowMediaVersion(slug)}.webp`;
 export const windowVideoSource = (slug: SoloScenePreferences["window"]) => `/solo/views/${mediaSlug(slug)}-${windowMediaVersion(slug)}.mp4`;
 export function windowFrame(slug: SoloScenePreferences["window"]) {
-  if(slug === "blackhole") return null;
   if(slug === "magic-academy") return "gothic";
   if(slug === "waterfall") return "elven";
   if(slug === "old-castle") return "medieval";

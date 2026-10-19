@@ -1,7 +1,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path=public,extensions;
-select plan(12);
+select plan(13);
 insert into auth.users(id,email,raw_app_meta_data,raw_user_meta_data) values
 ('a8630000-0000-4000-8000-000000000001','solo-a@example.test','{"provider":"email"}','{"username":"solo_a"}'),
 ('a8630000-0000-4000-8000-000000000002','solo-b@example.test','{"provider":"email"}','{"username":"solo_b"}');
@@ -22,5 +22,6 @@ select throws_ok($$update profiles set solo_scene='{"desk":"modern","window":"gr
 select throws_ok($$update profiles set solo_scene='{"desk":"modern","window":"rivendell"}' where id=auth.uid()$$,'23514',null,'Old Waterfall name rejected');
 select throws_ok($$update profiles set solo_scene='{"desk":"modern","window":"clouds"}' where id=auth.uid()$$,'23514',null,'Moving Clouds retired');
 select throws_ok($$update profiles set solo_scene='{"desk":"sherlock","window":"sea"}' where id=auth.uid()$$,'23514',null,'Sherlock table retired');
+select throws_ok($$update profiles set solo_scene='{"desk":"pirate","window":"blackhole"}' where id=auth.uid()$$,'23514',null,'Black Hole retired');
 select * from finish();
 rollback;

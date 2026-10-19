@@ -65,7 +65,12 @@
       "sourceSha256": "7baf242d4ed88048c469a8c29efa7431e60f4b4a31bcd43c150c06b3922f9025",
       "videoSha256": "a83e9070f5266f16c6205fd350b4bb2544a515550f45c50488b36ae7c04bc4b4",
       "posterSha256": "fef7281819eb28eba8f9f9ace97e4372fb5142c9e745f22b15d744995ca18f74",
-      "changes": "Wide open-ocean seabed rather than aquarium. Native marine motion slowed 2x with temporal blending; runtime also uses 0.65x. No optical-flow warping."
+      "changes": "Wide open-ocean seabed rather than aquarium. Native marine motion slowed 2x with temporal blending; runtime also uses 0.65x. No optical-flow warping. Occasional original photographic-style fish cutouts swim in separate staggered passes with isolated tail motion; hidden tabs pause them and reduced motion removes them.",
+      "fishAssets": [
+        "/solo/motion/silver-fish-v1.webp",
+        "/solo/motion/yellow-fish-v1.webp",
+        "/solo/motion/striped-fish-v1.webp"
+      ]
     },
     "castle-garden": {
       "source": "Original artwork; docs/solo-scenes/revision-prompts.json",
@@ -75,14 +80,14 @@
       "commercialUse": true,
       "reviewedAt": "2026-10-19",
       "kind": "Original layered Victorian/Regency garden",
-      "video": "/solo/views/castle-garden-filmed-v6.mp4",
-      "poster": "/solo/views/castle-garden-filmed-v6.webp",
+      "video": "/solo/views/castle-garden-filmed-v8.mp4",
+      "poster": "/solo/views/castle-garden-filmed-v8.webp",
       "sourceFile": "public/solo/views/castle-garden-art-v6.webp",
       "downloadUrl": null,
       "sourceSha256": "e5271129daebf6d60bd9a3c57dec98d86d76f3dc57479133046b5dfa3f4dc3e0",
-      "videoSha256": "fae55bd1004bb48f29824b9980c8142aaf10a302ffb728f34d26262417892bbf",
-      "posterSha256": "9df0ef5a263a83bf8d5b99fe01b875127cd097a623e962ed82a76e08c6109f13",
-      "changes": "Broad estate garden with distant fictional adults in period gowns and suits. Native photographed clouds and fountain-light modulation are isolated by mattes. Architecture and people are static.",
+      "videoSha256": "c481fa528cff6f69e51650d7adf6e7cd0f933245fdd596fc17111b9ae35ada19",
+      "posterSha256": "148175c1188f9ffa363c6aeadc50c50e537ca37a522395ce2eb9564bf364720a",
+      "changes": "Existing artwork preserved. Stronger cloud layer, real falling-water texture isolated to both sides of the central fountain bowl, and moving water reflections in its basin. Figures and architecture remain fixed.",
       "motionSources": [
         {
           "source": "https://www.pexels.com/video/5354478/",
@@ -95,6 +100,13 @@
           "creator": "Ambient_Nature_ Atmosphere",
           "licenceUrl": "https://www.pexels.com/license/",
           "sourceFile": ".tmp/solo-filmed/falls-wide.mp4"
+        },
+        {
+          "source": "https://www.pexels.com/video/5419061/",
+          "creator": "Yaroslav Shuraev",
+          "licenceUrl": "https://www.pexels.com/license/",
+          "sourceFile": ".tmp/solo-filmed/sea-wide.mp4",
+          "purpose": "Central fountain basin reflections"
         }
       ],
       "frame": "/solo/frames/georgian-v2.webp"
@@ -108,14 +120,14 @@
       "reviewedAt": "2026-10-19",
       "kind": "layered still and filmed sky",
       "artwork": "Original generated magic-academy-v1.webp; prompts.json",
-      "changes": "Native cloud layer slowed twice and clipped to sky. Five original windows flicker gently through local opacity-only overlays. Buildings remain fixed.",
-      "video": "/solo/views/magic-academy-filmed-v6.mp4",
-      "poster": "/solo/views/magic-academy-filmed-v6.webp",
+      "changes": "Stronger photographed sky layer, slowed native motion and 16 independent softly glowing window lights. Castle geometry remains fixed.",
+      "video": "/solo/views/magic-academy-filmed-v8.mp4",
+      "poster": "/solo/views/magic-academy-filmed-v8.webp",
       "sourceFile": ".tmp/solo-filmed/cloud-fixed.mp4",
       "downloadUrl": "https://videos.pexels.com/video-files/5354478/5354478-uhd_3840_2160_30fps.mp4",
       "sourceSha256": "d47beb0898e1858a9d0278db3dc487c8d626426c9bfbc2b1b276411f3b120871",
-      "videoSha256": "3363c118b59fd9234bff7a061e1d3e4838c2492c8db7207b0d5fda6b14e8c64e",
-      "posterSha256": "7fc7259c11ce4f5d38f6fbd0f3340b58f7e8a4642b6584db5ab35fddb51ed62e"
+      "videoSha256": "ae3623dc972bb93c43a677f352555242f64e54eb1afcec816514d7c4161b236f",
+      "posterSha256": "89427b7f00bedbf42d68b9e4313891e7c3dc61638324fc51d96aa7e400dc8c08"
     },
     "sailing-ships": {
       "source": "https://www.pexels.com/video/5419061/",
@@ -153,24 +165,6 @@
       "videoSha256": "58367fef2c3b79bd237c51a63c13d26ffb2d1baffc25d4a013cb04868cc1488d",
       "posterSha256": "2a38b17f6baf967b6cfe2442309ecd33e85e153a145fbb5005f84661a6700a3e"
     },
-    "blackhole": {
-      "source": "https://svs.gsfc.nasa.gov/13326/",
-      "creator": "NASA Goddard Space Flight Center / Jeremy Schnittman",
-      "licence": "NASA media reuse guidelines",
-      "licenceUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
-      "commercialUse": true,
-      "reviewedAt": "2026-10-19",
-      "kind": "Original v1 artwork with native NASA gas luminosity",
-      "changes": "Original colour and composition fixed. Native NASA disk luminosity is softly masked into warm accretion material. No geometry displacement; galaxies and shadow do not move. No window frame. Artistic composite, not a complete physical simulation.",
-      "video": "/solo/views/blackhole-filmed-v7.mp4",
-      "poster": "/solo/views/blackhole-filmed-v7.webp",
-      "sourceFile": ".tmp/solo-nasa/blackhole.mp4",
-      "downloadUrl": "https://svs.gsfc.nasa.gov/vis/a010000/a013300/a013326/BH_AccretionDisk_Sim_Stationary_WebSize.mp4",
-      "sourceSha256": "3aa8cd0975db641dc2ece82c0cfc812e90ebd97b8f5bbe7be26152779ea24dc0",
-      "videoSha256": "7c5d0ca311773a36ae671fcc8e244004a37adde7f98d7b83498fedbbc6132182",
-      "posterSha256": "de28b81a38444c2beaf989462ac88d9e676e9cbb81fa0f91e07fbe0668de1bac",
-      "artwork": "First frame of public/solo/views/blackhole-motion-v1.mp4; preserved as blackhole-art-v7.webp"
-    },
     "waterfall": {
       "source": "https://www.pexels.com/video/5992497/",
       "creator": "Ambient_Nature_ Atmosphere",
@@ -202,7 +196,8 @@
   "retiredChoices": [
     "green-nature",
     "clouds",
-    "sherlock"
+    "sherlock",
+    "blackhole"
   ],
   "originalArtworkAssets": [
     {
@@ -230,10 +225,22 @@
       "sha256": "e5271129daebf6d60bd9a3c57dec98d86d76f3dc57479133046b5dfa3f4dc3e0"
     },
     {
-      "file": "/solo/views/blackhole-art-v7.webp",
-      "creator": "Original StudySpree artwork; built-in image_gen",
-      "source": "First frame of existing blackhole-motion-v1.mp4",
-      "sha256": "8f3077b930cf49259b771c9c5da8d3126a0fad3310ed59b9b67598519ec88b80"
+      "file": "/solo/motion/silver-fish-v1.webp",
+      "creator": "Original StudySpree generated artwork",
+      "source": "docs/solo-scenes/prompts.json",
+      "sha256": "7655be6ac883716c3537a0c437afd8b7474ec347cc18fe31ba47d47190a43b4c"
+    },
+    {
+      "file": "/solo/motion/yellow-fish-v1.webp",
+      "creator": "Original StudySpree generated artwork",
+      "source": "docs/solo-scenes/prompts.json",
+      "sha256": "1fe4516a9773eca2ab87afefae959031385edd1241a86598bdbf854523194a1d"
+    },
+    {
+      "file": "/solo/motion/striped-fish-v1.webp",
+      "creator": "Original StudySpree generated artwork",
+      "source": "docs/solo-scenes/prompts.json",
+      "sha256": "b540e2754c16edcb50ee058954fc1e84b4d38fb478a15423d54f61ecd4bb07a4"
     }
   ]
 }

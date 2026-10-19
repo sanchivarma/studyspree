@@ -2,7 +2,7 @@ import sharp from "sharp";
 import { access, mkdir, stat } from "node:fs/promises";
 import { spawn } from "node:child_process";
 const ffmpeg=process.argv[2]??"ffmpeg";
-const slugs=["old-castle","castle-garden","green-nature","clouds","sailing-ships","sea","mountains","space","underwater","blackhole","magic-academy","rivendell"];
+const slugs=["old-castle","castle-garden","green-nature","clouds","sailing-ships","sea","mountains","space","underwater","magic-academy","rivendell"];
 await mkdir(".tmp/solo-motion",{recursive:true});
 const stars=Array.from({length:80},(_,i)=>`<circle cx="${(i*137+31)%1280}" cy="${(i*97+11)%720}" r="${i%4===0?1.1:0.6}" fill="white" opacity="${0.25+(i%4)*0.12}"/>`).join("");
 const underwater=Array.from({length:18},(_,i)=>`<circle cx="${(i*149+71)%1280}" cy="${(i*83+37)%720}" r="${1+i%3}" fill="none" stroke="#c3ebfa" stroke-width="0.8" opacity="0.25"/>`).join("");
@@ -12,7 +12,7 @@ for(const slug of slugs){
   const target=`public/solo/views/${slug}-motion-v1.mp4`;
   try{await access(target);console.log(`${slug}: existing immutable loop retained`);continue;}catch(error){if(error.code!=="ENOENT")throw error;}
   const source=`public/solo/views/${slug}-${slug==="sailing-ships"?"v2":"v1"}.webp`;
-  const celestial=slug==="space"||slug==="blackhole", aquatic=slug==="underwater";
+  const celestial=slug==="space", aquatic=slug==="underwater";
   const layer=celestial?".tmp/solo-motion/stars.png":aquatic?".tmp/solo-motion/underwater.png":"public/solo/motion/cloud-overlay-v1.webp";
   const imageArgs=path=>["-loop","1","-framerate","24","-i",path];
   let filter=celestial||aquatic
