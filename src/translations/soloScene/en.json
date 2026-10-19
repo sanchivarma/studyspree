@@ -9,7 +9,6 @@
     "desk-medieval": "Medieval table",
     "desk-shakespearean": "Shakespearean table",
     "desk-pirate": "Pirate table",
-    "desk-sherlock": "Sherlock’s table",
     "desk-kings": "King’s table",
     "desk-student": "Student’s table",
     "desk-scientist": "Scientist’s table",
@@ -17,15 +16,13 @@
     "desk-space-shuttle": "Space shuttle table",
     "window-old-castle": "Old castle",
     "window-castle-garden": "Castle gardens",
-    "window-green-nature": "Green nature",
-    "window-clouds": "Moving clouds",
     "window-sailing-ships": "Sailing ships",
     "window-sea": "Sea",
     "window-mountains": "Mountains",
     "window-space": "Space",
     "window-underwater": "Underwater",
     "window-blackhole": "Black hole",
-    "window-rivendell": "Rivendell",
-    "window-magic-academy": "Magic academy"
+    "window-magic-academy": "Magic academy",
+    "window-waterfall": "Waterfall"
   }
 }

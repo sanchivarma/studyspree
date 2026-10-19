@@ -9,7 +9,6 @@
     "desk-medieval": "Bureau médiéval",
     "desk-shakespearean": "Bureau shakespearien",
     "desk-pirate": "Bureau de pirate",
-    "desk-sherlock": "Bureau de Sherlock",
     "desk-kings": "Bureau royal",
     "desk-student": "Bureau d’étudiant",
     "desk-scientist": "Bureau de scientifique",
@@ -17,15 +16,13 @@
     "desk-space-shuttle": "Bureau de navette spatiale",
     "window-old-castle": "Vieux château",
     "window-castle-garden": "Jardins du château",
-    "window-green-nature": "Nature verdoyante",
-    "window-clouds": "Nuages en mouvement",
     "window-sailing-ships": "Voiliers",
     "window-sea": "Mer",
     "window-mountains": "Montagnes",
     "window-space": "Espace",
     "window-underwater": "Sous l’eau",
     "window-blackhole": "Trou noir",
-    "window-rivendell": "Fondcombe",
-    "window-magic-academy": "Acad?mie de magie"
+    "window-magic-academy": "Acad?mie de magie",
+    "window-waterfall": "Cascade"
   }
 }

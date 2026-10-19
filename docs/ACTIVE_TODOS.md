@@ -7,15 +7,15 @@ Work proceeds one item at a time, beginning with the current session/solo view.
 - [x] Add exactly three complete local piano pieces, with commercial-use recording provenance.
 - [x] Add exactly three original soft frequency beds: 432, 528 and 963 Hz.
 - [x] Keep piano source/credit links out of the controls; retain licence records.
-- [ ] Restore original table designs/props in full-width, proportionally rendered artwork; inspect all ten.
+- [ ] Restore original table designs/props in full-width, proportionally rendered artwork; inspect all nine retained choices (Sherlock retired).
 - [ ] Named table/window previews in Study companions → Solo and Settings; persist selections.
 - [ ] Realistic view-matched apartment, medieval, castle, elven, ship, shuttle and submarine window surrounds.
-- [x] Twelve silent local outdoor loops: browser decode, visible-motion and playback-boundary checks pass; every MP4 is below 8 MB.
+- [x] Ten silent local outdoor loops: browser decode, visible-motion and playback-boundary checks pass; every MP4 is below 8 MB.
 - [x] Remove whole-view displacement and synthetic moving-picture overlays; retain approved Mountains and Old Castle unchanged.
 - [x] Record selected footage licences, exact source URLs and SHA-256 checksums; cancel the inaccessible Pixabay candidate.
-- [ ] User visual acceptance of all replacement views. Magic Academy and Sailing Ships are layered scenes; ships remain stationary while the water moves.
-- [ ] Layered foliage movement, water ripples, waterfalls, cloud drift, black-hole motion and slow Earth movement.
-- [x] Different photographic fish species swimming underwater, with fixed-camera aquarium footage slowed twice.
+- [ ] User visual acceptance of all replacement views. Magic Academy and Sailing Ships are layered scenes; two additional ships now move over open water.
+- [ ] Layered foliage and native outdoor movement review; Earth rotation is superseded by the requested galaxy view.
+- [x] Replace the aquarium with the requested vast open-ocean seabed perspective and slow native marine motion.
 - [ ] Fix duplicate React keys and check repeated scene switching produces no console errors.
 - [ ] Latest control style: 25% background opacity WITH blur, shorter bottom bar, table ABOVE blur, controls above table.
 - [ ] Responsive geometry, reduced motion, hidden-tab pause, missing-media fallback and timer continuity.
@@ -63,3 +63,19 @@ complete. Detailed evidence and limitations remain in FEATURE_COMPLETION.md.
 - Ten audio database assertions and eight solo-preference/ownership assertions pass.
 - Development server restarted after all twelve MP4s were rendered.
 - Prior browser attempts timed out in development compilation/sign-in navigation; no assertion was weakened.
+
+## Current Solo revision - implemented and verified
+
+- [x] Rename Rivendell to Waterfall in all five languages and saved preferences.
+- [x] Remove Green Nature, Moving Clouds and Sherlock from both pickers; preserve other profile fields when upgrading retired choices.
+- [x] Magic Academy: slow native cloud layer and five localized, gently flickering window lights.
+- [x] Black Hole: use the original v1 artwork/colour, local disk-light motion, and remove its frame in both the scene and picker.
+- [x] Space: locally stored NASA galaxy visualization, without a rotating planet.
+- [x] Sea: distant turquoise coastal footage with a fixed viewpoint.
+- [x] Sailing Ships: two moving ship layers positioned over open water between window posts; corrected water mask excludes land.
+- [x] Castle Garden: user-authorized original estate garden, period gowns/suits, Georgian study window and isolated sky/fountain-light motion. Figures remain static.
+- [x] Underwater: broad natural open-ocean seabed, replacing the aquarium.
+- [x] All outdoor playback slowed to 0.65x; hidden-tab pause, reduced motion and timer independence preserved.
+- [x] Pirate lantern and Shakespearean candlestick flicker; table artwork/position retained.
+- [x] Migrations 0066/0067 applied without resetting data; current scene constraint/ownership tests pass.
+- [x] Typecheck, lint, 449 unit tests, media-loop and Solo-flow browser tests pass; cold-start test passes on rerun after concurrent encode/test load.

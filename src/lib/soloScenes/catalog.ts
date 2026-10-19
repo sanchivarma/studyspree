@@ -1,27 +1,34 @@
 import { z } from "zod";
 
-export const deskSlugs = ["modern", "medieval", "shakespearean", "pirate", "sherlock", "kings", "student", "scientist", "submarine", "space-shuttle"] as const;
-export const windowSlugs = ["old-castle", "castle-garden", "green-nature", "clouds", "sailing-ships", "sea", "mountains", "space", "underwater", "blackhole", "magic-academy", "rivendell"] as const;
-export const soloSceneSchema = z.object({ desk: z.enum(deskSlugs), window: z.enum(windowSlugs) }).strict();
+export const deskSlugs = ["modern", "medieval", "shakespearean", "pirate", "kings", "student", "scientist", "submarine", "space-shuttle"] as const;
+export const windowSlugs = ["old-castle", "castle-garden", "sailing-ships", "sea", "mountains", "space", "underwater", "blackhole", "magic-academy", "waterfall"] as const;
+// Upgrade saved choices without discarding the rest of the profile.
+const savedWindow = z.enum([...windowSlugs, "green-nature", "clouds", "rivendell"])
+  .transform(value => value === "green-nature" || value === "clouds" ? "sea" : value === "rivendell" ? "waterfall" : value);
+const savedDesk = z.enum([...deskSlugs, "sherlock"]).transform(value => value === "sherlock" ? "modern" : value);
+export const soloSceneSchema = z.object({ desk: savedDesk, window: savedWindow }).strict();
 export type SoloScenePreferences = z.infer<typeof soloSceneSchema>;
-export const defaultSoloScene: SoloScenePreferences = { desk: "modern", window: "green-nature" };
+export const defaultSoloScene: SoloScenePreferences = { desk: "modern", window: "sea" };
 export const deskSource = (slug: SoloScenePreferences["desk"]) => `/solo/desks/${slug}-wide-v3.webp`;
 export const deskPreviewSource = (slug: SoloScenePreferences["desk"]) => `/solo/desks/${slug}-original-fit-v1.webp`;
 // Preserve the two clips explicitly approved by the user. Replacements use new
 // immutable names so browser/CDN caches cannot replay the rejected animation.
 const windowMediaVersion = (slug: SoloScenePreferences["window"]) => {
   if (slug === "old-castle" || slug === "mountains") return "filmed-v2";
-  if (["castle-garden", "clouds", "rivendell", "underwater"].includes(slug)) return "filmed-v5";
-  if (slug === "magic-academy" || slug === "sailing-ships" || slug === "space" || slug === "blackhole") return "filmed-v4";
-  return "filmed-v3";
+  if (slug === "waterfall") return "filmed-v5";
+  if (slug === "blackhole" || slug === "underwater") return "filmed-v7";
+  return "filmed-v6";
 };
-export const windowSource = (slug: SoloScenePreferences["window"]) => `/solo/views/${slug}-${windowMediaVersion(slug)}.webp`;
-export const windowVideoSource = (slug: SoloScenePreferences["window"]) => `/solo/views/${slug}-${windowMediaVersion(slug)}.mp4`;
+const mediaSlug = (slug: SoloScenePreferences["window"]) => slug === "waterfall" ? "rivendell" : slug;
+export const windowSource = (slug: SoloScenePreferences["window"]) => `/solo/views/${mediaSlug(slug)}-${windowMediaVersion(slug)}.webp`;
+export const windowVideoSource = (slug: SoloScenePreferences["window"]) => `/solo/views/${mediaSlug(slug)}-${windowMediaVersion(slug)}.mp4`;
 export function windowFrame(slug: SoloScenePreferences["window"]) {
+  if(slug === "blackhole") return null;
   if(slug === "magic-academy") return "gothic";
-  if(slug === "rivendell") return "elven";
-  if(slug === "old-castle" || slug === "castle-garden") return "medieval";
-  if(slug === "space" || slug === "blackhole") return "shuttle";
+  if(slug === "waterfall") return "elven";
+  if(slug === "old-castle") return "medieval";
+  if(slug === "castle-garden") return "georgian";
+  if(slug === "space") return "shuttle";
   if(slug === "underwater") return "submarine";
   if(slug === "sailing-ships") return "nautical";
   return "modern";

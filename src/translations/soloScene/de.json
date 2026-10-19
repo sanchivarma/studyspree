@@ -9,7 +9,6 @@
     "desk-medieval": "Mittelalterlicher Tisch",
     "desk-shakespearean": "Shakespeare-Tisch",
     "desk-pirate": "Piratentisch",
-    "desk-sherlock": "Sherlocks Tisch",
     "desk-kings": "Königstisch",
     "desk-student": "Studententisch",
     "desk-scientist": "Wissenschaftlertisch",
@@ -17,15 +16,13 @@
     "desk-space-shuttle": "Raumschifftisch",
     "window-old-castle": "Alte Burg",
     "window-castle-garden": "Schlossgärten",
-    "window-green-nature": "Grüne Natur",
-    "window-clouds": "Ziehende Wolken",
     "window-sailing-ships": "Segelschiffe",
     "window-sea": "Meer",
     "window-mountains": "Berge",
     "window-space": "Weltraum",
     "window-underwater": "Unter Wasser",
     "window-blackhole": "Schwarzes Loch",
-    "window-rivendell": "Bruchtal",
-    "window-magic-academy": "Magische Akademie"
+    "window-magic-academy": "Magische Akademie",
+    "window-waterfall": "Wasserfall"
   }
 }

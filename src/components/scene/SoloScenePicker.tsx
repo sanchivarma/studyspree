@@ -25,7 +25,7 @@ export function SoloScenePicker({disabled=false}:{disabled?:boolean}) {
     </fieldset>
     <fieldset disabled={disabled} onKeyDown={navigate}><legend className="mb-2 text-small font-semibold">{t("soloScene.window")}</legend>
       <div className="grid grid-cols-2 gap-2">{windowSlugs.map(slug=><button key={slug} type="button" aria-pressed={value.window===slug} onClick={()=>update.mutate({soloScene:{...value,window:slug}})} className={`${card} ${value.window===slug?"border-accent":"border-border"}`}>
-        <span className="relative block aspect-video w-full overflow-hidden"><img src={windowSource(slug)} alt="" loading="lazy" className="absolute inset-0 size-full object-cover"/><img src={`/solo/frames/${windowFrame(slug)}-v2.webp`} alt="" loading="lazy" className="absolute inset-0 size-full object-fill"/></span><span className="block min-h-11 px-2 py-2 text-small">{t(`soloScene.window-${slug}`)}</span>
+        <span className="relative block aspect-video w-full overflow-hidden"><img src={windowSource(slug)} alt="" loading="lazy" className="absolute inset-0 size-full object-cover"/>{windowFrame(slug)&&<img src={`/solo/frames/${windowFrame(slug)}-v2.webp`} alt="" loading="lazy" className="absolute inset-0 size-full object-fill"/>}</span><span className="block min-h-11 px-2 py-2 text-small">{t(`soloScene.window-${slug}`)}</span>
       </button>)}</div>
     </fieldset>
     {update.isError&&<p role="alert" className="text-small text-text-muted">{t("settings.saveError")}</p>}

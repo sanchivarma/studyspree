@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { windowSlugs, windowVideoSource } from "../src/lib/soloScenes/catalog";
 
-test("all twelve local outdoor MP4s decode with motion and quiet loop seams",async({page})=>{
+test("all ten local outdoor MP4s decode with motion and quiet loop seams",async({page})=>{
   test.setTimeout(120000);
   await page.goto("/login");
   for(const slug of windowSlugs){
