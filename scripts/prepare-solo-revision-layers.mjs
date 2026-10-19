@@ -15,6 +15,10 @@ for (const [name, shape, blur] of [
   await sharp(Buffer.from(svg)).blur(blur).png().toFile(`.tmp/solo-revisions/${name}-mask.png`);
 }
 
+// A modest increase in falling-water visibility; keep its feathered boundaries.
+await sharp(".tmp/solo-revisions/garden-cascade-v9-mask.png").linear(1.35)
+  .png().toFile(".tmp/solo-revisions/garden-cascade-v10-mask.png");
+
 // Strengthen only the photographed sky mask, retaining all castle geometry.
 await sharp(".tmp/solo-filmed/academy-sky-mask-v2.png").linear(2.1)
   .png().toFile(".tmp/solo-revisions/academy-sky-v8-mask.png");

@@ -34,7 +34,10 @@ test("solo POV preserves choices, fills the window, pauses motion and leaves the
   await expect(scene.getByTestId("desk-flame")).toBeVisible();
   await picker.getByRole("button",{name:"Magic academy",exact:true}).click();
   await expect(scene.getByTestId("academy-lights").locator("rect")).toHaveCount(16);
+    await expect(scene.getByTestId("academy-porch-lights").locator("ellipse")).toHaveCount(8);
   const lamp=scene.getByTestId("academy-lights").locator("rect").first();
+    expect(await lamp.evaluate(el=>parseFloat(getComputedStyle(el).animationDuration))).toBeGreaterThanOrEqual(10);
+    expect(await lamp.evaluate(el=>parseFloat(getComputedStyle(el).animationDuration))).toBeLessThanOrEqual(14);
   const brightness=await lamp.evaluate(el=>getComputedStyle(el).opacity);
   await expect.poll(()=>lamp.evaluate(el=>getComputedStyle(el).opacity)).not.toBe(brightness);
   await picker.getByRole("button",{name:"Underwater",exact:true}).click();

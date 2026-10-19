@@ -1,4 +1,4 @@
-﻿# Solo study scenes
+# Solo study scenes
 
 Nine desks and nine independent window choices are available in Study companions > Solo and Settings. Existing desks keep their full-width proportions and bottom offset. Controls retain the existing 25% opacity with blur.
 
@@ -7,7 +7,7 @@ Nine desks and nine independent window choices are available in Study companions
 - Old Castle and Mountains retain their approved video files.
 - Waterfall is the renamed Rivendell choice and keeps its approved waterfall footage.
 - Castle Garden is original generated artwork: a broad English country estate garden with distant fictional adults in period gowns and suits. A new ivory Georgian window frames the view. The sky, falling water at the sides of the central fountain bowl and basin reflections receive photographed motion; people and architecture remain fixed.
-- Magic Academy keeps its fixed castle, with a stronger slow filmed cloud layer and sixteen brighter, softly glowing flickering windows.
+- Magic Academy keeps its fixed castle and slow filmed clouds. Sixteen indoor windows glow on 10–14-second cycles; eight existing entrance/approach lanterns have small, dim flicker on 11–14-second cycles.
 - Sea uses a stationary turquoise-coast view, with a distant island and naturally moving water.
 - Underwater is a broad open-ocean seabed with distant marine growth and blue depth, replacing the aquarium. Its eight-second source is retimed to a slow loop using temporal frame blending. Three small original fish cutouts visit at separate intervals, with isolated tail motion and pauses between passes.
 - Sailing Ships keeps the fixed harbor. Its water matte excludes land. Two clean transparent ship layers move slowly through open water in the centre pane on separate 140/190-second cycles; the nearer ship is larger and lower. The original artwork's other ships remain fixed.

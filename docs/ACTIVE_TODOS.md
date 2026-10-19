@@ -80,3 +80,10 @@ complete. Detailed evidence and limitations remain in FEATURE_COMPLETION.md.
 - [x] Migrations 0066/0067 applied without resetting data; current scene constraint/ownership tests pass.
 - [x] Typecheck, lint, 449 unit tests, media-loop and Solo-flow browser tests pass; cold-start test passes on rerun after concurrent encode/test load.
 - [x] Latest removal migration 0068 applied; all 320 database assertions pass. Fish and lights pause in hidden tabs and are omitted with reduced motion.
+
+## Garden and Academy light refinement
+
+- [x] Increase the central fountain cascade visibility modestly, keeping translucent edges and the approved garden unchanged (immutable v11 media).
+- [x] Slow indoor Academy lights to staggered 10–14-second cycles.
+- [x] Add eight softly flickering outdoor lanterns at the existing porch/terrace and approach locations (11–14-second cycles).
+- [x] Follow-up: fountain falling water runs about 30% faster; porch flicker is small and dim, matching the existing lantern cores rather than enlarged lights.
