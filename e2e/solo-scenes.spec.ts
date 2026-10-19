@@ -32,6 +32,15 @@ test("solo POV preserves choices, fills the window, pauses motion and leaves the
   await picker.getByRole("button",{name:"Shakespearean table",exact:true}).click();
   await expect(scene.getByTestId("solo-desk-light").locator("image")).toHaveCount(1);
   await expect(scene.getByTestId("desk-flame")).toBeVisible();
+  await picker.getByRole("button",{name:"Shakespearean table",exact:true}).click();
+  await expect(scene).toHaveAttribute("data-desk","none");
+  await expect(scene.locator(".solo-desk")).toHaveCount(0);
+  await expect(scene.getByTestId("solo-desk-light")).toHaveCount(0);
+  await expect.poll(()=>page.evaluate(()=>JSON.parse(localStorage.getItem("ss_profile")??"{}").soloScene.desk)).toBe("none");
+  await page.reload();
+  await expect(scene).toHaveAttribute("data-desk","none");
+  await expect(scene.locator(".solo-desk")).toHaveCount(0);
+  await page.getByRole("button",{name:"Choose companions",exact:true}).click();
   await picker.getByRole("button",{name:"Magic academy",exact:true}).click();
   await expect(scene.getByTestId("academy-lights").locator("rect")).toHaveCount(16);
     await expect(scene.getByTestId("academy-porch-lights").locator("ellipse")).toHaveCount(8);

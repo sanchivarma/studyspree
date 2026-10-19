@@ -24,7 +24,9 @@ export function SoloStudyScene({ preferences }: { preferences: SoloScenePreferen
       <div className="solo-glass"/>
     </div>
     {frame&&<img key={`frame:${frame}`} src={`/solo/frames/${frame}-v2.webp`} alt="" className="solo-window-surround" fetchPriority="high"/>}
-    <img key={`desk:${preferences.desk}`} src={deskSource(preferences.desk)} alt="" className="solo-desk" fetchPriority="high" onError={event => { event.currentTarget.style.visibility = "hidden"; }}/>
-    <SoloDeskLight desk={preferences.desk} animate={visible&&!reducedMotion}/>
+    {preferences.desk!=="none" && <>
+      <img key={`desk:${preferences.desk}`} src={deskSource(preferences.desk)} alt="" className="solo-desk" fetchPriority="high" onError={event => { event.currentTarget.style.visibility = "hidden"; }}/>
+      <SoloDeskLight desk={preferences.desk} animate={visible&&!reducedMotion}/>
+    </>}
   </div>;
 }

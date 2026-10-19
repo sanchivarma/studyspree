@@ -5,12 +5,12 @@ export const windowSlugs = ["old-castle", "castle-garden", "sailing-ships", "sea
 // Upgrade saved choices without discarding the rest of the profile.
 const savedWindow = z.enum([...windowSlugs, "green-nature", "clouds", "blackhole", "rivendell"])
   .transform(value => value === "green-nature" || value === "clouds" || value === "blackhole" ? "sea" : value === "rivendell" ? "waterfall" : value);
-const savedDesk = z.enum([...deskSlugs, "sherlock"]).transform(value => value === "sherlock" ? "modern" : value);
+const savedDesk = z.enum([...deskSlugs, "none", "sherlock"]).transform(value => value === "sherlock" ? "modern" : value);
 export const soloSceneSchema = z.object({ desk: savedDesk, window: savedWindow }).strict();
 export type SoloScenePreferences = z.infer<typeof soloSceneSchema>;
 export const defaultSoloScene: SoloScenePreferences = { desk: "modern", window: "sea" };
-export const deskSource = (slug: SoloScenePreferences["desk"]) => `/solo/desks/${slug}-wide-v3.webp`;
-export const deskPreviewSource = (slug: SoloScenePreferences["desk"]) => `/solo/desks/${slug}-original-fit-v1.webp`;
+export const deskSource = (slug: typeof deskSlugs[number]) => `/solo/desks/${slug}-wide-v3.webp`;
+export const deskPreviewSource = (slug: typeof deskSlugs[number]) => `/solo/desks/${slug}-original-fit-v1.webp`;
 // Preserve the two clips explicitly approved by the user. Replacements use new
 // immutable names so browser/CDN caches cannot replay the rejected animation.
 const windowMediaVersion = (slug: SoloScenePreferences["window"]) => {

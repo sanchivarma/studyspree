@@ -19,6 +19,7 @@ export function SoloSceneSettings() {
     {!enabled && <p className="mt-2 text-small text-text-muted">{t("soloScene.soloRequired")}</p>}
     <label className="mt-4 block text-small">{t("soloScene.desk")}
       <select className={selectClass} disabled={disabled} value={preferences.desk} onChange={event=>update.mutate({soloScene:soloSceneSchema.parse({...preferences,desk:event.target.value})})}>
+        <option value="none">{t("soloScene.desk-none")}</option>
         {deskSlugs.map(slug=><option key={slug} value={slug}>{t(`soloScene.desk-${slug}`)}</option>)}
       </select>
     </label>

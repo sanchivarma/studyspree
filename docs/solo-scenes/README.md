@@ -2,6 +2,8 @@
 
 Nine desks and nine independent window choices are available in Study companions > Solo and Settings. Existing desks keep their full-width proportions and bottom offset. Controls retain the existing 25% opacity with blur.
 
+Click the selected desk card a second time to remove the desk, including its light overlay. Click any desk to restore one. Settings also offers “No table”. This preference persists independently of the window and personal timer; migration 0069 enables the same choice for account profiles.
+
 ## Current selection - 19 October 2026
 
 - Old Castle and Mountains retain their approved video files.

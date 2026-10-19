@@ -15,6 +15,9 @@ it("upgrades old profiles, remembers independent choices, and preserves the runn
   await repo.updateProfile({soloScene:{desk:"pirate",window:"waterfall"}});
   expect((await new LocalRepository(()=>storage).getProfile()).soloScene).toEqual({desk:"pirate",window:"waterfall"});
   expect(await repo.getActiveSession()).toEqual(active);
+  await repo.updateProfile({soloScene:{desk:"none",window:"waterfall"}});
+  expect((await new LocalRepository(()=>storage).getProfile()).soloScene).toEqual({desk:"none",window:"waterfall"});
+  expect(await repo.getActiveSession()).toEqual(active);
   await expect(repo.updateProfile({soloScene:{desk:"modern",window:"unknown"} as never})).rejects.toThrow();
 });
 

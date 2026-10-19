@@ -320,6 +320,8 @@ The user subsequently authorised the 17-feature roadmap in docs/FEATURE_CHECKLIS
 
 ## 14. Current status
 
+- **Optional Solo table:** clicking an already selected table toggles its saved desk value to `none`; render omits both desk and its light. Settings includes translated No table. Migration 0069 permits the value for account profiles; window selection and timer state are independent.
+
 - **Garden/Academy refinement:** Castle Garden v11 increases translucent falling-water visibility without replacing the approved composition. Academy indoor lighting uses 10–14-second cycles; eight existing outdoor entrance/approach lanterns use staggered 11–14-second cycles. No desk, camera, timer or database behavior changed.
 
 - **Solo detail revision (19 October 2026):** Magic Academy has sixteen staggered glowing windows and stronger slow native clouds; Underwater has occasional distant fish with attached tail motion. Castle Garden retains its approved estate artwork with stronger clouds, falling water localized to the central fountain and moving basin reflections. Black Hole is retired from choices, translations, render recipes and public media; migration 0068 maps saved selections to Sea without resetting other preferences. Hidden-tab pause and reduced-motion behavior remain intact. No dependencies added.

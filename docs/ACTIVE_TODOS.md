@@ -83,6 +83,8 @@ complete. Detailed evidence and limitations remain in FEATURE_COMPLETION.md.
 
 ## Garden and Academy light refinement
 
+- [x] Clicking a selected table again removes it and its light overlay. No-table preference persists across refresh; Settings exposes the same choice in all five languages.
+
 - [x] Increase the central fountain cascade visibility modestly, keeping translucent edges and the approved garden unchanged (immutable v11 media).
 - [x] Slow indoor Academy lights to staggered 10–14-second cycles.
 - [x] Add eight softly flickering outdoor lanterns at the existing porch/terrace and approach locations (11–14-second cycles).
