@@ -1,5 +1,5 @@
 import { z } from "zod";
-import entries from "./radio-stations.json";
+import entries from "./radio-stations.json" with { type: "json" };
 
 const httpsUrl = z.url().refine(value => new URL(value).protocol === "https:");
 export const radioStationsSchema = z.array(z.object({

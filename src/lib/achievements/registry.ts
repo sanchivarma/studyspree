@@ -1,5 +1,5 @@
 import { z } from "zod";
-import definitions from "./definitions.json";
+import definitions from "./definitions.json" with { type: "json" };
 import type { AchievementDefinition } from "@/types/achievements";
 
 const definitionSchema = z.object({

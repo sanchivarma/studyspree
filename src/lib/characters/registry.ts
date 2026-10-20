@@ -1,6 +1,6 @@
 import { humanCharacterSlugs, realisticCharacterSlugs, historicalCharacterSlugs, type CharacterSlug, type CharacterDefinition } from "@/types/characters";
 
-import mediaRevisions from "./mediaRevisions.json";
+import mediaRevisions from "./mediaRevisions.json" with { type: "json" };
 type MediaRevision = { version: string; posterVersion: string; loopSeconds: number; video: boolean };
 const revisions: Partial<Record<CharacterSlug, MediaRevision>> = mediaRevisions;
 const versionFor = (slug: CharacterSlug, fallback: string) => revisions[slug]?.version ?? fallback;
