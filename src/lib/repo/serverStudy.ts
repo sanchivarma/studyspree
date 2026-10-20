@@ -92,11 +92,15 @@ export async function executeStudy(input: Input) {
             return tileSchema.parse(saved.data);
         }
         case "active": {
+            const synced = await client.rpc("sync_session_browser", { p_tab: input.tab?.tabId, p_document: input.tab?.documentId, p_reload: input.tab?.reload ?? false });
+            assertResult(synced.error);
             const response = await client.from("sessions").select("*").eq("user_id", id).is("ended_at", null).maybeSingle();
             assertResult(response.error);
             return response.data ? mapSession(response.data) : null;
         }
         case "session": {
+            const synced = await client.rpc("sync_session_browser", { p_id: input.id, p_tab: input.tab?.tabId, p_document: input.tab?.documentId, p_reload: input.tab?.reload ?? false });
+            assertResult(synced.error);
             const response = await client.from("sessions").select("*").eq("user_id", id).eq("id", input.id).maybeSingle();
             assertResult(response.error);
             return response.data ? mapSession(response.data) : null;
@@ -105,7 +109,16 @@ export async function executeStudy(input: Input) {
             const p = input.input;
             const response = p.title !== undefined ? await client.rpc("start_session_with_details",{p_minutes:p.plannedMinutes!,p_theme:p.themeSlug,p_task:p.task!,p_companions:p.companions??soloCompanions(),p_title:p.title,p_rules:p.rules!,p_visibility:p.visibility,p_room:p.roomId??undefined}) : input.input.roomId ? await client.rpc("start_room_session", { p_room: input.input.roomId, p_minutes: input.input.plannedMinutes!, p_theme: input.input.themeSlug, p_task: input.input.task!, p_companions: input.input.companions ?? soloCompanions() }) : await client.rpc("start_study_session", { p_minutes: p.plannedMinutes!, p_theme: p.themeSlug, p_task: p.task!, p_companions: p.companions ?? soloCompanions() });
             assertResult(response.error);
+            if (input.tab) {
+                const synced = await client.rpc("sync_session_browser", { p_id: response.data!.id, p_tab: input.tab.tabId, p_document: input.tab.documentId, p_reload: input.tab.reload });
+                assertResult(synced.error);
+            }
             return mapSession(response.data!);
+        }
+        case "tabClose": {
+            const response = await client.rpc("close_session_browser_tab", { p_id: input.id, p_tab: input.tab.tabId, p_document: input.tab.documentId });
+            assertResult(response.error);
+            return null;
         }
         case "finish": {
             const previous = await client.from("sessions").select("*").eq("id", input.id).eq("user_id", id).maybeSingle();

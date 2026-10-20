@@ -1762,6 +1762,40 @@ export type Database = {
                     }
                 ];
             };
+            "session_browser_tabs": {
+                Row: {
+                    "closed_at": string | null;
+                    "document_id": string;
+                    "session_id": string;
+                    "tab_id": string;
+                };
+                ComputedFields: never;
+                Insert: {
+                    "closed_at"?: string | null;
+                    "document_id": string;
+                    "session_id": string;
+                    "tab_id": string;
+                };
+                Update: {
+                    "closed_at"?: string | null;
+                    "document_id"?: string;
+                    "session_id"?: string;
+                    "tab_id"?: string;
+                };
+                Relationships: [
+                    {
+                        foreignKeyName: "session_browser_tabs_session_id_fkey";
+                        columns: [
+                            "session_id"
+                        ];
+                        isOneToOne: false;
+                        referencedRelation: "sessions";
+                        referencedColumns: [
+                            "id"
+                        ];
+                    }
+                ];
+            };
             "sessions": {
                 Row: {
                     "actual_seconds": number;
@@ -2384,6 +2418,14 @@ export type Database = {
                 };
                 Returns: Json;
             };
+            "close_session_browser_tab": {
+                Args: {
+                    "p_document": string;
+                    "p_id": string;
+                    "p_tab": string;
+                };
+                Returns: undefined;
+            };
             "community_dashboard": {
                 Args: Record<PropertyKey, never>;
                 Returns: Json;
@@ -2567,6 +2609,10 @@ export type Database = {
                 Returns: string;
             };
             "maintain_study_leases": {
+                Args: Record<PropertyKey, never>;
+                Returns: Json;
+            };
+            "maintain_study_leases_before_browser_close": {
                 Args: Record<PropertyKey, never>;
                 Returns: Json;
             };
@@ -2765,6 +2811,15 @@ export type Database = {
             "study_summary": {
                 Args: Record<PropertyKey, never>;
                 Returns: Json;
+            };
+            "sync_session_browser": {
+                Args: {
+                    "p_document"?: string;
+                    "p_id"?: string;
+                    "p_reload"?: boolean;
+                    "p_tab"?: string;
+                };
+                Returns: undefined;
             };
             "update_personal_tile": {
                 Args: {

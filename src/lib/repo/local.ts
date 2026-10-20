@@ -24,6 +24,7 @@ import { achievementDefinitions } from "@/lib/achievements/registry";
 import { tileStatusSchema, type TileHistoryPage } from "@/types/tileStatus";
 import { CapabilityError } from "./capabilities";
 import {sessionDetailsShape} from '@/lib/session/setup';
+import { browserTab, type BrowserTab } from "@/lib/session/browserTab";
 
 type StorageAccess = Pick<Storage, "getItem" | "setItem" | "removeItem">;
 const iso = z.iso.datetime();
@@ -58,6 +59,7 @@ export const sessionSchema = z.object({
   : session.endedReason !== null && session.endedAt >= session.startedAt);
 const sessionsSchema = z.array(sessionSchema).refine((sessions) => new Set(sessions.map((session) => session.id)).size === sessions.length && sessions.filter((session) => session.endedAt === null).length <= 1);
 const activeSchema = z.object({ id: z.string().min(1), lastHeartbeatAt: iso }).strict().nullable();
+const tabStateSchema = z.object({ documentId: z.uuid(), closedAt: iso.nullable() }).strict().nullable();
 export const streakSchema = z.object({
   current: z.number().int().nonnegative(), best: z.number().int().nonnegative(),
   lastActiveDate: date.nullable(), freezesRemaining: z.number().int().min(0).max(2), freezesResetAt: date,
@@ -245,22 +247,66 @@ export class LocalRepository implements Repository {
       if(patch.mirrorSelfView!==undefined||patch.showOwnTile!==undefined||patch.shareNowPlaying!==undefined){const tile=this.read('ss_personal_tile',tileSchema,()=>tileSchema.parse({}));this.write('ss_personal_tile',{...tile,mirrored:profile.mirrorSelfView,isVisible:profile.showOwnTile,shareNowPlaying:profile.shareNowPlaying});}
       return profile; });
   }
-  async getActiveSession(): Promise<Session | null> { return this.active(this.sessions()); }
-  async getSession(id: string): Promise<Session | null> { return this.sessions().find(session=>session.id===id)??null; }
+  private syncBrowserSession(session: Session | null, tab = browserTab()): Session | null {
+    if (!session || session.endedAt) return session;
+    const key = `ss_session_browser_${session.id}`;
+    const ids = this.read(key, z.array(z.uuid()), () => []);
+    const states = ids.map(id => ({ id, state: this.read(`${key}:${id}`, tabStateSchema, () => null) })).filter(entry => entry.state !== null);
+    const own = states.find(entry => entry.id === tab?.tabId)?.state;
+    if (own?.closedAt && own.documentId === tab?.documentId) return session;
+    // A fresh reload cancels its preceding document's close; old in-flight
+    // reads from that document cannot undo its own close signal.
+    const refreshing = own?.closedAt && tab?.reload && own.documentId !== tab.documentId
+      && now().getTime() - new Date(own.closedAt).getTime() < 30_000;
+    if (refreshing && tab) this.write(`${key}:${tab.tabId}`, { documentId: tab.documentId, closedAt: null });
+    const closed = states.length > 0 && states.every(entry => entry.state?.closedAt !== null);
+    if (closed && !refreshing) {
+      const closedAt = states.map(entry => entry.state!.closedAt!).sort().at(-1)!;
+      if ((tab && !own) || (tab && own?.documentId !== tab.documentId && !tab.reload) || now().getTime() - new Date(closedAt).getTime() >= 30_000) {
+        return this.finishStoredSession(session.id, "stopped_early", new Date(closedAt)).session;
+      }
+      // Waiting for a reload, or an old request delivered after pagehide.
+      return session;
+    }
+    if (tab) {
+      if (!ids.includes(tab.tabId)) this.write(key, [...ids, tab.tabId]);
+      this.write(`${key}:${tab.tabId}`, { documentId: tab.documentId, closedAt: null });
+    }
+    return session;
+  }
+  releaseSessionTab(id: string): void {
+    const tab: BrowserTab | undefined = browserTab();
+    if (!tab) return;
+    const key = `ss_session_browser_${id}:${tab.tabId}`;
+    const state = this.read(key, tabStateSchema, () => null);
+    if (state?.documentId !== tab.documentId || state.closedAt) return;
+    // Synchronous storage is intentional: an unload cannot await Web Locks.
+    this.write(key, { ...state, closedAt: now().toISOString() });
+  }
+  getActiveSession(): Promise<Session | null> {
+    return this.mutate(() => { const session = this.syncBrowserSession(this.active(this.sessions())); return session?.endedAt ? null : session; });
+  }
+  getSession(id: string): Promise<Session | null> {
+    return this.mutate(() => this.syncBrowserSession(this.sessions().find(session => session.id === id) ?? null));
+  }
   startSession(input: StartSessionInput): Promise<Session> {
     if (input.visibility==='public'||input.roomId || input.companions?.mode === 'people' || input.companions?.mode === 'mixed') return Promise.reject(new CapabilityError('shared-room-access'));
     return this.mutate(() => {
       const sessions = this.sessions();
-      const active = this.active(sessions);
-      if (active) return active;
-      const session = { ...this.createSession(input, now(), crypto.randomUUID()), companionStatusCycle: sessions.reduce((highest, item) => Math.max(highest, item.companionStatusCycle ?? -1), -1) + 1 };
-      this.write("ss_sessions", [...sessions, session]);
+      const active = this.syncBrowserSession(this.active(sessions));
+      if (active && !active.endedAt) return active;
+      const current = this.sessions();
+      const session = { ...this.createSession(input, now(), crypto.randomUUID()), companionStatusCycle: current.reduce((highest, item) => Math.max(highest, item.companionStatusCycle ?? -1), -1) + 1 };
+      this.write("ss_sessions", [...current, session]);
       this.write("ss_active", { id: session.id, lastHeartbeatAt: session.startedAt });
+      this.syncBrowserSession(session);
       return session;
     });
   }
   endSession(id: string, reason: EndedReason): Promise<EndSessionResult> {
-    return this.mutate(() => {
+    return this.mutate(() => this.finishStoredSession(id, reason, now()));
+  }
+  private finishStoredSession(id: string, reason: EndedReason, timestamp: Date): EndSessionResult {
       z.enum(["completed", "stopped_early", "abandoned"]).parse(reason);
       const sessions = this.sessions();
       const session = sessions.find((value) => value.id === id);
@@ -271,7 +317,7 @@ export class LocalRepository implements Repository {
         return this.totals(sessions, session, { current: previousStreak.current, best: previousStreak.best,
           changed: event?.changed ?? false, freezeUsed: event?.freezeUsed ?? false });
       }
-      const ended = this.finishSession(session, reason, now());
+      const ended = this.finishSession(session, reason, timestamp);
       const updated = sessions.map((value) => value.id === id ? ended : value);
       const activity = reason === "abandoned" ? { state: previousStreak, changed: false, freezeUsed: false }
         : applyActivity(previousStreak, ended.localDate);
@@ -282,7 +328,6 @@ export class LocalRepository implements Repository {
       }
       this.write("ss_active", null);
       return this.totals(updated, ended, { current: activity.state.current, best: activity.state.best, changed: activity.changed, freezeUsed: activity.freezeUsed });
-    });
   }
   heartbeat(id: string): Promise<void> {
     return this.mutate(() => {

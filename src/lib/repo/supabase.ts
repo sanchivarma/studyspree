@@ -10,6 +10,7 @@ import type { CompanionPreferences } from "@/types/characters";
 import type { SessionHistoryQuery } from "@/types/stats";
 import { tileHistorySchema } from "@/types/tileStatus";
 import { characterHistorySchema } from "@/types/focusPartners";
+import { browserTab } from "@/lib/session/browserTab";
 const room = z.object({ id: z.uuid(), name: z.string(), description: z.string(), humanCount: z.number(), access: z.enum(["public", "members", "invite"]), canJoin: z.boolean() });
 export class SupabaseRepository implements Repository {
     private async call<T>(op: string, schema: z.ZodType<T>, args: object = {}): Promise<T> {
@@ -32,9 +33,16 @@ export class SupabaseRepository implements Repository {
     getTileStatusHistory(opts: { cursor?: string | null; limit: number }) { return this.call("tileHistory", tileHistorySchema, opts); }
     getPersonalTile() { return this.call("tile", tileSchema); }
     updatePersonalTile(patch: TilePatch) { return this.call("updateTile", tileSchema, { patch }); }
-    getActiveSession() { return this.call("active", sessionSchema.nullable()); }
-    getSession(id: string) { return this.call("session", sessionSchema.nullable(), { id }); }
-    startSession(input: StartSessionInput) { return this.call("start", sessionSchema, { input }); }
+    getActiveSession() { return this.call("active", sessionSchema.nullable(), { tab: browserTab() }); }
+    getSession(id: string) { return this.call("session", sessionSchema.nullable(), { id, tab: browserTab() }); }
+    releaseSessionTab(id: string): void {
+        const tab = browserTab();
+        if (!tab) return;
+        const body = JSON.stringify({ op: "tabClose", id, tab });
+        if (navigator.sendBeacon?.("/api/repository", new Blob([body], { type: "application/json" }))) return;
+        void fetch("/api/repository", { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json" }, body, keepalive: true }).catch(() => {});
+    }
+    startSession(input: StartSessionInput) { return this.call("start", sessionSchema, { input, tab: browserTab() }); }
     endSession(id: string, reason: EndedReason) { return this.call("finish", z.object({ session: sessionSchema, totalSecondsAllTime: z.number(), dayTotalSeconds: z.number(), streak: z.object({ current: z.number(), best: z.number(), changed: z.boolean(), freezeUsed: z.boolean() }) }), { id, reason }); }
     async heartbeat(id: string) { await this.call("heartbeat", z.null(), { id }); }
     updateSessionCompanions(id: string, companions: CompanionPreferences) { return this.call("companions", sessionSchema, { id, companions }); }

@@ -32,6 +32,7 @@ export interface Repository {
   startSession(input: StartSessionInput): Promise<Session>;
   endSession(id: string, reason: EndedReason): Promise<EndSessionResult>;
   heartbeat(id: string): Promise<void>;
+  releaseSessionTab(id: string): void;
   updateSessionCompanions(id: string, companions: CompanionPreferences): Promise<Session>;
   getSessions(opts: { limit: number; offset: number }): Promise<Session[]>;
   getSessionHistory(query: SessionHistoryQuery): Promise<SessionHistoryPage>;

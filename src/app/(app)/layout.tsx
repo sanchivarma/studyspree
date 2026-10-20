@@ -6,6 +6,7 @@ import { authRepository } from "@/lib/repo/authRepository";
 import { redirect } from "next/navigation";
 import { getDevAdminProfile } from "@/lib/auth/devAdmin";
 import { AccountModeProvider } from "@/components/layout/AccountModeProvider";
+import { SessionBrowserLifecycle } from "@/components/layout/SessionBrowserLifecycle";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const profile = await authRepository.getProfile();
@@ -18,6 +19,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   return (
     <div style={style} data-repository-mode={mode === "preview" ? "local" : "server"}>
       <AccountModeProvider mode={mode}>
+      <SessionBrowserLifecycle />
       <AppNav showStreak={profile.show_streak} />
       <AppContent>{children}</AppContent>
       </AccountModeProvider>
