@@ -23,7 +23,7 @@ test("Solo shortcut overrides saved characters for the new session without erasi
   await page.getByRole("button", { name: "Choose companions", exact: true }).click();
   await page.getByRole("button", { name: "Virtual partners", exact: true }).click();
   await page.getByTestId("character-card-female-04").click();
-  await page.getByTestId("character-card-male-01").click();
+  await expect(page.getByTestId("character-card-male-01")).toHaveAttribute("aria-pressed", "false");
   await page.getByRole("button", { name: "Close", exact: true }).click();
   await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("ss_profile")!).companionPreferences.characterSlugs)).toEqual(["female-04"]);
   await page.goto("/");

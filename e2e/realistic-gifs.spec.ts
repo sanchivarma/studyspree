@@ -11,7 +11,7 @@ test("the original eight realistic partners animate in a session and preserve it
   await page.getByRole("button", { name: "Realistic", exact: true }).click();
   await page.getByTestId("character-card-realistic-01").click();
   await page.getByRole("button", { name: "All", exact: true }).click();
-  await page.getByTestId("character-card-male-01").click();
+  await expect(page.getByTestId("character-card-male-01")).toHaveAttribute("aria-pressed", "false");
   await page.getByRole("button", { name: "Realistic", exact: true }).click();
   for (let n = 2; n <= 8; n++) await page.getByTestId(`character-card-realistic-0${n}`).click();
   await page.getByRole("button", { name: "Close", exact: true }).click();

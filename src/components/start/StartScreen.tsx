@@ -48,7 +48,7 @@ export function StartScreen({ displayName, initialHour, initialMode }: { display
   const companionPreferences = useCompanionPreferences();
   const [chosenCompanions, setChosenCompanions] = useState<CompanionPreferences | null>(null);
   const companions = useMemo<CompanionPreferences>(() => chosenCompanions ?? (initialMode === "solo" ? soloCompanions()
-    : initialMode === "characters" ? { mode: "characters", characterSlugs: companionPreferences.value.characterSlugs.length ? companionPreferences.value.characterSlugs : ["male-01"] }
+    : initialMode === "characters" && companionPreferences.value.characterSlugs.length ? { mode: "characters", characterSlugs: companionPreferences.value.characterSlugs }
     : companionPreferences.value), [chosenCompanions, initialMode, companionPreferences.value]);
   const [chosenDuration, setChosenDuration] = useState<number | null | undefined>(undefined);
   const latest = recent.data?.[0];
@@ -120,13 +120,13 @@ export function StartScreen({ displayName, initialHour, initialMode }: { display
         <p className="mb-6 text-small text-text-muted">{greeting}</p>
         <Sheet open={companionOpen} onOpenChange={setCompanionOpen}>
           <SheetTrigger asChild><button type="button" aria-label={t("characters.change")} className="mb-4 flex min-h-11 w-full items-center gap-3 rounded-xl border border-border bg-background/40 px-4 text-small">
-            <Users aria-hidden="true" className="size-4" />{t(companions.mode === "characters" ? "characters.characters" : "characters.solo")}
+            <Users aria-hidden="true" className="size-4" />{t(companions.mode === "characters" || (!chosenCompanions && initialMode === "characters") ? "characters.characters" : "characters.solo")}
             {companions.characterSlugs.length > 0 && <span className="ml-auto text-text-muted">{t("characters.selected", { count: companions.characterSlugs.length })}</span>}
           </button></SheetTrigger>
           <SheetContent side="right" showCloseButton={false} className="w-full overflow-y-auto bg-background p-5 sm:max-w-[440px]">
             <SheetHeader className="mb-5 p-0 pr-11"><SheetTitle>{t("characters.title")}</SheetTitle><SheetDescription>{t("characters.description")}</SheetDescription></SheetHeader>
             <SheetClose asChild><button type="button" aria-label={t("scene.close")} className="absolute top-2 right-2 flex size-11 items-center justify-center"><X className="size-5" /></button></SheetClose>
-            <CompanionModePicker value={companions} onChange={value => { setChosenCompanions(value); companionPreferences.mutation.mutate(value); }} />
+            <CompanionModePicker initialMode={!chosenCompanions ? initialMode : undefined} value={companions} onChange={value => { setChosenCompanions(value); companionPreferences.mutation.mutate(value); }} />
             {companionPreferences.mutation.error && <p role="alert" className="mt-4 text-small">{t("characters.saveError")}</p>}
           </SheetContent>
         </Sheet>

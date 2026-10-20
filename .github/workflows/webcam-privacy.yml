@@ -41,7 +41,7 @@ jobs:
       - name: Decode original themes and audible ambience
         run: npm run test:e2e -- e2e/default-media.spec.ts e2e/ambience-assets.spec.ts
       - name: Verify virtual study companions
-        run: npm run test:e2e -- e2e/characters.spec.ts e2e/companion-styles.spec.ts
+        run: npm run test:e2e -- e2e/characters.spec.ts e2e/companion-styles.spec.ts e2e/virtual-partner-selection.spec.ts e2e/browser-session-lifecycle.spec.ts
       - name: Enforce webcam privacy
         run: npm run test:e2e -- e2e/webcam-privacy.spec.ts
       - name: Save browser failure artifacts

@@ -5,6 +5,8 @@ async function choosePartners(page: import("@playwright/test").Page) {
   await page.goto("/study");
   await page.getByRole("button", { name: "Choose companions", exact: true }).click();
   await page.getByRole("button", { name: "Virtual partners", exact: true }).click();
+  await expect(page.getByTestId("character-card-male-01")).toHaveAttribute("aria-pressed", "false");
+  await page.getByTestId("character-card-male-01").click();
   await page.getByTestId("character-card-female-04").click();
   await expect(page.getByTestId("character-card-male-01")).toHaveAttribute("aria-pressed", "true");
   await page.getByRole("button", { name: "Close", exact: true }).click();
@@ -76,6 +78,7 @@ test("GIFs unmount when the document is hidden and character cards support arrow
   await page.goto("/study");
   await page.getByRole("button", { name: "Choose companions", exact: true }).click();
   await page.getByRole("button", { name: "Virtual partners", exact: true }).click();
+  await page.getByTestId("character-card-male-01").click();
   await page.getByTestId("character-card-male-01").focus();
   await page.keyboard.press("ArrowDown");
   await expect(page.getByTestId("character-card-male-03")).toBeFocused();

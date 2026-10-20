@@ -7,6 +7,8 @@ permissions:
 jobs:
   community:
     runs-on: ubuntu-latest
+    env:
+      INVITATION_EMAIL_TRANSPORT: mailpit
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4

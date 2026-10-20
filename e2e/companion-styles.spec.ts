@@ -6,6 +6,7 @@ test("mixing all styles persists and realistic GIFs respect reduced motion", asy
   await signIn(page); await page.goto("/study");
   await page.getByRole("button", { name: "Choose companions", exact: true }).click();
   await page.getByRole("button", { name: "Virtual partners", exact: true }).click();
+  await page.getByTestId("character-card-male-01").click();
   await page.getByRole("button", { name: "Whimsical", exact: true }).click();
   await page.getByTestId("character-card-moss-fox").click();
   await page.getByRole("button", { name: "Realistic", exact: true }).click();

@@ -8,7 +8,7 @@ test("statuses rotate by session, personal status persists, and idle labels hide
   await page.getByRole("button", { name: "Choose companions", exact: true }).click();
   await page.getByRole("button", { name: "Virtual partners", exact: true }).click();
   for (const slug of ["realistic-01", "realistic-06"]) await page.getByTestId(`character-card-${slug}`).click();
-  await page.getByTestId("character-card-male-01").click();
+  await expect(page.getByTestId("character-card-male-01")).toHaveAttribute("aria-pressed", "false");
   await page.getByRole("button", { name: "Close", exact: true }).click();
   await page.getByRole("button", { name: "Start", exact: true }).click();
   await settleClock(page, "session-screen", 16);

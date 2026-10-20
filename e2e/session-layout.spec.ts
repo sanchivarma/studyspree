@@ -10,7 +10,7 @@ for (const viewport of [{ width: 1280, height: 800 }, { width: 375, height: 667 
     await page.getByRole("button", { name: "Choose companions", exact: true }).click();
     await page.getByRole("button", { name: "Virtual partners", exact: true }).click();
     // Exercise the picker past the former eight-character cap.
-    for (const slug of characterSlugs.slice(1, 9)) await page.getByTestId(`character-card-${slug}`).click();
+    for (const slug of characterSlugs.slice(0, 9)) await page.getByTestId(`character-card-${slug}`).click();
     await expect(page.getByTestId("character-card-moss-fox")).toHaveAttribute("aria-pressed", "true");
     await page.getByRole("button", { name: "Close", exact: true }).click();
     await page.getByRole("button", { name: "Start", exact: true }).click();
@@ -52,6 +52,7 @@ test("side controls leave the stage clear and direct removal preserves the timer
   await signIn(page); await page.goto("/study");
   await page.getByRole("button", { name: "Choose companions", exact: true }).click();
   await page.getByRole("button", { name: "Virtual partners", exact: true }).click();
+  await page.getByTestId("character-card-male-01").click();
   await page.getByTestId("character-card-female-01").click();
   await page.getByRole("button", { name: "Close", exact: true }).click();
   await page.getByRole("button", { name: "Start", exact: true }).click();

@@ -15,7 +15,7 @@ test("restored realistic media stays mounted through timer ticks and idle captio
   for (const slug of ["realistic-01", "realistic-06", "medieval-scribe", "tesla"]) {
     await page.getByTestId(`character-card-${slug}`).click();
   }
-  await page.getByTestId("character-card-male-01").click();
+  await expect(page.getByTestId("character-card-male-01")).toHaveAttribute("aria-pressed", "false");
   await page.getByRole("button", { name: "Close", exact: true }).click();
   await page.getByRole("button", { name: "Start", exact: true }).click();
   await expect(page.getByTestId("session-screen")).toBeVisible({ timeout: 15000 });
