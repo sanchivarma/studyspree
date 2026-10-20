@@ -49,14 +49,14 @@ test.beforeEach(async ({ page }) => {
 
 test("poster and looping muted video paint, pause hidden, and retain the same node on rerender", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
-  await signIn(page); await page.goto("/study");
+  await signIn(page); await page.goto("/");
   const scene = page.getByTestId("scene-video"); const movie = scene.locator("video");
   await expect(scene.locator("img")).toHaveCSS("opacity", "1");
   await expect(movie).toHaveCSS("opacity", "1");
   expect(await movie.evaluate((element: HTMLVideoElement) => element.muted && element.loop && element.playsInline && element.autoplay && !element.paused)).toBe(true);
   await expect(movie).toHaveAttribute("preload", "auto");
   const node = await movie.elementHandle();
-  await page.getByRole("button", { name: "25 min", exact: true }).click();
+  await page.getByRole("combobox").selectOption("de");
   expect(await node!.evaluate((element) => element.isConnected && element === document.querySelector("video"))).toBe(true);
   await page.evaluate(() => { Object.defineProperty(document, "hidden", { configurable: true, value: true }); document.dispatchEvent(new Event("visibilitychange")); });
   expect(await movie.evaluate((element: HTMLVideoElement) => element.paused)).toBe(true);
@@ -68,7 +68,7 @@ test("poster and looping muted video paint, pause hidden, and retain the same no
 });
 
 test("OS and profile reduced motion show a static poster and never mount video", async ({ page }) => {
-  await signIn(page); await page.goto("/study");
+  await signIn(page); await page.goto("/");
   const scene = page.getByTestId("scene-video");
   await expect(scene.locator("img")).toHaveCSS("opacity", "1");
   await expect(scene.locator("video")).toHaveCount(0);
@@ -101,7 +101,7 @@ test("a missing theme has an immediate gradient with no missing-media requests o
   await signIn(page);
   await page.evaluate(() => localStorage.setItem("ss_profile", JSON.stringify({ displayName: "", selectedTheme: "night-shift", timezone: "UTC", showStreak: false, reduceMotion: false, webcamEnabled: false, ambienceEnabled: false })));
   await page.emulateMedia({ reducedMotion: "no-preference" });
-  await page.goto("/study");
+  await page.goto("/");
   const scene = page.getByTestId("theme-scene").locator('[data-testid="scene-video"][data-theme="night-shift"]');
   await expect(scene).toHaveAttribute("data-theme", "night-shift");
   await expect(page.getByTestId("theme-scene").locator('[data-theme="rain-desk"]')).toHaveCount(0);
@@ -121,11 +121,16 @@ test("slow video leaves the poster and Start usable, and media errors leave the 
   const blocked = new Promise<void>((resolve) => { release = resolve; });
   await page.route("**/themes/rain-desk/scene-v1.webm", async (route) => { await blocked; await route.fulfill({ status: 200, contentType: "video/webm", body: webm }).catch(() => {}); });
   await page.goto("/study", { waitUntil: "domcontentloaded" });
-  await expect(page.getByTestId("scene-video").locator("img")).toHaveCSS("opacity", "1");
+  await expect(page.getByTestId("scene-video")).toHaveCount(0);
+  await page.getByRole("button", { name: "Choose companions", exact: true }).click();
+  await page.getByRole("button", { name: "Virtual partners", exact: true }).click();
+  await page.getByTestId("character-card-male-01").click();
+  await page.getByRole("button", { name: "Close", exact: true }).click();
   const start = page.getByRole("button", { name: "Start", exact: true });
   await expect(start).toBeEnabled();
   await start.click();
   await expect(page.getByTestId("session-screen")).toBeVisible({ timeout: 15000 });
+  await expect(page.getByTestId("scene-video").locator("img")).toHaveCSS("opacity", "1");
   release();
   const scene = page.getByTestId("scene-video");
   const movie = scene.locator("video");
@@ -152,6 +157,13 @@ test("desktop card video plays on hover, releases on leave, and selection crossf
   await page.getByTestId("theme-sheet").getByRole("heading").hover();
   await expect(card.locator("video")).toHaveCount(0);
   await page.getByTestId("theme-card-night-shift").click();
+  await expect(page.getByTestId("theme-scene")).toHaveCount(0);
+  await page.getByRole("button", { name: "Choose companions", exact: true }).click();
+  await page.getByRole("button", { name: "Virtual partners", exact: true }).click();
+  await page.getByTestId("character-card-male-01").click();
+  await page.getByRole("button", { name: "Close", exact: true }).click();
+  await page.getByRole("button", { name: "Start", exact: true }).click();
+  await expect(page.getByTestId("session-screen")).toBeVisible({ timeout: 15_000 });
   const background = page.getByTestId("theme-scene");
   await expect(background.locator('[data-theme="night-shift"]')).toBeVisible();
   await expect(background.locator('[data-theme="rain-desk"]')).toHaveCount(0);

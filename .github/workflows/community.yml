@@ -37,7 +37,7 @@ jobs:
           NODE
       - run: npm run db:test
       - name: Verify shared account journeys
-        run: npm run test:e2e:supabase -- community.spec.ts calendar.spec.ts email-invitations.spec.ts room-chat.spec.ts
+        run: npm run test:e2e:supabase -- community.spec.ts calendar.spec.ts email-invitations.spec.ts room-chat.spec.ts public-sessions.spec.ts people-setup.spec.ts
       - name: Save browser failure artifacts
         if: failure()
         uses: actions/upload-artifact@v4

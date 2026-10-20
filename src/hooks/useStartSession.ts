@@ -22,7 +22,7 @@ export function useStartSession(onStarted?: (session: Session) => void) {
       // hold navigation behind another network round trip after Start succeeds.
       queryClient.setQueryData(queryKeys.activeSession(), session);
       void queryClient.invalidateQueries({ queryKey: queryKeys.activeSession() });
-      router.push(session.visibility === "public" && session.roomId ? `/rooms/${session.roomId}` : `/session/${session.id}`);
+      router.push(session.roomId ? `/rooms/${session.roomId}` : `/session/${session.id}`);
     },
   });
 }

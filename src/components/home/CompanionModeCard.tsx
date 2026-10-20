@@ -17,7 +17,7 @@ export function CompanionModeCard() {
         <BookOpen aria-hidden="true" className="mb-3 size-5 text-accent" /><h3 className="font-semibold">{t("characters.characters")}</h3><p className="mt-2 text-small text-text-muted">{t("dashboard.characterDescription")}</p>
       </Link>
       <div className="rounded-2xl border border-border bg-surface/80 p-5">
-        <Users aria-hidden="true" className="mb-3 size-5 text-accent"/><h3 className="font-semibold">{t("characters.people")}</h3>
+        <Link href="/study?mode=people" className="block min-h-11 focus-visible:outline-2 focus-visible:outline-accent"><Users aria-hidden="true" className="mb-3 size-5 text-accent"/><h3 className="font-semibold">{t("characters.people")}</h3></Link>
         <p className="mt-2 text-small text-text-muted">{t(mode === "preview" ? "invitations.preview" : "invitations.peopleDescription")}</p>
         <Link href="/invite" className="mt-3 inline-flex min-h-11 items-center rounded-xl border border-border px-3 text-small hover:border-accent">{t("invitations.title")}</Link>
         {mode === "account" && <Link href="/spaces" className="mt-2 inline-flex min-h-11 items-center px-3 text-small underline">{t("spaces.title")}</Link>}

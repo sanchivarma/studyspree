@@ -30,6 +30,19 @@ npm.cmd run dev
 ```
 
 Open http://localhost:3000. `/login` is public; `/` is the authenticated Home.
+For live local Public and People sessions, start local Supabase and run
+`node scripts/connect-local-dev-account.mjs`. This confirms a development account
+through local Mailpit and sets `DEV_ADMIN_USE_SUPABASE=true` in `.env.local`.
+The existing development credentials then sign into that real local account;
+an existing signed preview cookie connects on the next page load. Remote
+Supabase and production ignore this opt-in. Offline preview remains available
+when the flag is false. No administrator API key or external email is used.
+
+Home lists active public sessions that are not Solo, with joined-person counts,
+virtual-partner names and joining links. The General Study Room stays pinned.
+People can start a public room or a private room before any guest arrives;
+private rooms use invitation links and stay out of the public directory.
+
 With local Supabase running and `CRON_SECRET` configured, use `npm.cmd run dev:local`
 to run the app and its maintenance scheduler together. Stop an existing server
 before using this command. Ctrl+C stops both processes it started.

@@ -12,6 +12,7 @@ import { clearDevAdminSession, getDevAdminProfile, hasDevAdmin, loginDevAdmin } 
 describe("development preview authentication", () => {
   beforeEach(() => {
     vi.stubEnv("NODE_ENV", "development");
+    vi.stubEnv("DEV_ADMIN_USE_SUPABASE", "false");
     vi.stubEnv("DEV_ADMIN_USERNAME", "ss_admin");
     vi.stubEnv("DEV_ADMIN_PASSWORD", "ss_password");
     vi.stubEnv("DEV_ADMIN_SESSION_SECRET", "test-secret-for-signed-preview-cookies-123");

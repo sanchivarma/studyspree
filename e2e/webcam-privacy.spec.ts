@@ -224,7 +224,8 @@ test("camera controls and permission guidance are translated into all five langu
   for (const locale of ["en", "de", "fr", "pl", "it"]) {
     const { webcam } = JSON.parse(readFileSync(new URL(`../src/translations/webcam/${locale}.json`, import.meta.url), "utf8")) as { webcam: Record<string, string> };
     await page.context().addCookies([{ name: "ss_locale", value: locale, url: "http://localhost:3000" }]);
-    await page.goto(path);
+    await page.reload();
+    await expect(page).toHaveURL(new URL(path, page.url()).href);
     const enable = page.getByRole("button", { name: webcam.enable, exact: true });
     await expect(enable).toBeVisible(); await enable.click();
     await expect(page.getByTestId("camera-permission-note")).toContainText(webcam.permissionNote);

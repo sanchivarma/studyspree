@@ -1,5 +1,11 @@
 {
   "sessionSetup": {
+    "resume": "Wznów sesję",
+    "peopleJoined": "{count} osób w sesji",
+    "personJoined": "{count} osoba w sesji",
+    "virtualJoinedOne": "{count} wirtualny partner: {names}",
+    "virtualJoined": "{count} wirtualnych partnerów: {names}",
+    "noVirtualPartners": "Brak wirtualnych partnerów",
     "title": "Tytuł sesji",
     "rules": "Zasady sesji (opcjonalnie)",
     "visibility": "Widoczność sesji",

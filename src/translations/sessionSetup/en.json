@@ -1,5 +1,11 @@
 {
   "sessionSetup": {
+    "resume": "Resume session",
+    "peopleJoined": "{count} people joined",
+    "personJoined": "{count} person joined",
+    "virtualJoinedOne": "{count} virtual partner: {names}",
+    "virtualJoined": "{count} virtual partners: {names}",
+    "noVirtualPartners": "No virtual partners",
     "title": "Session title",
     "rules": "Session rules (optional)",
     "visibility": "Session visibility",

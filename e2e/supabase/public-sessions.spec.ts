@@ -1,22 +1,27 @@
 import {expect,test} from '@playwright/test';
 import {createLocalAccount} from './localAccount';
 test('public Start creates one timer, lists on Home and copies a joining URL',async({page,browser})=>{
- test.setTimeout(180000);
+ test.setTimeout(240000);
  await page.route('**/api/rooms/token',route=>route.fulfill({status:503,json:{}}));
  await createLocalAccount(page,'Public session host');
  await page.context().grantPermissions(['clipboard-read','clipboard-write']);
  const title=`Public reading ${crypto.randomUUID().slice(0,8)}`;
  await page.goto('/study');await page.getByLabel('Session title',{exact:true}).fill(title);
+ await page.getByRole('button',{name:'Choose companions',exact:true}).click();
+ await page.getByRole('button',{name:'Virtual partners',exact:true}).click();
+ await page.getByTestId('character-card-female-04').click();
+ await page.getByRole('button',{name:'Close',exact:true}).click();
  await page.getByLabel('Session rules (optional)',{exact:true}).fill('Keep it calm.');
  await page.getByRole('radio',{name:'Public',exact:true}).check();
  const started=page.waitForResponse(response=>response.url().endsWith('/api/repository')&&response.request().postDataJSON()?.op==='start');
  await page.getByRole('button',{name:'Start',exact:true}).click();
  const startResponse=await started;expect(startResponse.status()).toBe(200);
  const startedSession=await startResponse.json();expect(startedSession.visibility).toBe('public');expect(startedSession.roomId).toMatch(/^[a-f0-9-]{36}$/);
- await expect(page).toHaveURL(/\/rooms\/[a-f0-9-]+$/,{timeout:15000});
+ // Shared routes may need their first development compilation after Start.
+ await expect(page).toHaveURL(/\/rooms\/[a-f0-9-]+$/,{timeout:60000});
  const roomUrl=page.url();
  const active=await page.request.post('/api/repository',{data:{op:'active'}});const before=await active.json();expect(before.title).toBe(title);
- await expect(page.getByRole('button',{name:'Hide companions',exact:true})).toHaveCount(0);
+ await expect(page.getByTestId('character-loop-female-04')).toBeVisible();
  await page.getByRole('button',{name:'Choose companions',exact:true}).click();
  const drawer=page.getByRole('dialog',{name:'Study companions',exact:true});
  await drawer.getByRole('button',{name:/Invite people to this session/}).click();
@@ -26,9 +31,33 @@ test('public Start creates one timer, lists on Home and copies a joining URL',as
  const guestContext=await browser.newContext();try{
   const guest=await guestContext.newPage();await guest.route('**/api/rooms/token',route=>route.fulfill({status:503,json:{}}));
   await createLocalAccount(guest,'Public session guest');
-  const card=guest.getByRole('listitem').filter({has:guest.getByRole('heading',{name:title,exact:true})});await expect(card).toBeVisible();
+  const directory=guest.getByTestId('home-public-sessions');
+  await expect(directory.getByRole('listitem').first()).toHaveAttribute('data-testid','default-study-room');
+  await expect(directory.getByTestId('default-study-room')).toContainText('StudySpree General Study Room');
+  const card=directory.getByRole('listitem').filter({has:guest.getByRole('heading',{name:title,exact:true})});await expect(card).toBeVisible();
+  await expect(card.getByTestId('public-session-people')).toHaveText('1 person joined');
+  await expect(card.getByTestId('public-session-characters')).toContainText('Eva');
   await card.getByRole('link',{name:'Join',exact:true}).click();await expect(guest).toHaveURL(roomUrl);
   await expect(guest.getByText('Keep it calm.',{exact:true})).toBeVisible();
+  await guest.getByRole('button',{name:'Join',exact:true}).click();
+  await expect(guest.getByRole('button',{name:'Finish',exact:true})).toBeVisible({timeout:15000});
+  await expect(guest.getByTestId('character-loop-female-04')).toBeVisible();
+  await guest.getByRole('link',{name:'Study spaces',exact:true}).click();
+  await guest.getByRole('link',{name:'Start',exact:true}).click();
+  await expect(guest).toHaveURL(new URL('/',roomUrl).href);
+  await expect(card.getByTestId('public-session-people')).toHaveText('2 people joined',{timeout:20000});
+  await expect(guest.getByRole('link',{name:'Resume session',exact:true})).toBeVisible();
+  await guest.getByRole('link',{name:'Resume session',exact:true}).click();
+  await expect(guest.getByRole('button',{name:'Finish',exact:true})).toBeVisible();
+  await guest.getByRole('button',{name:'Finish',exact:true}).click();
+  await expect(guest.getByTestId('complete-screen')).toBeVisible({timeout:15000});
+  await guest.getByRole('link',{name:'Start another',exact:true}).click();
+  await directory.getByTestId('default-study-room').getByRole('link',{name:'Join',exact:true}).click();
+  await guest.getByRole('button',{name:'Join',exact:true}).click();
+  await expect(guest.getByRole('button',{name:'Finish',exact:true})).toBeVisible({timeout:15000});
+  await expect(guest.getByTestId('character-loop-female-04')).toHaveCount(0);
+  await guest.getByRole('button',{name:'Finish',exact:true}).click();
+  await expect(guest.getByTestId('complete-screen')).toBeVisible({timeout:15000});
  }finally{await guestContext.close();}
  const after=await page.request.post('/api/repository',{data:{op:'active'}});expect((await after.json()).startedAt).toBe(before.startedAt);
  await page.getByRole('button',{name:'Finish',exact:true}).click();await expect(page).toHaveURL(/\/complete$/);

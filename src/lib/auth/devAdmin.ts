@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { z } from "zod";
 import { now } from "@/lib/clock";
 import { loginSchema, usernameSchema, profileSchema, type AuthProfile } from "./schemas";
+import { connectedDevAccountEmail } from "./connectedDevAccount";
 import type { AuthResult } from "./types";
 
 const COOKIE_NAME = "ss_dev_admin";
@@ -29,6 +30,16 @@ export async function loginDevAdmin(input: unknown): Promise<AuthResult | null> 
   const parsed = loginSchema.safeParse(input);
   if (!config || !parsed.success || !matches(parsed.data.username, config.username)) return null;
   if (!matches(parsed.data.password, config.password)) return { status: "error", message: "login.invalidCredentials" };
+  const connectedEmail = connectedDevAccountEmail();
+  if (connectedEmail) {
+    const { createAuthClient } = await import("./server");
+    const client = await createAuthClient();
+    const result = await client.auth.signInWithPassword({ email: connectedEmail, password: config.password });
+    if (result.error || !result.data.user) return { status: "error", message: "common.authError" };
+    await clearDevAdminSession();
+    const profile = await client.from("profiles").select("onboarding_complete").eq("id", result.data.user.id).single();
+    return { status: "success", navigate: profile.data?.onboarding_complete ? "/" : "/onboarding" };
+  }
   const payload = Buffer.from(JSON.stringify({ id: randomUUID(), username: config.username, expiresAt: now().getTime() + 86400000 })).toString("base64url");
   const signature = createHmac("sha256", config.secret).update(payload).digest("base64url");
   (await cookies()).set(COOKIE_NAME, `${payload}.${signature}`, { httpOnly: true, sameSite: "lax", path: "/", maxAge: 86400 });

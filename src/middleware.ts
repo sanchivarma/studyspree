@@ -7,6 +7,16 @@ export async function middleware(request: NextRequest) {
   const authConfig = getPublicAuthConfig();
   let response = NextResponse.next({ request });
   if (!authConfig) return response; // Server page guards still protect offline preview.
+  const path = request.nextUrl.pathname;
+  // Only an explicitly configured local instance upgrades its signed preview
+  // cookie. The route verifies the cookie before normal Supabase sign-in.
+  if (process.env.NODE_ENV === "development" && process.env.DEV_ADMIN_USE_SUPABASE === "true"
+    && ["localhost", "127.0.0.1", "[::1]"].includes(new URL(authConfig.url).hostname)
+    && request.cookies.has("ss_dev_admin") && path !== "/login" && !path.startsWith("/api/") && !path.startsWith("/auth/")) {
+    const target = new URL("/api/dev/connect-account", request.url);
+    target.searchParams.set("next", path + request.nextUrl.search);
+    return NextResponse.redirect(target);
+  }
   const client = createServerClient(authConfig.url, authConfig.key, {
     cookies: {
       getAll: () => request.cookies.getAll(),
@@ -18,7 +28,6 @@ export async function middleware(request: NextRequest) {
     },
   });
   const identity = await client.auth.getClaims();
-  const path = request.nextUrl.pathname;
   const publicPage = path === "/login" || path.startsWith("/auth/") || path === "/reset-password" || path.startsWith("/api/")
     || (process.env.NODE_ENV === "development" && path === "/dev");
   const offlinePreview = process.env.NODE_ENV === "development" && process.env.NEXT_PUBLIC_USE_LOCAL_REPO !== "false" && request.cookies.has("ss_dev_admin");

@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { settleClock, signIn, startSession } from "./sessionFixtures";
+import { settleClock, signIn } from "./sessionFixtures";
 
 test("Study picker supports arrows, selection, focus return and persistence into Settings", async ({ page }) => {
   test.setTimeout(60000); // Several authenticated routes may compile on this first visit.
@@ -18,11 +18,11 @@ test("Study picker supports arrows, selection, focus return and persistence into
   await page.keyboard.press("Enter");
   await expect(sheet).toHaveCount(0);
   await expect(trigger).toBeFocused();
-  await expect(page.getByTestId("theme-scene").getByTestId("scene-video")).toHaveAttribute("data-theme", "dorm-bunk");
+  await expect(page.getByTestId("theme-scene")).toHaveCount(0);
   await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("ss_profile")!).selectedTheme)).toBe("dorm-bunk");
   await expect(page).toHaveURL(/\/study$/); // Enter selected a card, without starting.
   await page.reload();
-  await expect(page.getByTestId("theme-scene").getByTestId("scene-video")).toHaveAttribute("data-theme", "dorm-bunk");
+  await expect(page.getByTestId("theme-scene")).toHaveCount(0);
   await page.goto("/settings");
   await page.getByRole("button", { name: "Theme Dorm Bunk", exact: true }).click();
   await page.getByTestId("theme-card-balcony-dusk").click();
@@ -54,7 +54,16 @@ test("changing an active scene preserves session timestamps and timer; Escape cl
   test.setTimeout(60000);
   await signIn(page);
   await page.clock.install({ time: new Date("2026-10-13T12:00:00Z") });
-  const path = await startSession(page, "Study chapter", 25);
+  await page.goto("/study");
+  await page.getByRole("button", { name: "Choose companions", exact: true }).click();
+  await page.getByRole("button", { name: "Virtual partners", exact: true }).click();
+  await page.getByTestId("character-card-male-01").click();
+  await page.getByRole("button", { name: "Close", exact: true }).click();
+  await page.getByRole("button", { name: "25 min", exact: true }).click();
+  await page.getByPlaceholder("What are you working on? (optional)").fill("Study chapter");
+  await page.getByRole("button", { name: "Start", exact: true }).click();
+  await expect(page.getByTestId("session-screen")).toBeVisible({ timeout: 15_000 });
+  const path = new URL(page.url()).pathname;
   await page.clock.pauseAt(await page.evaluate(() => new Date(Date.now())));
   const baseline = await page.getByTestId("session-time").textContent();
   await page.clock.runFor(10000);

@@ -10,7 +10,11 @@ export async function createLocalAccount(page: Page, displayName: string, destin
   const email = `profile-${randomUUID()}@example.test`;
   await page.goto("/login");
   await page.getByLabel("Email", { exact: true }).fill(email);
-  await page.getByRole("button", { name: "Email a sign-in link", exact: true }).click();
+  const [delivery] = await Promise.all([
+    page.waitForResponse(response => new URL(response.url()).pathname === "/login" && response.request().method() === "POST", { timeout: 30_000 }),
+    page.getByRole("button", { name: "Email a sign-in link", exact: true }).click(),
+  ]);
+  expect(delivery.ok(), "Local sign-in request completed").toBe(true);
   await expect(page.getByTestId("auth-feedback").getByRole("status")).toHaveText("Check your email for your sign-in link.");
   const listing = z.object({ messages: z.array(z.object({ ID: z.string(), To: z.array(z.object({ Address: z.string() })) })) });
   let id: string | undefined;
@@ -40,7 +44,12 @@ export async function createLocalAccount(page: Page, displayName: string, destin
   await page.getByLabel("Display name", { exact: true }).fill(displayName);
   await page.getByRole("button", { name: "Continue", exact: true }).click();
   await page.getByRole("button", { name: "Continue", exact: true }).click();
-  await page.getByRole("button", { name: "Continue to StudySpree", exact: true }).click();
-  if (destination) await expect(page).toHaveURL(new URL(destination, page.url()).href, { timeout: 15000 });
-  else await expect(page).toHaveURL(/\/$/, { timeout: 15000 });
+  const [onboarding] = await Promise.all([
+    page.waitForResponse(response => new URL(response.url()).pathname === "/onboarding" && response.request().method() === "POST", { timeout: 30_000 }),
+    page.getByRole("button", { name: "Continue to StudySpree", exact: true }).click(),
+  ]);
+  expect(onboarding.ok(), "Local onboarding request completed").toBe(true);
+  // The first authenticated Home/room can require a full development compile.
+  if (destination) await expect(page).toHaveURL(new URL(destination, page.url()).href, { timeout: 60_000 });
+  else await expect(page).toHaveURL(/\/$/, { timeout: 60_000 });
 }

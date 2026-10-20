@@ -1,5 +1,11 @@
 {
   "sessionSetup": {
+    "resume": "Riprendi la sessione",
+    "peopleJoined": "{count} persone presenti",
+    "personJoined": "{count} persona presente",
+    "virtualJoinedOne": "{count} compagno virtuale: {names}",
+    "virtualJoined": "{count} compagni virtuali: {names}",
+    "noVirtualPartners": "Nessun compagno virtuale",
     "title": "Titolo della sessione",
     "rules": "Regole della sessione (facoltativo)",
     "visibility": "Visibilità della sessione",

@@ -1,5 +1,11 @@
 {
   "sessionSetup": {
+    "resume": "Reprendre la séance",
+    "peopleJoined": "{count} personnes présentes",
+    "personJoined": "{count} personne présente",
+    "virtualJoinedOne": "{count} partenaire virtuel : {names}",
+    "virtualJoined": "{count} partenaires virtuels : {names}",
+    "noVirtualPartners": "Aucun partenaire virtuel",
     "title": "Titre de la séance",
     "rules": "Règles de la séance (facultatif)",
     "visibility": "Visibilité de la séance",

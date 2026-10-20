@@ -1,0 +1,32 @@
+begin;
+create extension if not exists pgtap with schema extensions;
+set local search_path=public,extensions;
+select plan(13);
+insert into auth.users(id,email,raw_app_meta_data,raw_user_meta_data) values
+('a8730000-0000-4000-8000-000000000001','people-host@example.test','{"provider":"email"}','{"username":"people_host"}'),
+('a8730000-0000-4000-8000-000000000002','people-guest@example.test','{"provider":"email"}','{"username":"people_guest"}');
+set local role authenticated;
+select set_config('request.jwt.claims','{"sub":"a8730000-0000-4000-8000-000000000001","role":"authenticated"}',true);
+select set_config('test.people_session',(public.start_session_with_details(25,'rain-desk',null,'{"mode":"people","characterSlugs":[]}','Private people study','Quiet study','private')).id::text,true);
+select set_config('test.people_room',(select room_id::text from sessions where id=current_setting('test.people_session')::uuid),true);
+select ok(current_setting('test.people_room')<>'','People can start with nobody else in the room');
+select ok((select is_private and visibility='private' from study_rooms where id=current_setting('test.people_room')::uuid),'Private mode creates an invitation-only room');
+select is((select count(*) from sessions where user_id=auth.uid()),1::bigint,'Starting a People room creates one timer');
+select is((select count(*) from room_visits where room_id=current_setting('test.people_room')::uuid and user_id=auth.uid() and left_at is null),1::bigint,'Host is already joined');
+select is((select count(*) from jsonb_array_elements(public.community_read('publicSessions')->'items') i where i->>'id'=current_setting('test.people_room')),0::bigint,'Private People rooms never appear in the public directory');
+select set_config('test.people_invite',public.community_mutate('room.invite',jsonb_build_object('id',current_setting('test.people_room'),'uses',10,'hours',24))->>'token',true);
+select is((public.start_session_with_details(25,'rain-desk',null,'{"mode":"people","characterSlugs":[]}','Duplicate',null,'private')).id::text,current_setting('test.people_session'),'Double Start preserves the same People session');
+select set_config('request.jwt.claims','{"sub":"a8730000-0000-4000-8000-000000000002","role":"authenticated"}',true);
+select ok(not auth_private.can_read_room(current_setting('test.people_room')::uuid,auth.uid()),'Knowing a private room URL does not grant access');
+select lives_ok($$select public.community_mutate('invite.accept',jsonb_build_object('token',current_setting('test.people_invite')))$$,'An invited guest can accept the share link later');
+select lives_ok($$select public.join_room_with_goal(current_setting('test.people_room')::uuid,null)$$,'Invited guests can join after the host starts');
+select is((public.start_session_with_details(null,'rain-desk',null,'{"mode":"people","characterSlugs":[]}','Guest study',null,'private',current_setting('test.people_room')::uuid)).room_id::text,current_setting('test.people_room'),'Guest joins the existing room with their own timer');
+select set_config('request.jwt.claims','{"sub":"a8730000-0000-4000-8000-000000000001","role":"authenticated"}',true);
+select public.finish_study_session(current_setting('test.people_session')::uuid,'stopped_early');
+select set_config('test.people_public',(public.start_session_with_details(25,'rain-desk',null,'{"mode":"people","characterSlugs":[]}','Public people study',null,'public')).id::text,true);
+select is((select count(*) from jsonb_array_elements(public.community_read('publicSessions')->'items') i where i->'data'->>'sessionId'=current_setting('test.people_public')),1::bigint,'Public People sessions are listed before any guest joins');
+select is((select companions->'characterSlugs' from sessions where id=current_setting('test.people_public')::uuid),'[]'::jsonb,'People starts without any default virtual character');
+select ok((select not r.is_private and r.visibility='public' from study_rooms r join sessions s on s.room_id=r.id where s.id=current_setting('test.people_public')::uuid),'Public People mode creates a public joining URL');
+reset role;
+select * from finish();
+rollback;

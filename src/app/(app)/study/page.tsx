@@ -7,5 +7,5 @@ export default async function StudyPage({ searchParams }: { searchParams: Promis
   const profile = await authRepository.getProfile();
   if (!profile) redirect("/");
   const { mode } = await searchParams;
-  return <StartScreen displayName={profile.username} initialHour={now().getHours()} initialMode={mode === "solo" || mode === "characters" ? mode : undefined} />;
+  return <StartScreen displayName={profile.username} initialHour={now().getHours()} initialMode={mode === "solo" || mode === "characters" || mode === "people" ? mode : undefined} />;
 }

@@ -2518,6 +2518,13 @@ export type Database = {
                 };
                 Returns: Json;
             };
+            "community_read_before_home_tiles": {
+                Args: {
+                    "p_area": string;
+                    "p_query"?: Json;
+                };
+                Returns: Json;
+            };
             "community_read_v27": {
                 Args: {
                     "p_area": string;
@@ -2692,6 +2699,47 @@ export type Database = {
                     "p_room": string;
                     "p_task": string;
                     "p_theme": string;
+                };
+                Returns: {
+                    "actual_seconds": number;
+                    "companion_status_cycle": number;
+                    "companions": NonNullable<Json>;
+                    "ended_at": string | null;
+                    "ended_reason": string | null;
+                    "freeze_used": boolean;
+                    "id": string;
+                    "last_heartbeat_at": string;
+                    "local_date": string;
+                    "planned_minutes": number | null;
+                    "room_id": string | null;
+                    "rules": string | null;
+                    "shared_room_id": string | null;
+                    "started_at": string;
+                    "streak_changed": boolean;
+                    "task": string | null;
+                    "theme_slug": string;
+                    "title": string;
+                    "title_explicit": boolean;
+                    "user_id": string;
+                    "visibility": string;
+                };
+                SetofOptions: {
+                    from: "*";
+                    to: "sessions";
+                    isOneToOne: true;
+                    isSetofReturn: false;
+                };
+            };
+            "start_session_before_people_setup": {
+                Args: {
+                    "p_companions": Json;
+                    "p_minutes": number;
+                    "p_room"?: string;
+                    "p_rules": string;
+                    "p_task": string;
+                    "p_theme": string;
+                    "p_title": string;
+                    "p_visibility": string;
                 };
                 Returns: {
                     "actual_seconds": number;

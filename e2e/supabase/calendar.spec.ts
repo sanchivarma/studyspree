@@ -51,10 +51,16 @@ test("contacts consent, list invitations and monthly reading persist for real ac
     await other.getByTestId(`calendar-day-${startsAt.slice(0, 10)}`).click();
     await expect(other.getByRole("button", { name: "Accept", exact: true })).toHaveCount(0);
     await expect(other.getByRole("button", { name: "Decline invitation", exact: true })).toBeVisible();
-    const sessionResponse = await page.request.post("/api/repository", { data: { op: "start", input: { plannedMinutes: 5, themeSlug: "rain-desk", task: "Reading", companions: { mode: "solo", characterSlugs: [] } } } });
+    // Start and navigate in the current document. A full navigation after an
+    // API-created session correctly signals that the previous tab closed.
+    await page.getByRole("link", { name: "Study", exact: true }).click();
+    await page.getByLabel("What are you working on? (optional)", { exact: true }).fill("Reading");
+    const started = page.waitForResponse(response => response.url().endsWith("/api/repository") && response.request().postDataJSON()?.op === "start");
+    await page.getByRole("button", { name: "Start", exact: true }).click();
+    const sessionResponse = await started;
     expect(sessionResponse.ok()).toBe(true);
     const session = await sessionResponse.json() as { id: string; startedAt: string };
-    await page.goto(`/session/${session.id}`);
+    await expect(page).toHaveURL(new RegExp(`/session/${session.id}$`), { timeout: 60_000 });
     await page.context().grantPermissions(["clipboard-read", "clipboard-write"]);
     await page.getByRole("button", { name: "Choose companions", exact: true }).click();
     await page.getByRole("button", { name: "Invite people to this session — copy link", exact: true }).click();

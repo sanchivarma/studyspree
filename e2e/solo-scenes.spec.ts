@@ -20,6 +20,9 @@ test("solo POV preserves choices, fills the window, pauses motion and leaves the
   await expect.poll(()=>page.evaluate(()=>JSON.parse(localStorage.getItem("ss_profile")??"{}").soloScene)).toEqual({desk:"pirate",window:"waterfall"});
   await page.goto("/study");
   const scene=page.getByTestId("solo-study-scene");
+  await expect(scene).toHaveCount(0);
+  await page.getByRole("button",{name:"Start",exact:true}).click();
+  await expect(page.getByTestId("session-screen")).toBeVisible({timeout:20000});
   await expect(scene).toHaveAttribute("data-frame","elven");
   await page.getByRole("button",{name:"Choose companions",exact:true}).click();
   const picker=page.getByTestId("solo-scene-picker");
@@ -86,7 +89,6 @@ test("solo POV preserves choices, fills the window, pauses motion and leaves the
   await page.emulateMedia({reducedMotion:"reduce"});
   await expect(scene).toHaveAttribute("data-motion","paused");
   await expect(scene.locator("video")).toHaveCount(0);
-  await page.getByRole("button",{name:"Start",exact:true}).click();
   await expect(page.getByTestId("session-screen")).toBeVisible({timeout:20000});
   await expect(page.getByTestId("session-bottom-backplate")).toHaveCSS("height","64px");
   expect(await scene.locator(".solo-desk").evaluate(element=>Number(getComputedStyle(element).zIndex))).toBeGreaterThan(10);
