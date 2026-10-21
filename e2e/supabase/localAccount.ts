@@ -28,18 +28,17 @@ export async function createLocalAccount(page: Page, displayName: string, destin
   const link = ((content.HTML + "\n" + content.Text).match(/https?:\/\/[^\s"<>]+/g) ?? [])
     .map(value => new URL(value.replaceAll("&amp;", "&"))).find(url => ["localhost", "127.0.0.1"].includes(url.hostname) && url.port === "55321" && url.pathname === "/auth/v1/verify");
   if (!link) throw new Error("No local verification link in the local inbox.");
-  // Isolated verification servers keep the configured local email callback;
-  // redirect its browser navigation onto the chosen local test port.
-  const verificationBase=process.env.PLAYWRIGHT_BASE_URL;
-  if(verificationBase&&new URL(verificationBase).origin!=="http://localhost:3000"){
-    if(!["localhost","127.0.0.1"].includes(new URL(verificationBase).hostname))throw new Error("Verification requires localhost");
-    await page.route("http://localhost:3000/**",async route=>{
-      if(!route.request().isNavigationRequest()){await route.continue();return;}
-      const target=new URL(route.request().url());const base=new URL(verificationBase);target.host=base.host;
-      await route.fulfill({status:302,headers:{location:target.href}});
-    });
-  }
-  await page.goto(link.href);
+  // Complete the actual local email verification. Auth's configured callback is
+  // port 3000; isolated production/verification servers use the same PKCE code
+  // on their own origin. Browser routing cannot intercept a redirect chain.
+  const verificationBase = new URL(page.url());
+  if (!["localhost", "127.0.0.1"].includes(verificationBase.hostname)) throw new Error("Verification requires localhost");
+  const verification = await page.request.get(link.href, { maxRedirects: 0 });
+  expect(verification.status()).toBe(303);
+  const callback = new URL(verification.headers().location);
+  if (!["localhost", "127.0.0.1"].includes(callback.hostname) || callback.pathname !== "/auth/callback") throw new Error("Expected the local authentication callback");
+  callback.host = verificationBase.host;
+  await page.goto(callback.href);
   await expect(page).toHaveURL(/\/onboarding$/, { timeout: 15000 });
   await page.getByLabel("Display name", { exact: true }).fill(displayName);
   await page.getByRole("button", { name: "Continue", exact: true }).click();

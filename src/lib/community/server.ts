@@ -3,7 +3,6 @@ import { z } from "zod";
 import { createAuthClient } from "@/lib/auth/server";
 import { getDevAdminProfile } from "@/lib/auth/devAdmin";
 import { communityRequestSchema, communityStateSchema } from "./schemas";
-import { removeRoomParticipant } from "./livekitServer";
 import { validateCommunityCursor } from "./cursor";
 export class CommunityServerError extends Error {
     constructor(public status: number, public code: string) { super(code); }
@@ -32,6 +31,7 @@ export async function executeCommunity(input: z.infer<typeof communityRequestSch
         if(input.command.action==="room.kick"){
             const response=await client.rpc("moderate_room",{p_room:input.command.data.id,p_target:input.command.data.targetId});
             if(response.error)throw new CommunityServerError(403,"forbidden");
+            const { removeRoomParticipant } = await import("./livekitServer");
             await removeRoomParticipant(input.command.data.id,input.command.data.targetId);return response.data;
         }
         const response = await client.rpc("community_mutate", { p_action: input.command.action, p_data: input.command.data });
@@ -40,8 +40,10 @@ export async function executeCommunity(input: z.infer<typeof communityRequestSch
             const code = message.includes("is full") ? "full" : message.includes("allowance") ? "limit" : message.includes("ownership") ? "transferFirst" : message.includes("Invitation") ? "inviteUnavailable" : response.error.code === "42501" ? "forbidden" : response.error.code === "22023" || response.error.code === "23514" ? "invalid" : "unavailable";
             throw new CommunityServerError(response.error.code === "42501" ? 403 : 400, code);
         }
-        if (input.command.action === "room.leave" || (input.command.action === "room.share" && !input.command.data.value))
+        if (input.command.action === "room.leave" || (input.command.action === "room.share" && !input.command.data.value)) {
+            const { removeRoomParticipant } = await import("./livekitServer");
             await removeRoomParticipant(input.command.data.id, identity.data.user.id);
+        }
         return response.data;
     }
     const { area, query } = input;

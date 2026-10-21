@@ -33,7 +33,7 @@ import type { CharacterSlug } from "@/types/characters";
 import type { Session } from "@/types/domain";
 import { CharacterLoop } from "@/components/characters/CharacterLoop";
 import { RoomVideo } from "./RoomVideo";
-import { buttonClass } from "./CommunityComposer";
+import { buttonClass } from "./styles";
 import { formatTimer } from "@/lib/session/presentation";
 import { useSessionTitle } from "@/hooks/useSessionTitle";
 import { formatDuration } from "@/lib/stats/presentation";

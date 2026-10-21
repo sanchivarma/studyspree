@@ -11,6 +11,15 @@ const colors = ["var(--grey-zero)", "color-mix(in srgb, var(--accent) 25%, trans
 export function Heatmap({ days, referenceDate }: { days: readonly DayStat[]; referenceDate: string }) {
   const { locale, t } = useTranslation();
   const cells = useMemo(() => buildHeatmap(days, referenceDate), [days, referenceDate]);
+  const labels = useMemo(() => cells.map(cell => {
+    const describe = (includeYear: boolean) => {
+      const date = formatDate(cell.date, locale, includeYear);
+      return cell.isFuture ? t("stats.futureDate", { date }) : cell.totalSeconds === 0 ? t("stats.noSessions", { date }) : t("stats.activityOn", { duration: formatDuration(cell.totalSeconds, locale), date });
+    };
+    return { tooltip: describe(false), accessible: describe(true) };
+  }), [cells, locale, t]);
+  const monthFormat = useMemo(() => new Intl.DateTimeFormat(locale, { month: "short", timeZone: "UTC" }), [locale]);
+  const weekdayFormat = useMemo(() => new Intl.DateTimeFormat(locale, { weekday: "narrow", timeZone: "UTC" }), [locale]);
   const last = cells.findLastIndex((cell) => !cell.isFuture && !cell.isPadding);
   const first = cells.findIndex((cell) => !cell.isFuture && !cell.isPadding);
   const [active, setActive] = useState(last);
@@ -29,9 +38,7 @@ export function Heatmap({ days, referenceDate }: { days: readonly DayStat[]; ref
   }, []);
 
   const describe = (index: number, includeYear = false) => {
-    const cell = cells[index];
-    const date = formatDate(cell.date, locale, includeYear);
-    return cell.isFuture ? t("stats.futureDate", { date }) : cell.totalSeconds === 0 ? t("stats.noSessions", { date }) : t("stats.activityOn", { duration: formatDuration(cell.totalSeconds, locale), date });
+    return labels[index][includeYear ? "accessible" : "tooltip"];
   };
   const showTooltip = (index: number, element: HTMLElement) => {
     const rect = element.getBoundingClientRect();
@@ -63,11 +70,11 @@ export function Heatmap({ days, referenceDate }: { days: readonly DayStat[]; ref
     <div ref={scrollRef} data-testid="heatmap-scroll" className="overflow-x-auto pb-3">
       <div className="w-max">
         <div aria-hidden="true" className="ml-8 grid h-6 grid-cols-[repeat(53,11px)] gap-[3px] text-[11px] text-text-muted">
-          {months.map((month) => <span key={month.date} style={{ gridColumn: month.column }}>{new Intl.DateTimeFormat(locale, { month: "short", timeZone: "UTC" }).format(new Date(`${month.date}T00:00:00Z`))}</span>)}
+          {months.map((month) => <span key={month.date} style={{ gridColumn: month.column }}>{monthFormat.format(new Date(`${month.date}T00:00:00Z`))}</span>)}
         </div>
         <div className="flex gap-2">
           <div aria-hidden="true" className="grid w-6 shrink-0 grid-rows-[repeat(7,11px)] gap-[3px] text-[11px] leading-[11px] text-text-muted">
-            {[0, 1, 2, 3, 4, 5, 6].map((row) => <span key={row}>{row === 0 || row === 2 || row === 4 ? new Intl.DateTimeFormat(locale, { weekday: "narrow", timeZone: "UTC" }).format(new Date(`2026-10-${String(12 + row).padStart(2, "0")}T00:00:00Z`)) : ""}</span>)}
+            {[0, 1, 2, 3, 4, 5, 6].map((row) => <span key={row}>{row === 0 || row === 2 || row === 4 ? weekdayFormat.format(new Date(`2026-10-${String(12 + row).padStart(2, "0")}T00:00:00Z`)) : ""}</span>)}
           </div>
           <div ref={gridRef} role="group" aria-label={t("stats.activityGrid")} data-testid="heatmap-grid" className="grid grid-flow-col grid-cols-[repeat(53,11px)] grid-rows-[repeat(7,11px)] gap-[3px]">
             {cells.map((cell, index) => <button key={cell.date} type="button" data-date={cell.date} data-cell-index={index} data-level={getIntensity(cell.totalSeconds)} data-future={cell.isFuture}

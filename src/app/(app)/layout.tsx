@@ -18,7 +18,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return (
     <div style={style} data-repository-mode={mode === "preview" ? "local" : "server"}>
-      <AccountModeProvider mode={mode}>
+      <AccountModeProvider mode={mode} username={profile.username}>
       <SessionBrowserLifecycle />
       <AppNav showStreak={profile.show_streak} />
       <AppContent>{children}</AppContent>

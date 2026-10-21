@@ -1,15 +1,17 @@
 "use client";
 /* eslint-disable @next/next/no-img-element -- Authenticated attachments use a no-store route. */
 import Link from "next/link";
-import { BuddyListingForm } from "@/components/buddies/BuddyListingForm";
-import { CreateScheduledSession } from "@/components/scheduling/CreateScheduledSession";
+import dynamic from "next/dynamic";
+import { LoadingPanel } from "@/components/layout/LoadingPanel";
+const BuddyListingForm = dynamic(() => import("@/components/buddies/BuddyListingForm").then(module => module.BuddyListingForm), { loading: LoadingPanel });
+const CreateScheduledSession = dynamic(() => import("@/components/scheduling/CreateScheduledSession").then(module => module.CreateScheduledSession), { loading: LoadingPanel });
 import { useRouter } from "next/navigation";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useCommunityMutation } from "@/hooks/useCommunityMutation";
 import { attachmentSchema, type CommunityArea, type CommunityItem, type CommunityCommand } from "@/lib/community/schemas";
 import { z } from "zod";
-import { buttonClass, fieldClass } from "./CommunityComposer";
-import { ThreadPanel } from "@/components/conversations/ThreadPanel";
+import { buttonClass, fieldClass } from "./styles";
+const ThreadPanel = dynamic(() => import("@/components/conversations/ThreadPanel").then(module => module.ThreadPanel), { loading: LoadingPanel });
 import { formatDuration } from "@/lib/stats/presentation";
 import { now } from "@/lib/clock";
 export function CommunityCard({ area, item, viewerId, timezone }: {

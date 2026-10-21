@@ -1,9 +1,7 @@
 import { z } from "zod";
-import { soloSceneSchema, defaultSoloScene } from "@/lib/soloScenes/catalog";
+import { defaultSoloScene } from "@/lib/soloScenes/catalog";
 import { addMonths, format, parseISO, startOfMonth } from "date-fns";
 import { now } from "@/lib/clock";
-import { musicTracks } from "@/lib/audio/catalog";
-import { effectSlugs, removeRetiredEffects, removeRetiredEffectVolumes } from "@/lib/audio/effects";
 import { toLocalDate } from "@/lib/stats/localDate";
 import { defaultTimezone } from "@/lib/stats/defaultTimezone";
 import { aggregateSessions, summarizeSessions } from "@/lib/stats/aggregateSessions";
@@ -11,7 +9,7 @@ import { applyActivity, type StreakState } from "@/lib/streaks/computeStreak";
 import type { DayStat, EndedReason, Profile, Session } from "@/types/domain";
 import type { EndSessionResult, EndSessionStreak, Repository, SessionSummary, StartSessionInput } from "./types";
 import { upgradeThemeNames } from "./upgradeThemes";
-import { companionSchema, localCompanionSchema, soloCompanions } from "@/lib/characters/schemas";
+import { localCompanionSchema, soloCompanions } from "@/lib/characters/schemas";
 import type { CompanionPreferences } from "@/types/characters";
 import type { DashboardData } from "@/types/dashboard";
 import { paginateHistory } from "@/lib/stats/history";
@@ -23,47 +21,17 @@ import { evaluateAchievements } from "@/lib/achievements/evaluateAchievements";
 import { achievementDefinitions } from "@/lib/achievements/registry";
 import { tileStatusSchema, type TileHistoryPage } from "@/types/tileStatus";
 import { CapabilityError } from "./capabilities";
-import {sessionDetailsShape} from '@/lib/session/setup';
 import { browserTab, type BrowserTab } from "@/lib/session/browserTab";
 
-type StorageAccess = Pick<Storage, "getItem" | "setItem" | "removeItem">;
+import { profileSchema, sessionSchema, streakSchema, localSessionInputSchema as inputSchema } from "./schemas";
+export { profileSchema, sessionSchema, streakSchema } from "./schemas";
 const iso = z.iso.datetime();
 const date = z.iso.date();
-const timezone = z.string().refine((value) => {
-  try { new Intl.DateTimeFormat("en", { timeZone: value }); return true; } catch { return false; }
-});
-export const profileSchema = z.object({
-  soloScene: soloSceneSchema.default(defaultSoloScene),
-  mirrorSelfView:z.boolean().default(true),showOwnTile:z.boolean().default(true),shareNowPlaying:z.boolean().default(false),leaderboardOptIn:z.boolean().default(false),
-  displayName: z.string(), selectedTheme: z.string().min(1), timezone,
-  showStreak: z.boolean(), reduceMotion: z.boolean(), webcamEnabled: z.boolean(), ambienceEnabled: z.boolean(),
-  // Older profiles upgrade without discarding preferences.
-  comebackShownForDate: date.nullable().default(null),
-  webcamCorner: z.enum(["top-left", "top-right", "bottom-left", "bottom-right"]).default("bottom-right"),
-  musicTrack: z.union([z.enum(musicTracks.map(track => track.slug)), z.templateLiteral(["radio:", z.string().regex(/^[a-z0-9-]{1,80}$/)])]).nullable().default(null),
-  backgroundEffects: z.preprocess(removeRetiredEffects, z.array(z.enum(effectSlugs)).max(effectSlugs.length).refine(value => new Set(value).size === value.length).default([])),
-  effectVolumes: z.preprocess(removeRetiredEffectVolumes, z.partialRecord(z.enum(effectSlugs), z.number().min(0).max(1)).default({})),
-  musicVolume: z.number().min(0).max(1).default(0),
-  roomVolume: z.number().min(0).max(1).default(0),
-  companionPreferences: localCompanionSchema.default(soloCompanions),
-}).strict();
-const inputSchema = z.object({ ...sessionDetailsShape,plannedMinutes: z.number().finite().positive().nullable(), themeSlug: z.string().min(1), task: z.string().nullable(), companions: localCompanionSchema.default(soloCompanions) }).strict();
-export const sessionSchema = z.object({
-  id: z.string().min(1), startedAt: iso, endedAt: iso.nullable(),
-  companionStatusCycle: z.number().int().nonnegative().optional(),
-  roomId: z.uuid().nullable().optional(),
-  ...inputSchema.shape, companions: companionSchema.default(soloCompanions), actualSeconds: z.number().int().min(0).max(21600),
-  endedReason: z.enum(["completed", "stopped_early", "abandoned"]).nullable(), localDate: date,
-}).strict().refine((session) => session.endedAt === null
-  ? session.endedReason === null && session.actualSeconds === 0
-  : session.endedReason !== null && session.endedAt >= session.startedAt);
+
+type StorageAccess = Pick<Storage, "getItem" | "setItem" | "removeItem">;
 const sessionsSchema = z.array(sessionSchema).refine((sessions) => new Set(sessions.map((session) => session.id)).size === sessions.length && sessions.filter((session) => session.endedAt === null).length <= 1);
 const activeSchema = z.object({ id: z.string().min(1), lastHeartbeatAt: iso }).strict().nullable();
 const tabStateSchema = z.object({ documentId: z.uuid(), closedAt: iso.nullable() }).strict().nullable();
-export const streakSchema = z.object({
-  current: z.number().int().nonnegative(), best: z.number().int().nonnegative(),
-  lastActiveDate: date.nullable(), freezesRemaining: z.number().int().min(0).max(2), freezesResetAt: date,
-}).strict().refine((state) => state.best >= state.current);
 const streakEventSchema = z.object({ changed: z.boolean(), freezeUsed: z.boolean() }).strict();
 const streakEventsSchema = z.record(z.string(), streakEventSchema);
 const seedSchema = z.object({ version: z.literal(1), anchorDate: date }).strict().nullable();

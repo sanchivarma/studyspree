@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useCommunityMutation } from "@/hooks/useCommunityMutation";
 import { useTranslation } from "@/hooks/useTranslation";
-import { buttonClass } from "./CommunityComposer";
+import { buttonClass } from "./styles";
 export function InviteScreen({ token }: {
     token: string;
 }) {

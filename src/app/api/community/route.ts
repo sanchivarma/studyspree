@@ -1,7 +1,7 @@
 import { ZodError } from "zod";
 import { communityRequestSchema } from "@/lib/community/schemas";
 import { executeCommunity, CommunityServerError } from "@/lib/community/server";
-import { hasClientDuration } from "@/lib/repo/remoteSchemas";
+import { hasClientDuration } from "@/lib/repo/requestValidation";
 // This endpoint never accepts a duration from the client and must never
 // be changed to do so. Duration is computed by a database trigger.
 export async function POST(request: Request) {

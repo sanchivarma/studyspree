@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { z } from "zod";
 import { getAuthConfig, getSiteUrl } from "@/lib/auth/config";
 import { createAuthClient } from "@/lib/auth/server";
@@ -15,13 +16,13 @@ export interface AuthRepository {
 }
 
 export const authRepository: AuthRepository = {
-  async getProfile() {
+  getProfile: cache(async () => {
     const preview = await getDevAdminProfile();
     if (preview) return preview;
     if (!getAuthConfig()) return null;
     const client = await createAuthClient();
     return readAccount(client);
-  },
+  }),
 
   async execute(operation, input) {
     if (operation === "logout") await clearAuthReturnTo();

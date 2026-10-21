@@ -1,7 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { isLocale } from "@/translations";
+import { isLocale } from "@/translations/locale";
 
 export async function saveLanguage(value: unknown) {
   if (!isLocale(value)) return;

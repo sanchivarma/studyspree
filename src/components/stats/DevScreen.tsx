@@ -7,7 +7,7 @@ import { useTranslation } from "@/hooks/useTranslation";
 
 export function DevScreen() {
   const { t } = useTranslation();
-  const active = useActiveSession();
+  const active = useActiveSession({ synchronize: true });
   const seed = useSeedSessions();
   return <section className="mx-auto w-full max-w-2xl px-6 pt-24 pb-8">
     <AccountControls />

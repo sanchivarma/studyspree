@@ -16,7 +16,7 @@ import { resolveCalendarTime } from "@/lib/community/calendar";
 import { formatDuration } from "@/lib/stats/presentation";
 import { cn } from "@/lib/utils";
 import { ContactSelection } from "./ContactSelection";
-import { buttonClass } from "./CommunityComposer";
+import { buttonClass } from "./styles";
 
 const eventSchema = z.object({ startsAt: z.iso.datetime({ offset: true }), endsAt: z.iso.datetime({ offset: true }), roomId: z.uuid(), response: z.enum(["host", "accepted", "pending", "declined", "public"]), cancelled: z.boolean() });
 

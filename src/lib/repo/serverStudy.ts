@@ -2,7 +2,7 @@ import "server-only";
 import { z } from "zod";
 import { createAuthClient } from "@/lib/auth/server";
 import type { Database } from "@/types/database";
-import { profileSchema, sessionSchema } from "./local";
+import { profileSchema, sessionSchema } from "./schemas";
 import { repositoryRequestSchema, summarySchema } from "./remoteSchemas";
 import { companionSchema, soloCompanions } from "@/lib/characters/schemas";
 import { tileSchema } from "@/lib/personalTile/schemas";

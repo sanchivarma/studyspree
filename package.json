@@ -21,7 +21,10 @@
     "db:test": "supabase test db",
     "check:character-assets": "node scripts/check-character-assets.mjs",
     "test:e2e:supabase": "playwright test -c playwright.supabase.config.ts",
-    "maintenance": "node scripts/maintenance.mjs"
+    "audit:imports": "node scripts/audit-imports.mjs",
+    "measure:navigation": "node scripts/measure-navigation.mjs",
+    "maintenance": "node scripts/maintenance.mjs",
+    "test:performance": "playwright test -c playwright.performance.config.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

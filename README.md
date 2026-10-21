@@ -47,6 +47,26 @@ With local Supabase running and `CRON_SECRET` configured, use `npm.cmd run dev:l
 to run the app and its maintenance scheduler together. Stop an existing server
 before using this command. Ctrl+C stops both processes it started.
 
+## Performance checks
+
+With local Supabase and Mailpit running, build the production app and run:
+
+```powershell
+npm.cmd run build
+npm.cmd run test:performance
+```
+
+The browser suite starts production on port 3002, creates a normal local account,
+and checks navigation and common actions against a fixed 2,000 ms deadline.
+1,000 ms is the target; JSON attachments identify slower actions. The deadline
+includes the click, resulting UI and persisted response for saved controls.
+There are no retries or threshold overrides. CI runs the same suite and retains
+timings, traces and screenshots. Development compilation is measured separately.
+
+`npm run audit:imports` inventories runtime dependencies; `npm run measure:navigation`
+measures the connected local development account without replacing its history.
+See [the performance audit](docs/PERFORMANCE.md) for findings and measurements.
+
 ## Pages
 
 - `/login`: public welcome, translated Login/Register tabs, email magic links,

@@ -10,14 +10,13 @@ import { useProfile } from "@/hooks/useProfile";
 import { useIdleVisibility } from "@/hooks/useIdleVisibility";
 import { useTranslation } from "@/hooks/useTranslation";
 import { getTheme } from "@/lib/themes/registry";
-import { useSessionTimer } from "@/hooks/useSessionTimer";
+import { useSessionStore } from "@/stores/sessionStore";
+import { now } from "@/lib/clock";
+import { SessionFooter } from "./SessionFooter";
 import { useEndSession } from "@/hooks/useEndSession";
-import { formatTimer } from "@/lib/session/presentation";
 import type { Session } from "@/types/domain";
 import { cn } from "@/lib/utils";
 
-import { SessionProgress } from "@/components/timer/SessionProgress";
-import { useSessionTitle } from "@/hooks/useSessionTitle";
 import { useLocalCamera } from "@/hooks/useLocalCamera";
 import { SelfView } from "@/components/webcam/SelfView";
 import { AmbienceControl } from "@/components/ambience/AmbienceControl";
@@ -38,19 +37,17 @@ export function SessionScreen({ session }: { session: Session }) {
   const profile = useProfile();
   const tile = usePersonalTile();
   const camera = useLocalCamera();
-  const { elapsedSeconds, remainingSeconds, isFinishing } = useSessionTimer(session);
+  const isFinishing = useSessionStore(state => state.isFinishing);
   const { mutate: endSession, error } = useEndSession();
   const finishing = useRef(false);
   const finishButton = useRef<HTMLButtonElement>(null);
   const finish = useCallback(() => {
     if (isFinishing || finishing.current) return;
     finishing.current = true;
-    endSession({ id: session.id, reason: remainingSeconds !== null && remainingSeconds <= 0 ? "completed" : "stopped_early" }, { onError: () => { finishing.current = false; } });
-  }, [isFinishing, endSession, session.id, remainingSeconds]);
+    const completed = session.plannedMinutes !== null && now().getTime() - new Date(session.startedAt).getTime() >= session.plannedMinutes * 60_000;
+    endSession({ id: session.id, reason: completed ? "completed" : "stopped_early" }, { onError: () => { finishing.current = false; } });
+  }, [isFinishing, endSession, session.id, session.startedAt, session.plannedMinutes]);
   const slug = getTheme(profile.data?.selectedTheme ?? session.themeSlug).slug;
-  const task = session.task;
-  const time = formatTimer(remainingSeconds ?? elapsedSeconds);
-  useSessionTitle(time);
   const { t } = useTranslation();
   const { isVisible: idleVisible } = useIdleVisibility();
   const isVisible = sheetOpen || soundOpen || companionOpen || chatOpen || idleVisible;
@@ -77,20 +74,7 @@ export function SessionScreen({ session }: { session: Session }) {
     <SessionCompanions session={session} visible={isVisible} onOpenChange={setCompanionOpen} leading={isSelfInStage ? <SelfView caption={<SessionSelfCaption admin onOpenChange={setSheetOpen}/>} camera={camera} visible={isVisible} mirrored={tile.data?.mirrored ?? true} status={tile.data?.status ?? ""} stage onTogglePin={() => setSelfPinned(false)}/> : undefined}
       sideControls={<><button ref={chatButton} type="button" aria-label={t("room.chat")} aria-expanded={chatOpen} aria-controls="room-chat" onClick={() => setChatOpen(true)} className="flex size-11 items-center justify-center rounded-xl bg-background/60 focus-visible:outline-2 focus-visible:outline-accent"><MessageCircle aria-hidden="true" className="size-4"/></button><SessionStatusControl onOpenChange={setSheetOpen}/><PersonalTileSheet onOpenChange={setSheetOpen}/></>}/>
     {chatOpen && <SessionChat onClose={() => setChatOpen(false)} onRestoreFocus={() => chatButton.current?.focus()}/>}
-    <div data-testid="session-controls" className="absolute right-3 bottom-2 left-[60px] z-30 flex h-[48px] items-center gap-3">
-      <div className={cn("min-w-0 flex-1 rounded-xl border px-3 py-1",isVisible?"border-border/30 bg-background/45 backdrop-blur-sm":"border-transparent")}>
-        <div data-testid="session-details" className={fade}>
-          <div className="flex flex-wrap items-baseline gap-x-3"><p data-testid="session-elapsed" className="text-[13px] leading-tight text-foreground/70 tabular-nums">{t("session.elapsed", { time: formatTimer(elapsedSeconds) })}</p>
-          {remainingSeconds !== null && <p data-testid="session-time" className="text-[11px] leading-tight text-foreground/50 tabular-nums">{t("session.remaining", { time })}</p>}</div>
-          {remainingSeconds === null && <span data-testid="session-time" className="sr-only">{t("session.elapsed", { time })}</span>}
-          {(tile.data?.status || task) && <p data-testid={tile.data?.status ? "my-session-status" : undefined} className="truncate text-[11px] leading-tight text-foreground/60">{[tile.data?.status,task].filter(Boolean).join(" · ")}</p>}
-        </div>
-        <div className={cn("mt-1 transition-opacity duration-200 motion-reduce:transition-none", !isVisible && "opacity-40")}><SessionProgress elapsedSeconds={elapsedSeconds} plannedMinutes={session.plannedMinutes}/></div>
-        {error && <p role="alert" className="text-small text-text-muted">{t("session.finishError")}</p>}
-      </div>
-      <button ref={finishButton} type="button" aria-keyshortcuts="Escape" onClick={finish} disabled={isFinishing}
-        className={cn("min-h-11 shrink-0 rounded-xl border border-border bg-background/45 px-4 text-body text-foreground/80 backdrop-blur-sm hover:bg-background/60 disabled:opacity-60", fade)}>{t("session.finish")}</button>
-    </div>
+    <SessionFooter session={session} status={tile.data?.status} isVisible={isVisible} error={error} onFinish={finish} finishButton={finishButton}/>
     <div className="absolute bottom-0 left-0 z-30 h-36 w-[60px]">
       <AmbienceControl theme={slug} onOpenChange={setSoundOpen} className="!bottom-3 !left-2 border border-border/30 bg-background/45 backdrop-blur-sm"/>
       <ThemeSheet onOpenChange={setSheetOpen}>

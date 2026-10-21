@@ -1,7 +1,7 @@
 import {sessionDetailsShape} from "@/lib/session/setup";
 import { themeSlugs } from "@/lib/themes/registry";
 import { z } from "zod";
-import { profileSchema } from "./local";
+import { profileSchema } from "./schemas";
 import { companionSchema } from "@/lib/characters/schemas";
 import { historyQuerySchema } from "@/lib/stats/history";
 import { tilePatchSchema } from "@/lib/personalTile/schemas";
@@ -37,10 +37,6 @@ export const repositoryRequestSchema = z.discriminatedUnion("op", [
     z.object({ op: z.literal("days"), ...dates }).strict(),
     z.object({ op: z.literal("updateTile"), patch: tilePatchSchema }).strict(),
 ]);
-export function hasClientDuration(value: unknown): boolean {
-    if (!value || typeof value !== "object")
-        return false;
-    return Object.entries(value).some(([key, item]) => ["actualSeconds", "actual_seconds", "duration", "elapsed"].includes(key) || hasClientDuration(item));
-}
+export { hasClientDuration } from "./requestValidation";
 export const summarySchema = z.object({ totalSeconds: z.number().nonnegative(), sessionCount: z.number().int().nonnegative(), firstSessionDate: z.iso.date().nullable() });
 export const daySchema = z.object({ date: z.iso.date(), totalSeconds: z.number().nonnegative(), sessionCount: z.number().int().nonnegative() });

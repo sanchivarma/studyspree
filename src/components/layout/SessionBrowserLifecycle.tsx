@@ -9,7 +9,7 @@ import { restoreBrowserTab } from "@/lib/session/browserTab";
 
 /** pagehide means the document is leaving. Blur/hidden never finish study. */
 export function SessionBrowserLifecycle() {
-  const { data: session } = useActiveSession();
+  const { data: session } = useActiveSession({ synchronize: true });
   const cache = useQueryClient();
   const id = session?.endedAt === null ? session.id : undefined;
   useEffect(() => {

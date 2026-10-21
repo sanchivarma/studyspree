@@ -1,5 +1,6 @@
 import { ZodError } from "zod";
-import { hasClientDuration, repositoryRequestSchema } from "@/lib/repo/remoteSchemas";
+import { repositoryRequestSchema } from "@/lib/repo/remoteSchemas";
+import { hasClientDuration } from "@/lib/repo/requestValidation";
 import { executeStudy, StudyError } from "@/lib/repo/serverStudy";
 // This endpoint never accepts a duration from the client and must never
 // be changed to do so. Duration is computed by a database trigger.

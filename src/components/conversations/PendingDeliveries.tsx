@@ -2,7 +2,7 @@
 import { usePendingDeliveries } from "@/hooks/usePendingDeliveries";
 import { useCommunityMutation } from "@/hooks/useCommunityMutation";
 import { useTranslation } from "@/hooks/useTranslation";
-import { buttonClass } from "@/components/community/CommunityComposer";
+import { buttonClass } from "@/components/community/styles";
 export function PendingDeliveries({ area,id,groupId,parentId,knownIds }: {area:'feed'|'messages';id?:string;groupId?:string;parentId?:string;knownIds:string[]}) {
  const states=usePendingDeliveries();const retry=useCommunityMutation();const {t}=useTranslation();
  const relevant=states.filter(s=>s.command?.action===(area==='feed'?'post.create':'message.send')).sort((a,b)=>a.submittedAt-b.submittedAt);

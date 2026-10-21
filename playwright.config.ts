@@ -3,7 +3,7 @@ import { defineConfig, devices } from "@playwright/test";
 export default defineConfig({
   testDir: "./e2e",
   globalSetup: "./e2e/globalSetup.ts",
-  testIgnore: ["**/supabase/**"], // Dedicated integration command requires the local database/email stack.
+  testIgnore: ["**/supabase/**", "**/performance/**"], // Dedicated commands provide the database and production server.
   fullyParallel: false,
   workers: 1,
   forbidOnly: Boolean(process.env.CI),

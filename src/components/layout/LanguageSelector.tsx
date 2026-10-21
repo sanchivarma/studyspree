@@ -3,7 +3,7 @@
 import { Globe } from "lucide-react";
 import { useRef } from "react";
 import { useTranslation } from "@/hooks/useTranslation";
-import { isLocale, languageNames, locales } from "@/translations";
+import { isLocale, languageNames, locales } from "@/translations/locale";
 
 export function LanguageSelector() {
   const { locale, setLocale, t } = useTranslation();

@@ -7,7 +7,7 @@ type Client = Awaited<ReturnType<typeof createAuthClient>>;
 export async function readAccount(client: Client) {
   const { data, error } = await client.auth.getUser();
   if (error || !data.user) return null;
-  const response = await client.from("profiles").select("*").eq("id", data.user.id).single();
+  const response = await client.from("profiles").select("id,username,first_name,last_name,selected_theme,show_streak,display_name,timezone,reduce_motion,onboarding_complete").eq("id", data.user.id).single();
   const parsed = profileSchema.safeParse(response.data);
   return parsed.success ? parsed.data : null;
 }

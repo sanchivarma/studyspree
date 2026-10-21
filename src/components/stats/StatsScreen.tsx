@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import { AccountControls } from "@/components/layout/AccountControls";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -48,8 +48,8 @@ export function StatsScreen({ embedded = false }: { embedded?: boolean } = {}) {
   const selectedRange = rangeResult.success ? rangeResult.data : { from: referenceDate ?? from, to: referenceDate ?? from };
   const rangeDays = useDayStats(selectedRange.from, selectedRange.to, referenceDate !== null && rangeResult.success);
   const history = useSessionHistory({ ...(preset !== "all" && rangeResult.success ? selectedRange : {}), companionMode: companionMode === "all" ? undefined : companionMode });
-  const days = referenceDate ? fillDays(dayStats.data ?? [], from, referenceDate) : [];
-  const sessions = history.data?.pages.flatMap((page) => page.items) ?? [];
+  const days = useMemo(() => referenceDate ? fillDays(dayStats.data ?? [], from, referenceDate) : [], [referenceDate, dayStats.data, from]);
+  const sessions = useMemo(() => history.data?.pages.flatMap((page) => page.items) ?? [], [history.data]);
   const queries = [profile, total, dayStats, history, streak, summary];
   const hasError = [profile, total, dayStats, streak, summary].some((query) => query.isError);
   // Invalidated totals must be reread before the hero can show cached hours.

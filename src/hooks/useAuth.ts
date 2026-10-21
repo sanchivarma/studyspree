@@ -31,7 +31,7 @@ export function useAuth() {
       if (response.status === "success" && response.navigate) {
         client.clear(); // Account changes must never retain another user's query data.
         if (response.external) window.location.assign(response.navigate);
-        else { router.push(response.navigate); router.refresh(); }
+        else router.push(response.navigate);
       }
     } catch {
       setResult({ status: "error", message: "common.authError" });

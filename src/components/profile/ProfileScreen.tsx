@@ -9,9 +9,12 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { profileEditSchema, type OwnProfile } from "@/lib/profiles/schemas";
 import { ProfileCard } from "./ProfileCard";
 import { AchievementGrid } from "./AchievementGrid";
-import { CharacterHistory } from "./CharacterHistory";
-import { CommunityBoard } from "@/components/community/CommunityBoard";
-import { StatsScreen } from "@/components/stats/StatsScreen";
+import dynamic from "next/dynamic";
+import { LoadingPanel } from "@/components/layout/LoadingPanel";
+
+const CharacterHistory = dynamic(() => import("./CharacterHistory").then(module => module.CharacterHistory), { loading: LoadingPanel });
+const CommunityBoard = dynamic(() => import("@/components/community/CommunityBoard").then(module => module.CommunityBoard), { loading: LoadingPanel });
+const StatsScreen = dynamic(() => import("@/components/stats/StatsScreen").then(module => module.StatsScreen), { loading: LoadingPanel });
 
 const fieldClass = "mt-2 min-h-11 w-full rounded-xl border border-border bg-background px-3 py-2";
 function ProfileEditor({ profile }: { profile: OwnProfile }) {

@@ -19,6 +19,9 @@ export function useUpdateRoomControls(id: string) {
       return { previous };
     },
     onError: (_error, _input, context) => { if (context?.previous) cache.setQueryData(key, context.previous); },
-    onSettled: () => cache.invalidateQueries({ queryKey: key }),
+    onSettled: () => {
+      void cache.invalidateQueries({ queryKey: key });
+      void cache.invalidateQueries({ queryKey: queryKeys.community.area("publicSessions") });
+    },
   });
 }

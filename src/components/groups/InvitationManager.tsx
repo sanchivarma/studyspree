@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useCommunity } from "@/hooks/useCommunity";
 import { useCommunityMutation } from "@/hooks/useCommunityMutation";
 import { useTranslation } from "@/hooks/useTranslation";
-import { buttonClass } from "@/components/community/CommunityComposer";
+import { buttonClass } from "@/components/community/styles";
 export function InvitationManager({ id, kind }: { id: string; kind:'group'|'room' }) {
  const {t,locale}=useTranslation();const list=useCommunity('invitations',{id,filter:kind});const mutation=useCommunityMutation();const [link,setLink]=useState('');
  return <section className="space-y-3"><h3>{t('roadmap.invitations')}</h3><button type="button" className={buttonClass} disabled={mutation.isPending} onClick={()=>mutation.mutate(kind==='group'?{action:'group.invite',data:{id}}:{action:'room.invite',data:{id,uses:10,hours:24}},{onSuccess:r=>setLink(`${window.location.origin}/invite/${r.token}`)})}>{t('community.invite')}</button>

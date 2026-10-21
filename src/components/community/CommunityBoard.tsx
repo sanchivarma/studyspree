@@ -1,14 +1,17 @@
 "use client";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+import { LoadingPanel } from "@/components/layout/LoadingPanel";
 import { useEffect } from "react";
-import { UsageAllowance } from "@/components/billing/UsageAllowance";
+const UsageAllowance = dynamic(() => import("@/components/billing/UsageAllowance").then(module => module.UsageAllowance), { loading: LoadingPanel });
 import { useAccountMode } from "@/hooks/useAccountMode";
 import { useMessages } from "@/hooks/useMessages";
 import { PendingDeliveries } from "@/components/conversations/PendingDeliveries";
-import { CreateScheduledSession } from "@/components/scheduling/CreateScheduledSession";
-import { BuddyListingForm } from "@/components/buddies/BuddyListingForm";
-import { InvitationManager } from "@/components/groups/InvitationManager";
-import { useDeferredValue, useState } from "react";
+const CreateScheduledSession = dynamic(() => import("@/components/scheduling/CreateScheduledSession").then(module => module.CreateScheduledSession), { loading: LoadingPanel });
+const BuddyListingForm = dynamic(() => import("@/components/buddies/BuddyListingForm").then(module => module.BuddyListingForm), { loading: LoadingPanel });
+const InvitationManager = dynamic(() => import("@/components/groups/InvitationManager").then(module => module.InvitationManager), { loading: LoadingPanel });
+import { useState } from "react";
+import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { z } from "zod";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useProfile } from "@/hooks/useProfile";
@@ -18,7 +21,8 @@ import { useCommunityMutation } from "@/hooks/useCommunityMutation";
 import { CommunityError } from "@/lib/repo/community";
 import type { CommunityArea, CommunityQuery } from "@/lib/community/schemas";
 import { personSchema } from "@/lib/community/schemas";
-import { CommunityComposer, buttonClass } from "./CommunityComposer";
+const CommunityComposer = dynamic(() => import("./CommunityComposer").then(module => module.CommunityComposer), { loading: LoadingPanel });
+import { buttonClass } from "./styles";
 import { CommunityCard } from "./CommunityCard";
 import { AccountControls } from "@/components/layout/AccountControls";
 import { formatDuration, formatDate } from "@/lib/stats/presentation";
@@ -27,6 +31,7 @@ import { toLocalDate } from "@/lib/stats/localDate";
 import { shiftDate } from "@/lib/stats/dates";
 import { fromZonedTime, formatInTimeZone } from "date-fns-tz";
 import type { TranslationKey } from "@/translations";
+const composerAreas: readonly CommunityArea[] = ["tasks", "feedback", "groups", "spaces", "conversations", "messages", "feed"];
 const pageTitle = (area: CommunityArea): TranslationKey => area === "publicSessions" ? "sessionSetup.publicSessions" : area === "invitations" ? "roadmap.invitations" : area === "roomParticipants" || area === "roomChat" ? "room.chat" : area === "awards" ? "achievements.title" : area === "recipients" ? "conversations.title" : `${area}.title`;
 const errorKeys = z.enum(["accountRequired", "full", "limit", "forbidden", "invalid", "unavailable", "transferFirst", "inviteUnavailable", "invalidMedia"]);
 export function CommunityBoard({ area, id, groupId, embedded = false }: {
@@ -41,7 +46,7 @@ export function CommunityBoard({ area, id, groupId, embedded = false }: {
     const auth = useAuth();
     const mutation = useCommunityMutation();
     const [search, setSearch] = useState("");
-    const term = useDeferredValue(search);
+    const term = useDebouncedValue(search);
     const [filter, setFilter] = useState(area === "feed" ? "following" : "all");
     const [metric, setMetric] = useState<"time" | "streak">("time");
     const [period, setPeriod] = useState<"week" | "all">("week");
@@ -88,7 +93,7 @@ export function CommunityBoard({ area, id, groupId, embedded = false }: {
     {area === "leaderboards" && <label className="flex min-h-11 items-center gap-3"><input type="checkbox" disabled={mutation.isPending} checked={context.optedIn === true} onChange={event => mutation.mutate({ action: "preferences", data: { leaderboardOptIn: event.target.checked } })}/>{t("community.optIn")}</label>}
     {area === "messages" && state.resource && <h2 className="text-lg font-semibold">{state.resource.data.kind === "direct" ? t("community.conversation") : state.resource.title}</h2>}
     {area === "feed" && id && state.resource && <CommunityCard area="feed" item={state.resource} viewerId={state.viewerId} timezone={zone}/>}
-    {area === "schedule" ? <CreateScheduledSession groupId={groupId}/> : area === "buddies" ? <BuddyListingForm/> : (area !== "groups" || !id) && <CommunityComposer area={area} id={id} groupId={groupId??(typeof state.resource?.data.groupId==="string"?state.resource.data.groupId:undefined)} canPost={context.canPost !== false}/>}
+    {area === "schedule" ? <CreateScheduledSession groupId={groupId}/> : area === "buddies" ? <BuddyListingForm/> : composerAreas.includes(area) && (area !== "groups" || !id) && <CommunityComposer area={area} id={id} groupId={groupId??(typeof state.resource?.data.groupId==="string"?state.resource.data.groupId:undefined)} canPost={context.canPost !== false}/>}
    </>}
    {(["spaces", "groups", "feed", "partners", "messages"] as CommunityArea[]).includes(area) && !(area === "groups" && id) && <div className="flex flex-wrap gap-2">{(area === "spaces" ? ["all", "pomodoro", "deep", "chill", "cram"] : area === "groups" ? ["all", "mine"] : area === "feed" ? ["following", "popular", "saved"] : area === "partners" ? ["all", "favorites"] : ["all", "saved"]).map(value => <button key={value} type="button" className={buttonClass} aria-pressed={filter === value} onClick={() => setFilter(value)}>{t(`community.${value}` as TranslationKey)}</button>)}</div>}
    {area === "buddies" && <label>{t("roadmap.category")}<select className={buttonClass} value={filter} onChange={e=>setFilter(e.target.value)}><option value="all">{t("community.all")}</option>{(["student","professional","other"]as const).map(v=><option value={v} key={v}>{t(`roadmap.${v}`)}</option>)}</select><Link href="/study?mode=characters" className={buttonClass}>{t("characters.characters")}</Link></label>}

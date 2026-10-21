@@ -12,8 +12,8 @@ import { resolveCalendarTime } from "@/lib/community/calendar";
 import { formatInTimeZone } from "date-fns-tz";
 import { now } from "@/lib/clock";
 import type { TranslationKey } from "@/translations";
-export const fieldClass = "mt-2 min-h-11 w-full min-w-0 rounded-xl border border-border bg-background px-3 py-2";
-export const buttonClass = "min-h-11 rounded-xl border border-border px-4 py-2 text-small hover:bg-surface-2 disabled:opacity-50";
+import { buttonClass, fieldClass } from "./styles";
+export { buttonClass, fieldClass } from "./styles";
 const creators = ["tasks", "feedback", "groups", "spaces", "buddies", "conversations", "messages", "feed", "schedule"];
 export function CommunityComposer({ area, id, groupId, parentId, canPost = true }: {
     area: CommunityArea;

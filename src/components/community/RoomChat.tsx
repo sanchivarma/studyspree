@@ -5,7 +5,7 @@ import { useCommunity } from "@/hooks/useCommunity";
 import { useCommunityMutation } from "@/hooks/useCommunityMutation";
 import { useTranslation } from "@/hooks/useTranslation";
 import { CommunityError } from "@/lib/repo/community";
-import { buttonClass } from "./CommunityComposer";
+import { buttonClass } from "./styles";
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 
 export function RoomChat({ roomId, onClose, onRestoreFocus }: { roomId: string; onClose: () => void; onRestoreFocus?: () => void }) {

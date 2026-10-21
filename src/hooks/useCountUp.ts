@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useReducedMotion } from "framer-motion";
+import { useReducedMotion } from "./useReducedMotion";
 import { now } from "@/lib/clock";
 
 export function useCountUp(from: number, to: number, duration: number) {

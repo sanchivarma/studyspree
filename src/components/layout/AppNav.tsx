@@ -9,6 +9,7 @@ import { useProfile } from "@/hooks/useProfile";
 import { getTheme } from "@/lib/themes/registry";
 import type { CSSProperties } from "react";
 import { MoreNav } from "./MoreNav";
+import { PendingNavigation } from "./PendingNavigation";
 import { navigationItems } from "@/lib/navigation/routes";
 
 const items = navigationItems.filter(item=>item.primary).map(item=>({label:item.labelKey,href:item.href,icon:item.icon}));
@@ -43,6 +44,7 @@ export function AppNav({ showStreak }: { showStreak: boolean }) {
               )}
             >
               <Icon aria-hidden="true" className="size-5" strokeWidth={1.75} />
+              <PendingNavigation />
               <span className="text-[10px] leading-3 md:sr-only">{t(label)}</span>
               <span
                 aria-hidden="true"

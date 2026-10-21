@@ -9,7 +9,7 @@ import { resolveCalendarTime } from "@/lib/community/calendar";
 import { CharacterPicker } from "@/components/characters/CharacterPicker";
 import type { CharacterSlug } from "@/types/characters";
 import { characterSlugs } from "@/types/characters";
-import { fieldClass, buttonClass } from "@/components/community/CommunityComposer";
+import { fieldClass, buttonClass } from "@/components/community/styles";
 export function CreateScheduledSession({ groupId, event }: { groupId?: string; event?: CommunityItem }) {
  const profile = useProfile(); const mutation = useCommunityMutation(); const { t } = useTranslation();
  const [mode, setMode] = useState(event?.data.mode === "private-characters" ? "private-characters" : "people");

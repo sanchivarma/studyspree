@@ -35,11 +35,13 @@ test("refresh resumes the countdown and Finish banks ten seconds without URL tot
   expect(new URL(page.url()).search).toBe("");
 });
 
-test("a second tab opened on root resumes the active session and sees Finish", async ({ page, context }) => {
+test("a second tab resumes from Home and sees Finish", async ({ page, context }) => {
   await signIn(page);
   const path = await startSession(page);
   const other = await context.newPage();
   await other.goto("/");
+  await expect(other.getByTestId("default-study-room")).toBeVisible();
+  await other.getByRole("link", { name: "Resume session", exact: true }).click();
   await expect(other).toHaveURL(new RegExp(`${path}$`), { timeout: 15000 });
   await expect(other.getByTestId("session-screen")).toBeVisible();
   await page.keyboard.press("Escape");

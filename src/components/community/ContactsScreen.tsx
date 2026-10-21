@@ -5,7 +5,7 @@ import { useCommunity } from "@/hooks/useCommunity";
 import { useCommunityMutation } from "@/hooks/useCommunityMutation";
 import { useTranslation } from "@/hooks/useTranslation";
 import { ContactSelection, contactListsSchema } from "./ContactSelection";
-import { buttonClass } from "./CommunityComposer";
+import { buttonClass } from "./styles";
 
 export function ContactsScreen() {
   const { t } = useTranslation();

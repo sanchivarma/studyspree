@@ -4,7 +4,7 @@ import { useState, useSyncExternalStore } from "react";
 import { Share2, Link2, Check } from "lucide-react";
 import { useCommunityMutation } from "@/hooks/useCommunityMutation";
 import { useTranslation } from "@/hooks/useTranslation";
-import { buttonClass } from "./CommunityComposer";
+import { buttonClass } from "./styles";
 import { CommunityError } from "@/lib/repo/community";
 import {useAccountMode} from '@/hooks/useAccountMode';
 import type {TranslationKey} from '@/translations';

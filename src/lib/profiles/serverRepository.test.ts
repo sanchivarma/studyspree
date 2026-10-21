@@ -26,4 +26,21 @@ describe("profile server authorization", () => {
     expect(await setProfileFollow({ username: "some_user", following: true })).toEqual({ ok: false, code: "unavailable" });
     expect(mocks.create).not.toHaveBeenCalled();
   });
+  it("reads an own card with one verified identity and reuses that client for the visibility RPC", async () => {
+    const id = "00000000-0000-4000-8000-000000000001";
+    const getUser = vi.fn().mockResolvedValue({ data: { user: { id } }, error: null });
+    const visible = { id, username: "reader", displayName: "Reader", bio: "", countryCode: "", occupation: "",
+      interests: [], lookingFor: [], socials: [], joinedAt: "2026-10-21T00:00:00Z", avatarPath: null, bannerPath: null,
+      followers: 0, following: 0, highestBadgeId: null, isFollowing: false, isSelf: true };
+    const rpc = vi.fn().mockResolvedValue({ data: visible, error: null });
+    const from = vi.fn((table: string) => ({ select: () => ({ eq: () => ({ single: async () => ({
+      data: table === "profiles" ? { username: "reader" } : { is_public: false }, error: null,
+    }) }) }) }));
+    mocks.create.mockResolvedValue({ auth: { getUser }, from, rpc });
+    expect(await repository.getOwn()).toMatchObject({ username: "reader", isSelf: true, isPublic: false, isLocal: false });
+    expect(getUser).toHaveBeenCalledTimes(1);
+    expect(mocks.create).toHaveBeenCalledTimes(1);
+    expect(rpc).toHaveBeenCalledExactlyOnceWith("read_visible_profile", { p_username: "reader" });
+    expect(from).toHaveBeenCalledTimes(2);
+  });
 });

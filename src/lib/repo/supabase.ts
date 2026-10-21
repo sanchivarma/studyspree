@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { Repository, StartSessionInput } from "./types";
-import { profileSchema, sessionSchema, streakSchema } from "./local";
+import { profileSchema, sessionSchema, streakSchema } from "./schemas";
 import { daySchema, summarySchema } from "./remoteSchemas";
 import { ownProfileSchema, type ProfileEdit } from "@/lib/profiles/schemas";
 import { awardSchema } from "@/lib/achievements/eligibility";

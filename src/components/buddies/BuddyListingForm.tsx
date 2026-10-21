@@ -3,7 +3,7 @@ import { useCommunityMutation } from "@/hooks/useCommunityMutation";
 import { useProfile } from "@/hooks/useProfile";
 import { useTranslation } from "@/hooks/useTranslation";
 import { communityCommandSchema, type CommunityItem } from "@/lib/community/schemas";
-import { buttonClass, fieldClass } from "@/components/community/CommunityComposer";
+import { buttonClass, fieldClass } from "@/components/community/styles";
 import { useState } from "react";
 export function BuddyListingForm({ listing }: { listing?: CommunityItem }) {
  const {t}=useTranslation();const profile=useProfile();const mutation=useCommunityMutation();const [invalid,setInvalid]=useState(false);

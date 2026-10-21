@@ -1,4 +1,5 @@
 "use client";
+import { useMemo } from "react";
 import { chartBuckets } from "@/lib/stats/ranges";
 import { formatDate, formatDuration } from "@/lib/stats/presentation";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -7,7 +8,7 @@ import type { StatsRange } from "@/types/stats";
 
 export function StudyTimeChart({ days, range }: { days: DayStat[]; range: StatsRange }) {
   const { t, locale } = useTranslation();
-  const buckets = chartBuckets(days, range);
+  const buckets = useMemo(() => chartBuckets(days, range), [days, range]);
   const max = Math.max(1, ...buckets.map(bucket => bucket.totalSeconds));
   const total = buckets.reduce((sum, bucket) => sum + bucket.totalSeconds, 0);
   return <>
