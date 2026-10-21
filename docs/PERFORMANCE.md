@@ -30,11 +30,11 @@ The production build initially reported:
 
 | Route | First-load JS, gzip bytes | After |
 | --- | ---: | ---: |
-| Home | 395,762 | Pending |
-| Study | 358,436 | Pending |
-| Settings | 360,753 | Pending |
-| Stats | 354,774 | Pending |
-| Login | 228,852 | Pending |
+| Home | 395,762 | 268,270 |
+| Study | 358,436 | 215,992 |
+| Settings | 360,753 | 206,888 |
+| Stats | 354,774 | 209,488 |
+| Login | 228,852 | 164,566 |
 
 These figures are computed from the route's emitted JavaScript files, gzipped
 individually, matching the Next build report. They exclude media and server HTML.
@@ -61,6 +61,7 @@ applied-migration rewrite is justified by this evidence.
 | Server account reads | Layout and page repeated the same authenticated account read. Full preference JSON was selected for a small account guard. Profile operations verified the same identity repeatedly. | Request-scoped React memoization, explicit account columns and request-local profile client reuse; no cross-user cache. Session captions use the immutable username already supplied by the authenticated layout. |
 | Onboarding and login | A successful navigation was immediately refreshed again. Onboarding repeated a completed server write through the preview repository. | Remove the redundant refresh/write and discard preview profile cache before entering the account layout. |
 | Media services | Ordinary community reads imported the server media SDK. | Import media administration only for operations that require it. Keep awaited disconnect/permission enforcement. |
+| More navigation | Opening the drawer speculatively requested all fourteen secondary destinations, competing with the clicked route. | Disable automatic prefetch for secondary links; keep primary navigation prefetch. |
 | Compiler | Broad Radix barrel traversal, repeated server SDK bundling and memory pressure increased compilation cost. | Optimize package imports, use native Node entry points for the server SDKs, and enable supported Webpack memory optimizations. Measure the resulting build and cold navigation. |
 | Search | Deferred rendering still sent a request for each typed character. | Debounce the query term while keeping the input immediate; verify settled terms and request counts in a real-account browser regression. |
 
@@ -85,6 +86,40 @@ applied-migration rewrite is justified by this evidence.
 - Tooling, documentation, generated types and historical migrations: inventory
   and compatibility checks, rather than arbitrary rewrites of non-runtime files.
 
+## Local serving and latency guard
+
+The user-facing port 3000 originally remained in Turbopack development mode.
+Its route compilation continued to cause multi-second clicks despite smaller
+production bundles. That was an unresolved part of the initial fix. Port 3000
+now serves the optimized production build. Use `npm run build` followed by
+`npm run preview:local` to reproduce this setup, including maintenance. Normal
+`npm run dev` still provides live editing and compiles routes on demand.
+There is no evidence that every cold development compile meets two seconds.
+
+On the actual local URL, first-click readiness was Study 302 ms, Settings 328 ms,
+Stats 1,258 ms, Calendar 313 ms, Contacts 410 ms and return Home 178 ms.
+The decoded initial scripts fell from 1,358,738 to 898,126 bytes (34%); the
+measured navigation journey fell from 1,454,180 to 1,082,151 bytes (26%).
+Warm production navigation was already fast before this change; the main
+user-visible seven-second problem was serving development compilation.
+
+Run `npm run test:performance` after building, with local Supabase and Mailpit.
+Each click shares one fixed 2,000 ms deadline across actionability, navigation
+and ready UI. Saved controls also await a successful real repository response.
+The 1,000 ms target is annotated separately. No retries, threshold overrides,
+route warm-up global setup, mocked database or service-role sign-in are used.
+Each navigation test has a fresh browser context. Account provisioning and
+loading the source screen are outside the action deadline. This measures an
+already-open app's interactions, not email delivery, cold document startup,
+Internet-provider availability or every device's CPU performance. CI retains
+the JSON timing attachments, traces and screenshots in `click-performance`.
+The shared-account CI also checks settled search request counts and one polling
+owner. Existing twenty-second webcam privacy coverage remains unchanged.
+
+A shared route loading fallback was tested and rejected: it delayed Home/Study
+readiness to roughly 850-919 ms on warm visits. The final implementation uses
+link-local pending feedback and retains immediate ready content.
+
 ## Verification ledger
 
 - Baseline production build and asset checks: passed.
@@ -92,11 +127,11 @@ applied-migration rewrite is justified by this evidence.
 - Full unit regression run: 482 tests passed across 91 files.
 - Database contracts: 368 assertions passed across 29 files.
 - Final typecheck, lint, full unit suite: pending.
-- Production build/bundle comparison: pending.
-- Development/production browser measurement: pending.
+- Production build and asset gates: passed; route JS reductions are recorded above.
+- Actual production server on localhost:3000: 18 navigation clicks, 83-1,258 ms to ready content; repeat visits 83-228 ms. Initial document load was 2,380 ms and is reported separately from a navigation click. No browser errors.
 - Browser functional, session lifecycle, shared-account and permanent webcam
   privacy checks: pending.
-- Database contracts: pending for this performance change.
+- Fixed production click budgets: 26 tests passed, no retries/skips. All 21 navigation destinations plus picker, saved selection, Search, Start/Finish, Settings save, and Public/Private controls are covered.
 
 Official references: [lazy loading](https://nextjs.org/docs/app/guides/lazy-loading),
 [package import optimization](https://nextjs.org/docs/pages/api-reference/config/next-config-js/optimizePackageImports),

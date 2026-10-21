@@ -64,14 +64,22 @@ test("companion picker, selection and persistence complete within two seconds", 
     remaining => expect(page.getByTestId("character-card-male-01")).toBeVisible({ timeout: remaining() }));
   const card = page.getByTestId("character-card-male-01");
   const selected = await card.getAttribute("aria-pressed");
+  const shouldSelect = selected !== "true";
   let saved: Promise<Response>;
   await expectFastAction(info, "select partner and save", async remaining => {
-    saved = page.waitForResponse(response => repositoryResponse(response, "updateProfile") && Boolean(response.request().postDataJSON()?.patch?.companionPreferences), { timeout: remaining() });
+    saved = page.waitForResponse(response => {
+      if (!repositoryResponse(response, "updateProfile")) return false;
+      const slugs: unknown = response.request().postDataJSON()?.patch?.companionPreferences?.characterSlugs;
+      return Array.isArray(slugs) && slugs.includes("male-01") === shouldSelect;
+    }, { timeout: remaining() });
     void saved.catch(() => undefined);
     await card.click({ timeout: remaining() });
   }, async remaining => {
     await expect(card).toHaveAttribute("aria-pressed", selected === "true" ? "false" : "true", { timeout: remaining() });
-    expect((await saved).ok()).toBe(true);
+    const response = await saved;
+    expect(response.ok()).toBe(true);
+    const profile = await response.json() as { companionPreferences: { characterSlugs: string[] } };
+    expect(profile.companionPreferences.characterSlugs.includes("male-01")).toBe(shouldSelect);
   });
 });
 
@@ -107,7 +115,10 @@ test("Start and Finish reach their saved screens within two seconds", async ({ p
       void saved.catch(() => undefined);
       await page.getByRole("button", { name: "Finish", exact: true }).click({ timeout: remaining() });
     }, async remaining => {
-      expect((await saved).ok()).toBe(true);
+      const response = await saved;
+      expect(response.ok()).toBe(true);
+      const result = await response.json() as { session: { endedAt: string | null } };
+      expect(result.session.endedAt).not.toBeNull();
       await expect(page.getByTestId("complete-screen")).toBeVisible({ timeout: remaining() });
       await expect(page.getByTestId("banked-summary")).toBeVisible({ timeout: remaining() });
     });
@@ -133,7 +144,10 @@ test("Settings toggle updates and saves within two seconds", async ({ page }, in
     await control.click({ timeout: remaining() });
   }, async remaining => {
     await expect(control).toHaveAttribute("aria-checked", checked === "true" ? "false" : "true", { timeout: remaining() });
-    expect((await saved).ok()).toBe(true);
+    const response = await saved;
+    expect(response.ok()).toBe(true);
+    const profile = await response.json() as { showStreak: boolean };
+    expect(profile.showStreak).toBe(checked !== "true");
   });
 });
 

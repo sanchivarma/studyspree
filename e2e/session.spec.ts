@@ -94,11 +94,11 @@ test("phone layout keeps the camera and Finish separate and respects reduced mot
 test("session controls are translated in every supported language", async ({ page }) => {
   await signIn(page);
   await freezeClock(page);
-  const path = await startSession(page);
+  await startSession(page);
   for (const locale of ["en", "de", "fr", "pl", "it"]) {
     const { session } = JSON.parse(readFileSync(new URL(`../src/translations/session/${locale}.json`, import.meta.url), "utf8")) as { session: { finish: string; remaining: string; camera: string; sound: string } };
     await page.context().addCookies([{ name: "ss_locale", value: locale, url: "http://localhost:3000" }]);
-    await page.goto(path);
+    await page.reload();
     await settleClock(page, "session-screen");
     await expect(page.getByRole("button", { name: session.finish, exact: true })).toBeVisible();
     await expect(page.getByTestId("session-time")).toHaveText(session.remaining.replace("{time}", "5:00"));

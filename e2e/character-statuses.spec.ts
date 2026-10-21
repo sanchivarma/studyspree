@@ -42,7 +42,12 @@ test("statuses rotate by session, personal status persists, and idle labels hide
   await expect.poll(async () => {
     await page.clock.runFor(16);
     return page.getByRole("button", { name: "Choose companions", exact: true }).textContent();
-  }).toContain("2 selected");
+  }).toContain("Solo");
+  await page.getByRole("button", { name: "Choose companions", exact: true }).click();
+  await page.getByRole("button", { name: "Virtual partners", exact: true }).click();
+  await expect(page.locator('[data-testid^="character-card-"][aria-pressed="true"]')).toHaveCount(0);
+  for (const slug of ["realistic-01", "realistic-06"]) await page.getByTestId(`character-card-${slug}`).click();
+  await page.getByRole("button", { name: "Close", exact: true }).click();
   await page.getByRole("button", { name: "Start", exact: true }).click();
   await settleClock(page, "session-screen", 16);
   await expect(status).not.toHaveText(firstStatus!);

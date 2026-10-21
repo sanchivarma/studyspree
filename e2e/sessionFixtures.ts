@@ -11,10 +11,29 @@ export async function signIn(page: Page) {
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
   // The development server may compile the authenticated route on sign-in.
   await expect(page).toHaveURL(/\/$/, { timeout: 15000 });
+  // A URL can commit before the development client has hydrated. Wait for its
+  // initial profile read before exercising buttons rendered in server HTML.
+  await expect.poll(() => page.evaluate(() => localStorage.getItem("ss_profile") !== null)).toBe(true);
 }
 
 export async function freezeClock(page: Page) {
+  // Playwright's fake performance object drops navigation entries. Preserve
+  // the browser's real reload signal so time-controlled tests still exercise
+  // refresh/close reconciliation instead of accidentally simulating a new tab.
+  const captureNavigation = () => {
+    const target = window as Window & { __ssNavigationEntries?: Performance["getEntriesByType"] };
+    target.__ssNavigationEntries = performance.getEntriesByType.bind(performance);
+  };
+  const restoreNavigation = () => {
+    const target = window as Window & { __ssNavigationEntries?: Performance["getEntriesByType"] };
+    if (!target.__ssNavigationEntries) throw new Error("Native navigation timing was not captured");
+    performance.getEntriesByType = target.__ssNavigationEntries;
+  };
+  await page.addInitScript(captureNavigation);
+  await page.evaluate(captureNavigation);
   await page.clock.install({ time: new Date("2026-10-13T12:00:00Z") });
+  await page.addInitScript(restoreNavigation);
+  await page.evaluate(restoreNavigation);
   await page.clock.pauseAt(new Date("2026-10-13T12:00:01Z"));
   controlledPages.add(page);
 }

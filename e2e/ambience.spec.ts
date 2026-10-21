@@ -110,7 +110,7 @@ for (const locale of ["en", "de", "fr", "pl", "it"]) test(`popover fits a phone,
     const { ambience } = JSON.parse(readFileSync(new URL(`../src/translations/ambience/${locale}.json`, import.meta.url), "utf8")) as { ambience: Record<string, string> };
     const { session } = JSON.parse(readFileSync(new URL(`../src/translations/session/${locale}.json`, import.meta.url), "utf8")) as { session: { sound: string } };
     await page.context().addCookies([{ name: "ss_locale", value: locale, url: "http://localhost:3000" }]);
-    await page.goto(path); const trigger = page.getByRole("button", { name: session.sound, exact: true }); await trigger.click();
+    await page.reload(); const trigger = page.getByRole("button", { name: session.sound, exact: true }); await trigger.click();
     await expect(page.getByRole("slider")).toHaveCount(backgroundEffects.length + 1);
     await expect(page.getByRole("slider", { name: ambience.room, exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: ambience.radioOff, exact: true })).toBeVisible();

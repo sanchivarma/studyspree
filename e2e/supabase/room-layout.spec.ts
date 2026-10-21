@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { createLocalAccount } from "./localAccount";
 import { characterSlugs } from "../../src/types/characters";
+import { silentRoomAudio } from "../../src/lib/community/roomControls";
 
 test("a real account mixes human and virtual tiles in one twenty-tile pager", async ({ page }) => {
   test.setTimeout(120000);
@@ -14,15 +15,15 @@ test("a real account mixes human and virtual tiles in one twenty-tile pager", as
   await expect(page.getByRole("button", { name: "Finish", exact: true })).toBeVisible();
   const response = await page.request.post("/api/repository", { data: { op: "active" } });
   const original = await response.json();
-  const update = await page.request.post("/api/repository", { data: { op: "companions", id: original.id, companions: { mode: "mixed", characterSlugs: [...characterSlugs] } } });
+  const update = await page.request.post("/api/community", { data: { operation: "mutate", command: { action: "room.controls", data: { id, controls: { themeSlug: original.themeSlug, characterSlugs: [...characterSlugs], audio: silentRoomAudio } } } } });
   expect(update.ok()).toBe(true);
   await page.reload();
   const grid = page.getByTestId("room-video-grid");
   await expect(grid.locator(":scope > [data-tile-id]")).toHaveCount(20);
   await page.getByRole("button", { name: "Next page", exact: true }).click();
-  await expect(grid.locator(":scope > [data-tile-id]")).toHaveCount(4);
+  await expect(grid.locator(":scope > [data-tile-id]")).toHaveCount(1 + characterSlugs.length - 20);
   await page.getByRole("button", { name: "Remove Andre", exact: true }).click();
-  await expect(grid.locator(":scope > [data-tile-id]")).toHaveCount(3);
+  await expect(grid.locator(":scope > [data-tile-id]")).toHaveCount(characterSlugs.length - 20);
   await page.getByRole("button", { name: "Previous page", exact: true }).click();
   await page.getByRole("button", { name: "Hide Layout reader from my view", exact: true }).click();
   await expect(grid.locator("[data-person-id]")).toHaveCount(0);

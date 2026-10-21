@@ -13,7 +13,7 @@ export default async function globalSetup(config: FullConfig) {
   const payload = Buffer.from(JSON.stringify({ id: randomUUID(), username, expiresAt: Date.now() + 600000 })).toString("base64url");
   const signature = createHmac("sha256", secret).update(payload).digest("base64url");
   const headers = username && secret.length >= 32 ? { Cookie: `ss_dev_admin=${payload}.${signature}` } : undefined;
-  for (const path of ["/login", "/", "/study", "/session/verification-warmup", "/session/verification-warmup/complete", "/settings"]) {
+  for (const path of ["/login", "/", "/study", "/session/verification-warmup", "/session/verification-warmup/complete", "/settings", "/stats"]) {
     const response = await fetch(new URL(path, base), { headers, redirect: "follow", signal: AbortSignal.timeout(120000) });
     await response.arrayBuffer();
     if (!response.ok) throw new Error(`Verification route could not start: ${path} (${response.status})`);
