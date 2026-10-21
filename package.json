@@ -24,7 +24,8 @@
     "audit:imports": "node scripts/audit-imports.mjs",
     "measure:navigation": "node scripts/measure-navigation.mjs",
     "maintenance": "node scripts/maintenance.mjs",
-    "test:performance": "playwright test -c playwright.performance.config.ts"
+    "test:performance": "playwright test -c playwright.performance.config.ts",
+    "preview:local": "node scripts/dev-local.mjs --production"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

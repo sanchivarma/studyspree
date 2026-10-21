@@ -18,6 +18,9 @@ function run(script, args = []) {
   child.on("error", () => { console.error("Local development process could not start."); close(1); });
   child.on("exit", code => close(code ?? 1));
 }
-run("../node_modules/next/dist/bin/next", ["dev", "--turbopack", "--port", "3000"]);
+const production = process.argv.includes("--production");
+run("../node_modules/next/dist/bin/next", production
+  ? ["start", "--port", "3000"]
+  : ["dev", "--turbopack", "--port", "3000"]);
 run("./maintenance.mjs");
 for (const signal of ["SIGINT", "SIGTERM"]) process.on(signal, () => close());

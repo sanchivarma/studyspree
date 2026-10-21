@@ -24,6 +24,17 @@ New audio versions need new filenames because `/audio/` is cached as immutable.
 
 Requires Node.js 22 and npm.
 
+For fast local use without compiling a route after a navigation click:
+
+```powershell
+npm.cmd run build
+npm.cmd run preview:local
+```
+
+This serves the production build at http://localhost:3000 and runs maintenance.
+Rebuild after source changes. Development mode below supports live source edits
+and compiles routes on demand; its first navigation can exceed the click budget.
+
 ```powershell
 npm.cmd install
 npm.cmd run dev
