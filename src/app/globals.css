@@ -135,7 +135,8 @@ body:has([data-theme-picker][data-page-visible="false"]) [data-slot="sheet-overl
 .solo-glass { position:absolute; inset:0; background:linear-gradient(113deg,transparent 58%,rgb(255 255 255 / 0.025) 59%,transparent 65%); box-shadow:inset 0 0 22px rgb(0 0 0 / 0.25); }
 .solo-desk { position:absolute; bottom:-8vw; left:0; z-index:20; width:100%; height:auto; }
 .solo-desk-light { position:absolute; bottom:-8vw; left:0; z-index:21; width:100%; height:auto; pointer-events:none; }
-.solo-desk-flame { fill:rgb(255 211 133); opacity:0.2; filter:url(#solo-desk-flame-glow); animation:solo-candle 3.7s ease-in-out infinite; }
+.solo-desk-flame { fill:rgb(255 199 107); opacity:0.3; animation:solo-candle var(--candle-period) linear var(--candle-delay) infinite; }
+.solo-desk-flame-core { fill:rgb(255 242 196); transform-origin:0 0; animation:solo-flame-shape var(--candle-period) linear var(--candle-delay) infinite; }
 .solo-detail-layer { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
 .solo-academy-lights { fill:rgb(255 215 150); }
 .solo-candle-light { opacity:0.6; animation:solo-academy-candle 12s ease-in-out infinite; }
@@ -158,7 +159,17 @@ body:has([data-theme-picker][data-page-visible="false"]) [data-slot="sheet-overl
 @keyframes solo-fish-west { 0% {transform:translate(1700px,465px);opacity:0;} 5% {opacity:0.6;} 55% {opacity:0.6;} 60%,100% {transform:translate(-100px,445px);opacity:0;} }
 @keyframes solo-fish-deep { 0% {transform:translate(-100px,570px);opacity:0;} 5% {opacity:0.5;} 55% {opacity:0.5;} 60%,100% {transform:translate(1700px,560px);opacity:0;} }
 @keyframes solo-fish-tail { from {transform:scaleX(0.78);} to {transform:scaleX(1);} }
-@keyframes solo-candle { 0%,100% {opacity:0.12;} 19% {opacity:0.3;} 27% {opacity:0.18;} 46% {opacity:0.35;} 63% {opacity:0.15;} 78% {opacity:0.28;} }
+@keyframes solo-candle { 0%,100% {opacity:0.25;} 14% {opacity:0.5;} 27% {opacity:0.2;} 40% {opacity:0.55;} 47% {opacity:0.32;} 64% {opacity:0.48;} 79% {opacity:0.18;} 87% {opacity:0.42;} }
+@keyframes solo-flame-shape {
+  0%,100% {transform:scale(1,1);opacity:0.65;}
+  14% {transform:scale(0.94,1.06);opacity:0.85;}
+  27% {transform:scale(1.05,0.94);opacity:0.5;}
+  40% {transform:scale(0.9,1.09);opacity:0.9;}
+  47% {transform:scale(1,0.97);opacity:0.65;}
+  64% {transform:scale(0.96,1.04);opacity:0.8;}
+  79% {transform:scale(1.06,0.92);opacity:0.45;}
+  87% {transform:scale(0.95,1.03);opacity:0.75;}
+}
 /* Travel remains in open water between the centre pane's opaque posts. */
 @keyframes solo-ship-near { from {transform:translate(985px,650px);} to {transform:translate(550px,650px);} }
 @keyframes solo-ship-far { from {transform:translate(550px,580px);} to {transform:translate(995px,580px);} }

@@ -32,8 +32,28 @@ test("solo POV preserves choices, fills the window, pauses motion and leaves the
   await expect(picker.getByRole("button",{name:"Moving clouds",exact:true})).toHaveCount(0);
   await expect(picker.getByRole("button",{name:"Sherlock’s table",exact:true})).toHaveCount(0);
   await expect(picker.getByRole("button",{name:"Black hole",exact:true})).toHaveCount(0);
+  const startedAt=await page.evaluate(()=>JSON.parse(localStorage.getItem("ss_sessions")!)[0].startedAt);
+  for(const name of ["Medieval table","Shakespearean table","Pirate table"]){
+    await picker.getByRole("button",{name,exact:true}).click();
+    const flame=scene.getByTestId("desk-flame-core");
+    await expect(flame).toBeVisible();
+    const before=await flame.evaluate(element=>{const style=getComputedStyle(element),matrix=(element as SVGGraphicsElement).getCTM()!;return{opacity:style.opacity,transform:style.transform,anchor:{x:matrix.e,y:matrix.f}};});
+    await expect.poll(()=>flame.evaluate(element=>getComputedStyle(element).opacity)).not.toBe(before.opacity);
+    await expect.poll(()=>flame.evaluate(element=>getComputedStyle(element).transform)).not.toBe(before.transform);
+    expect(await flame.evaluate(element=>{const matrix=(element as SVGGraphicsElement).getCTM()!;return{x:matrix.e,y:matrix.f};})).toEqual(before.anchor);
+  }
+  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem("ss_sessions")!)[0].startedAt)).toBe(startedAt);
   await picker.getByRole("button",{name:"Shakespearean table",exact:true}).click();
   await expect(scene.getByTestId("solo-desk-light").locator("image")).toHaveCount(1);
+  await expect(scene.getByTestId("desk-flame")).toBeVisible();
+  await page.evaluate(()=>{Object.defineProperty(document,"hidden",{configurable:true,get:()=>true});document.dispatchEvent(new Event("visibilitychange"));});
+  await expect(scene.getByTestId("desk-flame")).toHaveCount(0);
+  await page.evaluate(()=>{Reflect.deleteProperty(document,"hidden");document.dispatchEvent(new Event("visibilitychange"));});
+  await expect(scene.getByTestId("desk-flame")).toBeVisible();
+  await page.emulateMedia({reducedMotion:"reduce"});
+  await expect(scene.getByTestId("desk-flame")).toHaveCount(0);
+  await expect(scene.getByTestId("solo-desk-light").locator("image")).toHaveCount(1);
+  await page.emulateMedia({reducedMotion:"no-preference"});
   await expect(scene.getByTestId("desk-flame")).toBeVisible();
   await picker.getByRole("button",{name:"Shakespearean table",exact:true}).click();
   await expect(scene).toHaveAttribute("data-desk","none");

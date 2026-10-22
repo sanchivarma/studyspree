@@ -9,7 +9,7 @@ Click the selected desk card a second time to remove the desk, including its lig
 - Old Castle and Mountains retain their approved video files.
 - Waterfall is the renamed Rivendell choice and keeps its approved waterfall footage.
 - Castle Garden is original generated artwork: a broad English country estate garden with distant fictional adults in period gowns and suits. A new ivory Georgian window frames the view. The sky, falling water at the sides of the central fountain bowl and basin reflections receive photographed motion; people and architecture remain fixed.
-- Magic Academy keeps its fixed castle and slow filmed clouds. Sixteen indoor windows glow on 10–14-second cycles; eight existing entrance/approach lanterns have small, dim flicker on 11–14-second cycles.
+- Magic Academy keeps its fixed castle and filmed clouds, with additional soft drifting clouds. Sixteen indoor windows glow on 8–11-second cycles; eight existing entrance/approach lanterns flicker on 8.5–11.5-second cycles.
 - Sea uses a stationary turquoise-coast view, with a distant island and naturally moving water.
 - Underwater is a broad open-ocean seabed with distant marine growth and blue depth, replacing the aquarium. Its eight-second source is retimed to a slow loop using temporal frame blending. Three small original fish cutouts visit at separate intervals, with isolated tail motion and pauses between passes.
 - Sailing Ships keeps the fixed harbor. Its water matte excludes land. Two clean transparent ship layers move slowly through open water in the centre pane on separate 140/190-second cycles; the nearer ship is larger and lower. The original artwork's other ships remain fixed.
@@ -19,9 +19,9 @@ Green Nature, Moving Clouds, Black Hole and Sherlock's table are retired. Legacy
 
 ## Playback and light layers
 
-All outdoor video plays at 0.65x for slow movement. Visual media pauses in a hidden tab; reduced motion keeps a static poster and disables animated object/light layers. Missing media retains its poster fallback. Neither decorative changes nor preference edits write session timestamps.
+Outdoor video plays at 0.65x for slow movement, with Magic Academy at 0.8x. Visual media pauses in a hidden tab; reduced motion keeps a static poster and disables animated object/light layers. Missing media retains its poster fallback. Neither decorative changes nor preference edits write session timestamps.
 
-The Pirate lantern has localized candlelight flicker. The Shakespearean artwork had no lamp, so an original small period candlestick provides its requested flickering light without replacing the desk. The flame overlays use opacity only and align with the desk's own image plane.
+The Medieval candle, Shakespearean candlestick and Pirate lantern have localized flicker. Each uses a separate 1.19–1.53-second rhythm, with small flame-scale and brightness changes anchored at the wick, plus a soft warm glow. The Shakespearean artwork had no lamp, so its existing small period candlestick supplies that candle. The overlays share the desk's image plane and bottom offset. Hidden tabs and reduced motion remove animated overlays; static candle artwork remains visible. Removing a desk also removes its candle overlay.
 
 No whole-view camera transform, UV shader or optical-flow displacement is used. Architecture stays fixed. Native filmed clips use a short seam dissolve and a playback boundary inside continuous footage where appropriate. Natural footage is not claimed to repeat perfectly.
 
