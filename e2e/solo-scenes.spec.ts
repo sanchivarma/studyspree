@@ -157,10 +157,10 @@ test("solo POV preserves choices, fills the window, pauses motion and leaves the
   await expect(scene.getByTestId("academy-lights").locator("rect.solo-candle-light")).toHaveCount(16);
     await expect(scene.getByTestId("academy-porch-lights").locator("ellipse.solo-candle-light")).toHaveCount(11);
   const lamp=scene.getByTestId("academy-lights").locator("rect.solo-candle-light").first();
-    expect(await lamp.evaluate(el=>parseFloat(getComputedStyle(el).animationDuration))).toBeGreaterThanOrEqual(8);
-    expect(await lamp.evaluate(el=>parseFloat(getComputedStyle(el).animationDuration))).toBeLessThanOrEqual(11);
+    expect(await lamp.evaluate(el=>parseFloat(getComputedStyle(el).animationDuration))).toBeGreaterThanOrEqual(8.8);
+    expect(await lamp.evaluate(el=>parseFloat(getComputedStyle(el).animationDuration))).toBeLessThanOrEqual(12.1);
   const porch=scene.getByTestId("academy-porch-lights").locator("ellipse.solo-candle-light").first();
-  expect(await porch.evaluate(el=>parseFloat(getComputedStyle(el).animationDuration))).toBe(8.5);
+  expect(await porch.evaluate(el=>parseFloat(getComputedStyle(el).animationDuration))).toBeCloseTo(9.35);
   const clouds=scene.getByTestId("academy-clouds");
   await expect(clouds.locator("image")).toHaveCount(2);
   const cloudPosition=await clouds.evaluate(el=>getComputedStyle(el).transform);

@@ -6,7 +6,7 @@ type Candle = { x: number; wickY: number; width: number; height: number; period:
 const candles: Partial<Record<SoloScenePreferences["desk"], Candle>> = {
   medieval: { x: 1472, wickY: 553, width: 8, height: 49, period: 1.37, delay: -0.4 },
   shakespearean: { x: 533, wickY: 522, width: 5, height: 43, period: 1.19, delay: -0.8 },
-  pirate: { x: 201, wickY: 643, width: 7, height: 36, period: 1.53, delay: -0.2 },
+  pirate: { x: 205, wickY: 643, width: 7, height: 36, period: 1.53, delay: -0.2 },
 };
 
 /** Matches the desk artwork's 1600:900 alpha plane and bottom offset. */
