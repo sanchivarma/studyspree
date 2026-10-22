@@ -22,10 +22,18 @@ import { now } from "@/lib/clock";
 import { useComeback } from "@/hooks/useComeback";
 import { useFreshSessionSetup } from "@/hooks/useFreshSessionSetup";
 import { ComebackScreen } from "@/components/start/ComebackScreen";
+import { useSessionStore } from "@/stores/sessionStore";
 
 const durations = [5, 15, 25, 50, "open"] as const;
 
-export function StartScreen({ displayName, initialHour, initialMode }: { displayName: string; initialHour: number; initialMode?: "solo" | "characters" | "people" }) {
+type StartScreenProps = { displayName: string; initialHour: number; initialMode?: "solo" | "characters" | "people" };
+
+export function StartScreen(props: StartScreenProps) {
+  const version = useSessionStore(state => state.setupVersion);
+  return <SessionSetup key={version} {...props} />;
+}
+
+function SessionSetup({ displayName, initialHour, initialMode }: StartScreenProps) {
   const router = useRouter();
   const { t } = useTranslation();
   const accountMode=useAccountMode();
@@ -44,7 +52,7 @@ export function StartScreen({ displayName, initialHour, initialMode }: { display
   const [chosenCompanions, setChosenCompanions] = useState<CompanionPreferences | null>(null);
   // A new setup never preselects partners from the preceding session/profile.
   // Only choices made on this setup screen may populate the new session.
-  const companions = useMemo<CompanionPreferences>(() => chosenCompanions ?? (initialMode === "people" ? { mode: "people", characterSlugs: [] } : soloCompanions()), [chosenCompanions, initialMode]);
+  const companions = useMemo<CompanionPreferences>(() => chosenCompanions ?? (initialMode ? { mode: initialMode, characterSlugs: [] } : soloCompanions()), [chosenCompanions, initialMode]);
   const [chosenDuration, setChosenDuration] = useState<number | null | undefined>(undefined);
   const selectedDuration = chosenDuration !== undefined ? chosenDuration : 5;
   const slug = getTheme(profile.data?.selectedTheme ?? "rain-desk").slug;
@@ -112,13 +120,13 @@ export function StartScreen({ displayName, initialHour, initialMode }: { display
         <p className="mb-6 text-small text-text-muted">{greeting}</p>
         <Sheet open={companionOpen} onOpenChange={setCompanionOpen}>
           <SheetTrigger asChild><button type="button" aria-label={t("characters.change")} className="mb-4 flex min-h-11 w-full items-center gap-3 rounded-xl border border-border bg-background/40 px-4 text-small">
-            <Users aria-hidden="true" className="size-4" />{t(companions.mode === "people" ? "characters.people" : companions.mode === "characters" || (!chosenCompanions && initialMode === "characters") ? "characters.characters" : "characters.solo")}
+            <Users aria-hidden="true" className="size-4" />{t(companions.mode === "people" ? "characters.people" : companions.mode === "characters" ? "characters.characters" : "characters.solo")}
             {companions.characterSlugs.length > 0 && <span className="ml-auto text-text-muted">{t("characters.selected", { count: companions.characterSlugs.length })}</span>}
           </button></SheetTrigger>
           <SheetContent side="right" showCloseButton={false} className="w-full overflow-y-auto bg-background p-5 sm:max-w-[440px]">
             <SheetHeader className="mb-5 p-0 pr-11"><SheetTitle>{t("characters.title")}</SheetTitle><SheetDescription>{t("characters.description")}</SheetDescription></SheetHeader>
             <SheetClose asChild><button type="button" aria-label={t("scene.close")} className="absolute top-2 right-2 flex size-11 items-center justify-center"><X className="size-5" /></button></SheetClose>
-            <CompanionModePicker initialMode={!chosenCompanions ? initialMode : undefined} value={companions} onChange={setChosenCompanions} />
+            <CompanionModePicker value={companions} onChange={setChosenCompanions} />
           </SheetContent>
         </Sheet>
 

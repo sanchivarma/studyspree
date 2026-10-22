@@ -1,5 +1,16 @@
 # Session companions and chat
 
+Current setup behavior: Solo, Virtual partners and People are explicit modes.
+Closing the companion drawer keeps the selected mode, even with no table,
+virtual partner or other person selected. Virtual and People sessions can start
+empty with either Public or Private visibility. A new session starts with fresh
+partners, duration and text; Finish clears session caches and layout choices.
+Saved Settings (theme, Solo scenery, sound and webcam preferences) are retained.
+Refresh keeps an active session and its choices. Solo and Virtual sessions have
+a private notebook headed “Your space for study notes”; shared rooms retain
+their room chat. See [playback notes](character-playback/README.md) for the
+25-character catalog, video delivery checks and source-motion limitations.
+
 Email configuration is paused at the user's request. Local Supabase now uses
 API 55321, database 55322, Studio 55323 and the local inbox 55324. Existing history
 was restored from its normal backup; no reset was run. Migrations 0021–0025 are

@@ -17,11 +17,15 @@ export function SoloSceneDetails({ view }: { view: SoloScenePreferences["window"
   if (view === "underwater") return <UnderwaterFish/>;
   if (view === "magic-academy") return <svg data-testid="academy-lights" className="solo-detail-layer solo-academy-lights" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
     <defs><filter id={glow} x="-100%" y="-50%" width="300%" height="200%"><feGaussianBlur stdDeviation="1.7" result="halo"/><feMerge><feMergeNode in="halo"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+    <g data-testid="academy-clouds" className="solo-academy-clouds" opacity="0.14">
+      <image href="/solo/motion/cloud-overlay-v1.webp" x="700" y="-120" width="1000" height="320"/>
+      <image href="/solo/motion/cloud-overlay-v1.webp" x="1150" y="-45" width="650" height="180" opacity="0.55"/>
+    </g>
     {academyWindows.map(([x,y,width,height], index) => <rect key={`${x}:${y}`} x={x} y={y} width={width} height={height} rx="2"
-      className="solo-candle-light" filter={`url(#${glow})`} style={{ animationDelay: `${index * -2.3}s`, animationDuration: `${10 + index%5}s` }}/>) }
+      className="solo-candle-light" filter={`url(#${glow})`} style={{ animationDelay: `${index * -2.3}s`, animationDuration: `${8 + index%4}s` }}/>) }
     <g data-testid="academy-porch-lights" fillOpacity="0.55" filter={`url(#${glow})`}>
       {academyPorchLights.map(([cx,cy],index)=><ellipse key={`${cx}:${cy}`} cx={cx} cy={cy} rx="1.5" ry="2.5"
-        className="solo-candle-light" style={{animationDelay:`${index*-3.1}s`,animationDuration:`${11+index%4}s`}}/>)}
+        className="solo-candle-light" style={{animationDelay:`${index*-3.1}s`,animationDuration:`${8.5+index%4}s`}}/>)}
     </g>
   </svg>;
   if (view === "sailing-ships") return <svg data-testid="sailing-ship-layers" className="solo-detail-layer" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">

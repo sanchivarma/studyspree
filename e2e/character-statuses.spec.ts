@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { signIn, freezeClock, settleClock } from "./sessionFixtures";
 
-test("statuses rotate by session, personal status persists, and idle labels hide while navigation stays", async ({ page }) => {
+test("statuses rotate by session, personal status survives refresh and clears on Finish, and idle labels hide while navigation stays", async ({ page }) => {
   test.setTimeout(60000);
   await signIn(page); await freezeClock(page);
   await page.goto("/study");
@@ -52,5 +52,5 @@ test("statuses rotate by session, personal status persists, and idle labels hide
   await settleClock(page, "session-screen", 16);
   await expect(status).not.toHaveText(firstStatus!);
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem("ss_sessions")!).at(-1).companionStatusCycle)).toBe(snapshot.companionStatusCycle + 1);
-  await expect(page.getByTestId("my-session-status")).toHaveText("Review chapter five by Friday");
+  await expect(page.getByTestId("my-session-status")).toHaveCount(0);
 });

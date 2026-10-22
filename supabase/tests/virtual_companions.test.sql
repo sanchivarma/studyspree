@@ -4,7 +4,7 @@ set local search_path = public, extensions;
 select plan(8);
 select ok(public.valid_companion_selection('{"mode":"solo","characterSlugs":[]}'), 'Legacy solo defaults are valid');
 select ok(public.valid_companion_selection('{"mode":"characters","characterSlugs":["male-01","female-04"]}'), 'Virtual companions accepted');
-select ok(not public.valid_companion_selection('{"mode":"characters","characterSlugs":[]}'), 'Empty character mode rejected');
+select ok(public.valid_companion_selection('{"mode":"characters","characterSlugs":[]}'), 'Empty character mode preserves the explicit mode choice');
 select ok(not public.valid_companion_selection('{"mode":"characters","characterSlugs":["male-01","male-01"]}'), 'Duplicate characters rejected');
 select ok(not public.valid_companion_selection('{"mode":"characters","characterSlugs":["rain-desk"]}'), 'Themes are not characters');
 select ok(not public.valid_companion_selection('{"mode":"solo","characterSlugs":[],"duration":10}'), 'Unexpected properties rejected');

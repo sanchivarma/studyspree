@@ -131,8 +131,18 @@ export function repositoryContract(name: string, create: () => Repository) {
       const first = await repo.startSession(input);
       await repo.endSession(first.id, "completed");
       const history = await repo.getSessions({ limit: 20, offset: 0 });
-      await expect(repo.startSession({ ...input, companions: { mode: "characters", characterSlugs: [] } })).rejects.toThrow();
+      await expect(repo.startSession({ ...input, companions: { mode: "solo", characterSlugs: ["male-01"] } })).rejects.toThrow();
       expect(await repo.getSessions({ limit: 20, offset: 0 })).toEqual(history);
+    });
+    it("preserves empty virtual mode through start, reload and changes without resetting timestamps", async () => {
+      const companions = { mode: "characters" as const, characterSlugs: [] };
+      const session = await repo.startSession({ ...input, companions });
+      expect((await repo.getActiveSession())?.companions).toEqual(companions);
+      const solo = await repo.updateSessionCompanions(session.id, { mode: "solo", characterSlugs: [] });
+      expect(solo.startedAt).toBe(session.startedAt);
+      const virtual = await repo.updateSessionCompanions(session.id, companions);
+      expect((await repo.getSession(session.id))?.companions).toEqual(companions);
+      expect(virtual.startedAt).toBe(session.startedAt);
     });
     it("persists a daily comeback marker without changing hours, history, or streak", async () => {
       expect((await repo.getProfile()).comebackShownForDate).toBeNull();

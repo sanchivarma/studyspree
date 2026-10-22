@@ -1,0 +1,20 @@
+begin;
+create extension if not exists pgtap with schema extensions;
+set local search_path=public,extensions;
+select plan(7);
+select ok(public.valid_companion_selection('{"mode":"characters","characterSlugs":[]}'),'Empty virtual mode is valid');
+select ok(not public.valid_companion_selection('{"mode":"mixed","characterSlugs":[]}'),'Mixed still requires virtual partners');
+select ok(not public.valid_companion_selection('{"mode":"solo","characterSlugs":["male-01"]}'),'Solo cannot carry virtual partners');
+select ok(not public.valid_companion_selection('{"mode":"characters","characterSlugs":["male-01","male-01"]}'),'Duplicates remain invalid');
+insert into auth.users(id,email,raw_app_meta_data,raw_user_meta_data) values
+('a8770000-0000-4000-8000-000000000001','empty-mode@example.test','{"provider":"email"}','{"username":"empty_mode"}');
+set local role authenticated;
+select set_config('request.jwt.claims','{"sub":"a8770000-0000-4000-8000-000000000001","role":"authenticated"}',true);
+select set_config('test.empty_session',(public.start_study_session(5,'rain-desk',null,'{"mode":"characters","characterSlugs":[]}')).id::text,true);
+select is((select companions from public.sessions where id=current_setting('test.empty_session')::uuid),'{"mode":"characters","characterSlugs":[]}'::jsonb,'Starting without a partner preserves virtual mode');
+update public.sessions set companions='{"mode":"solo","characterSlugs":[]}' where id=current_setting('test.empty_session')::uuid;
+update public.sessions set companions='{"mode":"characters","characterSlugs":[]}' where id=current_setting('test.empty_session')::uuid;
+select is((select companions->>'mode' from public.sessions where id=current_setting('test.empty_session')::uuid),'characters','An empty virtual choice can be saved on an active session');
+select throws_ok($$update public.sessions set companions='{"mode":"characters","characterSlugs":["medieval-scholar"]}' where id=current_setting('test.empty_session')::uuid$$,'22023',null,'Retired selections are still rejected');
+select * from finish();
+rollback;

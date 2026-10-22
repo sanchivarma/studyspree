@@ -3,6 +3,7 @@ import { queryKeys } from "@/lib/queryKeys";
 import { freshSessionSelections } from "./freshSelections";
 import type { Profile, Session } from "@/types/domain";
 import { useRoomViewStore } from "@/stores/roomViewStore";
+import { useSessionStore } from "@/stores/sessionStore";
 const cleaned = new WeakMap<QueryClient, string>();
 
 export function clearClientSelections(cache: QueryClient, sessionId: string) {
@@ -13,6 +14,7 @@ export function clearClientSelections(cache: QueryClient, sessionId: string) {
   if (resetChoices) {
     cache.setQueryData<Profile>(queryKeys.profile(), current => current ? { ...current, ...freshSessionSelections() } : current);
     useRoomViewStore.setState({ rooms: {} });
+    useSessionStore.getState().clearSetup();
   }
   void cache.cancelQueries({ queryKey: queryKeys.sessionNotes.read(sessionId) });
   cache.removeQueries({ queryKey: queryKeys.sessionNotes.read(sessionId) });

@@ -13,10 +13,11 @@ test("Home opens character setup and keeps theme selection independent", async (
   await expect(page.getByRole("button", { name: "Choose companions", exact: true })).toContainText("Virtual partners");
   await page.getByRole("button", { name: "Start", exact: true }).click();
   await expect(page.getByTestId("session-screen")).toBeVisible({ timeout: 15000 });
-  await expect(page.getByTestId("session-companions").getByRole("img")).toHaveCount(1);
+  await expect(page.getByTestId("session-companions")).toHaveCount(0);
+  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem("ss_sessions")!)[0].companions)).toEqual({mode:"characters",characterSlugs:[]});
 });
 
-test("Solo shortcut overrides saved characters for the new session without erasing preferences", async ({ page }) => {
+test("Solo shortcut starts empty after a different setup draft", async ({ page }) => {
   test.setTimeout(60000); // Two setup visits plus Home navigation and a new session.
   await signIn(page);
   await page.goto("/study");
@@ -25,12 +26,12 @@ test("Solo shortcut overrides saved characters for the new session without erasi
   await page.getByTestId("character-card-female-04").click();
   await expect(page.getByTestId("character-card-male-01")).toHaveAttribute("aria-pressed", "false");
   await page.getByRole("button", { name: "Close", exact: true }).click();
-  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("ss_profile")!).companionPreferences.characterSlugs)).toEqual(["female-04"]);
+  await expect(page.getByRole("button", { name: "Choose companions", exact: true })).toContainText("1 selected");
   await page.goto("/");
   await page.getByRole("link", { name: /Solo/ }).click();
   await expect(page).toHaveURL(/\/study\?mode=solo$/, { timeout: 15000 });
   await page.getByRole("button", { name: "Start", exact: true }).click();
   await expect(page.getByTestId("session-screen")).toBeVisible({ timeout: 15000 });
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem("ss_sessions")!)[0].companions)).toEqual({ mode: "solo", characterSlugs: [] });
-  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("ss_profile")!).companionPreferences)).toEqual({ mode: "characters", characterSlugs: ["female-04"] });
+  await expect(page.getByTestId("solo-study-scene")).toBeVisible();
 });

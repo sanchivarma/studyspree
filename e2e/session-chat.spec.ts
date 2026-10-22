@@ -11,7 +11,10 @@ test("the left chat icon opens a right drawer and Escape preserves the session",
   await expect(drawer).toBeVisible();
   const box = await drawer.boundingBox();
   expect(box!.x + box!.width).toBe(await page.evaluate(() => innerWidth));
-  await expect(drawer).toContainText("Chat with people is available in shared rooms.");
+  await expect(drawer.getByRole("heading", { name: "Your space for study notes", exact: true })).toBeVisible();
+  await drawer.getByRole("textbox", { name: "Add a note", exact: true }).fill("Review this example after the session.");
+  await drawer.getByRole("button", { name: "Send", exact: true }).click();
+  await expect(drawer.getByRole("article")).toContainText("Review this example after the session.");
   await expect(drawer.getByRole("link")).toHaveCount(0);
   await expect(drawer.getByRole("button", { name: "People", exact: true })).toHaveCount(0);
   await page.keyboard.press("Escape");

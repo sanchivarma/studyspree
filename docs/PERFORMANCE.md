@@ -1,6 +1,8 @@
-# Performance audit — 21 October 2026
+# Performance audit — 22 October 2026
 
-Status: implementation and verification in progress. Baseline: `f791abd`.
+Baseline: `f791abd`. The final local production performance run passed all
+58 browser tests against localhost:3000 on 22 October 2026. Functional and
+privacy coverage is recorded separately below.
 
 ## Scope and method
 
@@ -124,14 +126,47 @@ link-local pending feedback and retains immediate ready content.
 
 - Baseline production build and asset checks: passed.
 - Initial focused regression run: 69 tests passed.
-- Full unit regression run: 482 tests passed across 91 files.
-- Database contracts: 368 assertions passed across 29 files.
-- Final typecheck, lint, full unit suite: pending.
+- Initial unit regression run: 482 tests passed across 91 files.
+- Final unit regression run: 518 tests passed across 96 files.
+- Database contracts: 399 assertions passed across 31 files.
+- Final typecheck and lint: passed.
 - Production build and asset gates: passed; route JS reductions are recorded above.
 - Actual production server on localhost:3000: 18 navigation clicks, 83-1,258 ms to ready content; repeat visits 83-228 ms. Initial document load was 2,380 ms and is reported separately from a navigation click. No browser errors.
-- Browser functional, session lifecycle, shared-account and permanent webcam
-  privacy checks: pending.
+- Forty focused browser checks passed across the final runs, including session
+  lifecycle, refreshed timers, empty modes, note drawers, Academy motion and all
+  thirteen permanent webcam privacy tests. The full twenty-second Settings
+  request audit is unchanged. Three timer tests were corrected for paused test
+  clocks and the newly requested fresh-duration behavior, then all eight
+  Start/chat tests passed on rerun. External shared-camera provider availability
+  is separate from these local browser checks.
 - Fixed production click budgets: 26 tests passed, no retries/skips. All 21 navigation destinations plus picker, saved selection, Search, Start/Finish, Settings save, and Public/Private controls are covered.
+
+### 22 October production verification
+
+The expanded suite passed **58 tests** with zero retries or skips on the actual
+localhost:3000 production server. Its **67 timed actions** took **69–1,440 ms**;
+65 completed within the one-second target and all met the two-second ceiling.
+This includes all 21 navigation destinations, saved companion selection,
+Search, Start/Finish, Settings, empty Solo/Virtual/People modes, Public/Private
+starts and private note reads/writes.
+
+Each of the **25 active characters** passed browser playback, looping and
+two-second Start checks. Two-second frame samples delivered approximately
+30 fps, with a maximum 50.1 ms inter-frame gap and zero dropped frames. The
+session avoids decoding a full-screen theme movie behind opaque participant
+tiles; hiding those tiles restores theme playback. Continuous trace screenshots
+are disabled during timing, while DOM/network traces and failure screenshots
+remain available. No performance threshold was increased.
+
+Saved Settings remain intact when session choices and caches reset. Closing the
+drawer retains an explicitly chosen mode with an empty selection; migration
+0077 permits empty Virtual mode in database validation. Private notes retain
+their session ownership and do not appear in the next session. See
+[character playback](character-playback/README.md) for source-motion limits.
+
+The final build also passed all asset gates. After adding the late-save cache
+guard, both production notes scenarios passed again; 518 unit tests include
+the delayed-response race and private API validation/authentication checks.
 
 Official references: [lazy loading](https://nextjs.org/docs/app/guides/lazy-loading),
 [package import optimization](https://nextjs.org/docs/pages/api-reference/config/next-config-js/optimizePackageImports),

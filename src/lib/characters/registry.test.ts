@@ -48,9 +48,12 @@ describe("virtual companion definitions", () => {
   it("accepts the complete known cast for paginated sessions", () => {
     expect(companionSchema.safeParse({ mode: "characters", characterSlugs: [...characterSlugs] }).success).toBe(true);
   });
-  it("rejects unknown, duplicate, empty and mode-inconsistent selections", () => {
+  it("keeps an empty virtual mode distinct from Solo", () => {
+    expect(localCompanionSchema.parse({ mode: "characters", characterSlugs: [] })).toEqual({ mode: "characters", characterSlugs: [] });
+  });
+  it("rejects unknown, duplicate and mode-inconsistent selections", () => {
     for (const input of [
-      { mode: "characters", characterSlugs: [] },
+      { mode: "mixed", characterSlugs: [] },
       { mode: "solo", characterSlugs: ["male-01"] },
       { mode: "characters", characterSlugs: ["male-01", "male-01"] },
       { mode: "characters", characterSlugs: ["rain-desk"] },

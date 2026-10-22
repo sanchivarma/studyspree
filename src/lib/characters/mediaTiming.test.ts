@@ -19,8 +19,7 @@ describe("active companion timing and source integrity", () => {
     }
     expect(readerStarts.size).toBe(7);
   });
-  it("encodes recorded delays with the documented source hashes and frame counts", async () => {
-    for (const [slug, value] of timed) {
+  it.each(timed)("%s encodes recorded delays with the documented source hash and frame count", async (slug, value) => {
       if (!("sourceVersion" in value)) throw new Error("Source metadata missing");
       const original = await readFile(`public/characters/${slug}/study-${value.sourceVersion}.gif`);
       expect(createHash("sha256").update(original).digest("hex")).toBe(value.sourceSha256);
@@ -29,7 +28,6 @@ describe("active companion timing and source integrity", () => {
       expect(result.pages).toBe("resampledFrames" in value ? value.gifFrames : source.pages); expect(result.width).toBe(source.width); expect(result.pageHeight).toBe(source.pageHeight);
       expect(result.delay).toEqual(value.gifDelays); expect(result.loop).toBe(0);
       if (getCharacter(slug)?.activity === "writing") expect(Math.max(...result.delay!)).toBeLessThanOrEqual(130);
-    }
   });
   it("reverses Arun’s native page-turn frames without mirroring the room", async () => {
     const source = await sharp("public/characters/realistic-01/study-v3.gif", { animated: true }).ensureAlpha().raw().toBuffer();

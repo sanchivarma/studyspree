@@ -4,6 +4,7 @@ import { useInfiniteQuery, useMutation, useQueryClient, type InfiniteData } from
 import { queryKeys } from "@/lib/queryKeys";
 import { sessionNotesRepository } from "@/lib/repo/sessionNotes";
 import type { NoteCursor, SessionNotesPage } from "@/lib/sessionNotes/schemas";
+import type { Session } from "@/types/domain";
 
 export function useSessionNotes(sessionId: string) {
   const cache = useQueryClient();
@@ -20,6 +21,10 @@ export function useSessionNotes(sessionId: string) {
     },
     onSuccess: note => {
       pending.current = null;
+      // A delayed save response can arrive after Finish cleared this notebook.
+      // Keep that response from repopulating a closed session's cache.
+      const active = cache.getQueryData<Session | null>(queryKeys.activeSession());
+      if (active?.id !== sessionId || active.endedAt !== null) return;
       cache.setQueryData<InfiniteData<SessionNotesPage>>(queryKeys.sessionNotes.read(sessionId), current => current
         ? { ...current, pages: current.pages.map((page, index) => index === 0 ? { ...page, items: [note, ...page.items.filter(item => item.id !== note.id)] } : page) }
         : { pages: [{ items: [note], nextCursor: null }], pageParams: [null] });

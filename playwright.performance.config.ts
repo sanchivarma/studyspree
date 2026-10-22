@@ -12,7 +12,9 @@ export default defineConfig({
   retries: 0,
   forbidOnly: Boolean(process.env.CI),
   timeout: 120_000, // Account setup is outside the fixed click budget.
-  use: { ...devices["Desktop Chrome"], baseURL, reducedMotion: "reduce", trace: "retain-on-failure", screenshot: "only-on-failure" },
+  // Continuous trace screenshots compete with video compositing and distort
+  // frame-delivery measurements. Retain DOM/network traces and a failure image.
+  use: { ...devices["Desktop Chrome"], baseURL, reducedMotion: "reduce", trace: { mode: "retain-on-failure", screenshots: false }, screenshot: "only-on-failure" },
   reporter: [["list"], ["json", { outputFile: "test-results/performance.json" }]],
   webServer: {
     command: `node node_modules/next/dist/bin/next start --hostname localhost --port ${new URL(baseURL).port || "3002"}`,

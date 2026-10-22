@@ -15,7 +15,7 @@ export function SoloWindowVideo({ slug, onReady }: { slug: SoloScenePreferences[
   },[visible,reduced]);
   if(reduced)return null;
   return <video ref={ref} data-testid="solo-window-video" src={windowVideoSource(slug)} muted loop playsInline autoPlay preload="auto"
-    onLoadedMetadata={event=>{event.currentTarget.defaultPlaybackRate=0.65;event.currentTarget.playbackRate=0.65;}}
+    onLoadedMetadata={event=>{const rate=slug==="magic-academy"?0.8:0.65;event.currentTarget.defaultPlaybackRate=rate;event.currentTarget.playbackRate=rate;}}
     className={`absolute inset-0 size-full object-cover transition-opacity duration-600 ${ready?"opacity-100":"opacity-0"}`}
     onCanPlayThrough={event=>{setReady(true);onReady(true);if(document.hidden)event.currentTarget.pause();else void event.currentTarget.play().catch(()=>{});}}
     onError={()=>{setReady(false);onReady(false);}}/>;

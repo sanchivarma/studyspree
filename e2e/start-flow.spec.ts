@@ -59,10 +59,7 @@ test("five-minute expiry completes once and a dev clock jump survives reload", a
   await expect(page).toHaveURL(new RegExp(`${first}/complete$`));
   await expect(page.getByTestId("banked-summary")).toHaveText("+5m this session · 0h 5m today");
   await page.getByRole("link", { name: "Start another", exact: true }).click();
-  await page.goto("/study");
-  await page.getByRole("button", { name: "Start", exact: true }).click();
-  await settleClock(page, "session-screen");
-  const second = new URL(page.url()).pathname;
+  const second = await startSession(page);
   await page.evaluate(() => localStorage.setItem("ss_dev_clock_offset_ms", "600000"));
   await page.reload();
   await settleClock(page, "complete-screen");
@@ -71,7 +68,7 @@ test("five-minute expiry completes once and a dev clock jump survives reload", a
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem("ss_sessions")!).map((session: { actualSeconds: number; endedReason: string }) => [session.actualSeconds, session.endedReason]))).toEqual([[300, "completed"], [600, "completed"]]);
 });
 
-test("Open counts up, stays active, and is remembered after Finish", async ({ page }) => {
+test("Open counts up, banks its history and resets the next setup after Finish", async ({ page }) => {
   await signIn(page); await freezeClock(page);
   await startSession(page, undefined, null);
   await expect(page.getByTestId("session-time")).toHaveText("0:00 elapsed");
@@ -84,11 +81,12 @@ test("Open counts up, stays active, and is remembered after Finish", async ({ pa
   await page.goto("/study");
   await expect.poll(async () => {
     await page.clock.runFor(1);
-    return page.getByRole("button", { name: "Open", exact: true }).getAttribute("aria-pressed");
+    return page.getByRole("button", { name: "5 min just open it", exact: true }).getAttribute("aria-pressed");
   }).toBe("true");
+  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem("ss_sessions")!)[0])).toMatchObject({plannedMinutes:null,actualSeconds:10800});
 });
 
-test("saved profile and previous duration are read without overriding a user choice", async ({ page }) => {
+test("saved Settings survive while previous duration resets for a fresh choice", async ({ page }) => {
   await signIn(page);
   await page.evaluate(() => {
     const endedAt = new Date().toISOString();
@@ -97,7 +95,7 @@ test("saved profile and previous duration are read without overriding a user cho
     localStorage.setItem("ss_sessions", JSON.stringify([{ id: "previous", startedAt, endedAt, plannedMinutes: 15, actualSeconds: 60, endedReason: "completed", themeSlug: "rain-desk", localDate: startedAt.slice(0, 10), task: null }]));
   });
   await page.goto("/study");
-  await expect(page.getByRole("button", { name: "15 min", exact: true })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("button", { name: "5 min just open it", exact: true })).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByText(/Alex\./)).toBeVisible();
   await page.getByRole("button", { name: "25 min", exact: true }).click();
   await page.getByPlaceholder("What are you working on? (optional)").fill("Notes");

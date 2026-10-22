@@ -13,7 +13,7 @@ export async function signIn(page: Page) {
   await expect(page).toHaveURL(/\/$/, { timeout: 15000 });
   // A URL can commit before the development client has hydrated. Wait for its
   // initial profile read before exercising buttons rendered in server HTML.
-  await expect.poll(() => page.evaluate(() => localStorage.getItem("ss_profile") !== null)).toBe(true);
+  await expect.poll(() => page.evaluate(() => localStorage.getItem("ss_session_choices_version") === "1")).toBe(true);
 }
 
 export async function freezeClock(page: Page) {
@@ -49,6 +49,12 @@ export async function settleClock(page: Page, testId: string, stepMs = 1) {
 
 export async function startSession(page: Page, task?: string, minutes: number | null = 5) {
   await page.goto("/study");
+  // React Query schedules readiness notifications. A deliberately paused test
+  // clock must advance while waiting for the real Start readiness guard.
+  if (controlledPages.has(page)) await expect.poll(async () => {
+    await page.clock.runFor(16);
+    return page.getByRole("button", { name: "Start", exact: true }).isEnabled();
+  }, { timeout: 15000 }).toBe(true);
   if (minutes !== 5) await page.getByRole("button", { name: minutes === null ? "Open" : `${minutes} min`, exact: true }).click();
   if (task) await page.getByPlaceholder("What are you working on? (optional)").fill(task);
   await page.getByRole("button", { name: "Start", exact: true }).click();

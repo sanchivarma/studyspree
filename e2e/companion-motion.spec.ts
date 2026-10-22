@@ -12,7 +12,7 @@ test("restored realistic media stays mounted through timer ticks and idle captio
   await page.goto("/study");
   await page.getByRole("button", { name: "Choose companions", exact: true }).click();
   await page.getByRole("button", { name: "Virtual partners", exact: true }).click();
-  for (const slug of ["realistic-01", "realistic-06", "medieval-scribe", "tesla"]) {
+  for (const slug of ["realistic-01", "realistic-06", "einstein", "tesla"]) {
     await page.getByTestId(`character-card-${slug}`).click();
   }
   await expect(page.getByTestId("character-card-male-01")).toHaveAttribute("aria-pressed", "false");

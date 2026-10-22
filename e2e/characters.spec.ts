@@ -10,7 +10,7 @@ async function choosePartners(page: import("@playwright/test").Page) {
   await page.getByTestId("character-card-female-04").click();
   await expect(page.getByTestId("character-card-male-01")).toHaveAttribute("aria-pressed", "true");
   await page.getByRole("button", { name: "Close", exact: true }).click();
-  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("ss_profile")!).companionPreferences)).toEqual({ mode: "characters", characterSlugs: ["male-01", "female-04"] });
+  await expect(page.getByRole("button", { name: "Choose companions", exact: true })).toContainText("2 selected");
 }
 
 test("character selection persists, restores after refresh, and never requests a camera", async ({ page }) => {
@@ -72,7 +72,7 @@ test("missing long video and GIF fall back to the poster and Finish remains usab
   await expect(page.getByTestId("complete-screen")).toBeVisible();
 });
 
-test("GIFs unmount when the document is hidden and character cards support arrows", async ({ page }) => {
+test("videos pause in place when the document is hidden and character cards support arrows", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await signIn(page);
   await page.goto("/study");
@@ -90,10 +90,12 @@ test("GIFs unmount when the document is hidden and character cards support arrow
     Object.defineProperty(document, "hidden", { configurable: true, value: true });
     document.dispatchEvent(new Event("visibilitychange"));
   });
-  await expect(page.getByTestId("character-animation")).toHaveCount(0);
+  await expect(page.getByTestId("session-companions").getByTestId("character-animation")).toHaveCount(2);
+  await expect.poll(()=>page.getByTestId("session-companions").locator("video").evaluateAll(videos=>videos.every(video=>(video as HTMLVideoElement).paused))).toBe(true);
   await page.evaluate(() => {
     Object.defineProperty(document, "hidden", { configurable: true, value: false });
     document.dispatchEvent(new Event("visibilitychange"));
   });
   await expect(page.getByTestId("session-companions").getByTestId("character-animation")).toHaveCount(2);
+  await expect.poll(()=>page.getByTestId("session-companions").locator("video").evaluateAll(videos=>videos.every(video=>!(video as HTMLVideoElement).paused))).toBe(true);
 });

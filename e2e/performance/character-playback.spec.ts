@@ -20,6 +20,7 @@ for (const character of characters) test(`${character.slug}: video starts prompt
   await page.goto("/study?mode=characters");
   await expect(page.getByRole("button", { name: "Start", exact: true })).toBeEnabled({ timeout: 30_000 });
   await page.getByRole("button", { name: "Choose companions", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Historical", exact: true })).toBeVisible();
   await expect(page.getByTestId("character-card-medieval-scholar")).toHaveCount(0);
   await expect(page.getByTestId("character-card-medieval-scribe")).toHaveCount(0);
   await page.getByTestId(`character-card-${character.slug}`).click();
@@ -34,17 +35,20 @@ for (const character of characters) test(`${character.slug}: video starts prompt
     });
     expect(await video.evaluate(element => (element as HTMLVideoElement).muted)).toBe(true);
     expect(await video.evaluate(element => (element as HTMLVideoElement).currentSrc)).toContain("study-playback-v1.mp4");
+    await expect(page.getByTestId("theme-scene").locator("video")).toHaveCount(0);
     const quality = await video.evaluate(element => new Promise<{ fps: number; maxGapMs: number; droppedRatio: number }>((resolve, reject) => {
       const movie = element as HTMLVideoElement;
       const started = performance.now(), before = movie.getVideoPlaybackQuality();
       let previous: number | undefined, frames = 0, maxGapMs = 0;
-      const timeout = window.setTimeout(() => { movie.cancelVideoFrameCallback(handle); reject(new Error("Video frame delivery stalled")); }, 2000);
+      const timeout = window.setTimeout(() => { movie.cancelVideoFrameCallback(handle); reject(new Error("Video frame delivery stalled")); }, 4000);
       let handle = 0;
       const frame = (stamp: number) => {
         frames++;
         if (previous !== undefined) maxGapMs = Math.max(maxGapMs, stamp - previous);
         previous = stamp;
-        if (stamp - started >= 650) {
+        // Two seconds provides about sixty frames. A subsecond sample makes
+        // one dropped frame dominate the ratio; the stall ceiling stays strict.
+        if (stamp - started >= 2000) {
           window.clearTimeout(timeout);
           const after = movie.getVideoPlaybackQuality();
           resolve({ fps: frames / ((stamp - started) / 1000), maxGapMs,
@@ -66,7 +70,7 @@ for (const character of characters) test(`${character.slug}: video starts prompt
       await expect(video).toHaveJSProperty("paused", true);
       const pausedAt = await video.evaluate(element => (element as HTMLVideoElement).currentTime);
       await page.waitForTimeout(250);
-      expect(await video.evaluate(element => Math.abs((element as HTMLVideoElement).currentTime - pausedAt))).toBeLessThan(0.02);
+      expect(await video.evaluate((element, at) => Math.abs((element as HTMLVideoElement).currentTime - at), pausedAt)).toBeLessThan(0.02);
       await page.evaluate(() => { Reflect.deleteProperty(document, "hidden"); document.dispatchEvent(new Event("visibilitychange")); });
       await expect(video).toHaveAttribute("data-playback-probe", "retained");
       await expect.poll(() => video.evaluate(element => (element as HTMLVideoElement).currentTime), { timeout: 2000 }).toBeGreaterThan(pausedAt);

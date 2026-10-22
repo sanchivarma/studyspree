@@ -53,8 +53,11 @@ test("historical partners animate, persist and leave the session timer intact", 
   await page.goto("/study");
   await page.getByRole("button", { name: "Choose companions", exact: true }).click();
   await page.getByRole("button", { name: "Virtual partners", exact: true }).click();
-  await page.getByRole("button", { name: "Historical & medieval", exact: true }).click();
-  const slugs = ["medieval-scholar", "medieval-scribe", "einstein", "tesla"];
+  await page.getByRole("button", { name: "Historical", exact: true }).click();
+  await expect(page.getByTestId("character-card-medieval-scholar")).toHaveCount(0);
+  await expect(page.getByTestId("character-card-medieval-scribe")).toHaveCount(0);
+  await expect(page.getByTestId("character-picker").getByRole("button")).toHaveCount(2);
+  const slugs = ["einstein", "tesla"];
   for (const slug of slugs) await page.getByTestId(`character-card-${slug}`).click();
   await page.getByRole("button", { name: "All", exact: true }).click();
   await expect(page.getByTestId("character-card-male-01")).toHaveAttribute("aria-pressed", "false");

@@ -27,12 +27,14 @@ Requires Node.js 22 and npm.
 For fast local use without compiling a route after a navigation click:
 
 ```powershell
-npm.cmd run build
+npm.cmd run build:preview
 npm.cmd run preview:local
 ```
 
 This serves the production build at http://localhost:3000 and runs maintenance.
-Rebuild after source changes. Development mode below supports live source edits
+The preview build is separate from the default `.next` output. Stop its server
+before rebuilding that same output, then restart after source changes.
+Development mode below supports live source edits
 and compiles routes on demand; its first navigation can exceed the click budget.
 
 ```powershell

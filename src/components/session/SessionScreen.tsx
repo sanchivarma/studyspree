@@ -32,6 +32,7 @@ export function SessionScreen({ session }: { session: Session }) {
   const [soundOpen, setSoundOpen] = useState(false);
   const [companionOpen, setCompanionOpen] = useState(false);
   const [selfPinned, setSelfPinned] = useState(false);
+  const [companionsHidden, setCompanionsHidden] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
   const chatButton = useRef<HTMLButtonElement>(null);
   const profile = useProfile();
@@ -68,10 +69,12 @@ export function SessionScreen({ session }: { session: Session }) {
 
   return <section aria-label={t("session.label")} data-testid="session-screen" data-controls-visible={isVisible} style={style}
     className={cn("relative isolate h-dvh w-full overflow-hidden", !isVisible && "cursor-none")}>
-    {session.companions.mode === "solo" ? <SoloStudyScene preferences={profile.data?.soloScene ?? defaultSoloScene}/> : <ThemeScene slug={slug} priority />}
+    {/* The stage covers the scene. Avoid decoding a second full-screen video
+        behind opaque tiles; hiding the stage restores scene playback. */}
+    {session.companions.mode === "solo" ? <SoloStudyScene preferences={profile.data?.soloScene ?? defaultSoloScene}/> : <ThemeScene slug={slug} priority posterOnly={isSelfInStage || (!companionsHidden && session.companions.characterSlugs.length > 0)} />}
     <div aria-hidden="true" data-testid="session-side-backplate" className="pointer-events-none absolute inset-y-0 left-0 z-10 w-[60px] border-r border-border/40 bg-background/25 backdrop-blur-md"/>
     <div aria-hidden="true" data-testid="session-bottom-backplate" className={cn("pointer-events-none absolute right-0 bottom-0 left-[60px] z-10 h-[64px] border-t border-border/40 bg-background/25 backdrop-blur-md",fade)}/>
-    <SessionCompanions session={session} visible={isVisible} onOpenChange={setCompanionOpen} leading={isSelfInStage ? <SelfView caption={<SessionSelfCaption admin onOpenChange={setSheetOpen}/>} camera={camera} visible={isVisible} mirrored={tile.data?.mirrored ?? true} status={tile.data?.status ?? ""} stage onTogglePin={() => setSelfPinned(false)}/> : undefined}
+    <SessionCompanions session={session} visible={isVisible} onOpenChange={setCompanionOpen} hidden={companionsHidden} onHiddenChange={setCompanionsHidden} leading={isSelfInStage ? <SelfView caption={<SessionSelfCaption admin onOpenChange={setSheetOpen}/>} camera={camera} visible={isVisible} mirrored={tile.data?.mirrored ?? true} status={tile.data?.status ?? ""} stage onTogglePin={() => setSelfPinned(false)}/> : undefined}
       sideControls={<><button ref={chatButton} type="button" aria-label={t("room.chat")} aria-expanded={chatOpen} aria-controls="room-chat" onClick={() => setChatOpen(true)} className="flex size-11 items-center justify-center rounded-xl bg-background/60 focus-visible:outline-2 focus-visible:outline-accent"><MessageCircle aria-hidden="true" className="size-4"/></button><SessionStatusControl onOpenChange={setSheetOpen}/><PersonalTileSheet onOpenChange={setSheetOpen}/></>}/>
     {chatOpen && <SessionChat sessionId={session.id} roomId={session.roomId} onClose={() => setChatOpen(false)} onRestoreFocus={() => chatButton.current?.focus()}/>}
     <SessionFooter session={session} status={tile.data?.status} isVisible={isVisible} error={error} onFinish={finish} finishButton={finishButton}/>
