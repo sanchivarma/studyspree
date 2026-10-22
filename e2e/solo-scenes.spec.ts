@@ -1,6 +1,50 @@
 import { createHmac, randomUUID } from "node:crypto";
 import { readFileSync } from "node:fs";
-import { expect, test } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
+
+async function expectRenderedFlicker(page: Page, light: Locator) {
+  const playing=await page.locator("video").evaluateAll(videos=>videos.flatMap((element,index)=>{
+    const video=element as HTMLVideoElement, running=!video.paused;
+    video.pause();
+    return running?[index]:[];
+  }));
+  const clip=await light.getByTestId("desk-flame-core").boundingBox();
+  expect(clip).not.toBeNull();
+  // Isolate illumination of the painted flame from the additive glow/core.
+  await light.locator(".solo-desk-flame,.solo-desk-flame-core").evaluateAll(elements=>elements.forEach(element=>{(element as SVGElement).style.visibility="hidden";}));
+  const frames: string[]=[];
+  for(const phase of [0.14,0.79]) {
+    await light.evaluate((element,progress)=>{
+      for(const animation of element.getAnimations({subtree:true})) {
+        const timing=animation.effect!.getTiming();
+        animation.pause();
+        animation.currentTime=Number(timing.duration)*(1+progress)+(timing.delay??0);
+      }
+    },phase);
+    frames.push((await page.screenshot({clip:clip!})).toString("base64"));
+  }
+  // Read actual composited pixels; changing CSS values alone can be invisible
+  // when a fully bright painted flame sits underneath the animated layer.
+  const difference=await page.evaluate(async images=>{
+    const pixels=await Promise.all(images.map(async encoded=>{
+      const blob=await (await fetch(`data:image/png;base64,${encoded}`)).blob();
+      const bitmap=await createImageBitmap(blob);
+      const canvas=document.createElement("canvas");
+      canvas.width=bitmap.width; canvas.height=bitmap.height;
+      const context=canvas.getContext("2d")!;
+      context.drawImage(bitmap,0,0); bitmap.close();
+      return context.getImageData(0,0,canvas.width,canvas.height).data;
+    }));
+    let total=0;
+    for(let i=0;i<pixels[0].length;i++) if(i%4!==3) total+=Math.abs(pixels[0][i]-pixels[1][i]);
+    return total/(pixels[0].length*0.75);
+  },frames);
+  await light.evaluate(element=>element.getAnimations({subtree:true}).forEach(animation=>animation.play()));
+  await light.locator(".solo-desk-flame,.solo-desk-flame-core").evaluateAll(elements=>elements.forEach(element=>{(element as SVGElement).style.removeProperty("visibility");}));
+  await page.locator("video").evaluateAll((videos,indices)=>Promise.all(indices.map(index=>(videos[index] as HTMLVideoElement).play())),playing);
+  await test.info().attach("rendered candle brightness",{body:JSON.stringify({difference}),contentType:"application/json"});
+  expect(difference,"flame pixels should visibly brighten and dim").toBeGreaterThan(8);
+}
 
 test("solo POV preserves choices, fills the window, pauses motion and leaves the timer intact", async ({ page, baseURL }) => {
   test.setTimeout(90000);
@@ -33,18 +77,23 @@ test("solo POV preserves choices, fills the window, pauses motion and leaves the
   await expect(picker.getByRole("button",{name:"Sherlock’s table",exact:true})).toHaveCount(0);
   await expect(picker.getByRole("button",{name:"Black hole",exact:true})).toHaveCount(0);
   const startedAt=await page.evaluate(()=>JSON.parse(localStorage.getItem("ss_sessions")!)[0].startedAt);
-  for(const name of ["Medieval table","Shakespearean table","Pirate table"]){
+  for(const [name,slug] of [["Medieval table","medieval"],["Shakespearean table","shakespearean"],["Pirate table","pirate"]]){
     await picker.getByRole("button",{name,exact:true}).click();
+    await expect(scene).toHaveAttribute("data-desk",slug);
     const flame=scene.getByTestId("desk-flame-core");
     await expect(flame).toBeVisible();
     const before=await flame.evaluate(element=>{const style=getComputedStyle(element),matrix=(element as SVGGraphicsElement).getCTM()!;return{opacity:style.opacity,transform:style.transform,anchor:{x:matrix.e,y:matrix.f}};});
     await expect.poll(()=>flame.evaluate(element=>getComputedStyle(element).opacity)).not.toBe(before.opacity);
     await expect.poll(()=>flame.evaluate(element=>getComputedStyle(element).transform)).not.toBe(before.transform);
     expect(await flame.evaluate(element=>{const matrix=(element as SVGGraphicsElement).getCTM()!;return{x:matrix.e,y:matrix.f};})).toEqual(before.anchor);
+    await page.getByRole("button",{name:"Close",exact:true}).click();
+    await expect(page.getByRole("dialog")).toHaveCount(0);
+    await expectRenderedFlicker(page,scene.getByTestId("solo-desk-light"));
+    await page.getByRole("button",{name:"Choose companions",exact:true}).click();
   }
   expect(await page.evaluate(()=>JSON.parse(localStorage.getItem("ss_sessions")!)[0].startedAt)).toBe(startedAt);
   await picker.getByRole("button",{name:"Shakespearean table",exact:true}).click();
-  await expect(scene.getByTestId("solo-desk-light").locator("image")).toHaveCount(1);
+  await expect(scene.getByTestId("solo-desk-light").locator(":scope > image")).toHaveCount(1);
   await expect(scene.getByTestId("desk-flame")).toBeVisible();
   await page.evaluate(()=>{Object.defineProperty(document,"hidden",{configurable:true,get:()=>true});document.dispatchEvent(new Event("visibilitychange"));});
   await expect(scene.getByTestId("desk-flame")).toHaveCount(0);
@@ -52,7 +101,7 @@ test("solo POV preserves choices, fills the window, pauses motion and leaves the
   await expect(scene.getByTestId("desk-flame")).toBeVisible();
   await page.emulateMedia({reducedMotion:"reduce"});
   await expect(scene.getByTestId("desk-flame")).toHaveCount(0);
-  await expect(scene.getByTestId("solo-desk-light").locator("image")).toHaveCount(1);
+  await expect(scene.getByTestId("solo-desk-light").locator(":scope > image")).toHaveCount(1);
   await page.emulateMedia({reducedMotion:"no-preference"});
   await expect(scene.getByTestId("desk-flame")).toBeVisible();
   await picker.getByRole("button",{name:"Shakespearean table",exact:true}).click();

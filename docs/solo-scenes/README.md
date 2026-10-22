@@ -23,6 +23,8 @@ Outdoor video plays at 0.65x for slow movement, with Magic Academy at 0.8x. Visu
 
 The Medieval candle, Shakespearean candlestick and Pirate lantern have localized flicker. Each uses a separate 1.19–1.53-second rhythm, with small flame-scale and brightness changes anchored at the wick, plus a soft warm glow. The Shakespearean artwork had no lamp, so its existing small period candlestick supplies that candle. The overlays share the desk's image plane and bottom offset. Hidden tabs and reduced motion remove animated overlays; static candle artwork remains visible. Removing a desk also removes its candle overlay.
 
+The initial additive overlay left the original painted flame at full brightness, making the effect difficult to see. A warm radial dimming layer now modulates that original flame, clipped to the artwork's alpha so it cannot darken the scenery around it. Its opacity varies inversely with the flame core and glow. The browser regression hides the additive layers and compares rendered bright/dim flame pixels with the scenery video paused, then restores normal playback. The preceding production build produces zero pixel difference in that isolated check.
+
 No whole-view camera transform, UV shader or optical-flow displacement is used. Architecture stays fixed. Native filmed clips use a short seam dissolve and a playback boundary inside continuous footage where appropriate. Natural footage is not claimed to repeat perfectly.
 
 ## Sources and reproduction
