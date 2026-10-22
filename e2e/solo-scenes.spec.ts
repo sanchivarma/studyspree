@@ -53,7 +53,10 @@ async function expectRenderedFlicker(page: Page, light: Locator) {
 async function expectAcademyDetails(page: Page, scene: Locator) {
   await scene.locator("video").evaluateAll(videos=>videos.forEach(element=>(element as HTMLVideoElement).pause()));
   await scene.evaluate(element=>element.getAnimations({subtree:true}).forEach(animation=>animation.pause()));
-  for(const lamp of [scene.locator("rect.solo-candle-light").first(),scene.getByTestId("academy-porch-lights").locator("ellipse.solo-candle-light").first()]) {
+  const terrace=scene.getByTestId("academy-porch-lights").locator('[data-light^="terrace-"]');
+  await expect(terrace).toHaveCount(7);
+  const lamps=[scene.locator("rect.solo-candle-light").first(),...await terrace.locator("ellipse.solo-candle-light").all()];
+  for(const lamp of lamps) {
     const bounds=(await lamp.boundingBox())!;
     const clip={x:bounds.x-3,y:bounds.y-3,width:bounds.width+6,height:bounds.height+6};
     const frames: string[]=[];
@@ -66,7 +69,8 @@ async function expectAcademyDetails(page: Page, scene: Locator) {
       },phase);
       frames.push((await page.screenshot({clip})).toString("base64"));
     }
-    expect(await renderedDifference(page,frames),"Academy indoor and outdoor lights should visibly flicker").toBeGreaterThan(10);
+    const fixture=await lamp.locator("..").getAttribute("data-light")??"indoor window";
+    expect(await renderedDifference(page,frames),`${fixture} should visibly flicker through the frame`).toBeGreaterThan(10);
   }
   const clouds=scene.getByTestId("academy-clouds"),bounds=(await scene.boundingBox())!;
   const clip={x:bounds.x+bounds.width*0.4,y:bounds.y,width:bounds.width*0.6,height:bounds.height*0.3};
@@ -151,7 +155,7 @@ test("solo POV preserves choices, fills the window, pauses motion and leaves the
   await page.getByRole("button",{name:"Choose companions",exact:true}).click();
   await picker.getByRole("button",{name:"Magic academy",exact:true}).click();
   await expect(scene.getByTestId("academy-lights").locator("rect.solo-candle-light")).toHaveCount(16);
-    await expect(scene.getByTestId("academy-porch-lights").locator("ellipse.solo-candle-light")).toHaveCount(8);
+    await expect(scene.getByTestId("academy-porch-lights").locator("ellipse.solo-candle-light")).toHaveCount(11);
   const lamp=scene.getByTestId("academy-lights").locator("rect.solo-candle-light").first();
     expect(await lamp.evaluate(el=>parseFloat(getComputedStyle(el).animationDuration))).toBeGreaterThanOrEqual(8);
     expect(await lamp.evaluate(el=>parseFloat(getComputedStyle(el).animationDuration))).toBeLessThanOrEqual(11);

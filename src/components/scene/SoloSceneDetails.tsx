@@ -8,8 +8,21 @@ const academyWindows = [
   [446,271,5,19],[443,307,4,15],[365,272,5,11],[387,274,4,10],
   [412,240,4,13],[478,271,4,18],[344,272,4,12],[331,434,5,20],
 ] as const;
-// Existing outdoor lantern centres: entrance terrace and lower approach.
-const academyPorchLights = [[675,448],[687,448],[727,450],[749,446],[803,446],[565,519],[287,560],[393,562]] as const;
+// Match complete painted fixtures, including the small lights between the
+// terrace posts. Coordinates share the video's 1600 x 900 cover plane.
+const academyPorchLights = [
+  {id:"entrance",x:604,y:453,rx:3.5,ry:6},
+  {id:"terrace-west-post",x:675,y:447,rx:7,ry:7},
+  {id:"terrace-west-step",x:695,y:461,rx:3,ry:3.5},
+  {id:"terrace-centre-post",x:728,y:454,rx:5,ry:5},
+  {id:"terrace-wall",x:748,y:445,rx:4,ry:6},
+  {id:"terrace-centre-step",x:771,y:460,rx:3.5,ry:4},
+  {id:"terrace-east-post",x:803,y:442,rx:4,ry:6},
+  {id:"terrace-east-rail",x:836,y:452,rx:3,ry:4},
+  {id:"approach-upper",x:565,y:519,rx:2.5,ry:3.5},
+  {id:"approach-west",x:287,y:560,rx:2.5,ry:3.5},
+  {id:"approach-east",x:393,y:562,rx:2.5,ry:3.5},
+] as const;
 
 /** Object-sized layers share the video's cover geometry, never move the view. */
 export function SoloSceneDetails({ view }: { view: SoloScenePreferences["window"] }) {
@@ -40,10 +53,10 @@ export function SoloSceneDetails({ view }: { view: SoloScenePreferences["window"
       <rect x={x} y={y} width={width} height={height} rx="2" className="solo-candle-light" filter={`url(#${glow})`}/>
     </g>) }
     <g data-testid="academy-porch-lights">
-      {academyPorchLights.map(([cx,cy],index)=><g key={`${cx}:${cy}`}
+      {academyPorchLights.map(({id,x,y,rx,ry},index)=><g key={id} data-light={id}
         style={{"--light-delay":`${index*-3.1}s`,"--light-period":`${8.5+index%4}s`} as CSSProperties}>
-        <ellipse cx={cx} cy={cy} rx="2.5" ry="3.5" className="solo-academy-light-dimming" filter={`url(#${softLight})`}/>
-        <ellipse cx={cx} cy={cy} rx="2" ry="3" fillOpacity="0.9" className="solo-candle-light" filter={`url(#${glow})`}/>
+        <ellipse cx={x} cy={y} rx={rx} ry={ry} className="solo-academy-light-dimming" filter={`url(#${softLight})`}/>
+        <ellipse cx={x} cy={y} rx={rx*0.65} ry={ry*0.75} fillOpacity="0.9" className="solo-candle-light" filter={`url(#${glow})`}/>
       </g>)}
     </g>
   </svg>;
