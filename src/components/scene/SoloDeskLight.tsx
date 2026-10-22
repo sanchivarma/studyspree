@@ -12,6 +12,7 @@ const candles: Partial<Record<SoloScenePreferences["desk"], Candle>> = {
 /** Matches the desk artwork's 1600:900 alpha plane and bottom offset. */
 export function SoloDeskLight({desk,animate}:{desk:SoloScenePreferences["desk"];animate:boolean}) {
   const glow = useId();
+  const softFlame = useId();
   const flameMask = useId();
   const dimming = useId();
   const candle = candles[desk];
@@ -21,6 +22,7 @@ export function SoloDeskLight({desk,animate}:{desk:SoloScenePreferences["desk"];
   return <svg data-testid="solo-desk-light" className="solo-desk-light" viewBox="0 0 1600 900">
     <defs>
       <filter id={glow} x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="4"/></filter>
+      <filter id={softFlame} x="-100%" y="-20%" width="300%" height="140%"><feGaussianBlur stdDeviation="1.2"/></filter>
       <radialGradient id={dimming}>
         <stop offset="0" stopColor="rgb(110 48 12)"/>
         <stop offset="0.6" stopColor="rgb(110 48 12)" stopOpacity="0.85"/>
@@ -40,7 +42,7 @@ export function SoloDeskLight({desk,animate}:{desk:SoloScenePreferences["desk"];
     </g>}
     {animate && <g data-testid="desk-flame" transform={`translate(${x} ${wickY})`} style={flickerStyle}>
       <ellipse className="solo-desk-flame" cy={-height * 0.45} rx={width * 2.4} ry={height * 0.7} filter={`url(#${glow})`}/>
-      <path data-testid="desk-flame-core" className="solo-desk-flame-core"
+      <path data-testid="desk-flame-core" className="solo-desk-flame-core" filter={`url(#${softFlame})`}
         d={`M0 0 C${-width} ${-height * 0.2} ${-width * 0.6} ${-height * 0.55} ${width * 0.2} ${-height} C${width * 0.6} ${-height * 0.7} ${width} ${-height * 0.25} 0 0Z`}/>
     </g>}
   </svg>;

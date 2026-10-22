@@ -2,6 +2,23 @@ import { createHmac, randomUUID } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
+async function renderedDifference(page: Page, images: string[]) {
+  return page.evaluate(async encodedImages=>{
+    const pixels=await Promise.all(encodedImages.map(async encoded=>{
+      const blob=await (await fetch(`data:image/png;base64,${encoded}`)).blob();
+      const bitmap=await createImageBitmap(blob);
+      const canvas=document.createElement("canvas");
+      canvas.width=bitmap.width; canvas.height=bitmap.height;
+      const context=canvas.getContext("2d")!;
+      context.drawImage(bitmap,0,0); bitmap.close();
+      return context.getImageData(0,0,canvas.width,canvas.height).data;
+    }));
+    let total=0;
+    for(let i=0;i<pixels[0].length;i++) if(i%4!==3) total+=Math.abs(pixels[0][i]-pixels[1][i]);
+    return total/(pixels[0].length*0.75);
+  },images);
+}
+
 async function expectRenderedFlicker(page: Page, light: Locator) {
   const playing=await page.locator("video").evaluateAll(videos=>videos.flatMap((element,index)=>{
     const video=element as HTMLVideoElement, running=!video.paused;
@@ -25,25 +42,41 @@ async function expectRenderedFlicker(page: Page, light: Locator) {
   }
   // Read actual composited pixels; changing CSS values alone can be invisible
   // when a fully bright painted flame sits underneath the animated layer.
-  const difference=await page.evaluate(async images=>{
-    const pixels=await Promise.all(images.map(async encoded=>{
-      const blob=await (await fetch(`data:image/png;base64,${encoded}`)).blob();
-      const bitmap=await createImageBitmap(blob);
-      const canvas=document.createElement("canvas");
-      canvas.width=bitmap.width; canvas.height=bitmap.height;
-      const context=canvas.getContext("2d")!;
-      context.drawImage(bitmap,0,0); bitmap.close();
-      return context.getImageData(0,0,canvas.width,canvas.height).data;
-    }));
-    let total=0;
-    for(let i=0;i<pixels[0].length;i++) if(i%4!==3) total+=Math.abs(pixels[0][i]-pixels[1][i]);
-    return total/(pixels[0].length*0.75);
-  },frames);
+  const difference=await renderedDifference(page,frames);
   await light.evaluate(element=>element.getAnimations({subtree:true}).forEach(animation=>animation.play()));
   await light.locator(".solo-desk-flame,.solo-desk-flame-core").evaluateAll(elements=>elements.forEach(element=>{(element as SVGElement).style.removeProperty("visibility");}));
   await page.locator("video").evaluateAll((videos,indices)=>Promise.all(indices.map(index=>(videos[index] as HTMLVideoElement).play())),playing);
   await test.info().attach("rendered candle brightness",{body:JSON.stringify({difference}),contentType:"application/json"});
   expect(difference,"flame pixels should visibly brighten and dim").toBeGreaterThan(8);
+}
+
+async function expectAcademyDetails(page: Page, scene: Locator) {
+  await scene.locator("video").evaluateAll(videos=>videos.forEach(element=>(element as HTMLVideoElement).pause()));
+  await scene.evaluate(element=>element.getAnimations({subtree:true}).forEach(animation=>animation.pause()));
+  for(const lamp of [scene.locator("rect.solo-candle-light").first(),scene.getByTestId("academy-porch-lights").locator("ellipse.solo-candle-light").first()]) {
+    const bounds=(await lamp.boundingBox())!;
+    const clip={x:bounds.x-3,y:bounds.y-3,width:bounds.width+6,height:bounds.height+6};
+    const frames: string[]=[];
+    for(const phase of [0.41,0.57]) {
+      await lamp.evaluate((element,progress)=>{
+        for(const animation of element.parentElement!.getAnimations({subtree:true})) {
+          const timing=animation.effect!.getTiming();
+          animation.currentTime=Number(timing.duration)*(5+progress)+(timing.delay??0);
+        }
+      },phase);
+      frames.push((await page.screenshot({clip})).toString("base64"));
+    }
+    expect(await renderedDifference(page,frames),"Academy indoor and outdoor lights should visibly flicker").toBeGreaterThan(10);
+  }
+  const clouds=scene.getByTestId("academy-clouds"),bounds=(await scene.boundingBox())!;
+  const clip={x:bounds.x+bounds.width*0.4,y:bounds.y,width:bounds.width*0.6,height:bounds.height*0.3};
+  const visible=(await page.screenshot({clip})).toString("base64");
+  await clouds.evaluate(element=>{(element as SVGElement).style.visibility="hidden";});
+  const hidden=(await page.screenshot({clip})).toString("base64");
+  expect(await renderedDifference(page,[visible,hidden]),"clouds should contribute visible sky pixels through the window frame").toBeGreaterThan(1);
+  await clouds.evaluate(element=>{(element as SVGElement).style.removeProperty("visibility");});
+  await scene.evaluate(element=>element.getAnimations({subtree:true}).forEach(animation=>animation.play()));
+  await scene.locator("video").evaluateAll(videos=>Promise.all(videos.map(element=>(element as HTMLVideoElement).play())));
 }
 
 test("solo POV preserves choices, fills the window, pauses motion and leaves the timer intact", async ({ page, baseURL }) => {
@@ -82,6 +115,9 @@ test("solo POV preserves choices, fills the window, pauses motion and leaves the
     await expect(scene).toHaveAttribute("data-desk",slug);
     const flame=scene.getByTestId("desk-flame-core");
     await expect(flame).toBeVisible();
+    const filter=await flame.getAttribute("filter");
+    expect(filter).toMatch(/^url\(#.+\)$/);
+    await expect(scene.locator("filter").filter({has:page.locator('feGaussianBlur[stdDeviation="1.2"]')})).toHaveCount(1);
     const before=await flame.evaluate(element=>{const style=getComputedStyle(element),matrix=(element as SVGGraphicsElement).getCTM()!;return{opacity:style.opacity,transform:style.transform,anchor:{x:matrix.e,y:matrix.f}};});
     await expect.poll(()=>flame.evaluate(element=>getComputedStyle(element).opacity)).not.toBe(before.opacity);
     await expect.poll(()=>flame.evaluate(element=>getComputedStyle(element).transform)).not.toBe(before.transform);
@@ -114,18 +150,23 @@ test("solo POV preserves choices, fills the window, pauses motion and leaves the
   await expect(scene.locator(".solo-desk")).toHaveCount(0);
   await page.getByRole("button",{name:"Choose companions",exact:true}).click();
   await picker.getByRole("button",{name:"Magic academy",exact:true}).click();
-  await expect(scene.getByTestId("academy-lights").locator("rect")).toHaveCount(16);
-    await expect(scene.getByTestId("academy-porch-lights").locator("ellipse")).toHaveCount(8);
-  const lamp=scene.getByTestId("academy-lights").locator("rect").first();
+  await expect(scene.getByTestId("academy-lights").locator("rect.solo-candle-light")).toHaveCount(16);
+    await expect(scene.getByTestId("academy-porch-lights").locator("ellipse.solo-candle-light")).toHaveCount(8);
+  const lamp=scene.getByTestId("academy-lights").locator("rect.solo-candle-light").first();
     expect(await lamp.evaluate(el=>parseFloat(getComputedStyle(el).animationDuration))).toBeGreaterThanOrEqual(8);
     expect(await lamp.evaluate(el=>parseFloat(getComputedStyle(el).animationDuration))).toBeLessThanOrEqual(11);
-  const porch=scene.getByTestId("academy-porch-lights").locator("ellipse").first();
+  const porch=scene.getByTestId("academy-porch-lights").locator("ellipse.solo-candle-light").first();
   expect(await porch.evaluate(el=>parseFloat(getComputedStyle(el).animationDuration))).toBe(8.5);
   const clouds=scene.getByTestId("academy-clouds");
   await expect(clouds.locator("image")).toHaveCount(2);
   const cloudPosition=await clouds.evaluate(el=>getComputedStyle(el).transform);
   await expect.poll(()=>clouds.evaluate(el=>getComputedStyle(el).transform)).not.toBe(cloudPosition);
   await expect.poll(()=>scene.getByTestId("solo-window-video").evaluate(element=>(element as HTMLVideoElement).playbackRate)).toBe(0.8);
+  await page.getByRole("button",{name:"Close",exact:true}).click();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expectAcademyDetails(page,scene);
+  await page.screenshot({path:test.info().outputPath("academy.png")});
+  await page.getByRole("button",{name:"Choose companions",exact:true}).click();
   await page.evaluate(()=>{Object.defineProperty(document,"hidden",{configurable:true,get:()=>true});document.dispatchEvent(new Event("visibilitychange"));});
   await expect(scene).toHaveAttribute("data-motion","paused");
   await expect(clouds).toHaveCSS("animation-play-state","paused");

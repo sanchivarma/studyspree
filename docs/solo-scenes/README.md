@@ -25,6 +25,8 @@ The Medieval candle, Shakespearean candlestick and Pirate lantern have localized
 
 The initial additive overlay left the original painted flame at full brightness, making the effect difficult to see. A warm radial dimming layer now modulates that original flame, clipped to the artwork's alpha so it cannot darken the scenery around it. Its opacity varies inversely with the flame core and glow. The browser regression hides the additive layers and compares rendered bright/dim flame pixels with the scenery video paused, then restores normal playback. The preceding production build produces zero pixel difference in that isolated check.
 
+Flame cores have a fixed 1.2-unit Gaussian feather in the 1600-wide desk plane, softening their edges without blurring the candle body or animating a filter. Academy windows and outdoor lanterns pair stronger soft glow with inverse dimming of the painted light, retaining their staggered 8–11 / 8.5–11.5-second cycles. Cloud overlays sit lower in the visible sky at higher opacity and drift over a wider range; a stationary feathered skyline mask keeps them off the castle and mountains. All motion still pauses when hidden and respects reduced motion.
+
 No whole-view camera transform, UV shader or optical-flow displacement is used. Architecture stays fixed. Native filmed clips use a short seam dissolve and a playback boundary inside continuous footage where appropriate. Natural footage is not claimed to repeat perfectly.
 
 ## Sources and reproduction

@@ -1,5 +1,5 @@
 import type { SoloScenePreferences } from "@/lib/soloScenes/catalog";
-import { useId } from "react";
+import { useId, type CSSProperties } from "react";
 import { UnderwaterFish } from "./UnderwaterFish";
 
 const academyWindows = [
@@ -14,18 +14,37 @@ const academyPorchLights = [[675,448],[687,448],[727,450],[749,446],[803,446],[5
 /** Object-sized layers share the video's cover geometry, never move the view. */
 export function SoloSceneDetails({ view }: { view: SoloScenePreferences["window"] }) {
   const glow=useId();
+  const sky=useId(), skyFade=useId(), softLight=useId();
   if (view === "underwater") return <UnderwaterFish/>;
   if (view === "magic-academy") return <svg data-testid="academy-lights" className="solo-detail-layer solo-academy-lights" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
-    <defs><filter id={glow} x="-100%" y="-50%" width="300%" height="200%"><feGaussianBlur stdDeviation="1.7" result="halo"/><feMerge><feMergeNode in="halo"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
-    <g data-testid="academy-clouds" className="solo-academy-clouds" opacity="0.14">
-      <image href="/solo/motion/cloud-overlay-v1.webp" x="700" y="-120" width="1000" height="320"/>
-      <image href="/solo/motion/cloud-overlay-v1.webp" x="1150" y="-45" width="650" height="180" opacity="0.55"/>
+    <defs>
+      <filter id={glow} x="-150%" y="-50%" width="400%" height="200%"><feGaussianBlur stdDeviation="2.3" result="halo"/><feMerge><feMergeNode in="halo"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      <filter id={softLight} x="-50%" y="-20%" width="200%" height="140%"><feGaussianBlur stdDeviation="0.6"/></filter>
+      <linearGradient id={skyFade} x1="0" y1="70" x2="0" y2="220" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stopColor="white"/><stop offset="1" stopColor="black"/>
+      </linearGradient>
+      {/* Keep drifting clouds above the fixed castle and mountain skyline. */}
+      <mask id={sky} maskUnits="userSpaceOnUse" x="600" y="0" width="1000" height="220">
+        <path d="M600 0H1600V190L1450 180L1340 185L1270 155L1220 170L1130 133L1075 150L1000 170L850 160L750 170L600 155Z" fill={`url(#${skyFade})`}/>
+      </mask>
+    </defs>
+    <g mask={`url(#${sky})`}>
+      <g data-testid="academy-clouds" className="solo-academy-clouds" opacity="0.65">
+        <image href="/solo/motion/cloud-overlay-v1.webp" x="590" y="-90" width="1200" height="300"/>
+        <image href="/solo/motion/cloud-overlay-v1.webp" x="1030" y="-40" width="850" height="230" opacity="0.7"/>
+      </g>
     </g>
-    {academyWindows.map(([x,y,width,height], index) => <rect key={`${x}:${y}`} x={x} y={y} width={width} height={height} rx="2"
-      className="solo-candle-light" filter={`url(#${glow})`} style={{ animationDelay: `${index * -2.3}s`, animationDuration: `${8 + index%4}s` }}/>) }
-    <g data-testid="academy-porch-lights" fillOpacity="0.55" filter={`url(#${glow})`}>
-      {academyPorchLights.map(([cx,cy],index)=><ellipse key={`${cx}:${cy}`} cx={cx} cy={cy} rx="1.5" ry="2.5"
-        className="solo-candle-light" style={{animationDelay:`${index*-3.1}s`,animationDuration:`${8.5+index%4}s`}}/>)}
+    {academyWindows.map(([x,y,width,height], index) => <g key={`${x}:${y}`}
+      style={{"--light-delay":`${index*-2.3}s`,"--light-period":`${8+index%4}s`} as CSSProperties}>
+      <rect x={x} y={y} width={width} height={height} rx="2" className="solo-academy-light-dimming" filter={`url(#${softLight})`}/>
+      <rect x={x} y={y} width={width} height={height} rx="2" className="solo-candle-light" filter={`url(#${glow})`}/>
+    </g>) }
+    <g data-testid="academy-porch-lights">
+      {academyPorchLights.map(([cx,cy],index)=><g key={`${cx}:${cy}`}
+        style={{"--light-delay":`${index*-3.1}s`,"--light-period":`${8.5+index%4}s`} as CSSProperties}>
+        <ellipse cx={cx} cy={cy} rx="2.5" ry="3.5" className="solo-academy-light-dimming" filter={`url(#${softLight})`}/>
+        <ellipse cx={cx} cy={cy} rx="2" ry="3" fillOpacity="0.9" className="solo-candle-light" filter={`url(#${glow})`}/>
+      </g>)}
     </g>
   </svg>;
   if (view === "sailing-ships") return <svg data-testid="sailing-ship-layers" className="solo-detail-layer" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
