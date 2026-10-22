@@ -25,7 +25,9 @@
     "measure:navigation": "node scripts/measure-navigation.mjs",
     "maintenance": "node scripts/maintenance.mjs",
     "test:performance": "playwright test -c playwright.performance.config.ts",
-    "preview:local": "node scripts/dev-local.mjs --production"
+    "preview:local": "node scripts/dev-local.mjs --production",
+    "build:preview": "node scripts/build-local-preview.mjs",
+    "prebuild:preview": "npm run prebuild"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

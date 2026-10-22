@@ -10,12 +10,12 @@ import { useActiveSession } from "./useActiveSession";
 import { useStartSession } from "./useStartSession";
 import { useEndSession, type EndSessionInput } from "./useEndSession";
 
-const mocks = vi.hoisted(() => ({ invalidate: vi.fn(), push: vi.fn(), getQueryData: vi.fn(), setQueryData: vi.fn() }));
+const mocks = vi.hoisted(() => ({ invalidate: vi.fn(), cancel: vi.fn(), remove: vi.fn(), push: vi.fn(), getQueryData: vi.fn(), setQueryData: vi.fn() }));
 vi.mock("@/lib/clock", () => ({ now: () => new Date("2026-10-13T12:00:10Z") }));
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push: mocks.push }) }));
 vi.mock("react", async (original) => ({ ...await original<typeof import("react")>(), useEffect: vi.fn(),useRef:vi.fn(value=>({current:value})) }));
 vi.mock("@tanstack/react-query", () => ({
-  useQueryClient: () => ({ invalidateQueries: mocks.invalidate, getQueryData: mocks.getQueryData, setQueryData: mocks.setQueryData }),
+  useQueryClient: () => ({ invalidateQueries: mocks.invalidate, cancelQueries: mocks.cancel, removeQueries: mocks.remove, getQueryData: mocks.getQueryData, setQueryData: mocks.setQueryData }),
   useMutation: vi.fn(() => ({})), useQuery: vi.fn(() => ({})),
 }));
 vi.mock("@/lib/repo", () => ({ repo: { getActiveSession: vi.fn(), startSession: vi.fn(), endSession: vi.fn(), getProfile: vi.fn(), getDayStats: vi.fn() } }));
@@ -35,7 +35,7 @@ function callbacks<Input, Output>() {
 beforeEach(() => {
   useCompletionStore.getState().clear();
   vi.clearAllMocks(); mocks.invalidate.mockResolvedValue(undefined);
-  mocks.getQueryData.mockReturnValue({ timezone: "UTC" });
+  mocks.getQueryData.mockImplementation((key: readonly unknown[]) => key[0] === "profile" ? { timezone: "UTC" } : null);
   vi.mocked(repo.getDayStats).mockResolvedValue([]);
   useSessionStore.setState({ elapsedSeconds: 0, remainingSeconds: null, isFinishing: false });
 });
@@ -83,8 +83,10 @@ describe("session query and mutation boundaries", () => {
     const updateTotal = mocks.setQueryData.mock.calls.find(([key]) => JSON.stringify(key) === JSON.stringify(queryKeys.stats.total()))![1] as (current?: number) => number;
     expect(updateTotal()).toBe(10); expect(updateTotal(100)).toBe(100);
     expect(mocks.invalidate.mock.calls).toEqual([
+      [{ queryKey: queryKeys.profile() }], [{ queryKey: queryKeys.personalTile() }],
       [{ queryKey: queryKeys.activeSession() }], [{ queryKey: queryKeys.stats.all() }], [{ queryKey: queryKeys.streak() }], [{ queryKey: queryKeys.achievements() }],
     ]);
+    expect(mocks.remove).toHaveBeenCalledWith({ queryKey: queryKeys.sessionNotes.read(session.id) });
     release(); await completing;
     expect(mocks.push).toHaveBeenCalledWith("/session/local-session/complete");
     // Keep the guard up while navigation is committing.

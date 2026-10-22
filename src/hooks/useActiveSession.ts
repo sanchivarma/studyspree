@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect,useRef } from "react";
 import { queryKeys } from "@/lib/queryKeys";
 import { repo } from "@/lib/repo";
+import { clearClientSelections } from "@/lib/session/clearClientSelections";
 
 export function useActiveSession({ synchronize = false }: { synchronize?: boolean } = {}) {
   const client = useQueryClient();
@@ -27,6 +28,7 @@ export function useActiveSession({ synchronize = false }: { synchronize?: boolea
     if(!synchronize||!isRemote||result.isPending)return;
     const id=result.data?.id??null;
     if(previous.current!==undefined&&previous.current!==id){void client.invalidateQueries({queryKey:queryKeys.stats.all()});void client.invalidateQueries({queryKey:queryKeys.streak()});void client.invalidateQueries({queryKey:queryKeys.achievements()});}
+    if (previous.current && !id) clearClientSelections(client, previous.current);
     previous.current=id;
   },[synchronize,isRemote,result.data,result.isPending,client]);
   return result;

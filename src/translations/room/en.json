@@ -14,6 +14,11 @@
     "goalNotice": "Your goal will be posted to the room when you join. Leave it empty to keep it private.",
     "goalPosted": "Session goal",
     "chatLimit": "Please wait a moment before sending more messages.",
-    "admin": "Admin"
+    "admin": "Admin",
+    "notesHeading": "Your space for study notes",
+    "notesPrompt": "Jot down thoughts, questions, or reminders for yourself.",
+    "notesPrivate": "These notes are private to you.",
+    "noteLabel": "Add a note",
+    "olderNotes": "Load earlier notes"
   }
 }

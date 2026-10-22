@@ -14,6 +14,11 @@
     "goalNotice": "Votre objectif sera partagé à votre arrivée. Laissez le champ vide pour le garder privé.",
     "goalPosted": "Objectif de la session",
     "chatLimit": "Patientez un instant avant d’envoyer d’autres messages.",
-    "admin": "Admin"
+    "admin": "Admin",
+    "notesHeading": "Votre espace de notes d’étude",
+    "notesPrompt": "Notez vos idées, questions ou rappels personnels.",
+    "notesPrivate": "Ces notes restent privées.",
+    "noteLabel": "Ajouter une note",
+    "olderNotes": "Charger les notes précédentes"
   }
 }

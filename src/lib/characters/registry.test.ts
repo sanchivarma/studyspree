@@ -16,7 +16,7 @@ describe("virtual companion definitions", () => {
   it("supports mixed styles, long illustrated loops and twelve realistic studying GIFs", () => {
     expect(characters.filter(value => value.style === "whimsical")).toHaveLength(3);
     for (const value of characters.filter(value => value.style === "illustrated" || value.style === "whimsical")) {
-      expect(value.loopSeconds).toBe(150); expect(value.webm).toMatch(/study-v3\.webm$/);
+      expect(value.loopSeconds).toBe(150); expect(value.webm).toMatch(/study-playback-v1\.webm$/);
     }
     const realistic = characters.filter(value => value.style === "realistic");
     expect(realistic).toHaveLength(12);
@@ -28,20 +28,21 @@ describe("virtual companion definitions", () => {
       expect(value.assetVersion).toBe(value.slug === "realistic-01" ? "v13" : "v12");
       expect(value.loopSeconds).toBeGreaterThanOrEqual(10);
       expect(value.loopSeconds).toBeLessThanOrEqual(15);
-      expect(value.webm).toBeNull();
+      expect(value.webm).toBe(`/characters/${value.slug}/study-playback-v1.webm`);
+      expect(value.mp4).toBe(`/characters/${value.slug}/study-playback-v1.mp4`);
       expect(value.gif).toBe(`/characters/${value.slug}/study-${value.assetVersion}.gif`);
       expect(value.descriptionKey).toMatch(/realistic(Reading|Writing)$/);
     }
     expect(companionSchema.safeParse({ mode: "characters", characterSlugs: ["female-01", "moss-fox", "realistic-01", "realistic-09", "realistic-10", "realistic-11", "realistic-12"] }).success).toBe(true);
   });
-  it("includes four historical studying loops with separate identities", () => {
+  it("keeps Einstein and Tesla and retires Idris and Elin from new selections", () => {
     const historical = characters.filter(value => value.style === "historical");
-    expect(historical.map(value => value.slug)).toEqual(["medieval-scholar", "medieval-scribe", "einstein", "tesla"]);
-    expect(historical.find(value => value.slug === "medieval-scribe")?.presentation).toBe("female");
-    expect(historical.find(value => value.slug === "medieval-scholar")?.presentation).toBe("male");
-    expect(new Set(historical.map(value => value.gif)).size).toBe(4);
-    expect(getCharacter("tesla")).toMatchObject({ assetVersion: "v30", loopSeconds: 13, webm: "/characters/tesla/study-v30.webm" });
-    expect(getCharacter("einstein")?.webm).toBe("/characters/einstein/study-v30.webm");
+    expect(historical.map(value => value.slug)).toEqual(["einstein", "tesla"]);
+    expect(getCharacter("medieval-scholar")).toBeNull();
+    expect(getCharacter("medieval-scribe")).toBeNull();
+    expect(new Set(historical.map(value => value.gif)).size).toBe(2);
+    expect(getCharacter("tesla")).toMatchObject({ assetVersion: "v30", loopSeconds: 13, webm: "/characters/tesla/study-playback-v1.webm" });
+    expect(getCharacter("einstein")?.webm).toBe("/characters/einstein/study-playback-v1.webm");
     expect(companionSchema.safeParse({ mode: "characters", characterSlugs: historical.map(value => value.slug) }).success).toBe(true);
   });
   it("accepts the complete known cast for paginated sessions", () => {

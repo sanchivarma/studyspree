@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { performance } from "node:perf_hooks";
-import { chromium } from "@playwright/test";
+import { chromium, expect } from "@playwright/test";
 import { createServerClient } from "@supabase/ssr";
 
 // A local, authenticated browser benchmark. Credentials and cookies are never
@@ -58,7 +58,8 @@ try {
   const initialScripts = await scriptResources();
   const profile = await page.request.post(`${base}/api/repository`, { data: { op: "profile" } });
   if (!profile.ok()) throw new Error("The benchmark requires a connected account.");
-  originalPreferences = (await profile.json()).companionPreferences;
+  const originalProfile = await profile.json();
+  originalPreferences = Object.fromEntries(["selectedTheme", "companionPreferences", "soloScene", "webcamEnabled", "ambienceEnabled", "musicTrack", "backgroundEffects", "effectVolumes", "musicVolume", "roomVolume"].map(key => [key, originalProfile[key]]));
 
   const destinations = [
     ["Study", "/study", 'section[aria-label="Start a study session"]'],
@@ -78,6 +79,7 @@ try {
     await page.waitForURL(new URL(path, base).href);
     const navigationMs = elapsed(start);
     await page.locator("main").locator(selector).first().waitFor();
+    if (path === "/study") await expect(page.getByRole("button", { name: "Start", exact: true })).toBeEnabled({ timeout: 120_000 });
     samples.push({ cycle, action, navigationMs, readyMs: elapsed(start), requests: requests.slice(offset) });
   }
 
@@ -88,22 +90,11 @@ try {
   await page.getByRole("button", { name: "Virtual partners", exact: true }).click();
   await page.getByTestId("character-card-male-01").waitFor();
   samples.push({ action: "open Virtual Partners", readyMs: elapsed(start) });
-  const preferenceResponse = () => page.waitForResponse(response => {
-    if (new URL(response.url()).pathname !== "/api/repository" || operation(response.request()) !== "updateProfile") return false;
-    return Boolean(response.request().postDataJSON().patch?.companionPreferences);
-  });
-  let saved = preferenceResponse();
   start = performance.now();
   await page.getByTestId("character-card-male-01").click();
-  await page.getByTestId("character-card-male-01").evaluate(element => {
-    if (element.getAttribute("aria-pressed") !== "true") throw new Error("Partner selection did not update.");
-  });
-  const selectionMs = elapsed(start);
-  if (!(await saved).ok()) throw new Error("Partner preferences could not be saved.");
-  samples.push({ action: "select partner", readyMs: selectionMs, savedMs: elapsed(start) });
-  saved = preferenceResponse();
+  await expect(page.getByTestId("character-card-male-01")).toHaveAttribute("aria-pressed", "true");
+  samples.push({ action: "select fresh partner", readyMs: elapsed(start) });
   await page.getByTestId("character-card-male-01").click();
-  if (!(await saved).ok()) throw new Error("Partner preferences could not be restored.");
   await page.getByRole("button", { name: "Close", exact: true }).click();
 
   const scripts = await scriptResources();
@@ -115,8 +106,8 @@ try {
     journeyScriptBytes: scripts.reduce((sum, script) => sum + script.decodedBytes, 0), errors }, null, 2));
 } finally {
   if (originalPreferences) {
-    const restored = await page.request.post(`${base}/api/repository`, { data: { op: "updateProfile", patch: { companionPreferences: originalPreferences } } });
-    if (!restored.ok()) console.error("The benchmark could not restore the original companion preferences.");
+    const restored = await page.request.post(`${base}/api/repository`, { data: { op: "updateProfile", patch: originalPreferences } });
+    if (!restored.ok()) console.error("The benchmark could not restore the original setup preferences.");
   }
   await browser.close();
 }

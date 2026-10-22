@@ -6,8 +6,6 @@ const bank = (prefix: string) => Array.from({ length: 10 }, (_, index) => `chara
 const themed: Partial<Record<CharacterSlug, readonly TranslationKey[]>> = {
   einstein: bank("Einstein"),
   tesla: bank("Tesla"),
-  "medieval-scholar": bank("Scholar"),
-  "medieval-scribe": bank("Scribe"),
   "moss-fox": ["characters.statusFox", "characters.statusOnePage", "characters.statusChapter", "characters.statusSmallSteps", "characters.statusPractice"],
   "pip-owl": ["characters.statusOwl", "characters.statusNotes", "characters.statusChapter", "characters.statusOnePage", "characters.statusDeadline"],
   "momo-cloud": ["characters.statusCloud", "characters.statusSmallSteps", "characters.statusOnePage", "characters.statusNotes", "characters.statusPractice"],

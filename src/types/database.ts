@@ -1796,6 +1796,57 @@ export type Database = {
                     }
                 ];
             };
+            "session_notes": {
+                Row: {
+                    "body": string;
+                    "client_id": string;
+                    "created_at": string;
+                    "id": string;
+                    "session_id": string;
+                    "user_id": string;
+                };
+                ComputedFields: never;
+                Insert: {
+                    "body": string;
+                    "client_id": string;
+                    "created_at"?: string;
+                    "id"?: string;
+                    "session_id": string;
+                    "user_id": string;
+                };
+                Update: {
+                    "body"?: string;
+                    "client_id"?: string;
+                    "created_at"?: string;
+                    "id"?: string;
+                    "session_id"?: string;
+                    "user_id"?: string;
+                };
+                Relationships: [
+                    {
+                        foreignKeyName: "session_notes_session_id_fkey";
+                        columns: [
+                            "session_id"
+                        ];
+                        isOneToOne: false;
+                        referencedRelation: "sessions";
+                        referencedColumns: [
+                            "id"
+                        ];
+                    },
+                    {
+                        foreignKeyName: "session_notes_user_id_fkey";
+                        columns: [
+                            "user_id"
+                        ];
+                        isOneToOne: false;
+                        referencedRelation: "profiles";
+                        referencedColumns: [
+                            "id"
+                        ];
+                    }
+                ];
+            };
             "sessions": {
                 Row: {
                     "actual_seconds": number;
@@ -2378,6 +2429,14 @@ export type Database = {
             };
         };
         Functions: {
+            "add_session_note": {
+                Args: {
+                    "p_body": string;
+                    "p_client": string;
+                    "p_session": string;
+                };
+                Returns: Json;
+            };
             "apply_billing_event": {
                 Args: {
                     "p_enabled": boolean;
@@ -2649,6 +2708,14 @@ export type Database = {
                     "p_cursor"?: string;
                     "p_limit"?: number;
                     "p_room": string;
+                };
+                Returns: Json;
+            };
+            "read_session_notes": {
+                Args: {
+                    "p_after_at"?: string;
+                    "p_after_id"?: string;
+                    "p_session": string;
                 };
                 Returns: Json;
             };

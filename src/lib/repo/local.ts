@@ -22,6 +22,7 @@ import { achievementDefinitions } from "@/lib/achievements/registry";
 import { tileStatusSchema, type TileHistoryPage } from "@/types/tileStatus";
 import { CapabilityError } from "./capabilities";
 import { browserTab, type BrowserTab } from "@/lib/session/browserTab";
+import { freshSessionSelections } from "@/lib/session/freshSelections";
 
 import { profileSchema, sessionSchema, streakSchema, localSessionInputSchema as inputSchema } from "./schemas";
 export { profileSchema, sessionSchema, streakSchema } from "./schemas";
@@ -96,6 +97,16 @@ export class LocalRepository implements Repository {
       companionPreferences: soloCompanions(),
     }));
     const tile=this.read('ss_personal_tile',tileSchema,()=>tileSchema.parse({mirrored:stored.mirrorSelfView,isVisible:stored.showOwnTile,shareNowPlaying:stored.shareNowPlaying}));
+    if (this.read("ss_session_choices_version", z.number().int(), () => 0) < 1) {
+      this.write("ss_session_choices_version", 1);
+      const sessions = this.sessions();
+      if (sessions.some(session => session.endedAt !== null) && !sessions.some(session => session.endedAt === null)) {
+        const fresh = { ...stored, ...freshSessionSelections() };
+        this.write("ss_profile", fresh);
+        this.write("ss_personal_tile", { ...tile, status: "" });
+        return { ...fresh, mirrorSelfView: tile.mirrored, showOwnTile: tile.isVisible, shareNowPlaying: tile.shareNowPlaying };
+      }
+    }
     return {...stored,mirrorSelfView:tile.mirrored,showOwnTile:tile.isVisible,shareNowPlaying:tile.shareNowPlaying};
   }
   private sessions(): Session[] { return this.read("ss_sessions", sessionsSchema, () => []); }
@@ -295,6 +306,16 @@ export class LocalRepository implements Repository {
         this.write("ss_streak_events", { ...this.streakEvents(), [id]: { changed: activity.changed, freezeUsed: activity.freezeUsed } });
       }
       this.write("ss_active", null);
+      this.write("ss_profile", { ...this.profile(), ...freshSessionSelections() });
+      const tile = this.read("ss_personal_tile", tileSchema, () => tileSchema.parse({}));
+      this.write("ss_personal_tile", { ...tile, status: "" });
+      const browserKey = `ss_session_browser_${id}`;
+      const tabs = this.read(browserKey, z.array(z.uuid()), () => []);
+      for (const key of [browserKey, ...tabs.map(tab => `${browserKey}:${tab}`)]) {
+        this.memory.delete(key);
+        this.memoryOverrides.delete(key);
+        try { this.storageAccess()?.removeItem(key); } catch { /* Storage may be unavailable during cleanup. */ }
+      }
       return this.totals(updated, ended, { current: activity.state.current, best: activity.state.best, changed: activity.changed, freezeUsed: activity.freezeUsed });
   }
   heartbeat(id: string): Promise<void> {

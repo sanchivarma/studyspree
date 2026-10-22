@@ -9,6 +9,7 @@ import { useCompletionStore } from "@/stores/completionStore";
 import type { Profile, Session } from "@/types/domain";
 import { now } from "@/lib/clock";
 import { toLocalDate } from "@/lib/stats/localDate";
+import { clearClientSelections } from "@/lib/session/clearClientSelections";
 
 export type EndSessionInput = { id: string; reason: "completed" | "stopped_early" };
 
@@ -31,6 +32,7 @@ export function useEndSession() {
       queryClient.setQueryData<number>(queryKeys.stats.total(), current => Math.max(current ?? 0, result.totalSecondsAllTime));
       queryClient.setQueryData<Session | null>(queryKeys.activeSession(), current => current?.id === session.id ? null : current);
       queryClient.setQueryData(queryKeys.stats.session(session.id), session);
+      clearClientSelections(queryClient, session.id);
       void Promise.all([
         queryClient.invalidateQueries({ queryKey: queryKeys.activeSession() }),
         queryClient.invalidateQueries({ queryKey: queryKeys.stats.all() }),

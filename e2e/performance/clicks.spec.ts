@@ -50,12 +50,13 @@ for (const item of navigationItems) {
       await expect(page.locator("main").getByRole("status").filter({ hasText: new RegExp(`^(${text("community.loading")}|${text("common.working")}|${text("stats.loading")})$`) })).toHaveCount(0, { timeout: remaining() });
       await expect(page.locator("main").getByRole("alert")).toHaveCount(0, { timeout: remaining() });
       if (item.id === "settings") await expect(page.locator('input[autocomplete="nickname"]')).toBeEnabled({ timeout: remaining() });
+      if (item.id === "study") await expect(page.getByRole("button", { name: "Start", exact: true })).toBeEnabled({ timeout: remaining() });
       if (item.id === "profile") await expect(page.locator("main").getByRole("heading", { name: "Performance reader", exact: true })).toBeVisible({ timeout: remaining() });
     });
   });
 }
 
-test("companion picker, selection and persistence complete within two seconds", async ({ page }, info) => {
+test("fresh companion selection and saved session complete within two seconds", async ({ page }, info) => {
   await page.goto("/study");
   await expect(page.getByRole("button", { name: "Start", exact: true })).toBeEnabled();
   await expectFastAction(info, "open companion picker", remaining => page.getByRole("button", { name: "Choose companions", exact: true }).click({ timeout: remaining() }),
@@ -63,24 +64,25 @@ test("companion picker, selection and persistence complete within two seconds", 
   await expectFastAction(info, "open Virtual Partners", remaining => page.getByRole("button", { name: "Virtual partners", exact: true }).click({ timeout: remaining() }),
     remaining => expect(page.getByTestId("character-card-male-01")).toBeVisible({ timeout: remaining() }));
   const card = page.getByTestId("character-card-male-01");
-  const selected = await card.getAttribute("aria-pressed");
-  const shouldSelect = selected !== "true";
+  await expect(card).toHaveAttribute("aria-pressed", "false");
+  await expectFastAction(info, "select a fresh partner", remaining => card.click({ timeout: remaining() }),
+    remaining => expect(card).toHaveAttribute("aria-pressed", "true", { timeout: remaining() }));
+  await page.getByRole("button", { name: "Close", exact: true }).click();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
   let saved: Promise<Response>;
-  await expectFastAction(info, "select partner and save", async remaining => {
-    saved = page.waitForResponse(response => {
-      if (!repositoryResponse(response, "updateProfile")) return false;
-      const slugs: unknown = response.request().postDataJSON()?.patch?.companionPreferences?.characterSlugs;
-      return Array.isArray(slugs) && slugs.includes("male-01") === shouldSelect;
-    }, { timeout: remaining() });
+  await expectFastAction(info, "Start with the selected partner", async remaining => {
+    saved = page.waitForResponse(response => repositoryResponse(response, "start"), { timeout: remaining() });
     void saved.catch(() => undefined);
-    await card.click({ timeout: remaining() });
+    await page.getByRole("button", { name: "Start", exact: true }).click({ timeout: remaining() });
   }, async remaining => {
-    await expect(card).toHaveAttribute("aria-pressed", selected === "true" ? "false" : "true", { timeout: remaining() });
     const response = await saved;
     expect(response.ok()).toBe(true);
-    const profile = await response.json() as { companionPreferences: { characterSlugs: string[] } };
-    expect(profile.companionPreferences.characterSlugs.includes("male-01")).toBe(shouldSelect);
+    const session = await response.json() as { companions: { characterSlugs: string[] } };
+    expect(session.companions.characterSlugs).toEqual(["male-01"]);
+    await expect(page.getByTestId("character-loop-male-01")).toBeVisible({ timeout: remaining() });
   });
+  await page.getByRole("button", { name: "Finish", exact: true }).click();
+  await expect(page.getByTestId("complete-screen")).toBeVisible();
 });
 
 test("search opens and loads real results within two seconds", async ({ page }, info) => {

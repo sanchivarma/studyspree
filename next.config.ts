@@ -13,7 +13,7 @@ export default function nextConfig(phase: string): NextConfig {
       webpackMemoryOptimizations: true,
     },
     // Keep production builds separate; route-group changes require fresh route discovery.
-    distDir: phase === PHASE_DEVELOPMENT_SERVER ? process.env.STUDYSPREE_VERIFY === "1" ? ".next-verify" : ".next-dev" : ".next",
+    distDir: phase === PHASE_DEVELOPMENT_SERVER ? process.env.STUDYSPREE_VERIFY === "1" ? ".next-verify" : ".next-dev" : process.env.STUDYSPREE_PREVIEW_BUILD === "1" ? ".next-preview" : ".next",
     outputFileTracingRoot: process.cwd(),
     // These Node SDKs expose native CommonJS entry points. Avoid recompiling
     // their complete dependency graphs for each development server route.

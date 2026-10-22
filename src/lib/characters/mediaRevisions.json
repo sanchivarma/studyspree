@@ -7,7 +7,9 @@
     "gifFrames": 80,
     "gifWidth": 480,
     "gifHeight": 360,
-    "video": true
+    "video": true,
+    "videoVersion": "playback-v1",
+    "playbackSource": "study-v3.mp4"
   },
   "male-02": {
     "version": "v3",
@@ -17,7 +19,9 @@
     "gifFrames": 80,
     "gifWidth": 480,
     "gifHeight": 360,
-    "video": true
+    "video": true,
+    "videoVersion": "playback-v1",
+    "playbackSource": "study-v3.mp4"
   },
   "male-03": {
     "version": "v3",
@@ -27,7 +31,9 @@
     "gifFrames": 80,
     "gifWidth": 480,
     "gifHeight": 360,
-    "video": true
+    "video": true,
+    "videoVersion": "playback-v1",
+    "playbackSource": "study-v3.mp4"
   },
   "male-04": {
     "version": "v3",
@@ -37,7 +43,9 @@
     "gifFrames": 80,
     "gifWidth": 480,
     "gifHeight": 360,
-    "video": true
+    "video": true,
+    "videoVersion": "playback-v1",
+    "playbackSource": "study-v3.mp4"
   },
   "female-01": {
     "version": "v3",
@@ -47,7 +55,9 @@
     "gifFrames": 80,
     "gifWidth": 480,
     "gifHeight": 360,
-    "video": true
+    "video": true,
+    "videoVersion": "playback-v1",
+    "playbackSource": "study-v3.mp4"
   },
   "female-02": {
     "version": "v3",
@@ -57,7 +67,9 @@
     "gifFrames": 80,
     "gifWidth": 480,
     "gifHeight": 360,
-    "video": true
+    "video": true,
+    "videoVersion": "playback-v1",
+    "playbackSource": "study-v3.mp4"
   },
   "female-03": {
     "version": "v3",
@@ -67,7 +79,9 @@
     "gifFrames": 80,
     "gifWidth": 480,
     "gifHeight": 360,
-    "video": true
+    "video": true,
+    "videoVersion": "playback-v1",
+    "playbackSource": "study-v3.mp4"
   },
   "female-04": {
     "version": "v3",
@@ -77,7 +91,9 @@
     "gifFrames": 80,
     "gifWidth": 480,
     "gifHeight": 360,
-    "video": true
+    "video": true,
+    "videoVersion": "playback-v1",
+    "playbackSource": "study-v3.mp4"
   },
   "moss-fox": {
     "version": "v3",
@@ -87,7 +103,9 @@
     "gifFrames": 80,
     "gifWidth": 320,
     "gifHeight": 240,
-    "video": true
+    "video": true,
+    "videoVersion": "playback-v1",
+    "playbackSource": "study-v3.mp4"
   },
   "pip-owl": {
     "version": "v3",
@@ -97,7 +115,9 @@
     "gifFrames": 80,
     "gifWidth": 320,
     "gifHeight": 240,
-    "video": true
+    "video": true,
+    "videoVersion": "playback-v1",
+    "playbackSource": "study-v3.mp4"
   },
   "momo-cloud": {
     "version": "v3",
@@ -107,7 +127,9 @@
     "gifFrames": 80,
     "gifWidth": 320,
     "gifHeight": 240,
-    "video": true
+    "video": true,
+    "videoVersion": "playback-v1",
+    "playbackSource": "study-v3.mp4"
   },
   "realistic-01": {
     "version": "v13",
@@ -138,7 +160,7 @@
     "readingPauseMs": 10000,
     "sourceVersion": "v3",
     "sourceSha256": "f613e53393590c027d4e88124a114f06b29a8e9a0ae080231af6d47cd999f327",
-    "video": false,
+    "video": true,
     "sourceFrameOrder": [
       15,
       14,
@@ -157,7 +179,9 @@
       1,
       0
     ],
-    "pageTurnDirection": "viewer-left-to-right"
+    "pageTurnDirection": "viewer-left-to-right",
+    "videoVersion": "playback-v1",
+    "playbackSource": "study-v13.gif"
   },
   "realistic-02": {
     "version": "v12",
@@ -281,7 +305,9 @@
     "readingPauseMs": 0,
     "sourceVersion": "v4",
     "sourceSha256": "e8d7ee0e1a0ce4e084c07687c4993372f22aac9884e64c6694ebdb95c7700197",
-    "video": false
+    "video": true,
+    "videoVersion": "playback-v1",
+    "playbackSource": "study-v12.gif"
   },
   "realistic-03": {
     "version": "v12",
@@ -312,7 +338,9 @@
     "readingPauseMs": 10230,
     "sourceVersion": "v3",
     "sourceSha256": "4b542f360c904bad1e3a17f6bf84b523f5cfd6907ae1b2bf4e8284abe3f58c09",
-    "video": false
+    "video": true,
+    "videoVersion": "playback-v1",
+    "playbackSource": "study-v12.gif"
   },
   "realistic-04": {
     "version": "v12",
@@ -343,7 +371,9 @@
     "readingPauseMs": 10460,
     "sourceVersion": "v3",
     "sourceSha256": "d182221860257f018f2767cd2433ca621aa4af237aaeec13a5b1e0be7e41e25b",
-    "video": false
+    "video": true,
+    "videoVersion": "playback-v1",
+    "playbackSource": "study-v12.gif"
   },
   "realistic-05": {
     "version": "v12",
@@ -374,7 +404,9 @@
     "readingPauseMs": 10690,
     "sourceVersion": "v3",
     "sourceSha256": "ae81405ffbacb62431b2c14c277261fb328fd7bdf75f31020368fb2f7bd04ad5",
-    "video": false
+    "video": true,
+    "videoVersion": "playback-v1",
+    "playbackSource": "study-v12.gif"
   },
   "realistic-06": {
     "version": "v12",
@@ -405,7 +437,9 @@
     "readingPauseMs": 10920,
     "sourceVersion": "v3",
     "sourceSha256": "bdfafca85011145fa6ab9cbee302c4bb3dc8b41166a467a460ebb3e7371bdf96",
-    "video": false
+    "video": true,
+    "videoVersion": "playback-v1",
+    "playbackSource": "study-v12.gif"
   },
   "realistic-07": {
     "version": "v12",
@@ -436,7 +470,9 @@
     "readingPauseMs": 11150,
     "sourceVersion": "v3",
     "sourceSha256": "2e4b5c8b8fde86397812a1a6c4e0d6f07cb5d5b4f9254349d1610f4d5cf0c22a",
-    "video": false
+    "video": true,
+    "videoVersion": "playback-v1",
+    "playbackSource": "study-v12.gif"
   },
   "realistic-08": {
     "version": "v12",
@@ -467,7 +503,9 @@
     "readingPauseMs": 11380,
     "sourceVersion": "v3",
     "sourceSha256": "53a4feef535f37b2beb68cb3c4a2633224130949279cd55570c96470fe257450",
-    "video": false
+    "video": true,
+    "videoVersion": "playback-v1",
+    "playbackSource": "study-v12.gif"
   },
   "realistic-09": {
     "version": "v12",
@@ -588,7 +626,9 @@
     "readingPauseMs": 0,
     "sourceVersion": "v1",
     "sourceSha256": "07ed8f80789fdbb72455c4a5fb0ca1b1ef7b6ff30c31844071ec1e28aa4558ab",
-    "video": false
+    "video": true,
+    "videoVersion": "playback-v1",
+    "playbackSource": "study-v12.gif"
   },
   "realistic-10": {
     "version": "v12",
@@ -709,7 +749,9 @@
     "readingPauseMs": 0,
     "sourceVersion": "v1",
     "sourceSha256": "0fb605c43b41e50ea7201853f154414438bdb788b37881939ddd6992a9e80776",
-    "video": false
+    "video": true,
+    "videoVersion": "playback-v1",
+    "playbackSource": "study-v12.gif"
   },
   "realistic-11": {
     "version": "v12",
@@ -830,7 +872,9 @@
     "readingPauseMs": 0,
     "sourceVersion": "v1",
     "sourceSha256": "954cd8a9ecce61c2b208f591be2fd8c06ca40db4ce6963120c0e454e977ec69c",
-    "video": false
+    "video": true,
+    "videoVersion": "playback-v1",
+    "playbackSource": "study-v12.gif"
   },
   "realistic-12": {
     "version": "v12",
@@ -951,249 +995,9 @@
     "readingPauseMs": 0,
     "sourceVersion": "v1",
     "sourceSha256": "0f72d91eb5008a625be0081fe7c0e060ee303171215c3e97d87abad3a7f2efb5",
-    "video": false
-  },
-  "medieval-scholar": {
-    "version": "v12",
-    "posterVersion": "v1",
-    "loopSeconds": 11.66,
-    "gifSeconds": 11.66,
-    "gifFrames": 106,
-    "gifWidth": 320,
-    "gifHeight": 240,
-    "gifDelays": [
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110,
-      110
-    ],
-    "readingPauseMs": 0,
-    "sourceVersion": "v1",
-    "sourceSha256": "74da8e99acac882c34b102cb53ed56aed5d21110ea54338ec4d9e7e21b39a4e0",
-    "video": false
-  },
-  "medieval-scribe": {
-    "version": "v11",
-    "posterVersion": "v1",
-    "loopSeconds": 27.78,
-    "gifSeconds": 27.78,
-    "gifFrames": 106,
-    "gifWidth": 320,
-    "gifHeight": 240,
-    "gifDelays": [
-      19380,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80,
-      80
-    ],
-    "readingPauseMs": 19380,
-    "sourceVersion": "v1",
-    "sourceSha256": "cb67747542692d059f48fbae31752cfebfa6b8a3f6e2bbc33f3d8d42c3b72e85",
-    "video": false
+    "video": true,
+    "videoVersion": "playback-v1",
+    "playbackSource": "study-v12.gif"
   },
   "einstein": {
     "version": "v30",
@@ -1486,7 +1290,9 @@
       205,
       210
     ],
-    "writingTravel": "two-left-to-right-lines-with-pen-lift"
+    "writingTravel": "two-left-to-right-lines-with-pen-lift",
+    "videoVersion": "playback-v1",
+    "playbackSource": "study-v30.mp4"
   },
   "tesla": {
     "version": "v30",
@@ -1779,6 +1585,8 @@
       215,
       215
     ],
-    "writingTravel": "two-left-to-right-lines-with-pen-lift"
+    "writingTravel": "two-left-to-right-lines-with-pen-lift",
+    "videoVersion": "playback-v1",
+    "playbackSource": "study-v30.mp4"
   }
 }

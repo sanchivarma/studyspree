@@ -14,6 +14,11 @@
     "goalNotice": "Il tuo obiettivo verrà condiviso al tuo ingresso. Lascia il campo vuoto per mantenerlo privato.",
     "goalPosted": "Obiettivo della sessione",
     "chatLimit": "Attendi un momento prima di inviare altri messaggi.",
-    "admin": "Admin"
+    "admin": "Admin",
+    "notesHeading": "Il tuo spazio per gli appunti di studio",
+    "notesPrompt": "Annota pensieri, domande o promemoria personali.",
+    "notesPrivate": "Questi appunti restano privati.",
+    "noteLabel": "Aggiungi un appunto",
+    "olderNotes": "Carica gli appunti precedenti"
   }
 }

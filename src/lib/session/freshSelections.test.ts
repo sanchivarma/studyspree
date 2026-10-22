@@ -1,0 +1,36 @@
+import { afterEach, expect, it, vi } from "vitest";
+import { LocalRepository } from "@/lib/repo/local";
+import { QueryClient } from "@tanstack/react-query";
+import { queryKeys } from "@/lib/queryKeys";
+import { clearClientSelections } from "./clearClientSelections";
+import { useRoomViewStore } from "@/stores/roomViewStore";
+vi.mock("@/lib/clock", () => ({ now: () => new Date(Date.now()) }));
+afterEach(() => { vi.useRealTimers(); vi.unstubAllGlobals(); });
+
+it("clears finished choices and browser bookkeeping while preserving identity and banked time", async () => {
+  vi.useFakeTimers(); vi.setSystemTime(new Date("2026-10-21T12:00:00Z"));
+  const values = new Map<string, string>();
+  const repo = new LocalRepository(() => ({ getItem: key => values.get(key) ?? null, setItem: (key, value) => { values.set(key, value); }, removeItem: key => { values.delete(key); } }));
+  await repo.updateProfile({ displayName: "Reader", timezone: "Europe/Berlin", reduceMotion: true, selectedTheme: "night-shift", companionPreferences: { mode: "characters", characterSlugs: ["male-01"] }, webcamEnabled: true, musicVolume: 0.8, backgroundEffects: ["rain"] });
+  const session = await repo.startSession({ plannedMinutes: 25, themeSlug: "night-shift", task: "Study", companions: { mode: "characters", characterSlugs: ["male-01"] } });
+  const tab = "00000000-0000-4000-8000-000000000001";
+  values.set(`ss_session_browser_${session.id}`, JSON.stringify([tab]));
+  values.set(`ss_session_browser_${session.id}:${tab}`, JSON.stringify({ documentId: tab, closedAt: null }));
+  const cache = new QueryClient();
+  cache.setQueryData(queryKeys.profile(), await repo.getProfile());
+  cache.setQueryData(queryKeys.sessionNotes.read(session.id), { privateDraft: "Old draft" });
+  cache.setQueryData(queryKeys.stats.total(), 5000);
+  useRoomViewStore.setState({ rooms: { old: { pinned: true, pins: [] } } });
+  vi.advanceTimersByTime(10_000);
+  const ended = await repo.endSession(session.id, "stopped_early");
+  expect(ended.session.actualSeconds).toBe(10);
+  expect((await repo.getSession(session.id))?.companions.characterSlugs).toEqual(["male-01"]);
+  expect(await repo.getTotalSecondsAllTime()).toBe(10);
+  expect([...values.keys()].some(key => key.startsWith(`ss_session_browser_${session.id}`))).toBe(false);
+  expect(await repo.getProfile()).toMatchObject({ displayName: "Reader", timezone: "Europe/Berlin", reduceMotion: true, selectedTheme: "night-shift", webcamEnabled: true, backgroundEffects: ["rain"], musicVolume: 0.8, companionPreferences: { mode: "solo", characterSlugs: [] } });
+  clearClientSelections(cache, session.id);
+  expect(cache.getQueryData(queryKeys.sessionNotes.read(session.id))).toBeUndefined();
+  expect(cache.getQueryData(queryKeys.stats.total())).toBe(5000);
+  expect(useRoomViewStore.getState().rooms).toEqual({});
+  cache.clear();
+});

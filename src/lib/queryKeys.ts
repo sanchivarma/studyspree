@@ -1,4 +1,5 @@
 export const queryKeys = {
+  sessionNotes: { read: (sessionId: string) => ["session-notes", sessionId] as const },
   integrations: { spotify: () => ["integrations", "spotify"] as const },
   entitlements: () => ["entitlements"] as const,
   delivery: () => ["community-delivery"] as const,

@@ -1,7 +1,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path=public,extensions;
-select plan(16);
+select plan(17);
 insert into auth.users(id,email,raw_app_meta_data,raw_user_meta_data) values
 ('a8700000-0000-4000-8000-000000000001','browser-a@example.test','{"provider":"email"}','{"username":"browser_a"}'),
 ('a8700000-0000-4000-8000-000000000002','browser-b@example.test','{"provider":"email"}','{"username":"browser_b"}');
@@ -28,10 +28,14 @@ select ok((select closed_at is null from session_browser_tabs where session_id=c
 set local role authenticated;
 select set_config('request.jwt.claims','{"sub":"a8700000-0000-4000-8000-000000000001","role":"authenticated"}',true);
 select public.close_session_browser_tab(current_setting('test.browser_session')::uuid,'00000000-0000-4000-8000-000000000001','00000000-0000-4000-8000-000000000012');
+reset role;
+select set_config('test.browser_closed_at',(select closed_at::text from session_browser_tabs where session_id=current_setting('test.browser_session')::uuid),true);
+set local role authenticated;
 select public.sync_session_browser(current_setting('test.browser_session')::uuid,'00000000-0000-4000-8000-000000000002','00000000-0000-4000-8000-000000000022');
 reset role;
 select is((select ended_reason from sessions where id=current_setting('test.browser_session')::uuid),'stopped_early','New tab settles the closed session immediately');
-select is((select ended_at from sessions where id=current_setting('test.browser_session')::uuid),(select closed_at from session_browser_tabs where session_id=current_setting('test.browser_session')::uuid),'Closed time is excluded from banking');
+select is((select ended_at from sessions where id=current_setting('test.browser_session')::uuid),current_setting('test.browser_closed_at')::timestamptz,'Closed time is excluded from banking');
+select is((select count(*) from session_browser_tabs where session_id=current_setting('test.browser_session')::uuid),0::bigint,'Finished browser tracking is cleaned');
 select is((select total_seconds from day_stats where user_id='a8700000-0000-4000-8000-000000000001'),(select actual_seconds::bigint from sessions where id=current_setting('test.browser_session')::uuid),'Database trigger banks time exactly once');
 select is((select best_streak from streaks where user_id='a8700000-0000-4000-8000-000000000001'),1,'Closing a tab preserves earned activity');
 set local role authenticated;

@@ -8,7 +8,7 @@ import { getCharacter } from "./registry";
 const timed = Object.entries(media).filter(([, value]) => "sourceVersion" in value);
 describe("active companion timing and source integrity", () => {
   it("matches the active registry and preserves distinct reader onsets", () => {
-    expect(timed).toHaveLength(16);
+    expect(timed).toHaveLength(14);
     const readerStarts = new Set<number>();
     for (const [slug, value] of timed) {
       const character = getCharacter(slug)!;
@@ -17,7 +17,7 @@ describe("active companion timing and source integrity", () => {
       if (character.activity === "writing") expect(pause).toBe(0);
       else { expect(pause).toBeGreaterThanOrEqual(10000); readerStarts.add(pause); }
     }
-    expect(readerStarts.size).toBe(8);
+    expect(readerStarts.size).toBe(7);
   });
   it("encodes recorded delays with the documented source hashes and frame counts", async () => {
     for (const [slug, value] of timed) {

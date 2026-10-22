@@ -5,7 +5,6 @@ import {useAccountMode} from "@/hooks/useAccountMode";
 import { useRouter } from "next/navigation";
 import { Shuffle, Users, X } from "lucide-react";
 import { CompanionModePicker } from "@/components/characters/CompanionModePicker";
-import { useCompanionPreferences } from "@/hooks/useCompanionPreferences";
 import type { CompanionPreferences } from "@/types/characters";
 import { soloCompanions } from "@/lib/characters/schemas";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetClose, SheetTrigger } from "@/components/ui/sheet";
@@ -18,10 +17,10 @@ import { AccountControls } from "@/components/layout/AccountControls";
 import { useDashboard } from "@/hooks/useDashboard";
 import { useActiveSession } from "@/hooks/useActiveSession";
 import { useProfile } from "@/hooks/useProfile";
-import { useRecentSession } from "@/hooks/useRecentSession";
 import { useStartSession } from "@/hooks/useStartSession";
 import { now } from "@/lib/clock";
 import { useComeback } from "@/hooks/useComeback";
+import { useFreshSessionSetup } from "@/hooks/useFreshSessionSetup";
 import { ComebackScreen } from "@/components/start/ComebackScreen";
 
 const durations = [5, 15, 25, 50, "open"] as const;
@@ -38,18 +37,16 @@ export function StartScreen({ displayName, initialHour, initialMode }: { display
   const roomSession=Boolean(active.data&&(["people","mixed"].includes(active.data.companions.mode)||active.data.visibility==="public"));
   const dashboard=useDashboard(roomSession);
   const profile = useProfile();
-  const recent = useRecentSession();
+  const freshSetup = useFreshSessionSetup();
   const comeback = useComeback(!active.isPending && !active.data);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [companionOpen, setCompanionOpen] = useState(false);
-  const companionPreferences = useCompanionPreferences();
   const [chosenCompanions, setChosenCompanions] = useState<CompanionPreferences | null>(null);
   // A new setup never preselects partners from the preceding session/profile.
   // Only choices made on this setup screen may populate the new session.
   const companions = useMemo<CompanionPreferences>(() => chosenCompanions ?? (initialMode === "people" ? { mode: "people", characterSlugs: [] } : soloCompanions()), [chosenCompanions, initialMode]);
   const [chosenDuration, setChosenDuration] = useState<number | null | undefined>(undefined);
-  const latest = recent.data?.[0];
-  const selectedDuration = chosenDuration !== undefined ? chosenDuration : latest?.endedAt ? latest.plannedMinutes : 5;
+  const selectedDuration = chosenDuration !== undefined ? chosenDuration : 5;
   const slug = getTheme(profile.data?.selectedTheme ?? "rain-desk").slug;
   const mountedAt = useRef<number | null>(null);
   const { mutate, isPending, error } = useStartSession(() => {
@@ -58,7 +55,7 @@ export function StartScreen({ displayName, initialHour, initialMode }: { display
   const starting = useRef(false);
   const taskRef = useRef<HTMLInputElement>(null);
   const startSession = useCallback(() => {
-    if (starting.current || isPending) return;
+    if (starting.current || isPending || !freshSetup.ready) return;
     const title=titleRef.current?.value.trim();
     if(!title){setTitleError(true);titleRef.current?.focus();return;}
     setTitleError(false);starting.current = true;
@@ -66,7 +63,7 @@ export function StartScreen({ displayName, initialHour, initialMode }: { display
     mutate({ plannedMinutes: selectedDuration, themeSlug: slug, task: task || null, companions,title,rules:rulesRef.current?.value.trim()||null,visibility }, {
       onSettled: () => { starting.current = false; },
     });
-  }, [mutate, isPending, selectedDuration, slug, companions,visibility]);
+  }, [mutate, isPending, freshSetup.ready, selectedDuration, slug, companions,visibility]);
   const hour = useCurrentHour(initialHour);
   const greeting = t(hour < 12 ? "home.morning" : hour < 18 ? "home.afternoon" : "home.evening", { username: profile.data?.displayName || displayName });
   const style = { "--accent": getTheme(slug).accentColor } as CSSProperties;
@@ -121,8 +118,7 @@ export function StartScreen({ displayName, initialHour, initialMode }: { display
           <SheetContent side="right" showCloseButton={false} className="w-full overflow-y-auto bg-background p-5 sm:max-w-[440px]">
             <SheetHeader className="mb-5 p-0 pr-11"><SheetTitle>{t("characters.title")}</SheetTitle><SheetDescription>{t("characters.description")}</SheetDescription></SheetHeader>
             <SheetClose asChild><button type="button" aria-label={t("scene.close")} className="absolute top-2 right-2 flex size-11 items-center justify-center"><X className="size-5" /></button></SheetClose>
-            <CompanionModePicker initialMode={!chosenCompanions ? initialMode : undefined} value={companions} onChange={value => { setChosenCompanions(value); if (value.mode === "solo" || value.mode === "characters") companionPreferences.mutation.mutate(value); }} />
-            {companionPreferences.mutation.error && <p role="alert" className="mt-4 text-small">{t("characters.saveError")}</p>}
+            <CompanionModePicker initialMode={!chosenCompanions ? initialMode : undefined} value={companions} onChange={setChosenCompanions} />
           </SheetContent>
         </Sheet>
 
@@ -166,12 +162,13 @@ export function StartScreen({ displayName, initialHour, initialMode }: { display
           type="button"
           aria-keyshortcuts="Enter Space"
           onClick={startSession}
-          disabled={isPending}
+          disabled={isPending || !freshSetup.ready}
           className="h-14 w-full rounded-2xl bg-accent text-[18px] font-semibold text-background disabled:opacity-60"
         >
           {t("common.start")}
         </button>
         {error && <p role="alert" className="mt-3 text-small text-text-muted">{t("study.startError")}</p>}
+        {freshSetup.error && <div role="alert" className="mt-3 text-small text-text-muted"><p>{t("community.unavailable")}</p><button type="button" onClick={freshSetup.retry} className="min-h-11 underline">{t("stats.retry")}</button></div>}
       </div>
 
       <ThemeSheet onOpenChange={setSheetOpen}><button

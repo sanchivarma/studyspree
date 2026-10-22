@@ -313,3 +313,53 @@ Four fictional adults generated with built-in imagegen; exact prompts and inspec
 | tesla/study-v30.gif | studyspree-ai-tesla-v30 | Original hand/pen cutout with generated hidden clean plate; Einstein v20 background preserved; Tesla coil discharges updated; scripts/rig-scientist-hands.mjs | Original project artwork; generation-service terms apply | 2026-10-18 | subject to generation-service terms |
 | tesla/study-v30.mp4 | studyspree-ai-tesla-v30 | Original hand/pen cutout with generated hidden clean plate; Einstein v20 background preserved; Tesla coil discharges updated; scripts/rig-scientist-hands.mjs | Original project artwork; generation-service terms apply | 2026-10-18 | subject to generation-service terms |
 | tesla/study-v30.webm | studyspree-ai-tesla-v30 | Original hand/pen cutout with generated hidden clean plate; Einstein v20 background preserved; Tesla coil discharges updated; scripts/rig-scientist-hands.mjs | Original project artwork; generation-service terms apply | 2026-10-18 | subject to generation-service terms |
+
+- `male-01/study-playback-v1.mp4`, `male-01/study-playback-v1.webm`: 30 fps muted playback encodes of `male-01/study-v3.mp4`; source provenance and licence above are retained. H.264 fast-start / VP9 fallback; no new poses or synthetic motion.
+
+- `male-02/study-playback-v1.mp4`, `male-02/study-playback-v1.webm`: 30 fps muted playback encodes of `male-02/study-v3.mp4`; source provenance and licence above are retained. H.264 fast-start / VP9 fallback; no new poses or synthetic motion.
+
+- `male-03/study-playback-v1.mp4`, `male-03/study-playback-v1.webm`: 30 fps muted playback encodes of `male-03/study-v3.mp4`; source provenance and licence above are retained. H.264 fast-start / VP9 fallback; no new poses or synthetic motion.
+
+- `male-04/study-playback-v1.mp4`, `male-04/study-playback-v1.webm`: 30 fps muted playback encodes of `male-04/study-v3.mp4`; source provenance and licence above are retained. H.264 fast-start / VP9 fallback; no new poses or synthetic motion.
+
+- `female-01/study-playback-v1.mp4`, `female-01/study-playback-v1.webm`: 30 fps muted playback encodes of `female-01/study-v3.mp4`; source provenance and licence above are retained. H.264 fast-start / VP9 fallback; no new poses or synthetic motion.
+
+- `female-02/study-playback-v1.mp4`, `female-02/study-playback-v1.webm`: 30 fps muted playback encodes of `female-02/study-v3.mp4`; source provenance and licence above are retained. H.264 fast-start / VP9 fallback; no new poses or synthetic motion.
+
+- `female-03/study-playback-v1.mp4`, `female-03/study-playback-v1.webm`: 30 fps muted playback encodes of `female-03/study-v3.mp4`; source provenance and licence above are retained. H.264 fast-start / VP9 fallback; no new poses or synthetic motion.
+
+- `female-04/study-playback-v1.mp4`, `female-04/study-playback-v1.webm`: 30 fps muted playback encodes of `female-04/study-v3.mp4`; source provenance and licence above are retained. H.264 fast-start / VP9 fallback; no new poses or synthetic motion.
+
+- `moss-fox/study-playback-v1.mp4`, `moss-fox/study-playback-v1.webm`: 30 fps muted playback encodes of `moss-fox/study-v3.mp4`; source provenance and licence above are retained. H.264 fast-start / VP9 fallback; no new poses or synthetic motion.
+
+- `pip-owl/study-playback-v1.mp4`, `pip-owl/study-playback-v1.webm`: 30 fps muted playback encodes of `pip-owl/study-v3.mp4`; source provenance and licence above are retained. H.264 fast-start / VP9 fallback; no new poses or synthetic motion.
+
+- `momo-cloud/study-playback-v1.mp4`, `momo-cloud/study-playback-v1.webm`: 30 fps muted playback encodes of `momo-cloud/study-v3.mp4`; source provenance and licence above are retained. H.264 fast-start / VP9 fallback; no new poses or synthetic motion.
+
+- `realistic-01/study-playback-v1.mp4`, `realistic-01/study-playback-v1.webm`: 30 fps muted playback encodes of `realistic-01/study-v13.gif`; source provenance and licence above are retained. H.264 fast-start / VP9 fallback; no new poses or synthetic motion.
+
+- `realistic-02/study-playback-v1.mp4`, `realistic-02/study-playback-v1.webm`: 30 fps muted playback encodes of `realistic-02/study-v12.gif`; source provenance and licence above are retained. H.264 fast-start / VP9 fallback; no new poses or synthetic motion.
+
+- `realistic-03/study-playback-v1.mp4`, `realistic-03/study-playback-v1.webm`: 30 fps muted playback encodes of `realistic-03/study-v12.gif`; source provenance and licence above are retained. H.264 fast-start / VP9 fallback; no new poses or synthetic motion.
+
+- `realistic-04/study-playback-v1.mp4`, `realistic-04/study-playback-v1.webm`: 30 fps muted playback encodes of `realistic-04/study-v12.gif`; source provenance and licence above are retained. H.264 fast-start / VP9 fallback; no new poses or synthetic motion.
+
+- `realistic-05/study-playback-v1.mp4`, `realistic-05/study-playback-v1.webm`: 30 fps muted playback encodes of `realistic-05/study-v12.gif`; source provenance and licence above are retained. H.264 fast-start / VP9 fallback; no new poses or synthetic motion.
+
+- `realistic-06/study-playback-v1.mp4`, `realistic-06/study-playback-v1.webm`: 30 fps muted playback encodes of `realistic-06/study-v12.gif`; source provenance and licence above are retained. H.264 fast-start / VP9 fallback; no new poses or synthetic motion.
+
+- `realistic-07/study-playback-v1.mp4`, `realistic-07/study-playback-v1.webm`: 30 fps muted playback encodes of `realistic-07/study-v12.gif`; source provenance and licence above are retained. H.264 fast-start / VP9 fallback; no new poses or synthetic motion.
+
+- `realistic-08/study-playback-v1.mp4`, `realistic-08/study-playback-v1.webm`: 30 fps muted playback encodes of `realistic-08/study-v12.gif`; source provenance and licence above are retained. H.264 fast-start / VP9 fallback; no new poses or synthetic motion.
+
+- `realistic-09/study-playback-v1.mp4`, `realistic-09/study-playback-v1.webm`: 30 fps muted playback encodes of `realistic-09/study-v12.gif`; source provenance and licence above are retained. H.264 fast-start / VP9 fallback; no new poses or synthetic motion.
+
+- `realistic-10/study-playback-v1.mp4`, `realistic-10/study-playback-v1.webm`: 30 fps muted playback encodes of `realistic-10/study-v12.gif`; source provenance and licence above are retained. H.264 fast-start / VP9 fallback; no new poses or synthetic motion.
+
+- `realistic-11/study-playback-v1.mp4`, `realistic-11/study-playback-v1.webm`: 30 fps muted playback encodes of `realistic-11/study-v12.gif`; source provenance and licence above are retained. H.264 fast-start / VP9 fallback; no new poses or synthetic motion.
+
+- `realistic-12/study-playback-v1.mp4`, `realistic-12/study-playback-v1.webm`: 30 fps muted playback encodes of `realistic-12/study-v12.gif`; source provenance and licence above are retained. H.264 fast-start / VP9 fallback; no new poses or synthetic motion.
+
+- `einstein/study-playback-v1.mp4`, `einstein/study-playback-v1.webm`: 30 fps muted playback encodes of `einstein/study-v30.mp4`; source provenance and licence above are retained. H.264 fast-start / VP9 fallback; no new poses or synthetic motion.
+
+- `tesla/study-playback-v1.mp4`, `tesla/study-playback-v1.webm`: 30 fps muted playback encodes of `tesla/study-v30.mp4`; source provenance and licence above are retained. H.264 fast-start / VP9 fallback; no new poses or synthetic motion.

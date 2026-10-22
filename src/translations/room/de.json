@@ -14,6 +14,11 @@
     "goalNotice": "Dein Ziel wird beim Beitritt im Raum geteilt. Lass das Feld leer, um es privat zu halten.",
     "goalPosted": "Sitzungsziel",
     "chatLimit": "Warte bitte einen Moment, bevor du weitere Nachrichten sendest.",
-    "admin": "Admin"
+    "admin": "Admin",
+    "notesHeading": "Dein Platz für Lernnotizen",
+    "notesPrompt": "Halte Gedanken, Fragen oder Erinnerungen für dich fest.",
+    "notesPrivate": "Diese Notizen bleiben privat.",
+    "noteLabel": "Notiz hinzufügen",
+    "olderNotes": "Frühere Notizen laden"
   }
 }

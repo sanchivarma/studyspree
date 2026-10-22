@@ -14,3 +14,14 @@ export const companionSchema = z.object({
 
 // Real human rooms have a separate transport and authorisation boundary.
 export const localCompanionSchema = companionSchema.refine(value => value.mode === "solo" || value.mode === "characters", { message: "Live rooms are not available in local mode" });
+
+/** Retire choices on read without throwing away a saved session or its hours. */
+export function removeRetiredCompanions(input: unknown): unknown {
+  if (!input || typeof input !== "object" || !("characterSlugs" in input) || !Array.isArray(input.characterSlugs)) return input;
+  const slugs = input.characterSlugs.filter(slug => slug !== "medieval-scholar" && slug !== "medieval-scribe");
+  if (slugs.length === input.characterSlugs.length) return input;
+  const mode = "mode" in input ? input.mode : undefined;
+  return { ...input, characterSlugs: slugs, mode: slugs.length ? mode : mode === "mixed" ? "people" : mode === "characters" ? "solo" : mode };
+}
+export const storedCompanionSchema = z.preprocess(removeRetiredCompanions, companionSchema);
+export const storedLocalCompanionSchema = z.preprocess(removeRetiredCompanions, localCompanionSchema);

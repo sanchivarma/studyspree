@@ -2,14 +2,14 @@ import {sessionDetailsShape} from "@/lib/session/setup";
 import { themeSlugs } from "@/lib/themes/registry";
 import { z } from "zod";
 import { profileSchema } from "./schemas";
-import { companionSchema } from "@/lib/characters/schemas";
+import { companionSchema, localCompanionSchema } from "@/lib/characters/schemas";
 import { historyQuerySchema } from "@/lib/stats/history";
 import { tilePatchSchema } from "@/lib/personalTile/schemas";
 import { browserTabSchema } from "@/lib/session/browserTab";
 const empty = <T extends string>(op: T) => z.object({ op: z.literal(op) }).strict();
 const dates = { from: z.iso.date(), to: z.iso.date() };
 // Zod defaults belong to complete reads, never to partial writes.
-export const profilePatchSchema = profileSchema.partial().transform((parsed) => parsed);
+export const profilePatchSchema = profileSchema.partial().extend({ companionPreferences: localCompanionSchema.optional() }).transform((parsed) => parsed);
 const profilePatch = z.record(z.string(), z.unknown()).transform((raw, ctx) => {
     const validated = profilePatchSchema.safeParse(raw);
     if (!validated.success) {

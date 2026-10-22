@@ -140,7 +140,7 @@
     "gifBytes": 998287,
     "sampledDistinctFrames": 16,
     "largestSampledFrameStep": 17.678,
-    "runtimeVideo": false,
+    "runtimeVideo": true,
     "sha256": "5a181fafd84a41221a98258e531399d04ca10f66df7b3b5786c0cc3edf56fc43"
   },
   {
@@ -152,7 +152,7 @@
     "gifBytes": 1220294,
     "sampledDistinctFrames": 57,
     "largestSampledFrameStep": 2.097,
-    "runtimeVideo": false,
+    "runtimeVideo": true,
     "sha256": "7bc05c6dd136afaba52a205dc52d5a7e6c83dc8659cfe4efa8761ca7443c1bba"
   },
   {
@@ -164,7 +164,7 @@
     "gifBytes": 1067316,
     "sampledDistinctFrames": 16,
     "largestSampledFrameStep": 9.272,
-    "runtimeVideo": false,
+    "runtimeVideo": true,
     "sha256": "d93281797a8f94c6708a64f31708a3f8b521920d942f4356763c3e75b7a20647"
   },
   {
@@ -176,7 +176,7 @@
     "gifBytes": 1133649,
     "sampledDistinctFrames": 16,
     "largestSampledFrameStep": 12.026,
-    "runtimeVideo": false,
+    "runtimeVideo": true,
     "sha256": "56666391ba21fb9885cc1dbfcc3eada868e7c08a4dc12f4c6759db426b0b92e8"
   },
   {
@@ -188,7 +188,7 @@
     "gifBytes": 1035553,
     "sampledDistinctFrames": 16,
     "largestSampledFrameStep": 8.41,
-    "runtimeVideo": false,
+    "runtimeVideo": true,
     "sha256": "134b19b827c8669ede0813e910944f260ea6e49c83d55e40b25b63b675d64ecc"
   },
   {
@@ -200,7 +200,7 @@
     "gifBytes": 1081825,
     "sampledDistinctFrames": 16,
     "largestSampledFrameStep": 11.597,
-    "runtimeVideo": false,
+    "runtimeVideo": true,
     "sha256": "d7ba67a679e4efef2467e56105dd8a5d8aec886b0e5fadef745f8b3d5fe3b9ea"
   },
   {
@@ -212,7 +212,7 @@
     "gifBytes": 1016356,
     "sampledDistinctFrames": 16,
     "largestSampledFrameStep": 9.972,
-    "runtimeVideo": false,
+    "runtimeVideo": true,
     "sha256": "31be4a3d9e20236cc4702342d952ac433af2945b338871b46ad089e5b8e3b480"
   },
   {
@@ -224,7 +224,7 @@
     "gifBytes": 1139509,
     "sampledDistinctFrames": 16,
     "largestSampledFrameStep": 11.242,
-    "runtimeVideo": false,
+    "runtimeVideo": true,
     "sha256": "e757d388dfa1aa0289804c44154e3f860d35443ef3930c6477379587bac6fdf8"
   },
   {
@@ -236,7 +236,7 @@
     "gifBytes": 1472557,
     "sampledDistinctFrames": 60,
     "largestSampledFrameStep": 2.999,
-    "runtimeVideo": false,
+    "runtimeVideo": true,
     "sha256": "d9a68e97b6e949645f92343c90efbc138a69560e906d836888090766d1f36959"
   },
   {
@@ -248,7 +248,7 @@
     "gifBytes": 1391823,
     "sampledDistinctFrames": 59,
     "largestSampledFrameStep": 3.041,
-    "runtimeVideo": false,
+    "runtimeVideo": true,
     "sha256": "baa2e7635c73ac09cc0b644e809f13b6d70b1b8c597df409ef193820186df4cd"
   },
   {
@@ -260,7 +260,7 @@
     "gifBytes": 1451859,
     "sampledDistinctFrames": 61,
     "largestSampledFrameStep": 3.592,
-    "runtimeVideo": false,
+    "runtimeVideo": true,
     "sha256": "7e025f6b6ebd620282eddd8fd68e159d2bf085dca1a804c0f04f1d441a0e6cae"
   },
   {
@@ -272,32 +272,8 @@
     "gifBytes": 1223092,
     "sampledDistinctFrames": 61,
     "largestSampledFrameStep": 2.532,
-    "runtimeVideo": false,
+    "runtimeVideo": true,
     "sha256": "c175fe07cf11cb64b1b23b430252e7f2ba9517ef1c3420013e5f1972dba8b49d"
-  },
-  {
-    "slug": "medieval-scholar",
-    "version": "v12",
-    "gifFrames": 106,
-    "gifSeconds": 11.66,
-    "gifFps": 9.09090909090909,
-    "gifBytes": 1960267,
-    "sampledDistinctFrames": 61,
-    "largestSampledFrameStep": 3.843,
-    "runtimeVideo": false,
-    "sha256": "84c48ced43397aa1245f3f8aea972b6da511c8fec271602cf7e1fbccc80c8f79"
-  },
-  {
-    "slug": "medieval-scribe",
-    "version": "v11",
-    "gifFrames": 106,
-    "gifSeconds": 27.78,
-    "gifFps": 3.8156947444204463,
-    "gifBytes": 1991871,
-    "sampledDistinctFrames": 60,
-    "largestSampledFrameStep": 5.184,
-    "runtimeVideo": false,
-    "sha256": "314f67d049f42a3815b3b88f8c2df02d13b76c1b80dc874321f7d070ba555c35"
   },
   {
     "slug": "einstein",

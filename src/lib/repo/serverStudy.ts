@@ -4,7 +4,7 @@ import { createAuthClient } from "@/lib/auth/server";
 import type { Database } from "@/types/database";
 import { profileSchema, sessionSchema } from "./schemas";
 import { repositoryRequestSchema, summarySchema } from "./remoteSchemas";
-import { companionSchema, soloCompanions } from "@/lib/characters/schemas";
+import { storedCompanionSchema, soloCompanions } from "@/lib/characters/schemas";
 import { tileSchema } from "@/lib/personalTile/schemas";
 import { profileEditSchema } from "@/lib/profiles/schemas";
 import { serverProfileRepository } from "@/lib/profiles/serverRepository";
@@ -19,7 +19,7 @@ function assertResult(error: unknown) { if (error)
     throw new StudyError(503); }
 export function mapSession(row: SessionRow) {
     return sessionSchema.parse({ id: row.id, startedAt: new Date(row.started_at).toISOString(), endedAt: row.ended_at ? new Date(row.ended_at).toISOString() : null,
-        companionStatusCycle: row.companion_status_cycle, plannedMinutes: row.planned_minutes, actualSeconds: row.actual_seconds, endedReason: row.ended_reason, themeSlug: row.theme_slug, localDate: row.local_date, task: row.task, companions: companionSchema.parse(row.companions), roomId: row.room_id,title:row.title,rules:row.rules,visibility:row.visibility });
+        companionStatusCycle: row.companion_status_cycle, plannedMinutes: row.planned_minutes, actualSeconds: row.actual_seconds, endedReason: row.ended_reason, themeSlug: row.theme_slug, localDate: row.local_date, task: row.task, companions: storedCompanionSchema.parse(row.companions), roomId: row.room_id,title:row.title,rules:row.rules,visibility:row.visibility });
 }
 async function profile(client: Client, id: string) {
     const response = await client.from("profiles").select("*").eq("id", id).single();

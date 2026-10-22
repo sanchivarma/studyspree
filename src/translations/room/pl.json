@@ -14,6 +14,11 @@
     "goalNotice": "Twój cel zostanie udostępniony po dołączeniu. Pozostaw pole puste, aby zachować go dla siebie.",
     "goalPosted": "Cel sesji",
     "chatLimit": "Poczekaj chwilę przed wysłaniem kolejnych wiadomości.",
-    "admin": "Admin"
+    "admin": "Admin",
+    "notesHeading": "Twoje miejsce na notatki do nauki",
+    "notesPrompt": "Zapisuj własne przemyślenia, pytania i przypomnienia.",
+    "notesPrivate": "Te notatki pozostają prywatne.",
+    "noteLabel": "Dodaj notatkę",
+    "olderNotes": "Wczytaj wcześniejsze notatki"
   }
 }

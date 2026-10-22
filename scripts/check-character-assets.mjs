@@ -9,7 +9,7 @@ const revisions = JSON.parse(await readFile(new URL("../src/lib/characters/media
 const illustrated = ["male", "female"].flatMap(gender => [1, 2, 3, 4].map(n => `${gender}-0${n}`));
 const whimsical = ["moss-fox", "pip-owl", "momo-cloud"];
 const realistic = Array.from({ length: 12 }, (_, n) => `realistic-${String(n + 1).padStart(2, "0")}`);
-const historical = ["medieval-scholar", "medieval-scribe", "einstein", "tesla"];
+const historical = ["einstein", "tesla"];
 const slugs = [...illustrated, ...whimsical, ...realistic, ...historical];
 const directories = (await readdir(root, { withFileTypes: true })).filter(entry => entry.isDirectory()).map(entry => entry.name).sort();
 if (JSON.stringify(directories) !== JSON.stringify([...slugs].sort())) throw new Error("Character directories do not match the complete cast");
@@ -49,7 +49,7 @@ for (const slug of slugs) {
   const licenceId = `studyspree-${illustrated.includes(slug) || whimsical.includes(slug) ? "original" : "ai"}-${slug}-${version}`;
   if (!ledger.includes(licenceId)) throw new Error(`${slug}: missing provenance ID`);
   if (expected.video) for (const format of ["webm", "mp4"]) {
-    const name = `${slug}/study-${version}.${format}`, video = await readFile(join(root, name));
+    const name = `${slug}/study-${expected.videoVersion ?? version}.${format}`, video = await readFile(join(root, name));
     const valid = format === "webm" ? video.subarray(0, 4).equals(Buffer.from([0x1a, 0x45, 0xdf, 0xa3])) : video.toString("ascii", 4, 8) === "ftyp";
     if (!valid || video.length > 8000000 || !ledger.includes(name)) throw new Error(`${name}: invalid, oversized or unlicensed video`);
   }

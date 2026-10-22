@@ -30,16 +30,17 @@ export function repositoryContract(name: string, create: () => Repository) {
       await repo.updateProfile({ backgroundEffects: ["medieval-warrior", "medieval-walk", "medieval-knight"], effectVolumes: { "medieval-warrior": 0.2, "medieval-walk": 0.6, "medieval-knight": 0.4 } });
       expect(await repo.getProfile()).toMatchObject({ backgroundEffects: ["medieval-warrior", "medieval-walk", "medieval-knight"], effectVolumes: { "medieval-warrior": 0.2, "medieval-walk": 0.6, "medieval-knight": 0.4 } });
     });
-    it("advances companion status rotation once per new session and retains personal status", async () => {
+    it("advances companion status rotation and clears the preceding session status", async () => {
       await repo.updatePersonalTile({ status: "Review chapter five by Friday" });
       const first = await repo.startSession(input);
       expect(first.companionStatusCycle).toBe(0);
       expect((await repo.startSession(input)).companionStatusCycle).toBe(0);
+      expect((await repo.getPersonalTile()).status).toBe("Review chapter five by Friday");
       await repo.endSession(first.id, "stopped_early");
       const second = await repo.startSession(input);
       expect(second.companionStatusCycle).toBe(1);
       expect((await repo.getSession(first.id))?.companionStatusCycle).toBe(0);
-      expect((await repo.getPersonalTile()).status).toBe("Review chapter five by Friday");
+      expect((await repo.getPersonalTile()).status).toBe("");
       await repo.endSession(second.id, "stopped_early");
       await expect(repo.startSession({ ...input, companionStatusCycle: 40 } as typeof input)).rejects.toThrow();
     });

@@ -12,7 +12,7 @@ describe("virtual partner session statuses", () => {
       expect(new Set(strings).size).toBe(options.length);
       for (const [index, text] of strings.entries()) expect(text).not.toBe(options[index]);
     }
-    for (const slug of ["einstein", "tesla", "medieval-scholar", "medieval-scribe"] as const) {
+    for (const slug of ["einstein", "tesla"] as const) {
       expect(characterStatusOptions(slug)).toHaveLength(10);
       expect(characterStatusOptions(slug).some(key => generalStatusKeys.includes(key))).toBe(false);
     }
@@ -37,7 +37,7 @@ describe("virtual partner session statuses", () => {
     }
   });
   it("uses suitable fictional tasks for historical and whimsical companions", () => {
-    for (const slug of ["einstein", "tesla", "medieval-scholar", "medieval-scribe", "moss-fox", "pip-owl", "momo-cloud"] as const) {
+    for (const slug of ["einstein", "tesla", "moss-fox", "pip-owl", "momo-cloud"] as const) {
       for (let n = 0; n < 10; n++) expect(characterSessionStatus(`session-${n}`, slug)).toMatch(/^characters\.status/);
     }
   });
