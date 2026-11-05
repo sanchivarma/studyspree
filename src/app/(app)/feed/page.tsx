@@ -1,4 +1,5 @@
 import { CommunityBoard } from "@/components/community/CommunityBoard";
-export default function Page() { 
+export default function Page() {
+
   return <CommunityBoard area="feed"/>; 
 }
