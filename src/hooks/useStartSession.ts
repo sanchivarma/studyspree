@@ -14,7 +14,8 @@ export function useStartSession(onStarted?: (session: Session) => void) {
   const router = useRouter();
   return useMutation({
     mutationFn: (input: StartSessionInput) => repo.startSession(input),
-    onSuccess: (session) => {
+    onSuccess: async (session, input) => {
+      if (input.savedRoomId) queryClient.setQueryData(queryKeys.profile(), await repo.getProfile());
       useCompletionStore.getState().clear();
       onStarted?.(session);
       useSessionStore.getState().setFinishing(false);

@@ -31,6 +31,7 @@ describe("community mutation refresh scope", () => {
     const cache = populatedCache();
     invalidateCommunityMutation(cache, { action: "room.leave", data: { id: "room" } });
     expect(cache.getQueryState(queryKeys.community.read("publicSessions", {}))?.isInvalidated).toBe(true);
+    expect(cache.getQueryState(queryKeys.community.read("savedRooms", {}))?.isInvalidated).toBe(true);
     expect(cache.getQueryState(queryKeys.community.read("roomParticipants", {}))?.isInvalidated).toBe(true);
     expect(cache.getQueryState(queryKeys.dashboard())?.isInvalidated).toBe(true);
     expect(cache.getQueryState(queryKeys.community.read("tasks", {}))?.isInvalidated).toBe(false);

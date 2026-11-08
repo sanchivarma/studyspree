@@ -4,10 +4,13 @@ vi.mock("@tanstack/react-query", () => ({ useMutation: mocks.mutation, useQueryC
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push: mocks.push }) }));
 import { useStartSession } from "./useStartSession";
 import { queryKeys } from "@/lib/queryKeys";
+import type { StartSessionInput } from "@/lib/repo/types";
+import { repo } from "@/lib/repo";
 import type { Session } from "@/types/domain";
+vi.mock("@/lib/repo", () => ({ repo: { getProfile: vi.fn() } }));
 beforeEach(() => { vi.clearAllMocks(); mocks.invalidate.mockReturnValue(new Promise(() => {})); });
 const session: Session = { id: "running", startedAt: "2026-10-17T12:00:00Z", endedAt: null, plannedMinutes: 5, actualSeconds: 0, endedReason: null, themeSlug: "rain-desk", localDate: "2026-10-17", task: null, companions: { mode: "solo", characterSlugs: [] } };
-function started(value: Session) { (mocks.mutation.mock.calls.at(-1)![0] as { onSuccess: (session: Session) => void }).onSuccess(value); }
+function started(value: Session, savedRoomId?: string) { return (mocks.mutation.mock.calls.at(-1)![0] as { onSuccess: (session: Session, input: StartSessionInput) => Promise<void> }).onSuccess(value, { plannedMinutes: 5, themeSlug: "rain-desk", task: null, savedRoomId }); }
 it("routes immediately after a trusted Start result even if the refresh never resolves", () => {
   const callback = vi.fn(); useStartSession(callback); started(session);
   expect(mocks.set).toHaveBeenCalledWith(queryKeys.activeSession(), session);
@@ -18,4 +21,16 @@ it("opens the returned public joining room while keeping the same active session
   useStartSession(); const shared = { ...session, visibility: "public" as const, roomId: "joining-room" }; started(shared);
   expect(mocks.set).toHaveBeenCalledWith(queryKeys.activeSession(), shared);
   expect(mocks.push).toHaveBeenCalledWith("/rooms/joining-room");
+});
+it("restores a saved Solo room profile before displaying the running scene", async () => {
+  let restore!: (profile: Awaited<ReturnType<typeof repo.getProfile>>) => void;
+  vi.mocked(repo.getProfile).mockReturnValue(new Promise(resolve => { restore = resolve; }));
+  useStartSession();
+  const completion = started(session, "saved-solo-room");
+  expect(mocks.push).not.toHaveBeenCalled();
+  const profile = { soloScene: { desk: "none", window: "magic-academy" } } as Awaited<ReturnType<typeof repo.getProfile>>;
+  restore(profile);
+  await completion;
+  expect(mocks.set).toHaveBeenCalledWith(queryKeys.profile(), profile);
+  expect(mocks.push).toHaveBeenCalledWith("/session/running");
 });

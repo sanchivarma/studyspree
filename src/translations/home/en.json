@@ -1,6 +1,6 @@
 {
   "home": {
-    "studyLink": "Go to Study",
+    "studyLink": "Let's Study",
     "morning": "Good morning, {username}.",
     "afternoon": "Good afternoon, {username}.",
     "evening": "Good evening, {username}."

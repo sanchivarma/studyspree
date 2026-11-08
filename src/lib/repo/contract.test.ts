@@ -12,6 +12,10 @@ export function repositoryContract(name: string, create: () => Repository) {
     let repo: Repository;
     beforeEach(() => { vi.useFakeTimers(); vi.setSystemTime(new Date("2026-10-13T12:00:00Z")); repo = create(); });
     afterEach(() => { vi.useRealTimers(); vi.unstubAllEnvs(); });
+    it("does not turn an account-backed saved room into an unrelated preview session", async () => {
+      await expect(repo.startSession({ ...input, savedRoomId: "78000000-0000-4000-8000-000000000010" })).rejects.toThrow();
+      expect(await repo.getActiveSession()).toBeNull();
+    });
     it("persists independent background selections and rejects invalid effect IDs", async () => {
       expect((await repo.getProfile()).backgroundEffects ?? []).toEqual([]);
       await repo.updateProfile({ backgroundEffects: ["rain", "wind"], roomVolume: 0.4, effectVolumes: { rain: 0.75, wind: 0.2 } });

@@ -40,6 +40,7 @@ import { formatDuration } from "@/lib/stats/presentation";
 import { ShareSessionControl } from "./ShareSessionControl";
 import { orderRoomPeople } from "@/lib/community/roomGrid";
 import { RoomChat } from "./RoomChat";
+import { SavedSoloRoom } from "@/components/home/SavedSoloRoom";
 const peopleSchema = z.array(z.object({ person: personSchema.nullable(), sharing: z.boolean(), status: z.string() }));
 
 function RoomTimer({ session, leave }: {
@@ -68,7 +69,7 @@ export function RoomScreen({ id }: {
     const active = useActiveSession();
     const result = useCommunity("room", { id });
     const state = result.data?.pages[0];
-    const joined = state?.context.joined === true;
+    const joined = state?.context.joined === true && !result.isError;
     const isCreator = state?.resource?.ownerId === state?.viewerId && Boolean(state?.viewerId);
     const isSystem = state?.context.system === true;
     const parsedControls = roomControlsSchema.safeParse(state?.context.controls);
@@ -126,6 +127,7 @@ export function RoomScreen({ id }: {
     ];
     const selector = isCreator && !isSystem ? <CharacterPicker selected={characters} onChange={changeCharacters}/> : <p className="text-small text-text-muted">{t(isSystem ? "roomControls.peopleOnly" : "roomControls.creatorOnly")}</p>;
     const options = <div className="space-y-3">
+      <label className="block text-small">{t("room.roomId")}<input readOnly value={id} onFocus={event => event.currentTarget.select()} className="mt-1 min-h-11 w-full rounded-xl border border-border bg-background px-3"/></label>
       <p className="text-small text-text-muted">{t("community.sharingNotice")}</p>{isSystem && <><p className="text-small">{t("roomControls.alwaysSilent")}</p><ul className="list-disc space-y-2 pl-5 text-small text-text-muted">{(["privacy1","privacy2","privacy3"] as const).map(key=><li key={key}>{t(`roomControls.${key}`)}</li>)}</ul></>}
       {quota.success && <p className="text-small text-text-muted tabular-nums">{t(quota.data.remainingSeconds === null ? "community.used" : "community.remaining")}: {formatDuration(quota.data.remainingSeconds ?? quota.data.usedSeconds, locale)}</p>}
       {hiddenPeople.length > 0 && <button className={buttonClass} onClick={() => setHiddenPeople([])}>{t("characters.restorePeople")}</button>}
@@ -136,9 +138,12 @@ export function RoomScreen({ id }: {
       {invite && <label className="block">{t("community.inviteLink")}<input readOnly value={invite} onFocus={event => event.currentTarget.select()} className="block min-h-11 w-full rounded-lg border border-border bg-surface px-3"/></label>}
       {media.unavailable && <p role="status" className="text-small text-text-muted">{t("community.mediaUnavailable")}</p>}
     </div>;
+    const ownRoomSession = active.data?.roomId === id ? active.data : null;
+    if (state?.context.deleted === true) return <section className="min-h-dvh space-y-4 p-6"><h1 className="text-title">{t("room.deleted")}</h1><p className="break-all text-small text-text-muted">{id}</p>{ownRoomSession && <RoomTimer session={ownRoomSession} leave={async () => {}}/>}<Link className={buttonClass} href="/">{t("room.backDashboard")}</Link></section>;
+    if (state?.context.roomKind === "permanent-solo") return <SavedSoloRoom state={state}/>;
     return <section data-testid="room-screen" className={joined ? "flex h-dvh flex-col gap-1 overflow-hidden bg-background p-1" : "min-h-dvh space-y-3 bg-background p-3"}>
       {!joined && <header className="flex flex-wrap items-center justify-between gap-3"><h1 className="text-title">{state?.resource?.title ?? t("room.title")}</h1><ShareSessionControl roomId={id}/><Link className={buttonClass} href="/spaces">{t("spaces.title")}</Link></header>}
-      {result.isError ? <p role="alert">{t("community.forbidden")}</p> : !state ? <p role="status">{t("community.loading")}</p> : joined ? <>
+      {result.isError ? <><p role="alert">{t("community.forbidden")}</p>{ownRoomSession && <RoomTimer session={ownRoomSession} leave={async () => {}}/>}</> : !state ? <p role="status">{t("community.loading")}</p> : joined ? <>
         <div className="flex min-h-0 flex-1 gap-1">
           <aside data-testid="room-side-controls" className="flex w-[52px] shrink-0 flex-col items-center gap-1 overflow-y-auto rounded-xl border-r border-border/40 bg-background/25 backdrop-blur-md py-1 [scrollbar-width:none]">
             <Link href="/spaces" aria-label={t("spaces.title")} className={sideButton}><ArrowLeft aria-hidden="true" className="size-4"/></Link>

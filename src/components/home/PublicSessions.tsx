@@ -15,7 +15,7 @@ const detailsSchema = z.object({
   characterSlugs: z.array(z.enum(characterSlugs)),
 });
 
-function PublicRoomCard({ item, permanent = false }: { item: CommunityItem; permanent?: boolean }) {
+export function PublicRoomCard({ item, permanent = false }: { item: CommunityItem; permanent?: boolean }) {
   const { t } = useTranslation();
   const parsed = detailsSchema.safeParse(item.data);
   if (!parsed.success) return <li className="rounded-xl border border-border p-4"><h3 className="font-semibold">{item.title}</h3><p role="status">{t("community.unavailable")}</p></li>;

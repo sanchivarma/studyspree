@@ -1861,6 +1861,7 @@ export type Database = {
                     "planned_minutes": number | null;
                     "room_id": string | null;
                     "rules": string | null;
+                    "saved_room_id": string | null;
                     "shared_room_id": string | null;
                     "started_at": string;
                     "streak_changed": boolean;
@@ -1885,6 +1886,7 @@ export type Database = {
                     "planned_minutes"?: number | null;
                     "room_id"?: string | null;
                     "rules"?: string | null;
+                    "saved_room_id"?: string | null;
                     "shared_room_id"?: string | null;
                     "started_at"?: string;
                     "streak_changed"?: boolean;
@@ -1908,6 +1910,7 @@ export type Database = {
                     "planned_minutes"?: number | null;
                     "room_id"?: string | null;
                     "rules"?: string | null;
+                    "saved_room_id"?: string | null;
                     "shared_room_id"?: string | null;
                     "started_at"?: string;
                     "streak_changed"?: boolean;
@@ -1923,6 +1926,17 @@ export type Database = {
                         foreignKeyName: "sessions_room_id_fkey";
                         columns: [
                             "room_id"
+                        ];
+                        isOneToOne: false;
+                        referencedRelation: "study_rooms";
+                        referencedColumns: [
+                            "id"
+                        ];
+                    },
+                    {
+                        foreignKeyName: "sessions_saved_room_id_fkey";
+                        columns: [
+                            "saved_room_id"
                         ];
                         isOneToOne: false;
                         referencedRelation: "study_rooms";
@@ -2088,6 +2102,7 @@ export type Database = {
                     "category": string;
                     "controls": NonNullable<Json>;
                     "created_at": string;
+                    "deleted_at": string | null;
                     "description": string;
                     "group_id": string | null;
                     "id": string;
@@ -2096,7 +2111,9 @@ export type Database = {
                     "is_system": boolean;
                     "name": string;
                     "owner_id": string | null;
+                    "room_kind": string;
                     "session_rules": string | null;
+                    "solo_view": NonNullable<Json>;
                     "source_session_id": string | null;
                     "visibility": string;
                 };
@@ -2106,6 +2123,7 @@ export type Database = {
                     "category"?: string;
                     "controls"?: NonNullable<Json>;
                     "created_at"?: string;
+                    "deleted_at"?: string | null;
                     "description"?: string;
                     "group_id"?: string | null;
                     "id"?: string;
@@ -2114,7 +2132,9 @@ export type Database = {
                     "is_system"?: boolean;
                     "name": string;
                     "owner_id"?: string | null;
+                    "room_kind"?: string;
                     "session_rules"?: string | null;
+                    "solo_view"?: NonNullable<Json>;
                     "source_session_id"?: string | null;
                     "visibility"?: string;
                 };
@@ -2123,6 +2143,7 @@ export type Database = {
                     "category"?: string;
                     "controls"?: NonNullable<Json>;
                     "created_at"?: string;
+                    "deleted_at"?: string | null;
                     "description"?: string;
                     "group_id"?: string | null;
                     "id"?: string;
@@ -2131,7 +2152,9 @@ export type Database = {
                     "is_system"?: boolean;
                     "name"?: string;
                     "owner_id"?: string | null;
+                    "room_kind"?: string;
                     "session_rules"?: string | null;
+                    "solo_view"?: NonNullable<Json>;
                     "source_session_id"?: string | null;
                     "visibility"?: string;
                 };
@@ -2513,6 +2536,13 @@ export type Database = {
                 };
                 Returns: Json;
             };
+            "community_mutate_before_saved_rooms": {
+                Args: {
+                    "p_action": string;
+                    "p_data": Json;
+                };
+                Returns: Json;
+            };
             "community_mutate_v27": {
                 Args: {
                     "p_action": string;
@@ -2584,6 +2614,13 @@ export type Database = {
                 };
                 Returns: Json;
             };
+            "community_read_before_saved_rooms": {
+                Args: {
+                    "p_area": string;
+                    "p_query"?: Json;
+                };
+                Returns: Json;
+            };
             "community_read_v27": {
                 Args: {
                     "p_area": string;
@@ -2643,6 +2680,7 @@ export type Database = {
                     "planned_minutes": number | null;
                     "room_id": string | null;
                     "rules": string | null;
+                    "saved_room_id": string | null;
                     "shared_room_id": string | null;
                     "started_at": string;
                     "streak_changed": boolean;
@@ -2780,6 +2818,42 @@ export type Database = {
                     "planned_minutes": number | null;
                     "room_id": string | null;
                     "rules": string | null;
+                    "saved_room_id": string | null;
+                    "shared_room_id": string | null;
+                    "started_at": string;
+                    "streak_changed": boolean;
+                    "task": string | null;
+                    "theme_slug": string;
+                    "title": string;
+                    "title_explicit": boolean;
+                    "user_id": string;
+                    "visibility": string;
+                };
+                SetofOptions: {
+                    from: "*";
+                    to: "sessions";
+                    isOneToOne: true;
+                    isSetofReturn: false;
+                };
+            };
+            "start_saved_solo_room": {
+                Args: {
+                    "p_room": string;
+                };
+                Returns: {
+                    "actual_seconds": number;
+                    "companion_status_cycle": number;
+                    "companions": NonNullable<Json>;
+                    "ended_at": string | null;
+                    "ended_reason": string | null;
+                    "freeze_used": boolean;
+                    "id": string;
+                    "last_heartbeat_at": string;
+                    "local_date": string;
+                    "planned_minutes": number | null;
+                    "room_id": string | null;
+                    "rules": string | null;
+                    "saved_room_id": string | null;
                     "shared_room_id": string | null;
                     "started_at": string;
                     "streak_changed": boolean;
@@ -2821,6 +2895,7 @@ export type Database = {
                     "planned_minutes": number | null;
                     "room_id": string | null;
                     "rules": string | null;
+                    "saved_room_id": string | null;
                     "shared_room_id": string | null;
                     "started_at": string;
                     "streak_changed": boolean;
@@ -2862,6 +2937,7 @@ export type Database = {
                     "planned_minutes": number | null;
                     "room_id": string | null;
                     "rules": string | null;
+                    "saved_room_id": string | null;
                     "shared_room_id": string | null;
                     "started_at": string;
                     "streak_changed": boolean;
@@ -2899,6 +2975,7 @@ export type Database = {
                     "planned_minutes": number | null;
                     "room_id": string | null;
                     "rules": string | null;
+                    "saved_room_id": string | null;
                     "shared_room_id": string | null;
                     "started_at": string;
                     "streak_changed": boolean;

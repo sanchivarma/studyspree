@@ -1,6 +1,6 @@
 import {expect,test} from '@playwright/test';
 import {createLocalAccount} from './localAccount';
-test('public Start creates one timer, lists on Home and copies a joining URL',async({page,browser})=>{
+test('public temporary Start keeps one timer and a joining URL without becoming a saved Dashboard room',async({page,browser})=>{
  test.setTimeout(240000);
  await page.route('**/api/rooms/token',route=>route.fulfill({status:503,json:{}}));
  await createLocalAccount(page,'Public session host');
@@ -31,13 +31,18 @@ test('public Start creates one timer, lists on Home and copies a joining URL',as
  const guestContext=await browser.newContext();try{
   const guest=await guestContext.newPage();await guest.route('**/api/rooms/token',route=>route.fulfill({status:503,json:{}}));
   await createLocalAccount(guest,'Public session guest');
-  const directory=guest.getByTestId('home-public-sessions');
+  const directory=guest.getByTestId('dashboard-rooms');
   await expect(directory.getByRole('listitem').first()).toHaveAttribute('data-testid','default-study-room');
   await expect(directory.getByTestId('default-study-room')).toContainText('StudySpree General Study Room');
-  const card=directory.getByRole('listitem').filter({has:guest.getByRole('heading',{name:title,exact:true})});await expect(card).toBeVisible();
-  await expect(card.getByTestId('public-session-people')).toHaveText('1 person joined');
-  await expect(card.getByTestId('public-session-characters')).toContainText('Eva');
-  await card.getByRole('link',{name:'Join',exact:true}).click();await expect(guest).toHaveURL(roomUrl);
+  const card=directory.getByRole('listitem').filter({has:guest.getByRole('heading',{name:title,exact:true})});await expect(card).toHaveCount(0);
+  // Temporary public discovery remains available through the existing API.
+  // Dashboard tiles now explicitly represent permanent rooms instead.
+  const listing=await guest.request.post('/api/community',{data:{operation:'read',area:'publicSessions',query:{limit:100}}});
+  expect(listing.ok()).toBe(true);
+  const publicRoom=(await listing.json()).items.find((item:{id:string})=>item.id===startedSession.roomId);
+  expect(publicRoom.data.humanCount).toBe(1);
+  expect(publicRoom.data.characterSlugs).toEqual(['female-04']);
+  await guest.goto(roomUrl);
   await expect(guest.getByText('Keep it calm.',{exact:true})).toBeVisible();
   await guest.getByRole('button',{name:'Join',exact:true}).click();
   await expect(guest.getByRole('button',{name:'Finish',exact:true})).toBeVisible({timeout:15000});
@@ -45,7 +50,9 @@ test('public Start creates one timer, lists on Home and copies a joining URL',as
   await guest.getByRole('link',{name:'Study spaces',exact:true}).click();
   await guest.getByRole('link',{name:'Start',exact:true}).click();
   await expect(guest).toHaveURL(new URL('/',roomUrl).href);
-  await expect(card.getByTestId('public-session-people')).toHaveText('2 people joined',{timeout:20000});
+  await expect(card).toHaveCount(0);
+  const joinedListing=await guest.request.post('/api/community',{data:{operation:'read',area:'publicSessions',query:{limit:100}}});
+  expect((await joinedListing.json()).items.find((item:{id:string})=>item.id===startedSession.roomId).data.humanCount).toBe(2);
   await expect(guest.getByRole('link',{name:'Resume session',exact:true})).toBeVisible();
   await guest.getByRole('link',{name:'Resume session',exact:true}).click();
   await expect(guest.getByRole('button',{name:'Finish',exact:true})).toBeVisible();

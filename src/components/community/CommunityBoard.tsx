@@ -32,7 +32,7 @@ import { shiftDate } from "@/lib/stats/dates";
 import { fromZonedTime, formatInTimeZone } from "date-fns-tz";
 import type { TranslationKey } from "@/translations";
 const composerAreas: readonly CommunityArea[] = ["tasks", "feedback", "groups", "spaces", "conversations", "messages", "feed"];
-const pageTitle = (area: CommunityArea): TranslationKey => area === "publicSessions" ? "sessionSetup.publicSessions" : area === "invitations" ? "roadmap.invitations" : area === "roomParticipants" || area === "roomChat" ? "room.chat" : area === "awards" ? "achievements.title" : area === "recipients" ? "conversations.title" : `${area}.title`;
+const pageTitle = (area: CommunityArea): TranslationKey => area === "savedRooms" ? "room.yourRooms" : area === "publicSessions" ? "sessionSetup.publicSessions" : area === "invitations" ? "roadmap.invitations" : area === "roomParticipants" || area === "roomChat" ? "room.chat" : area === "awards" ? "achievements.title" : area === "recipients" ? "conversations.title" : `${area}.title`;
 const errorKeys = z.enum(["accountRequired", "full", "limit", "forbidden", "invalid", "unavailable", "transferFirst", "inviteUnavailable", "invalidMedia"]);
 export function CommunityBoard({ area, id, groupId, embedded = false }: {
     area: CommunityArea;

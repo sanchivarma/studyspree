@@ -24,7 +24,7 @@ const session: Session = { id: "local-session", startedAt: "2026-10-13T12:00:00Z
   plannedMinutes: 5, actualSeconds: 0, endedReason: null, themeSlug: "rain-desk", localDate: "2026-10-13", task: null, companions: { mode: "solo" as const, characterSlugs: [] } };
 type MutationCallbacks<Input, Output> = {
   mutationFn: (input: Input) => Promise<Output>;
-  onSuccess: (output: Output) => Promise<void> | void;
+  onSuccess: (output: Output, input?: Input) => Promise<void> | void;
   onMutate?: () => void;
   onError?: () => void;
 };
@@ -58,7 +58,7 @@ describe("session query and mutation boundaries", () => {
     expect(repo.startSession).toHaveBeenCalledWith(input);
     let release!: () => void;
     mocks.invalidate.mockReturnValue(new Promise<void>((resolve) => { release = resolve; }));
-    const completing = options.onSuccess(session);
+    const completing = options.onSuccess(session, input);
     expect(mocks.setQueryData).toHaveBeenCalledWith(queryKeys.activeSession(), session);
     expect(mocks.push).toHaveBeenCalledWith("/session/local-session");
     release(); await completing;

@@ -10,7 +10,7 @@ import type { EarnedAchievement } from "@/types/achievements";
 import type { TileHistoryPage } from "@/types/tileStatus";
 import type { CharacterHistory } from "@/types/focusPartners";
 
-export type StartSessionInput = { plannedMinutes: number | null; themeSlug: string; task: string | null; companions?: CompanionPreferences; roomId?: string | null; title?:string;rules?:string|null;visibility?:'public'|'private' };
+export type StartSessionInput = { plannedMinutes: number | null; themeSlug: string; task: string | null; companions?: CompanionPreferences; roomId?: string | null; savedRoomId?: string; title?:string;rules?:string|null;visibility?:'public'|'private' };
 export type SessionSummary = { totalSeconds: number; sessionCount: number; firstSessionDate: string | null };
 export type EndSessionStreak = Pick<StreakState, "current" | "best"> & { changed: boolean; freezeUsed: boolean };
 export type EndSessionResult = { session: Session; totalSecondsAllTime: number; dayTotalSeconds: number; streak: EndSessionStreak };

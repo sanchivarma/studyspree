@@ -27,7 +27,7 @@ export const repositoryRequestSchema = z.discriminatedUnion("op", [
     z.object({ op: z.literal("tileHistory"), cursor: z.string().max(2048).nullable().optional(), limit: z.number().int().min(1).max(100) }).strict(),
     z.object({ op: z.literal("updateProfile"), patch: profilePatch }).strict(),
     z.object({ op: z.literal("updateDirectory"), input: z.unknown() }).strict(),
-    z.object({ op: z.literal("start"), tab: browserTabSchema.optional(), input: z.object({ ...sessionDetailsShape,plannedMinutes: z.union([z.literal(5), z.literal(15), z.literal(25), z.literal(30), z.literal(50), z.literal(60)]).nullable(), themeSlug: z.enum(themeSlugs), task: z.string().trim().max(500).nullable(), companions: companionSchema.optional(), roomId: z.uuid().nullable().optional() }).strict() }).strict(),
+    z.object({ op: z.literal("start"), tab: browserTabSchema.optional(), input: z.object({ ...sessionDetailsShape,plannedMinutes: z.union([z.literal(5), z.literal(15), z.literal(25), z.literal(30), z.literal(50), z.literal(60)]).nullable(), themeSlug: z.enum(themeSlugs), task: z.string().trim().max(500).nullable(), companions: companionSchema.optional(), savedRoomId: z.uuid().optional(), roomId: z.uuid().nullable().optional() }).strict() }).strict(),
     z.object({ op: z.literal("finish"), id: z.uuid(), reason: z.enum(["completed", "stopped_early", "abandoned"]) }).strict(),
     z.object({ op: z.literal("heartbeat"), id: z.uuid() }).strict(),
     z.object({ op: z.literal("session"), id: z.uuid(), tab: browserTabSchema.optional() }).strict(),

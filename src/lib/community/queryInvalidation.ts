@@ -23,12 +23,12 @@ export function communityMutationScope(command: CommunityCommand): Scope {
   if (action.startsWith("calendar.") || action.startsWith("event.")) {
     return { areas: ["calendar", "schedule", "spaces", "room", "publicSessions", "notifications"], dashboard: true };
   }
-  if (action === "room.heartbeat") return { areas: ["room", "roomParticipants", "publicSessions"], dashboard: false };
+  if (action === "room.heartbeat") return { areas: ["savedRooms", "room", "roomParticipants", "publicSessions"], dashboard: false };
   if (action.startsWith("room.") && action !== "room.accept" && action !== "room.invite.revoke") {
-    return { areas: ["room", "roomParticipants", "roomChat", "spaces", "publicSessions", "partners", "plans", "invitations", "search"], dashboard: true };
+    return { areas: ["savedRooms", "room", "roomParticipants", "roomChat", "spaces", "publicSessions", "partners", "plans", "invitations", "search"], dashboard: true };
   }
   if (action === "session.share") {
-    return { areas: ["room", "roomParticipants", "spaces", "publicSessions", "invitations"], dashboard: true };
+    return { areas: ["savedRooms", "room", "roomParticipants", "spaces", "publicSessions", "invitations"], dashboard: true };
   }
   // Membership, consent, blocks, and invitation acceptance can change access to
   // several resources. Unknown future commands also take this conservative path.

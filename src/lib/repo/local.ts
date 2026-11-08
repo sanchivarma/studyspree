@@ -269,7 +269,7 @@ export class LocalRepository implements Repository {
     return this.mutate(() => this.syncBrowserSession(this.sessions().find(session => session.id === id) ?? null));
   }
   startSession(input: StartSessionInput): Promise<Session> {
-    if (input.visibility==='public'||input.roomId || input.companions?.mode === 'people' || input.companions?.mode === 'mixed') return Promise.reject(new CapabilityError('shared-room-access'));
+    if (input.savedRoomId || input.visibility==='public'||input.roomId || input.companions?.mode === 'people' || input.companions?.mode === 'mixed') return Promise.reject(new CapabilityError('shared-room-access'));
     return this.mutate(() => {
       const sessions = this.sessions();
       const active = this.syncBrowserSession(this.active(sessions));
