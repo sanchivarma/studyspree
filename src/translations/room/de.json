@@ -20,7 +20,7 @@
     "notesPrivate": "Diese Notizen bleiben privat.",
     "noteLabel": "Notiz hinzufügen",
     "olderNotes": "Frühere Notizen laden",
-    "yourRooms": "Lernräume",
+    "yourRooms": "Gespeicherte Chaträume",
     "create": "Raum erstellen",
     "createDescription": "Wähle einen Namen und die Nutzung dieses Raums.",
     "name": "Raumname",
@@ -44,6 +44,11 @@
     "openById": "Raum öffnen",
     "invalidId": "Gib eine gültige Raum-ID ein.",
     "virtualCount": "Virtuelle Partner: {count}",
-    "backDashboard": "Zum Dashboard"
+    "backDashboard": "Zum Dashboard",
+    "removeNamed": "{name} aus gespeicherten Räumen entfernen",
+    "removeTitle": "„{name}“ aus gespeicherten Chaträumen entfernen?",
+    "removeDescription": "Der Raum wird aus deinen gespeicherten Chaträumen entfernt. Für den Ersteller und andere Personen bleibt er verfügbar. Beim Beitreten über Link oder ID wird er erneut gespeichert.",
+    "remove": "Aus gespeicherten Räumen entfernen",
+    "removing": "Wird entfernt…"
   }
 }

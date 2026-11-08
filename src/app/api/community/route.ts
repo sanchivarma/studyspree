@@ -1,3 +1,4 @@
+import { hasSameOrigin } from "@/lib/auth/sameOrigin";
 import { ZodError } from "zod";
 import { communityRequestSchema } from "@/lib/community/schemas";
 import { executeCommunity, CommunityServerError } from "@/lib/community/server";
@@ -6,8 +7,7 @@ import { hasClientDuration } from "@/lib/repo/requestValidation";
 // be changed to do so. Duration is computed by a database trigger.
 export async function POST(request: Request) {
     const headers = { "Cache-Control": "private, no-store" };
-    const origin = request.headers.get("origin");
-    if (origin && origin !== new URL(request.url).origin)
+    if (!hasSameOrigin(request))
         return Response.json({ error: "forbidden" }, { status: 403, headers });
     try {
         if (!request.headers.get("content-type")?.includes("application/json"))

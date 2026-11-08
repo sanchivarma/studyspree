@@ -22,6 +22,10 @@ test("Dashboard copy, saved Solo view, fresh login and confirmed deletion", asyn
   await expect(page.getByRole("link", { name: "Let's Study", exact: true })).toBeVisible();
   await expect(page.getByText("Big goals start with showing up", { exact: false })).toHaveCount(0);
   await expect(page.getByTestId("default-study-room")).toBeVisible();
+  await expect(page.getByTestId("default-study-room").getByRole("heading")).toHaveText("StudySpree General Study Room I");
+  await page.getByTestId("default-study-room").getByText("Study together, protect and respect each other's privacy", { exact: true }).click();
+  await expect(page.getByText("Camera sharing is preferred when joining.", { exact: true })).toBeVisible();
+  await expect(page.getByTestId("default-study-room").getByTestId("remove-saved-room")).toHaveCount(0);
   const name = `Quiet desk ${crypto.randomUUID()}`;
   const path = await createRoom(page, name, "Permanent · Solo", info, async () => {
     await page.getByRole("dialog").getByRole("combobox", { name: "Study table", exact: true }).selectOption("none");
@@ -45,6 +49,10 @@ test("Dashboard copy, saved Solo view, fresh login and confirmed deletion", asyn
     await returning.goto("/");
     const tile = returning.getByTestId("saved-study-room").filter({ has: returning.getByRole("heading", { name, exact: true }) });
     await expect(tile).toBeVisible();
+    const cross = await tile.getByTestId("remove-saved-room").boundingBox();
+    const card = await tile.boundingBox();
+    expect(cross!.x - card!.x).toBeLessThan(10);
+    expect(cross!.y - card!.y).toBeLessThan(10);
     await returning.screenshot({ path: ".tmp/saved-rooms-dashboard.png", fullPage: true });
     await tile.getByRole("link", { name: "Join", exact: true }).click();
     await returning.getByRole("button", { name: "Let's Study", exact: true }).click();
@@ -66,6 +74,8 @@ test("Dashboard copy, saved Solo view, fresh login and confirmed deletion", asyn
 });
 
 test("Shared room keeps virtual partners and joined people across sessions; deleted ID is explicit to a guest", async ({ page, browser }, info) => {
+  // Plain LAN HTTP has secure random bytes, but no randomUUID API.
+  await page.addInitScript(() => Object.defineProperty(window.crypto, "randomUUID", { value: undefined, configurable: true }));
   await createLocalAccount(page, "Shared room admin");
   const name = `Shared desk ${crypto.randomUUID()}`;
   const path = await createRoom(page, name, "Permanent · Shared", info, async () => {
@@ -73,6 +83,7 @@ test("Shared room keeps virtual partners and joined people across sessions; dele
     await page.getByTestId("character-card-male-01").click();
   });
   const guestContext = await browser.newContext();
+  await guestContext.addInitScript(() => Object.defineProperty(window.crypto, "randomUUID", { value: undefined, configurable: true }));
   try {
     const guest = await guestContext.newPage();
     await createLocalAccount(guest, "Shared room guest");
@@ -84,18 +95,44 @@ test("Shared room keeps virtual partners and joined people across sessions; dele
       await expect(guest.getByTestId("room-side-controls")).toBeVisible({ timeout: remaining() });
       await expect(guest.getByTestId("room-video-grid").getByTestId("character-loop-male-01")).toBeVisible({ timeout: remaining() });
     });
+    await guest.getByRole("button", { name: "Session chat", exact: true }).click();
+    await guest.getByLabel("Message", { exact: true }).fill("LAN-compatible room chat");
+    await guest.getByRole("button", { name: "Send", exact: true }).click();
+    await expect(guest.getByTestId("room-chat").getByText("LAN-compatible room chat", { exact: true })).toBeVisible();
+    await guest.keyboard.press("Escape");
     await guest.getByRole("button", { name: "Finish", exact: true }).click();
     await expect(guest).toHaveURL(/\/complete$/);
     await guest.goto("/");
     const tile = guest.getByTestId("saved-study-room").filter({ hasText: name });
     await expect(tile).toBeVisible();
     await expect(tile.getByRole("button", { name: `Delete ${name}`, exact: true })).toHaveCount(0);
+    await tile.getByRole("button", { name: `Remove ${name} from saved rooms`, exact: true }).click();
+    await expect(guest.getByRole("alertdialog")).toContainText("The shared room stays available to its creator and other people.");
+    await guest.getByRole("alertdialog").getByRole("button", { name: "Cancel", exact: true }).click();
+    await expect(tile).toBeVisible();
+    await tile.getByRole("button", { name: `Remove ${name} from saved rooms`, exact: true }).click();
+    await expectFastAction(info, "remove guest saved room", remaining => guest.getByRole("alertdialog").getByRole("button", { name: "Remove from saved rooms", exact: true }).click({ timeout: remaining() }), async remaining => {
+      await expect(tile).toHaveCount(0, { timeout: remaining() });
+    });
+    await guest.reload();
+    await expect(guest.getByTestId("default-study-room")).toBeVisible();
+    await expect(tile).toHaveCount(0);
+    await page.goto("/");
+    const ownerTile = page.getByTestId("saved-study-room").filter({ hasText: name });
+    await expect(ownerTile).toBeVisible();
+    await guest.goto(path);
+    await expect(guest.getByRole("heading", { name, exact: true })).toBeVisible();
+    await guest.getByRole("button", { name: "Join", exact: true }).click();
+    await expect(guest.getByTestId("room-side-controls")).toBeVisible();
+    await guest.getByRole("button", { name: "Finish", exact: true }).click();
+    await expect(guest).toHaveURL(/\/complete$/);
+    await guest.goto("/");
+    await expect(tile).toBeVisible();
     await tile.getByRole("link", { name: "Join", exact: true }).click();
     await guest.getByRole("button", { name: "Join", exact: true }).click();
     await expect(guest.getByTestId("room-side-controls")).toBeVisible();
-    await page.goto("/");
-    const ownerTile = page.getByTestId("saved-study-room").filter({ hasText: name });
     await ownerTile.getByRole("button", { name: `Delete ${name}`, exact: true }).click();
+    await expect(page.getByRole("alertdialog")).toContainText("closes shared access");
     await page.getByRole("alertdialog").getByRole("button", { name: "Delete room", exact: true }).click();
     await expect(ownerTile).toHaveCount(0);
     await expect(guest.getByRole("heading", { name: "Room with this ID is deleted.", exact: true })).toBeVisible({ timeout: 10000 });
@@ -105,6 +142,9 @@ test("Shared room keeps virtual partners and joined people across sessions; dele
     await guest.goto(path);
     await expect(guest.getByRole("heading", { name: "Room with this ID is deleted.", exact: true })).toBeVisible();
     await expect(guest.getByRole("button", { name: "Join", exact: true })).toHaveCount(0);
+    await guest.goto("/");
+    await expect(guest.getByTestId("default-study-room")).toBeVisible();
+    await expect(tile).toHaveCount(0);
   } finally { await guestContext.close(); }
 });
 

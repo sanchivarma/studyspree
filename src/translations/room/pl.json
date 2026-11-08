@@ -20,7 +20,7 @@
     "notesPrivate": "Te notatki pozostają prywatne.",
     "noteLabel": "Dodaj notatkę",
     "olderNotes": "Wczytaj wcześniejsze notatki",
-    "yourRooms": "Pokoje do nauki",
+    "yourRooms": "Zapisane pokoje czatu",
     "create": "Utwórz pokój",
     "createDescription": "Wybierz nazwę i sposób korzystania z pokoju.",
     "name": "Nazwa pokoju",
@@ -44,6 +44,11 @@
     "openById": "Otwórz pokój",
     "invalidId": "Wpisz prawidłowe ID pokoju.",
     "virtualCount": "Wirtualni partnerzy: {count}",
-    "backDashboard": "Wróć do pulpitu"
+    "backDashboard": "Wróć do pulpitu",
+    "removeNamed": "Usuń {name} z zapisanych pokoi",
+    "removeTitle": "Usunąć „{name}” z zapisanych pokoi czatu?",
+    "removeDescription": "Pokój zniknie z twoich zapisanych pokoi. Pozostanie dostępny dla twórcy i innych osób. Dołączenie przez link lub ID zapisze go ponownie.",
+    "remove": "Usuń z zapisanych pokoi",
+    "removing": "Usuwanie…"
   }
 }

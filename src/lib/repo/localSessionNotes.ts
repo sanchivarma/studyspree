@@ -1,3 +1,4 @@
+import { createUuid } from "@/lib/uuid";
 import { z } from "zod";
 import { now } from "@/lib/clock";
 import { sessionNoteSchema, type SessionNote, type SessionNotesPage, type NoteCursor } from "@/lib/sessionNotes/schemas";
@@ -32,7 +33,7 @@ export class LocalSessionNotes {
       }
       const sessions = sessionsSchema.parse(JSON.parse(this.raw("ss_sessions") ?? "[]"));
       if (!sessions.some(session => session.id === sessionId && session.endedAt === null)) throw new Error("Session unavailable");
-      const note: SavedNote = savedNoteSchema.parse({ id: crypto.randomUUID(), sessionId, body, clientId, createdAt: now().toISOString() });
+      const note: SavedNote = savedNoteSchema.parse({ id: createUuid(), sessionId, body, clientId, createdAt: now().toISOString() });
       const key = `ss_session_notes_${sessionId}`, value = JSON.stringify([...notes, note]);
       this.memory.set(key, value);
       try { this.storage()?.setItem(key, value); } catch { /* Notes remain available for this open preview. */ }

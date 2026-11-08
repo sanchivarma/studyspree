@@ -10,6 +10,7 @@ export function communityMutationScope(command: CommunityCommand): Scope {
   if (action === "notification.read") return { areas: ["notifications"], dashboard: false };
   if (action === "feedback.create") return { areas: ["feedback"], dashboard: false };
   if (action === "report.create") return { areas: [], dashboard: false };
+  if (action === "room.unsave") return { areas: ["savedRooms"], dashboard: false };
   if (action === "room.chat.send") return { areas: ["roomChat"], dashboard: false };
   if (action.startsWith("message.") || action.startsWith("thread.")) {
     return { areas: ["messages", "conversations", "recipients", "notifications"], dashboard: false };

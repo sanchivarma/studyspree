@@ -13,6 +13,13 @@ function populatedCache() {
 }
 
 describe("community mutation refresh scope", () => {
+  it("removing a personal save leaves room participation and timers alone", () => {
+    const cache = populatedCache();
+    invalidateCommunityMutation(cache, { action: "room.unsave", data: { id: "room" } });
+    for (const area of areaSchema.options) expect(cache.getQueryState(queryKeys.community.read(area, {}))?.isInvalidated, area).toBe(area === "savedRooms");
+    expect(cache.getQueryState(queryKeys.dashboard())?.isInvalidated).toBe(false);
+    cache.clear();
+  });
   it("a task toggle does not reread rooms, chats, directories or the dashboard", async () => {
     const cache = populatedCache();
     const command: CommunityCommand = { action: "task.update", data: { id: "00000000-0000-4000-8000-000000000001", done: true } };

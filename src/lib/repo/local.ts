@@ -1,3 +1,4 @@
+import { createUuid } from "@/lib/uuid";
 import { z } from "zod";
 import { defaultSoloScene } from "@/lib/soloScenes/catalog";
 import { addMonths, format, parseISO, startOfMonth } from "date-fns";
@@ -190,7 +191,7 @@ export class LocalRepository implements Repository {
         ? [{ text: validated.status, createdAt: now().toISOString() }, ...current.history].slice(0,20) : current.history;
       if (validated.status !== undefined && validated.status !== current.status) {
         const events = this.read("ss_tile_events", z.array(tileStatusSchema), () => current.history.map((entry, i) => ({ ...entry, id: `legacy-${i}` })));
-        this.write("ss_tile_events", [{ id: crypto.randomUUID(), text: validated.status, createdAt: now().toISOString() }, ...events]);
+        this.write("ss_tile_events", [{ id: createUuid(), text: validated.status, createdAt: now().toISOString() }, ...events]);
       }
       const next = tileSchema.parse({ ...current, ...validated, history }); this.write("ss_personal_tile", next); return next;
     });
@@ -275,7 +276,7 @@ export class LocalRepository implements Repository {
       const active = this.syncBrowserSession(this.active(sessions));
       if (active && !active.endedAt) return active;
       const current = this.sessions();
-      const session = { ...this.createSession(input, now(), crypto.randomUUID()), companionStatusCycle: current.reduce((highest, item) => Math.max(highest, item.companionStatusCycle ?? -1), -1) + 1 };
+      const session = { ...this.createSession(input, now(), createUuid()), companionStatusCycle: current.reduce((highest, item) => Math.max(highest, item.companionStatusCycle ?? -1), -1) + 1 };
       this.write("ss_sessions", [...current, session]);
       this.write("ss_active", { id: session.id, lastHeartbeatAt: session.startedAt });
       this.syncBrowserSession(session);

@@ -1,10 +1,11 @@
+import { hasSameOrigin } from "@/lib/auth/sameOrigin";
 import { AccessToken, TrackSource } from "livekit-server-sdk";
 import { roomTokenRequest } from "@/lib/community/roomMedia";
 import { executeCommunity, CommunityServerError } from "@/lib/community/server";
 import { z } from "zod";
 export async function POST(request: Request) {
     const headers = { "Cache-Control": "private, no-store" };
-    if (request.headers.get("origin") && request.headers.get("origin") !== new URL(request.url).origin)
+    if (!hasSameOrigin(request))
         return Response.json({}, { status: 403, headers });
     try {
         const text = await request.text();

@@ -1,4 +1,5 @@
 "use client";
+import { createUuid } from "@/lib/uuid";
 import { useRef } from "react";
 import { useInfiniteQuery, useMutation, useQueryClient, type InfiniteData } from "@tanstack/react-query";
 import { queryKeys } from "@/lib/queryKeys";
@@ -16,7 +17,7 @@ export function useSessionNotes(sessionId: string) {
   });
   const mutation = useMutation({
     mutationFn: (body: string) => {
-      if (pending.current?.body !== body) pending.current = { body, id: crypto.randomUUID() };
+      if (pending.current?.body !== body) pending.current = { body, id: createUuid() };
       return sessionNotesRepository.add(sessionId, body, pending.current.id);
     },
     onSuccess: note => {

@@ -1,4 +1,5 @@
 "use client";
+import { createUuid } from "@/lib/uuid";
 import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
 import { useCommunity } from "@/hooks/useCommunity";
@@ -13,7 +14,7 @@ export function RoomChat({ roomId, onClose, onRestoreFocus }: { roomId: string; 
   const query = useCommunity("roomChat", { id: roomId });
   const mutation = useCommunityMutation();
   const [body, setBody] = useState("");
-  const requestId = useRef(crypto.randomUUID());
+  const requestId = useRef(createUuid());
   const input = useRef<HTMLInputElement>(null);
   const log = useRef<HTMLDivElement>(null);
   const stickToBottom = useRef(true);
@@ -40,10 +41,10 @@ export function RoomChat({ roomId, onClose, onRestoreFocus }: { roomId: string; 
     <p className="px-3 py-2 text-xs text-text-muted">{t("roomControls.requestHint")}</p>
     <form className="space-y-2 border-t border-border p-3" onSubmit={event => {
       event.preventDefault(); if (!body.trim() || mutation.isPending) return;
-      mutation.mutate({ action: "room.chat.send", data: { id: roomId, body, clientId: requestId.current } }, { onSuccess: () => { setBody(""); requestId.current = crypto.randomUUID(); stickToBottom.current = true; input.current?.focus(); } });
+      mutation.mutate({ action: "room.chat.send", data: { id: roomId, body, clientId: requestId.current } }, { onSuccess: () => { setBody(""); requestId.current = createUuid(); stickToBottom.current = true; input.current?.focus(); } });
     }}>
       <label className="block text-small" htmlFor="room-chat-message">{t("room.message")}</label>
-      <input ref={input} id="room-chat-message" autoComplete="off" maxLength={1000} value={body} disabled={mutation.isPending} onChange={event => { if (mutation.isError) requestId.current = crypto.randomUUID(); setBody(event.target.value); mutation.reset(); }} placeholder={t("room.sayHi")} className="min-h-11 w-full rounded-xl border border-border bg-background px-3"/>
+      <input ref={input} id="room-chat-message" autoComplete="off" maxLength={1000} value={body} disabled={mutation.isPending} onChange={event => { if (mutation.isError) requestId.current = createUuid(); setBody(event.target.value); mutation.reset(); }} placeholder={t("room.sayHi")} className="min-h-11 w-full rounded-xl border border-border bg-background px-3"/>
       <button type="submit" className={buttonClass} disabled={!body.trim() || mutation.isPending}>{t("room.send")}</button>
       {mutation.isError && <p role="alert" className="text-small">{t(mutation.error instanceof CommunityError && mutation.error.code === "chatLimit" ? "room.chatLimit" : "community.unavailable")}</p>}
     </form>

@@ -25,6 +25,8 @@ it("validates room creation controls and deletion IDs before calling the databas
         { action: "room.create", data },
         { action: "room.create", data: { ...data, roomKind: "forever" } },
         { action: "room.delete", data: { id: "bad" } },
+        { action: "room.unsave", data: { id: "bad" } },
+        { action: "room.unsave", data: { id: crypto.randomUUID(), userId: crypto.randomUUID() } },
         { action: "room.delete", data: { id: crypto.randomUUID(), ownerId: crypto.randomUUID() } },
     ]) expect((await POST(request({ operation: "mutate", command }))).status).toBe(400);
     expect(mock.execute).not.toHaveBeenCalled();

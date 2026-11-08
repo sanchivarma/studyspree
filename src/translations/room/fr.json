@@ -20,7 +20,7 @@
     "notesPrivate": "Ces notes restent privées.",
     "noteLabel": "Ajouter une note",
     "olderNotes": "Charger les notes précédentes",
-    "yourRooms": "Salles d’étude",
+    "yourRooms": "Salles de discussion enregistrées",
     "create": "Créer une salle",
     "createDescription": "Choisissez un nom et le fonctionnement de cette salle.",
     "name": "Nom de la salle",
@@ -44,6 +44,11 @@
     "openById": "Ouvrir la salle",
     "invalidId": "Saisissez un identifiant de salle valide.",
     "virtualCount": "Partenaires virtuels : {count}",
-    "backDashboard": "Retour au tableau de bord"
+    "backDashboard": "Retour au tableau de bord",
+    "removeNamed": "Retirer {name} des salles enregistrées",
+    "removeTitle": "Retirer « {name} » des salles de discussion enregistrées ?",
+    "removeDescription": "Cette salle sera retirée de vos salles enregistrées. Elle restera accessible à son créateur et aux autres personnes. La rejoindre via son lien ou son identifiant l’enregistrera de nouveau.",
+    "remove": "Retirer des salles enregistrées",
+    "removing": "Retrait…"
   }
 }

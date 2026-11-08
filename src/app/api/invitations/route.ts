@@ -1,10 +1,11 @@
+import { hasSameOrigin } from "@/lib/auth/sameOrigin";
 import { ZodError } from "zod";
 import { invitationRequestSchema } from "@/lib/invitations/schemas";
 import { sendInvitation, InvitationServerError } from "@/lib/invitations/server";
 export const runtime = "nodejs";
 export async function POST(request: Request) {
   const headers = { "Cache-Control": "private, no-store" };
-  if (request.headers.get("origin") && request.headers.get("origin") !== new URL(request.url).origin) return Response.json({ error: "unauthorized" }, { status: 403, headers });
+  if (!hasSameOrigin(request)) return Response.json({ error: "unauthorized" }, { status: 403, headers });
   try {
     if (!request.headers.get("content-type")?.includes("application/json")) throw new SyntaxError();
     const text = await request.text();

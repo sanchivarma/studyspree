@@ -1648,6 +1648,48 @@ export type Database = {
                     }
                 ];
             };
+            "saved_study_rooms": {
+                Row: {
+                    "room_id": string;
+                    "saved_at": string;
+                    "user_id": string;
+                };
+                ComputedFields: never;
+                Insert: {
+                    "room_id": string;
+                    "saved_at"?: string;
+                    "user_id": string;
+                };
+                Update: {
+                    "room_id"?: string;
+                    "saved_at"?: string;
+                    "user_id"?: string;
+                };
+                Relationships: [
+                    {
+                        foreignKeyName: "saved_study_rooms_room_id_fkey";
+                        columns: [
+                            "room_id"
+                        ];
+                        isOneToOne: false;
+                        referencedRelation: "study_rooms";
+                        referencedColumns: [
+                            "id"
+                        ];
+                    },
+                    {
+                        foreignKeyName: "saved_study_rooms_user_id_fkey";
+                        columns: [
+                            "user_id"
+                        ];
+                        isOneToOne: false;
+                        referencedRelation: "profiles";
+                        referencedColumns: [
+                            "id"
+                        ];
+                    }
+                ];
+            };
             "scheduled_sessions": {
                 Row: {
                     "capacity": number;
@@ -2536,6 +2578,13 @@ export type Database = {
                 };
                 Returns: Json;
             };
+            "community_mutate_before_personal_saves": {
+                Args: {
+                    "p_action": string;
+                    "p_data": Json;
+                };
+                Returns: Json;
+            };
             "community_mutate_before_saved_rooms": {
                 Args: {
                     "p_action": string;
@@ -2608,6 +2657,13 @@ export type Database = {
                 Returns: Json;
             };
             "community_read_before_home_tiles": {
+                Args: {
+                    "p_area": string;
+                    "p_query"?: Json;
+                };
+                Returns: Json;
+            };
+            "community_read_before_personal_saves": {
                 Args: {
                     "p_area": string;
                     "p_query"?: Json;

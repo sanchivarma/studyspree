@@ -1,3 +1,4 @@
+import { createUuid } from "@/lib/uuid";
 import { z } from "zod";
 
 export const browserTabSchema = z.object({ tabId: z.uuid(), documentId: z.uuid(), reload: z.boolean() }).strict();
@@ -11,15 +12,15 @@ export function browserTab(): BrowserTab | undefined {
   let tabId: string;
   try {
     const stored = z.uuid().safeParse(window.sessionStorage.getItem("ss_browser_tab"));
-    tabId = stored.success ? stored.data : crypto.randomUUID();
+    tabId = stored.success ? stored.data : createUuid();
     window.sessionStorage.setItem("ss_browser_tab", tabId);
-  } catch { tabId = crypto.randomUUID(); }
+  } catch { tabId = createUuid(); }
   const navigation = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
-  identity = { tabId, documentId: crypto.randomUUID(), reload: navigation?.type === "reload" };
+  identity = { tabId, documentId: createUuid(), reload: navigation?.type === "reload" };
   return identity;
 }
 
 export function restoreBrowserTab() {
   const previous = browserTab();
-  if (previous) identity = { ...previous, documentId: crypto.randomUUID(), reload: true };
+  if (previous) identity = { ...previous, documentId: createUuid(), reload: true };
 }

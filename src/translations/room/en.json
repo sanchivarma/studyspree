@@ -20,7 +20,7 @@
     "notesPrivate": "These notes are private to you.",
     "noteLabel": "Add a note",
     "olderNotes": "Load earlier notes",
-    "yourRooms": "Study rooms",
+    "yourRooms": "Saved chat rooms",
     "create": "Create room",
     "createDescription": "Choose a name and how you want to use this room.",
     "name": "Room name",
@@ -44,6 +44,11 @@
     "openById": "Open room",
     "invalidId": "Enter a valid room ID.",
     "virtualCount": "Virtual partners: {count}",
-    "backDashboard": "Back to Dashboard"
+    "backDashboard": "Back to Dashboard",
+    "removeNamed": "Remove {name} from saved rooms",
+    "removeTitle": "Remove “{name}” from saved chat rooms?",
+    "removeDescription": "This removes the room from your saved chat rooms. The shared room stays available to its creator and other people. Joining it through its link or ID will save it here once more.",
+    "remove": "Remove from saved rooms",
+    "removing": "Removing…"
   }
 }

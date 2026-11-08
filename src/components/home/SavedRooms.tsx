@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { AlertDialog } from "radix-ui";
-import { Plus, Trash2, Users } from "lucide-react";
+import { Plus, X, Users } from "lucide-react";
 import { z } from "zod";
 import { useCommunity } from "@/hooks/useCommunity";
 import { useCommunityMutation } from "@/hooks/useCommunityMutation";
@@ -21,26 +21,27 @@ function SavedRoomCard({ item, viewerId }: { item: CommunityItem; viewerId: stri
   const { t } = useTranslation();
   const remove = useCommunityMutation();
   const [confirm, setConfirm] = useState(false);
+  const isOwner = item.ownerId === viewerId;
   const details = roomDetails.safeParse(item.data);
   if (!details.success) return null;
-  return <li data-testid="saved-study-room" className="space-y-3 rounded-xl border border-border bg-background/30 p-4">
+  return <li data-testid="saved-study-room" className="relative space-y-3 rounded-xl border border-border bg-background/30 p-4 pt-14">
     <div className="flex items-start justify-between gap-2">
       <h3 className="break-words font-semibold">{item.title}</h3>
-      {item.ownerId === viewerId && <AlertDialog.Root open={confirm} onOpenChange={setConfirm}>
-        <AlertDialog.Trigger asChild><button type="button" aria-label={t("room.deleteNamed", { name: item.title })} className="flex size-11 shrink-0 items-center justify-center rounded-xl hover:bg-surface-2 focus-visible:outline-2 focus-visible:outline-accent"><Trash2 aria-hidden="true" className="size-4"/></button></AlertDialog.Trigger>
+      <AlertDialog.Root open={confirm} onOpenChange={setConfirm}>
+        <AlertDialog.Trigger asChild><button type="button" data-testid="remove-saved-room" aria-label={t(isOwner ? "room.deleteNamed" : "room.removeNamed", { name: item.title })} className="absolute top-1 left-1 flex size-11 items-center justify-center rounded-xl hover:bg-surface-2 focus-visible:outline-2 focus-visible:outline-accent"><X aria-hidden="true" className="size-4"/></button></AlertDialog.Trigger>
         <AlertDialog.Portal>
           <AlertDialog.Overlay className="fixed inset-0 z-50 bg-background/80"/>
           <AlertDialog.Content className="fixed top-1/2 left-1/2 z-50 w-[min(420px,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 space-y-4 rounded-2xl border border-border bg-surface p-6">
-            <AlertDialog.Title className="text-xl font-semibold">{t("room.deleteTitle", { name: item.title })}</AlertDialog.Title>
-            <AlertDialog.Description className="text-small text-text-muted">{t("room.deleteDescription")}</AlertDialog.Description>
+            <AlertDialog.Title className="text-xl font-semibold">{t(isOwner ? "room.deleteTitle" : "room.removeTitle", { name: item.title })}</AlertDialog.Title>
+            <AlertDialog.Description className="text-small text-text-muted">{t(isOwner ? "room.deleteDescription" : "room.removeDescription")}</AlertDialog.Description>
             {remove.isError && <p role="alert">{t("community.unavailable")}</p>}
             <div className="flex flex-wrap justify-end gap-3">
               <AlertDialog.Cancel asChild><button disabled={remove.isPending} className={button}>{t("room.cancel")}</button></AlertDialog.Cancel>
-              <button disabled={remove.isPending} className={`${button} bg-accent text-background`} onClick={() => remove.mutate({ action: "room.delete", data: { id: item.id } }, { onSuccess: () => setConfirm(false) })}>{t(remove.isPending ? "room.deleting" : "room.delete")}</button>
+              <button disabled={remove.isPending} className={`${button} bg-accent text-background`} onClick={() => remove.mutate({ action: isOwner ? "room.delete" : "room.unsave", data: { id: item.id } }, { onSuccess: () => setConfirm(false) })}>{t(remove.isPending ? isOwner ? "room.deleting" : "room.removing" : isOwner ? "room.delete" : "room.remove")}</button>
             </div>
           </AlertDialog.Content>
         </AlertDialog.Portal>
-      </AlertDialog.Root>}
+      </AlertDialog.Root>
     </div>
     <p className="text-small text-accent">{t(details.data.roomKind === "permanent-solo" ? "room.permanentSolo" : "room.permanentShared")}</p>
     {details.data.roomKind === "permanent-shared" && <>

@@ -1,4 +1,5 @@
 "use client";
+import { createUuid } from "@/lib/uuid";
 import { useId, useRef, useState } from "react";
 import { useProfile } from "@/hooks/useProfile";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -53,7 +54,7 @@ export function CommunityComposer({ area, id, groupId, parentId, canPost = true 
             const body = text("body");
             if (isTextOnly) {
                 const delivered = new Set(deliveries.flatMap(delivery => delivery.status === "success" && delivery.command && (delivery.command.action === "message.send" || delivery.command.action === "post.create") && delivery.command.data.clientId ? [delivery.command.data.clientId] : []));
-                attempt.current = nextDeliveryAttempt(attempt.current, JSON.stringify({ area, id, parentId, groupId, body, attachments, visibility: text("visibility") }), delivered, () => crypto.randomUUID());
+                attempt.current = nextDeliveryAttempt(attempt.current, JSON.stringify({ area, id, parentId, groupId, body, attachments, visibility: text("visibility") }), delivered, () => createUuid());
             }
             let command: CommunityCommand;
             try {

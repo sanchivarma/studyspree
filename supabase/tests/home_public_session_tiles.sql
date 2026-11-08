@@ -9,7 +9,7 @@ insert into auth.users(id,email,raw_app_meta_data,raw_user_meta_data) values
 ('a8720000-0000-4000-8000-000000000004','tiles-people@example.test','{"provider":"email"}','{"username":"tiles_people"}'),
 ('a8720000-0000-4000-8000-000000000005','tiles-viewer@example.test','{"provider":"email"}','{"username":"tiles_viewer"}');
 select is((select count(*) from study_rooms where is_system),1::bigint,'Exactly one permanent General Study Room');
-select is((select name from study_rooms where is_system),'StudySpree General Study Room','Permanent room has the requested name');
+select is((select name from study_rooms where is_system),'StudySpree General Study Room I','Permanent room has the requested name');
 set local role authenticated;
 select set_config('request.jwt.claims','{"sub":"a8720000-0000-4000-8000-000000000001","role":"authenticated"}',true);
 select set_config('test.tile_solo',(public.start_session_with_details(null,'rain-desk',null,'{"mode":"solo","characterSlugs":[]}','Public Solo',null,'public')).id::text,true);

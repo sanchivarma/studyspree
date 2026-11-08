@@ -1,3 +1,4 @@
+import { hasSameOrigin } from "@/lib/auth/sameOrigin";
 import { ZodError } from "zod";
 import { repositoryRequestSchema } from "@/lib/repo/remoteSchemas";
 import { hasClientDuration } from "@/lib/repo/requestValidation";
@@ -6,8 +7,7 @@ import { executeStudy, StudyError } from "@/lib/repo/serverStudy";
 // be changed to do so. Duration is computed by a database trigger.
 export async function POST(request: Request) {
     const headers = { "Cache-Control": "private, no-store" };
-    const origin = request.headers.get("origin");
-    if (origin && origin !== new URL(request.url).origin)
+    if (!hasSameOrigin(request))
         return Response.json({ error: "unauthorized" }, { status: 403, headers });
     if (!request.headers.get("content-type")?.includes("application/json"))
         return Response.json({ error: "invalid" }, { status: 400, headers });

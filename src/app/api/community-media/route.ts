@@ -1,3 +1,4 @@
+import { hasSameOrigin } from "@/lib/auth/sameOrigin";
 import { randomUUID } from "node:crypto";
 import { createAuthClient } from "@/lib/auth/server";
 import { attachmentSchema } from "@/lib/community/schemas";
@@ -6,8 +7,7 @@ import { boundedMultipart, mediaExtension } from "@/lib/community/media";
 // be changed to do so. Duration is computed by a database trigger.
 export async function POST(request: Request) {
     const headers = { "Cache-Control": "private, no-store" };
-    const origin = request.headers.get("origin");
-    if (origin && origin !== new URL(request.url).origin)
+    if (!hasSameOrigin(request))
         return Response.json({ error: "forbidden" }, { status: 403, headers });
     const client = await createAuthClient();
     const identity = await client.auth.getUser();

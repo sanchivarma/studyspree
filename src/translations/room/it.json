@@ -20,7 +20,7 @@
     "notesPrivate": "Questi appunti restano privati.",
     "noteLabel": "Aggiungi un appunto",
     "olderNotes": "Carica gli appunti precedenti",
-    "yourRooms": "Stanze di studio",
+    "yourRooms": "Chat salvate",
     "create": "Crea stanza",
     "createDescription": "Scegli un nome e come utilizzare questa stanza.",
     "name": "Nome della stanza",
@@ -44,6 +44,11 @@
     "openById": "Apri stanza",
     "invalidId": "Inserisci un ID stanza valido.",
     "virtualCount": "Partner virtuali: {count}",
-    "backDashboard": "Torna alla Dashboard"
+    "backDashboard": "Torna alla Dashboard",
+    "removeNamed": "Rimuovi {name} dalle stanze salvate",
+    "removeTitle": "Rimuovere “{name}” dalle chat salvate?",
+    "removeDescription": "La stanza verrà rimossa dalle tue chat salvate. Resterà disponibile al creatore e alle altre persone. Partecipando tramite link o ID verrà salvata nuovamente.",
+    "remove": "Rimuovi dalle stanze salvate",
+    "removing": "Rimozione…"
   }
 }

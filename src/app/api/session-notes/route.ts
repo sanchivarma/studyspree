@@ -1,10 +1,10 @@
+import { hasSameOrigin } from "@/lib/auth/sameOrigin";
 import { createAuthClient } from "@/lib/auth/server";
 import { sessionNoteRequestSchema, sessionNoteSchema, sessionNotesPageSchema } from "@/lib/sessionNotes/schemas";
 
 export async function POST(request: Request) {
   const headers = { "Cache-Control": "private, no-store" };
-  const origin = request.headers.get("origin");
-  if (origin && origin !== new URL(request.url).origin) return Response.json({ error: "unavailable" }, { status: 403, headers });
+  if (!hasSameOrigin(request)) return Response.json({ error: "unavailable" }, { status: 403, headers });
   if (!request.headers.get("content-type")?.includes("application/json")) return Response.json({ error: "invalid" }, { status: 400, headers });
   try {
     const text = await request.text();
