@@ -1,5 +1,40 @@
 # Performance audit — 22 October 2026
 
+## Navigation follow-up — 8 November 2026
+
+Port 3000 had returned to the Turbopack development server. The connected-account
+benchmark reproduced Stats at 2,988 ms and a repeat Contacts click at 2,707 ms.
+The same six-route journey on the existing production build took 84–361 ms;
+development and production are separate measurements, not a claim that the
+prefetch change alone accounts for this difference.
+
+Primary navigation and More fully prefetch the focused, hovered or touched
+destination instead of requesting every visible route at once. A full-prefetch
+experiment passed the navigation cases but competed with Home data loading,
+so intent limits background work to the destination the user is approaching.
+This uses the existing Next router cache; repository data remains in
+the existing account query cache with its original invalidation and auth rules.
+The click suite adds primary/drawer regressions that wait for completed prefetch
+resource timing, block subsequent destination requests, and still require ready
+UI under the unchanged two-second deadline. Full prefetch responses use RSC
+without the partial-prefetch header. See [Next 15 Link prefetch behavior](https://nextjs.org/docs/15/app/api-reference/components/link#prefetch).
+
+Final verification on localhost:3000 passed all 28 click cases, with no retries
+or skipped tests. All 35 timed actions finished in 76–814 ms; the 21 navigation
+destinations took 241–798 ms. Cached Settings/Tasks clicks took 259/170 ms while
+extra destination requests were blocked. The connected-account six-route
+benchmark measured first clicks at 83–246 ms and repeat clicks at 52–97 ms;
+initial Home was ready in 574 ms. Decoded initial/journey scripts were
+903,817 / 1,096,400 bytes. Typecheck, lint, 518 unit tests, the production build
+and asset gates passed.
+
+Earlier validation exposed a 2,111 ms Conversations action during a run that
+overlapped code checks, plus a Home setup timeout with eager prefetching. The
+final measurements use intent-only prefetch and no competing code-check jobs.
+Port 3000 now runs the optimized build with maintenance; `npm run preview:local`
+restarts that mode. These measurements cover the local account/database, not an
+unprovided Vercel deployment or every possible machine/network workload.
+
 Baseline: `f791abd`. The final local production performance run passed all
 58 browser tests against localhost:3000 on 22 October 2026. Functional and
 privacy coverage is recorded separately below.

@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useProfile } from "@/hooks/useProfile";
 import { getTheme } from "@/lib/themes/registry";
-import type { CSSProperties } from "react";
+import { useState, type CSSProperties } from "react";
 import { MoreNav } from "./MoreNav";
 import { PendingNavigation } from "./PendingNavigation";
 import { navigationItems } from "@/lib/navigation/routes";
@@ -18,6 +18,7 @@ export function AppNav({ showStreak }: { showStreak: boolean }) {
   const pathname = usePathname();
   const { t } = useTranslation();
   const profile = useProfile();
+  const [prefetchHref,setPrefetchHref]=useState<string|null>(null);
 
   if (pathname.startsWith("/session") || pathname.startsWith("/rooms/")) return null;
 
@@ -35,6 +36,10 @@ export function AppNav({ showStreak }: { showStreak: boolean }) {
             <Link
               key={href}
               href={href}
+              prefetch={!isActive&&prefetchHref===href}
+              onMouseEnter={()=>setPrefetchHref(href)}
+              onFocus={()=>setPrefetchHref(href)}
+              onTouchStart={()=>setPrefetchHref(href)}
               aria-current={isActive ? "page" : undefined}
               className={cn(
                 "group relative flex h-11 min-w-11 flex-1 shrink-0 flex-col items-center justify-center gap-0.5 rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:w-11 md:flex-none md:gap-0",

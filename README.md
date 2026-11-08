@@ -34,8 +34,9 @@ npm.cmd run preview:local
 This serves the production build at http://localhost:3000 and runs maintenance.
 The preview build is separate from the default `.next` output. Stop its server
 before rebuilding that same output, then restart after source changes.
+Once a build exists, subsequent starts need only `npm.cmd run preview:local`.
 Development mode below supports live source edits
-and compiles routes on demand; its first navigation can exceed the click budget.
+and compiles routes on demand; compilation and hot reload can exceed the click budget.
 
 ```powershell
 npm.cmd install

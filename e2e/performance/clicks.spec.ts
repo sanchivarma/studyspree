@@ -56,6 +56,45 @@ for (const item of navigationItems) {
   });
 }
 
+for (const destination of [{id:"settings",href:"/settings",label:"Settings",primary:true},{id:"tasks",href:"/tasks",label:"Tasks",primary:false}]) {
+  test(`prefetched ${destination.id}: navigation needs no extra route round trip`, async ({ page }, info) => {
+    const fullRoutes:string[]=[];
+    page.on("request",request=>{
+      const path=new URL(request.url()).pathname,headers=request.headers();
+      if(headers.rsc==="1"&&!headers["next-router-prefetch"]&&navigationItems.some(item=>item.href===path)) fullRoutes.push(path);
+    });
+    // Full prefetches use RSC without Next's partial-prefetch header. No
+    // navigation to this destination occurs until its payload has arrived.
+    const prefetched=page.waitForResponse(response=>new URL(response.url()).pathname===destination.href
+      &&response.request().headers().rsc==="1",{timeout:10000});
+    void prefetched.catch(()=>undefined);
+    await page.reload();
+    await expect(page.getByTestId("default-study-room")).toBeVisible();
+    expect(fullRoutes,"Home data should not compete with full prefetches for unrelated navigation destinations").toEqual([]);
+    if(!destination.primary) await page.getByRole("button",{name:"More",exact:true}).click();
+    const nav=page.getByRole("navigation",{name:destination.primary?"Main navigation":"More",exact:true});
+    const link=nav.getByRole("link",{name:destination.label,exact:true});
+    // Keyboard focus also warms the drawer destination, without requesting
+    // every secondary page when More opens.
+    await link.focus();
+    const response=await prefetched;
+    expect(response.ok()).toBe(true);
+    await page.waitForFunction(path=>performance.getEntriesByType("resource").some(entry=>{
+      const resource=entry as PerformanceResourceTiming;
+      return new URL(resource.name).pathname===path&&resource.initiatorType==="fetch"&&resource.responseEnd>0;
+    }),destination.href,{timeout:10000});
+    let extraRouteRequests=0;
+    await page.route(url=>url.pathname===destination.href,route=>{extraRouteRequests++;return route.abort();});
+    await expectFastAction(info,`cached navigation ${destination.id}`,remaining=>link.click({timeout:remaining()}),async remaining=>{
+      await expect(page).toHaveURL(new URL(destination.href,page.url()).href,{timeout:remaining()});
+      if(destination.primary) await expect(page.locator('input[autocomplete="nickname"]')).toBeEnabled({timeout:remaining()});
+      else await expect(page.locator("main").getByRole("heading",{name:destination.label,exact:true})).toBeVisible({timeout:remaining()});
+      await expect(page.locator("main").getByRole("status").filter({hasText:text("community.loading")})).toHaveCount(0,{timeout:remaining()});
+    });
+    expect(extraRouteRequests).toBe(0);
+  });
+}
+
 test("fresh companion selection and saved session complete within two seconds", async ({ page }, info) => {
   await page.goto("/study");
   await expect(page.getByRole("button", { name: "Start", exact: true })).toBeEnabled();
