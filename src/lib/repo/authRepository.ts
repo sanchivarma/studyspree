@@ -3,7 +3,7 @@ import { cache } from "react";
 import { z } from "zod";
 import { getAuthConfig, getSiteUrl } from "@/lib/auth/config";
 import { createAuthClient } from "@/lib/auth/server";
-import { loginSchema, passwordSchema, registrationSchema, registrationErrors, magicLinkSchema, onboardingSchema } from "@/lib/auth/schemas";
+import { loginSchema, passwordSchema, usernameSchema, registrationSchema, registrationErrors, magicLinkSchema, onboardingSchema } from "@/lib/auth/schemas";
 import type { AuthProfile } from "@/lib/auth/schemas";
 import type { AuthOperation, AuthResult } from "@/lib/auth/types";
 import { getDevAdminProfile, loginDevAdmin, clearDevAdminSession } from "@/lib/auth/devAdmin";
@@ -34,6 +34,15 @@ export const authRepository: AuthRepository = {
     if (!getAuthConfig()) return { status: "error", message: "common.authUnavailable" };
     const client = await createAuthClient();
     switch (operation) {
+      case "checkUsername": {
+        const parsed = z.object({ username: usernameSchema }).strict().safeParse(input);
+        if (!parsed.success) return { status: "error", fieldErrors: { username: "register.usernameInvalid" } };
+        const secret = process.env.SUPABASE_USERNAME_LOOKUP_SECRET;
+        if (!secret) return { status: "error", message: "common.authUnavailable" };
+        const lookup = await client.rpc("lookup_login_email", { p_username: parsed.data.username, p_lookup_secret: secret });
+        if (lookup.error) return { status: "error", message: "common.authError" };
+        return lookup.data ? { status: "error", fieldErrors: { username: "register.usernameTaken" } } : { status: "success" };
+      }
       case "magicLink": {
         const email = magicLinkSchema.safeParse(input);
         if (!email.success) return { status: "error", message: "common.invalidFields" };
@@ -58,8 +67,10 @@ export const authRepository: AuthRepository = {
         const email = z.email().safeParse(lookup.data);
         const result = await client.auth.signInWithPassword({ email: email.success ? email.data : "unknown@invalid.example", password: parsed.data.password });
         if (result.error) return { status: "error", message: result.error.code === "invalid_credentials" ? "login.invalidCredentials" : "common.authError" };
-        const profile = await readAccount(client);
-        return profile ? { status: "success", navigate: profile.onboarding_complete ? await consumeAuthReturnTo() : "/onboarding" } : { status: "error", message: "common.authError" };
+        // signInWithPassword already verified this identity; avoid a redundant getUser call.
+        if (!result.data.user) return { status: "error", message: "common.authError" };
+        const profile = await client.from("profiles").select("onboarding_complete").eq("id", result.data.user.id).single();
+        return profile.error || !profile.data ? { status: "error", message: "common.authError" } : { status: "success", navigate: profile.data.onboarding_complete ? await consumeAuthReturnTo() : "/onboarding" };
       }
       case "register": {
         const parsed = registrationSchema.safeParse(input);

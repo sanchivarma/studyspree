@@ -2,7 +2,7 @@
 
 import { useContext, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { authenticate } from "@/app/(auth)/actions";
+import { executeAuth } from "@/lib/repo/authTransport";
 import type { AuthOperation, AuthResult } from "@/lib/auth/types";
 import { AuthFeedbackContext } from "@/components/auth/AuthFeedbackProvider";
 import { useQueryClient } from "@tanstack/react-query";
@@ -25,7 +25,7 @@ export function useAuth() {
     const showFeedback = operation === "login" || operation === "magicLink";
     report(showFeedback ? { status: "pending", message: "common.working" } : null);
     try {
-      const response = await authenticate(operation, input);
+      const response = await executeAuth(operation, input);
       setResult(response);
       if (showFeedback) report({ status: response.status, message: response.message ?? (response.status === "success" ? "login.success" : "common.authError") });
       if (response.status === "success" && response.navigate) {

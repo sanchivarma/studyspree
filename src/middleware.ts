@@ -8,6 +8,12 @@ export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request });
   if (!authConfig) return response; // Server page guards still protect offline preview.
   const path = request.nextUrl.pathname;
+  // These handlers validate their own input/origin and authenticate explicitly.
+  // Refreshing a previous session here adds an unrelated network call to login/signup.
+  if (["/api/auth/login", "/api/auth/register", "/api/auth/username"].includes(path)) {
+    response.headers.set("Cache-Control", "private, no-store");
+    return response;
+  }
   // Only an explicitly configured local instance upgrades its signed preview
   // cookie. The route verifies the cookie before normal Supabase sign-in.
   if (process.env.NODE_ENV === "development" && process.env.DEV_ADMIN_USE_SUPABASE === "true"
