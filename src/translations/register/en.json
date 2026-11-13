@@ -3,6 +3,16 @@
     "title": "Register",
     "submit": "Create account",
     "checkEmail": "Check your email to confirm your account.",
-    "usernameHelp": "3–30 letters, numbers or underscores."
+    "usernameHelp": "3–30 letters, numbers or underscores.",
+    "confirmPassword": "Confirm password",
+    "firstNameInvalid": "Enter your first name (1–80 characters).",
+    "lastNameInvalid": "Enter your last name (1–80 characters).",
+    "emailInvalid": "Enter a valid email address.",
+    "usernameInvalid": "Use 3–30 letters, numbers or underscores.",
+    "passwordInvalid": "Use a password with 8–64 characters.",
+    "passwordMismatch": "Passwords must match.",
+    "usernameTaken": "This username is taken. Choose another username.",
+    "passwordWeak": "Choose a stronger password with a mix of letters, numbers and symbols.",
+    "rateLimited": "Please wait a few minutes before creating your account."
   }
 }

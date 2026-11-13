@@ -20,6 +20,7 @@ describe("Supabase auth repository", () => {
     mocks.config.mockReturnValue({ url: "https://example.supabase.co", key: "test-key" });
     vi.stubEnv("SUPABASE_USERNAME_LOOKUP_SECRET", "test-secret-not-a-real-key-0000000000");
     mocks.signIn.mockResolvedValue({ error: null });
+    mocks.rpc.mockResolvedValue({ data: null, error: null });
     mocks.getUser.mockResolvedValue({ data: { user: { id: "00000000-0000-4000-8000-000000000001" } }, error: null });
     mocks.single.mockResolvedValue({ data: { id: "00000000-0000-4000-8000-000000000001", username: "alex", first_name: "Alex", last_name: "", selected_theme: "rain-desk", show_streak: true, onboarding_complete: true }, error: null });
     mocks.from.mockReturnValue({ select: () => ({ eq: () => ({ single: mocks.single }) }), update: mocks.profileUpdate });
@@ -68,6 +69,43 @@ describe("Supabase auth repository", () => {
   it("waits for confirmation when registration does not return a session", async () => {
     mocks.signUp.mockResolvedValue({ data: { session: null }, error: null });
     expect(await authRepository.execute("register", { firstName: "Alex", lastName: "Sample", username: "alex", email: "alex@example.com", password: "secret-password" })).toEqual({ status: "success", message: "register.checkEmail" });
+  });
+  const registration = { firstName: "Alex", lastName: "Sample", username: " ALEX ", email: " Alex@example.com ", password: "secret-password" };
+  it("checks Supabase for a normalized username before creating the account", async () => {
+    mocks.rpc.mockResolvedValue({ data: "private@example.com", error: null });
+    expect(await authRepository.execute("register", registration)).toEqual({ status: "error", fieldErrors: { username: "register.usernameTaken" } });
+    expect(mocks.rpc).toHaveBeenCalledWith("lookup_login_email", { p_username: "alex", p_lookup_secret: expect.any(String) });
+    expect(mocks.signUp).not.toHaveBeenCalled();
+  });
+  it("returns field errors before querying Supabase for malformed registration", async () => {
+    expect(await authRepository.execute("register", { ...registration, email: "invalid", password: "x" })).toMatchObject({ status: "error", fieldErrors: { email: "register.emailInvalid", password: "register.passwordInvalid" } });
+    expect(mocks.rpc).not.toHaveBeenCalled();
+    expect(mocks.signUp).not.toHaveBeenCalled();
+  });
+  it("does not proceed when username lookup is unavailable", async () => {
+    mocks.rpc.mockResolvedValue({ data: null, error: { code: "42501" } });
+    expect((await authRepository.execute("register", registration)).status).toBe("error");
+    expect(mocks.signUp).not.toHaveBeenCalled();
+    vi.stubEnv("SUPABASE_USERNAME_LOOKUP_SECRET", "");
+    expect((await authRepository.execute("register", registration)).message).toBe("common.authUnavailable");
+  });
+  it("handles a username claimed concurrently during signup", async () => {
+    mocks.rpc.mockResolvedValueOnce({ data: null, error: null }).mockResolvedValueOnce({ data: "private@example.com", error: null });
+    mocks.signUp.mockResolvedValue({ error: { code: "unexpected_failure" } });
+    expect(await authRepository.execute("register", registration)).toEqual({ status: "error", fieldErrors: { username: "register.usernameTaken" } });
+  });
+  it.each([
+    ["weak_password", { status: "error", fieldErrors: { password: "register.passwordWeak" } }],
+    ["over_email_send_rate_limit", { status: "error", message: "register.rateLimited" }],
+    ["user_already_exists", { status: "error", message: "common.authError" }],
+  ])("maps signup error %s without leaking email existence", async (code, expected) => {
+    mocks.signUp.mockResolvedValue({ error: { code } });
+    expect(await authRepository.execute("register", registration)).toEqual(expected);
+  });
+  it("passes normalized details and a confirmation redirect to signup", async () => {
+    mocks.signUp.mockResolvedValue({ data: { session: null }, error: null });
+    await authRepository.execute("register", registration);
+    expect(mocks.signUp).toHaveBeenCalledWith({ email: "alex@example.com", password: "secret-password", options: { data: { first_name: "Alex", last_name: "Sample", username: "alex" }, emailRedirectTo: "http://localhost:3000/auth/callback" } });
   });
   it.each(["google", "facebook"] as const)("starts real %s OAuth", async (provider) => {
     mocks.oauth.mockResolvedValue({ data: { url: "https://example.supabase.co/auth/v1/authorize" }, error: null });

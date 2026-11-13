@@ -3,6 +3,16 @@
     "title": "Inscription",
     "submit": "Créer un compte",
     "checkEmail": "Consultez votre e-mail pour confirmer votre compte.",
-    "usernameHelp": "3 à 30 lettres, chiffres ou traits de soulignement."
+    "usernameHelp": "3 à 30 lettres, chiffres ou traits de soulignement.",
+    "confirmPassword": "Confirmer le mot de passe",
+    "firstNameInvalid": "Saisissez votre prénom (1–80 caractères).",
+    "lastNameInvalid": "Saisissez votre nom (1–80 caractères).",
+    "emailInvalid": "Saisissez une adresse e-mail valide.",
+    "usernameInvalid": "Utilisez 3–30 lettres, chiffres ou traits de soulignement.",
+    "passwordInvalid": "Utilisez un mot de passe de 8–64 caractères.",
+    "passwordMismatch": "Les mots de passe doivent correspondre.",
+    "usernameTaken": "Ce nom est déjà pris. Choisissez un autre nom.",
+    "passwordWeak": "Choisissez un mot de passe plus fort avec des lettres, chiffres et symboles.",
+    "rateLimited": "Veuillez patienter quelques minutes avant de créer votre compte."
   }
 }

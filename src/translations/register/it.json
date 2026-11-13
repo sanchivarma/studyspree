@@ -3,6 +3,16 @@
     "title": "Registrati",
     "submit": "Crea account",
     "checkEmail": "Controlla l’e-mail per confermare il tuo account.",
-    "usernameHelp": "Da 3 a 30 lettere, numeri o trattini bassi."
+    "usernameHelp": "Da 3 a 30 lettere, numeri o trattini bassi.",
+    "confirmPassword": "Conferma password",
+    "firstNameInvalid": "Inserisci il tuo nome (1–80 caratteri).",
+    "lastNameInvalid": "Inserisci il tuo cognome (1–80 caratteri).",
+    "emailInvalid": "Inserisci un indirizzo email valido.",
+    "usernameInvalid": "Usa 3–30 lettere, numeri o trattini bassi.",
+    "passwordInvalid": "Usa una password di 8–64 caratteri.",
+    "passwordMismatch": "Le password devono corrispondere.",
+    "usernameTaken": "Questo nome utente è già in uso. Scegline un altro.",
+    "passwordWeak": "Scegli una password più sicura con lettere, numeri e simboli.",
+    "rateLimited": "Attendi qualche minuto prima di creare il tuo account."
   }
 }

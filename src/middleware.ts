@@ -28,7 +28,7 @@ export async function middleware(request: NextRequest) {
     },
   });
   const identity = await client.auth.getClaims();
-  const publicPage = path === "/login" || path.startsWith("/auth/") || path === "/reset-password" || path.startsWith("/api/")
+  const publicPage = path === "/login" || path === "/register" || path.startsWith("/auth/") || path === "/reset-password" || path.startsWith("/api/")
     || (process.env.NODE_ENV === "development" && path === "/dev");
   const offlinePreview = process.env.NODE_ENV === "development" && process.env.NEXT_PUBLIC_USE_LOCAL_REPO !== "false" && request.cookies.has("ss_dev_admin");
   if (!publicPage && !offlinePreview && (identity.error || !identity.data?.claims)) {

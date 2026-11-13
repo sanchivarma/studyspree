@@ -3,7 +3,7 @@ import { cache } from "react";
 import { z } from "zod";
 import { getAuthConfig, getSiteUrl } from "@/lib/auth/config";
 import { createAuthClient } from "@/lib/auth/server";
-import { loginSchema, passwordSchema, registrationSchema, magicLinkSchema, onboardingSchema } from "@/lib/auth/schemas";
+import { loginSchema, passwordSchema, registrationSchema, registrationErrors, magicLinkSchema, onboardingSchema } from "@/lib/auth/schemas";
 import type { AuthProfile } from "@/lib/auth/schemas";
 import type { AuthOperation, AuthResult } from "@/lib/auth/types";
 import { getDevAdminProfile, loginDevAdmin, clearDevAdminSession } from "@/lib/auth/devAdmin";
@@ -63,13 +63,28 @@ export const authRepository: AuthRepository = {
       }
       case "register": {
         const parsed = registrationSchema.safeParse(input);
-        if (!parsed.success) return { status: "error", message: "common.invalidFields" };
+        if (!parsed.success) return { status: "error", message: "common.invalidFields", fieldErrors: registrationErrors(parsed.error) };
         const { firstName, lastName, email, username, password } = parsed.data;
+        const secret = process.env.SUPABASE_USERNAME_LOOKUP_SECRET;
+        if (!secret) return { status: "error", message: "common.authUnavailable" };
+        // This existing secret-protected RPC joins profiles to auth.users. Emails stay on the server.
+        const lookup = await client.rpc("lookup_login_email", { p_username: username, p_lookup_secret: secret });
+        if (lookup.error) return { status: "error", message: "common.authError" };
+        if (lookup.data) return { status: "error", fieldErrors: { username: "register.usernameTaken" } };
         const result = await client.auth.signUp({ email, password, options: {
           data: { first_name: firstName, last_name: lastName, username },
           emailRedirectTo: `${getSiteUrl()}/auth/callback`,
         } });
-        if (result.error) return { status: "error", message: "common.authError" };
+        if (result.error) {
+          if (result.error.code === "weak_password") return { status: "error", fieldErrors: { password: "register.passwordWeak" } };
+          if (result.error.code === "over_email_send_rate_limit" || result.error.code === "over_request_rate_limit") return { status: "error", message: "register.rateLimited" };
+          // A concurrent registration can claim the username after the first check.
+          if (result.error.code === "unexpected_failure") {
+            const recheck = await client.rpc("lookup_login_email", { p_username: username, p_lookup_secret: secret });
+            if (!recheck.error && recheck.data) return { status: "error", fieldErrors: { username: "register.usernameTaken" } };
+          }
+          return { status: "error", message: "common.authError" };
+        }
         return result.data.session ? { status: "success", navigate: "/onboarding" } : { status: "success", message: "register.checkEmail" };
       }
       case "google":

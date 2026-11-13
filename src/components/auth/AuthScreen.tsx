@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "@/hooks/useTranslation";
 import { cn } from "@/lib/utils";
 import type { TranslationKey } from "@/translations";
+import { registrationFormSchema, registrationErrors, type RegistrationErrors, type RegistrationField } from "@/lib/auth/schemas";
 
 const inputClass = "h-12 w-full rounded-xl border border-border bg-background/50 px-4 text-body text-foreground";
 
@@ -14,25 +15,48 @@ export function AuthScreen({ isConfigured, allowOAuth = true, hasDevLogin = fals
   const { t } = useTranslation();
   const { execute, isPending, result, clearResult } = useAuth();
   const [mode, setMode] = useState<"login" | "register" | "reset">(initialMode);
+  const [errors, setErrors] = useState<RegistrationErrors>({});
+  const fieldErrors = mode === "register" ? { ...errors, ...result?.fieldErrors } : {};
+
+  function changeMode(next: typeof mode) {
+    setMode(next); setErrors({}); clearResult();
+  }
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const values = new FormData(event.currentTarget);
+    if (mode === "register") {
+      const parsed = registrationFormSchema.safeParse(Object.fromEntries(values));
+      if (!parsed.success) {
+        const validation = registrationErrors(parsed.error);
+        setErrors(validation); clearResult();
+        document.getElementById(`auth-${Object.keys(validation)[0]}`)?.focus();
+        return;
+      }
+      setErrors({});
+      const { firstName, lastName, email, username, password } = parsed.data;
+      void execute("register", { firstName, lastName, email, username, password });
+      return;
+    }
     if (mode === "reset") { void execute("reset", values.get("email")); return; }
-    const credentials = { username: values.get("username"), password: values.get("password") };
-    void execute(mode, mode === "login" ? credentials : { ...credentials, firstName: values.get("firstName"), lastName: values.get("lastName"), email: values.get("email") });
+    void execute("login", { username: values.get("username"), password: values.get("password") });
   }
 
   function field(name: string, label: TranslationKey, type = "text", autoComplete = name, help?: TranslationKey) {
+    const error = fieldErrors[name as RegistrationField];
     return (
       <div className="space-y-2 text-small text-text-muted" key={name}>
         <label htmlFor={`auth-${name}`} className="block">{t(label)}</label>
         <input id={`auth-${name}`} name={name} type={type} required autoComplete={autoComplete} className={inputClass}
+          disabled={isPending}
+          onChange={() => { setErrors(current => ({ ...current, [name]: undefined })); clearResult(); }}
+          aria-invalid={Boolean(error)}
           minLength={name === "password" && mode === "register" ? 8 : undefined}
-          maxLength={name === "password" ? 64 : name === "username" ? 30 : name === "email" ? 254 : 80}
+          maxLength={name === "password" || name === "confirmPassword" ? 64 : name === "username" ? 30 : name === "email" ? 254 : 80}
           pattern={name === "username" ? "[A-Za-z0-9_]{3,30}" : undefined}
-          aria-describedby={help ? `${name}-help` : undefined} />
+          aria-describedby={[help ? `${name}-help` : "", error ? `${name}-error` : ""].filter(Boolean).join(" ") || undefined} />
         {help && <span id={`${name}-help`} className="block text-small">{t(help)}</span>}
+        {error && <span id={`${name}-error`} role="alert" className="block text-small text-foreground">{t(error)}</span>}
       </div>
     );
   }
@@ -59,9 +83,9 @@ export function AuthScreen({ isConfigured, allowOAuth = true, hasDevLogin = fals
                   if (event.key !== "ArrowLeft" && event.key !== "ArrowRight" && event.key !== "Home" && event.key !== "End") return;
                   event.preventDefault();
                   const next = event.key === "Home" ? "login" : event.key === "End" ? "register" : tab === "login" ? "register" : "login";
-                  setMode(next); clearResult(); document.getElementById(`${next}-tab`)?.focus();
+                  changeMode(next); document.getElementById(`${next}-tab`)?.focus();
                 }}
-                onClick={() => { setMode(tab); clearResult(); }} className={cn("min-h-11 rounded-lg text-small font-medium", mode === tab ? "bg-surface-2 text-foreground" : "text-text-muted")}>{t(tab === "login" ? "login.title" : "register.title")}</button>)}
+                disabled={isPending} onClick={() => changeMode(tab)} className={cn("min-h-11 rounded-lg text-small font-medium", mode === tab ? "bg-surface-2 text-foreground" : "text-text-muted")}>{t(tab === "login" ? "login.title" : "register.title")}</button>)}
             </div>
           ) : <h2 className="mb-3 text-title">{t("recovery.title")}</h2>}
 
@@ -88,12 +112,13 @@ export function AuthScreen({ isConfigured, allowOAuth = true, hasDevLogin = fals
                 {field("username", "common.username", "text", "username", mode === "register" ? "register.usernameHelp" : undefined)}
                 {field("password", "common.password", "password", mode === "register" ? "new-password" : "current-password", mode === "register" ? "common.passwordHelp" : undefined)}
               </>}
-              {mode === "login" && <button type="button" onClick={() => { setMode("reset"); clearResult(); }} className="min-h-11 text-small text-accent">{t("login.forgotPassword")}</button>}
+              {mode === "register" && field("confirmPassword", "register.confirmPassword", "password", "new-password")}
+              {mode === "login" && <button type="button" onClick={() => changeMode("reset")} className="min-h-11 text-small text-accent">{t("login.forgotPassword")}</button>}
               <button disabled={isPending || (!isConfigured && !(mode === "login" && hasDevLogin))} type="submit" className="h-14 w-full rounded-2xl bg-accent px-4 text-body font-semibold text-background disabled:opacity-50">
                 {t(isPending ? "common.working" : mode === "login" ? "login.submit" : mode === "register" ? "register.submit" : "recovery.submit")}
               </button>
             </form>
-            {mode === "reset" && <button type="button" onClick={() => { setMode("login"); clearResult(); }} className="mt-3 min-h-11 text-small text-text-muted">{t("recovery.backLogin")}</button>}
+            {mode === "reset" && <button type="button" onClick={() => changeMode("login")} className="mt-3 min-h-11 text-small text-text-muted">{t("recovery.backLogin")}</button>}
             <div role="status" aria-live="polite" className="mt-4 text-small text-text-muted">
               {result ? mode !== "login" && result.message ? t(result.message) : null : hasCallbackError ? t("common.authError") : !isConfigured && !(mode === "login" && hasDevLogin) ? t("common.authUnavailable") : null}
             </div>

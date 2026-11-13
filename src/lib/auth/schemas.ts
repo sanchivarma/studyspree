@@ -8,8 +8,22 @@ export const loginSchema = z.object({ username: usernameSchema, password: z.stri
 export const registrationSchema = z.object({
   firstName: z.string().trim().min(1).max(80),
   lastName: z.string().trim().min(1).max(80),
-  email: z.email().max(254), username: usernameSchema, password: passwordSchema,
+  email: z.string().trim().toLowerCase().pipe(z.email().max(254)), username: usernameSchema, password: passwordSchema,
 }).strict();
+export const registrationFormSchema = registrationSchema.extend({ confirmPassword: z.string() })
+  .refine(value => value.password === value.confirmPassword, { path: ["confirmPassword"], message: "Passwords must match" });
+export type RegistrationField = keyof z.infer<typeof registrationFormSchema>;
+export type RegistrationErrors = Partial<Record<RegistrationField, import("@/translations").TranslationKey>>;
+export function registrationErrors(error: z.ZodError): RegistrationErrors {
+  const messages = {
+    firstName: "register.firstNameInvalid", lastName: "register.lastNameInvalid", email: "register.emailInvalid",
+    username: "register.usernameInvalid", password: "register.passwordInvalid", confirmPassword: "register.passwordMismatch",
+  } as const;
+  return Object.fromEntries(error.issues.flatMap(issue => {
+    const field = String(issue.path[0]);
+    return field in messages ? [[field, messages[field as RegistrationField]]] : [];
+  }));
+}
 export const profileSchema = z.preprocess(upgradeThemeNames, z.object({
   id: z.uuid(), username: usernameSchema, first_name: z.string(), last_name: z.string(),
   selected_theme: z.enum(themeSlugs), show_streak: z.boolean(),

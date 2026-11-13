@@ -3,6 +3,16 @@
     "title": "Rejestracja",
     "submit": "Utwórz konto",
     "checkEmail": "Sprawdź e-mail, aby potwierdzić konto.",
-    "usernameHelp": "3–30 liter, cyfr lub podkreśleń."
+    "usernameHelp": "3–30 liter, cyfr lub podkreśleń.",
+    "confirmPassword": "Potwierdź hasło",
+    "firstNameInvalid": "Wpisz imię (1–80 znaków).",
+    "lastNameInvalid": "Wpisz nazwisko (1–80 znaków).",
+    "emailInvalid": "Wpisz prawidłowy adres e-mail.",
+    "usernameInvalid": "Użyj 3–30 liter, cyfr lub podkreśleń.",
+    "passwordInvalid": "Użyj hasła o długości 8–64 znaków.",
+    "passwordMismatch": "Hasła muszą być takie same.",
+    "usernameTaken": "Ta nazwa użytkownika jest zajęta. Wybierz inną.",
+    "passwordWeak": "Wybierz silniejsze hasło z literami, cyframi i symbolami.",
+    "rateLimited": "Poczekaj kilka minut przed utworzeniem konta."
   }
 }

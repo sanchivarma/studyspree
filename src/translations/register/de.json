@@ -3,6 +3,16 @@
     "title": "Registrieren",
     "submit": "Konto erstellen",
     "checkEmail": "Bestätige dein Konto über die E-Mail.",
-    "usernameHelp": "3–30 Buchstaben, Zahlen oder Unterstriche."
+    "usernameHelp": "3–30 Buchstaben, Zahlen oder Unterstriche.",
+    "confirmPassword": "Passwort bestätigen",
+    "firstNameInvalid": "Gib deinen Vornamen ein (1–80 Zeichen).",
+    "lastNameInvalid": "Gib deinen Nachnamen ein (1–80 Zeichen).",
+    "emailInvalid": "Gib eine gültige E-Mail-Adresse ein.",
+    "usernameInvalid": "Verwende 3–30 Buchstaben, Zahlen oder Unterstriche.",
+    "passwordInvalid": "Verwende ein Passwort mit 8–64 Zeichen.",
+    "passwordMismatch": "Die Passwörter müssen übereinstimmen.",
+    "usernameTaken": "Dieser Benutzername ist vergeben. Wähle einen anderen.",
+    "passwordWeak": "Wähle ein stärkeres Passwort mit Buchstaben, Zahlen und Sonderzeichen.",
+    "rateLimited": "Warte bitte einige Minuten, bevor du dein Konto erstellst."
   }
 }
