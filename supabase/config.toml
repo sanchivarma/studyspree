@@ -234,18 +234,13 @@ otp_length = 6
 # Number of seconds before the email OTP expires (defaults to 1 hour).
 otp_expiry = 3600
 
-# Use a production-ready SMTP server
-# [auth.email.smtp]
-# enabled = true
-# host = "smtp.sendgrid.net"
-# port = 587
-# user = "apikey"
-# pass = "env(SENDGRID_API_KEY)"
-# admin_email = "admin@email.com"
-# sender_name = "Admin"
+# scripts/start-local-supabase.mjs enables real SMTP using server-only env overrides.
+# Plain `supabase start` keeps local email capture for isolated tests.
+[auth.email.smtp]
+enabled = false
 
 [auth.email.template.confirmation]
-subject = "Welcome to StudySpree — confirm your email"
+subject = "Welcome to the StudySpree family — your journey starts here"
 content_path = "./supabase/templates/confirmation.html"
 
 # Uncomment to customize email template

@@ -1,11 +1,41 @@
 <!doctype html>
 <html lang="en">
-  <body>
-    <h1>Welcome to StudySpree!</h1>
-    <p>Big goals start with showing up.</p>
-    <p>Your space for calm, focused study is ready. Confirm your email to activate your account and choose your study space.</p>
-    <p><a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&amp;type=signup">Confirm my email</a></p>
-    <p>If you did not create this account, you can ignore this email.</p>
-    <p>Ready when you are,<br>The StudySpree team</p>
-  </body>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Welcome to the StudySpree family</title></head>
+<body style="margin:0;padding:0;background-color:#f1f5f4;font-family:Arial,Helvetica,sans-serif;color:#20352e;">
+  <div style="display:none;max-height:0;overflow:hidden;">Your next chapter starts with showing up. Welcome to the StudySpree family.</div>
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color:#f1f5f4;padding:32px 16px;">
+    <tr><td align="center">
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;background-color:#ffffff;border-radius:20px;overflow:hidden;">
+        <tr><td style="padding:32px 36px;background-color:#173e32;color:#ffffff;">
+          <p style="margin:0 0 20px;font-size:18px;font-weight:bold;letter-spacing:1px;">StudySpree</p>
+          <h1 style="margin:0;font-size:30px;line-height:1.25;">Welcome to the family.</h1>
+          <p style="margin:16px 0 0;line-height:1.6;color:#d5e7de;">Big goals start with showing up.</p>
+        </td></tr>
+        <tr><td style="padding:32px 36px;">
+          <p style="margin:0 0 20px;font-size:17px;line-height:1.7;">Hi {{ if .Data.first_name }}{{ .Data.first_name }}{{ else }}there{{ end }},</p>
+          <p style="margin:0 0 20px;line-height:1.7;">We’re happy you’re here. Welcome to the StudySpree family — a calm space to focus, build your rhythm, and make room for the goals that matter to you.</p>
+          <p style="margin:0 0 24px;line-height:1.7;">You don’t need a perfect plan to begin. Choose a comfortable study space, set a timer that feels right, and take the next small step. Every moment you spend showing up is progress.</p>
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color:#f1f5f4;border-radius:12px;">
+            <tr><td style="padding:20px;line-height:1.8;">
+              <strong>Your account details</strong><br>
+              Name: {{ .Data.first_name }} {{ .Data.last_name }}<br>
+              Username: <strong>{{ .Data.username }}</strong><br>
+              Email: {{ .Email }}
+            </td></tr>
+          </table>
+          <h2 style="margin:28px 0 12px;font-size:20px;">Make yourself at home</h2>
+          <p style="margin:0 0 8px;line-height:1.7;">1. Confirm your email using the button below.</p>
+          <p style="margin:0 0 8px;line-height:1.7;">2. Sign in with your username and password.</p>
+          <p style="margin:0 0 24px;line-height:1.7;">3. Pick your study space and start your first focused session.</p>
+          <p style="margin:0 0 28px;"><a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&amp;type=signup" style="display:inline-block;background-color:#173e32;color:#ffffff;text-decoration:none;padding:16px 24px;border-radius:10px;font-weight:bold;">Confirm my email</a></p>
+          <p style="margin:0 0 20px;line-height:1.7;">Your journey is yours to shape. We’re here to make starting feel a little easier.</p>
+          <p style="margin:0 0 28px;line-height:1.7;">Ready when you are,<br><strong>The StudySpree family</strong></p>
+          <p style="margin:0;"><a href="{{ .SiteURL }}/login" style="display:inline-block;border:1px solid #173e32;color:#173e32;text-decoration:none;padding:15px 23px;border-radius:10px;font-weight:bold;">Let’s start your journey →</a></p>
+          <p style="margin:16px 0 0;font-size:13px;line-height:1.6;color:#596c64;">Sign in: <a href="{{ .SiteURL }}/login" style="color:#173e32;">{{ .SiteURL }}/login</a></p>
+        </td></tr>
+        <tr><td style="padding:20px 36px;border-top:1px solid #e0e8e3;font-size:12px;line-height:1.7;color:#596c64;">You received this email because you created a StudySpree account. If this wasn’t you, you can ignore it. Your password is never included in email.</td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
 </html>

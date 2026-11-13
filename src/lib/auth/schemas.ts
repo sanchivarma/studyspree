@@ -9,6 +9,7 @@ export const registrationSchema = z.object({
   firstName: z.string().trim().min(1).max(80),
   lastName: z.string().trim().min(1).max(80),
   email: z.string().trim().toLowerCase().pipe(z.email().max(254)), username: usernameSchema, password: passwordSchema,
+  ageConfirmed: z.literal(true),
 }).strict();
 export const registrationFormSchema = registrationSchema.extend({ confirmPassword: z.string() })
   .refine(value => value.password === value.confirmPassword, { path: ["confirmPassword"], message: "Passwords must match" });
@@ -18,6 +19,7 @@ export function registrationErrors(error: z.ZodError): RegistrationErrors {
   const messages = {
     firstName: "register.firstNameInvalid", lastName: "register.lastNameInvalid", email: "register.emailInvalid",
     username: "register.usernameInvalid", password: "register.passwordInvalid", confirmPassword: "register.passwordMismatch",
+    ageConfirmed: "register.ageRequired",
   } as const;
   return Object.fromEntries(error.issues.flatMap(issue => {
     const field = String(issue.path[0]);

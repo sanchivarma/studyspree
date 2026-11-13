@@ -10,7 +10,7 @@ const links = navigationItems.filter(item=>!item.primary);
 export function MoreNav() {
   const { t } = useTranslation();
   const [prefetchHref,setPrefetchHref]=useState<string|null>(null);
-  return <FeatureDrawer title={t('community.more')} trigger={<button aria-label={t("community.more")} type="button" className="relative flex h-11 min-w-11 shrink-0 flex-col items-center justify-center gap-0.5 rounded-xl leading-none text-text-muted hover:bg-surface-2 focus-visible:outline-2 focus-visible:outline-accent md:w-11 md:gap-0"><NineDotIcon/><span className="text-[10px] md:sr-only">{t("community.more")}</span></button>}>
+  return <FeatureDrawer title={t('community.more')} trigger={<button aria-label={t("community.more")} type="button" className="relative flex h-11 min-w-11 shrink-0 flex-col items-center justify-center gap-0.5 rounded-xl leading-none text-text-muted hover:bg-surface-2 focus-visible:outline-2 focus-visible:outline-accent md:w-full md:flex-row md:justify-start md:gap-3 md:pl-3.5"><NineDotIcon/><span className="text-[10px] md:sr-only md:group-hover/sidebar:not-sr-only md:group-hover/sidebar:text-small md:group-focus-within/sidebar:not-sr-only md:group-focus-within/sidebar:text-small">{t("community.more")}</span></button>}>
     <nav aria-label={t("community.more")} className="grid gap-1">{links.map(item => <SheetClose key={item.id} asChild>
       <Link href={item.href} prefetch={prefetchHref===item.href}
         onMouseEnter={()=>setPrefetchHref(item.href)} onFocus={()=>setPrefetchHref(item.href)} onTouchStart={()=>setPrefetchHref(item.href)}

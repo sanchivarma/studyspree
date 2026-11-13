@@ -19,7 +19,7 @@ describe("Supabase auth repository", () => {
     mocks.returnTo.mockResolvedValue("/");
     mocks.config.mockReturnValue({ url: "https://example.supabase.co", key: "test-key" });
     vi.stubEnv("SUPABASE_USERNAME_LOOKUP_SECRET", "test-secret-not-a-real-key-0000000000");
-    mocks.signIn.mockResolvedValue({ error: null });
+    mocks.signIn.mockResolvedValue({ data: { user: { id: "00000000-0000-4000-8000-000000000001" } }, error: null });
     mocks.rpc.mockResolvedValue({ data: null, error: null });
     mocks.getUser.mockResolvedValue({ data: { user: { id: "00000000-0000-4000-8000-000000000001" } }, error: null });
     mocks.single.mockResolvedValue({ data: { id: "00000000-0000-4000-8000-000000000001", username: "alex", first_name: "Alex", last_name: "", selected_theme: "rain-desk", show_streak: true, onboarding_complete: true }, error: null });

@@ -9,6 +9,7 @@ import type { AuthOperation, AuthResult } from "@/lib/auth/types";
 import { getDevAdminProfile, loginDevAdmin, clearDevAdminSession } from "@/lib/auth/devAdmin";
 import { readAccount, completeOnboarding } from "@/lib/db/accounts";
 import { consumeAuthReturnTo, clearAuthReturnTo } from "@/lib/auth/returnToServer";
+import { now } from "@/lib/clock";
 
 export interface AuthRepository {
   getProfile(): Promise<AuthProfile | null>;
@@ -83,7 +84,7 @@ export const authRepository: AuthRepository = {
         if (lookup.error) return { status: "error", message: "common.authError" };
         if (lookup.data) return { status: "error", fieldErrors: { username: "register.usernameTaken" } };
         const result = await client.auth.signUp({ email, password, options: {
-          data: { first_name: firstName, last_name: lastName, username },
+          data: { first_name: firstName, last_name: lastName, username, age_confirmed: true, age_policy: "18+", age_confirmed_at: now().toISOString() },
           emailRedirectTo: `${getSiteUrl()}/auth/callback`,
         } });
         if (result.error) {

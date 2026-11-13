@@ -3,6 +3,7 @@
 import { LanguageSelector } from "@/components/layout/LanguageSelector";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "@/hooks/useTranslation";
+import { AuthWarning } from "./AuthWarning";
 
 export function ResetPasswordForm() {
   const { t } = useTranslation();
@@ -17,6 +18,6 @@ export function ResetPasswordForm() {
       </div>
       <button disabled={isPending} className="h-14 w-full rounded-2xl bg-accent font-semibold text-background disabled:opacity-50">{t(isPending ? "common.working" : "recovery.savePassword")}</button>
     </form>
-    <p role="status" className="text-small text-text-muted">{result?.message && t(result.message)}</p>
+    {result?.message && (result.status === "error" ? <AuthWarning>{t(result.message)}</AuthWarning> : <p role="status" className="text-small text-text-muted">{t(result.message)}</p>)}
   </main>;
 }

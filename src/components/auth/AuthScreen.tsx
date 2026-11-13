@@ -7,6 +7,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "@/hooks/useTranslation";
 import { cn } from "@/lib/utils";
 import type { TranslationKey } from "@/translations";
+import { AuthWarning } from "./AuthWarning";
+import { Dialog } from "radix-ui";
 import { registrationFormSchema, registrationErrors, type RegistrationErrors, type RegistrationField } from "@/lib/auth/schemas";
 
 const inputClass = "h-12 w-full rounded-xl border border-border bg-background/50 px-4 text-body text-foreground";
@@ -16,17 +18,21 @@ export function AuthScreen({ isConfigured, allowOAuth = true, hasDevLogin = fals
   const { execute, isPending, result, clearResult } = useAuth();
   const [mode, setMode] = useState<"login" | "register" | "reset">(initialMode);
   const [errors, setErrors] = useState<RegistrationErrors>({});
+  const [registrationSuccess, setRegistrationSuccess] = useState(false);
   const fieldErrors = mode === "register" ? { ...errors, ...result?.fieldErrors } : {};
+  const feedbackMessage = result ? mode !== "login" ? result.message : undefined : hasCallbackError ? "common.authError" : !isConfigured && !(mode === "login" && hasDevLogin) ? "common.authUnavailable" : undefined;
+  const feedbackIsError = result ? result.status === "error" : Boolean(feedbackMessage);
 
   function changeMode(next: typeof mode) {
-    setMode(next); setErrors({}); clearResult();
+    setMode(next); setErrors({}); setRegistrationSuccess(false); clearResult();
   }
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const values = new FormData(event.currentTarget);
     if (mode === "register") {
-      const parsed = registrationFormSchema.safeParse(Object.fromEntries(values));
+      const form = event.currentTarget;
+      const parsed = registrationFormSchema.safeParse({ ...Object.fromEntries(values), ageConfirmed: values.get("ageConfirmed") === "on" });
       if (!parsed.success) {
         const validation = registrationErrors(parsed.error);
         setErrors(validation); clearResult();
@@ -35,7 +41,9 @@ export function AuthScreen({ isConfigured, allowOAuth = true, hasDevLogin = fals
       }
       setErrors({});
       const { firstName, lastName, email, username, password } = parsed.data;
-      void execute("register", { firstName, lastName, email, username, password });
+      void execute("register", { firstName, lastName, email, username, password, ageConfirmed: true }).then(response => {
+        if (response?.status === "success") { form.reset(); clearResult(); setRegistrationSuccess(true); }
+      });
       return;
     }
     if (mode === "reset") { void execute("reset", values.get("email")); return; }
@@ -47,7 +55,7 @@ export function AuthScreen({ isConfigured, allowOAuth = true, hasDevLogin = fals
     return (
       <div className="space-y-2 text-small text-text-muted" key={name}>
         <label htmlFor={`auth-${name}`} className="block">{t(label)}</label>
-        <input id={`auth-${name}`} name={name} type={type} required autoComplete={autoComplete} className={inputClass}
+        <input id={`auth-${name}`} name={name} type={type} required autoComplete={autoComplete} className={cn(inputClass, error && "border-warning focus-visible:outline-warning")}
           disabled={isPending}
           onChange={() => { setErrors(current => ({ ...current, [name]: undefined })); clearResult(); }}
           aria-invalid={Boolean(error)}
@@ -56,7 +64,7 @@ export function AuthScreen({ isConfigured, allowOAuth = true, hasDevLogin = fals
           pattern={name === "username" ? "[A-Za-z0-9_]{3,30}" : undefined}
           aria-describedby={[help ? `${name}-help` : "", error ? `${name}-error` : ""].filter(Boolean).join(" ") || undefined} />
         {help && <span id={`${name}-help`} className="block text-small">{t(help)}</span>}
-        {error && <span id={`${name}-error`} role="alert" className="block text-small text-foreground">{t(error)}</span>}
+        {error && <AuthWarning id={`${name}-error`}>{t(error)}</AuthWarning>}
       </div>
     );
   }
@@ -113,18 +121,34 @@ export function AuthScreen({ isConfigured, allowOAuth = true, hasDevLogin = fals
                 {field("password", "common.password", "password", mode === "register" ? "new-password" : "current-password", mode === "register" ? "common.passwordHelp" : undefined)}
               </>}
               {mode === "register" && field("confirmPassword", "register.confirmPassword", "password", "new-password")}
+              {mode === "register" && <div className="space-y-2">
+                <label className="flex min-h-11 cursor-pointer items-start gap-3 text-small" htmlFor="auth-ageConfirmed">
+                  <input id="auth-ageConfirmed" name="ageConfirmed" type="checkbox" required disabled={isPending} aria-invalid={Boolean(fieldErrors.ageConfirmed)} aria-describedby={fieldErrors.ageConfirmed ? "ageConfirmed-error" : "age-help"} onChange={() => { setErrors(current => ({ ...current, ageConfirmed: undefined })); clearResult(); }} className="mt-1 size-5 shrink-0 accent-accent" />
+                  <span>{t("register.ageConfirmation")}</span>
+                </label>
+                <p id="age-help" className="text-small text-text-muted">{t("register.ageHelp")}</p>
+                {fieldErrors.ageConfirmed && <AuthWarning id="ageConfirmed-error">{t(fieldErrors.ageConfirmed)}</AuthWarning>}
+              </div>}
               {mode === "login" && <button type="button" onClick={() => changeMode("reset")} className="min-h-11 text-small text-accent">{t("login.forgotPassword")}</button>}
               <button disabled={isPending || (!isConfigured && !(mode === "login" && hasDevLogin))} type="submit" className="h-14 w-full rounded-2xl bg-accent px-4 text-body font-semibold text-background disabled:opacity-50">
                 {t(isPending ? "common.working" : mode === "login" ? "login.submit" : mode === "register" ? "register.submit" : "recovery.submit")}
               </button>
             </form>
             {mode === "reset" && <button type="button" onClick={() => changeMode("login")} className="mt-3 min-h-11 text-small text-text-muted">{t("recovery.backLogin")}</button>}
-            <div role="status" aria-live="polite" className="mt-4 text-small text-text-muted">
-              {result ? mode !== "login" && result.message ? t(result.message) : null : hasCallbackError ? t("common.authError") : !isConfigured && !(mode === "login" && hasDevLogin) ? t("common.authUnavailable") : null}
-            </div>
+            {feedbackMessage && (feedbackIsError ? <AuthWarning isError={feedbackMessage === "register.creationError" || feedbackMessage === "register.networkError"} className="mt-4">{t(feedbackMessage)}</AuthWarning> : <p role="status" aria-live="polite" className="mt-4 text-small text-text-muted">{t(feedbackMessage)}</p>)}
           </div>
         </section>
       </div>
+      <Dialog.Root open={registrationSuccess} onOpenChange={setRegistrationSuccess}>
+        <Dialog.Portal>
+          <Dialog.Overlay className="fixed inset-0 z-50 bg-background/80" />
+          <Dialog.Content className="fixed top-1/2 left-1/2 z-50 w-[calc(100%-3rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-3xl border border-border bg-surface p-8 shadow-xl">
+            <Dialog.Title className="text-title">{t("register.successTitle")}</Dialog.Title>
+            <Dialog.Description className="mt-4 text-body text-text-muted">{t("register.successBody")}</Dialog.Description>
+            <Dialog.Close className="mt-6 min-h-12 w-full rounded-xl bg-accent px-4 font-semibold text-background">{t("register.successClose")}</Dialog.Close>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
     </main>
   );
 }

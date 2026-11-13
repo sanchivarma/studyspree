@@ -22,9 +22,9 @@ export function AuthFeedbackProvider({ children }: { children: ReactNode }) {
     {feedback && !pathname.startsWith("/session") && <div
       data-testid="auth-feedback"
       className={cn("fixed right-4 bottom-20 left-4 z-50 flex items-start gap-3 rounded-2xl border bg-surface p-4 text-body text-foreground shadow-xl md:left-auto md:w-[400px] md:bottom-6",
-        feedback.status === "error" ? "border-destructive/60" : feedback.status === "success" ? "border-success/60" : "border-border")}
+        feedback.status === "error" ? "border-warning/60 text-warning" : feedback.status === "success" ? "border-success/60" : "border-border")}
     >
-      <Icon aria-hidden="true" className={cn("mt-1 size-5 shrink-0", feedback.status === "error" ? "text-destructive" : feedback.status === "success" ? "text-success" : "text-accent")} />
+      <Icon aria-hidden="true" className={cn("mt-1 size-5 shrink-0", feedback.status === "error" ? "text-warning" : feedback.status === "success" ? "text-success" : "text-accent")} />
       <p key={`${feedback.status}:${feedback.message}`} role={feedback.status === "error" ? "alert" : "status"} aria-atomic="true" className="flex-1 py-1">{t(feedback.message)}</p>
       {feedback.status !== "pending" && <button type="button" aria-label={t("common.dismiss")} onClick={() => setFeedback(null)} className="-mt-2 -mr-2 flex size-11 shrink-0 items-center justify-center rounded-xl text-text-muted hover:text-foreground">
         <X aria-hidden="true" className="size-4" />

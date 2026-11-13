@@ -1,0 +1,35 @@
+import { readFileSync } from "node:fs";
+import { expect, test } from "@playwright/test";
+import en from "../src/translations/en";
+
+test("header controls and expandable navigation retain their keyboard behavior", async ({ page }) => {
+  test.setTimeout(90000);
+  const source = readFileSync(new URL("../.env.local", import.meta.url), "utf8");
+  const value = (key: string) => source.match(new RegExp(`^${key}=(.*)$`, "m"))?.[1].trim().replace(/^["']|["']$/g, "") ?? "";
+  const login = await page.request.post("/api/auth/login", { data: { username: value("DEV_ADMIN_USERNAME"), password: value("DEV_ADMIN_PASSWORD") } });
+  expect(login.status()).toBe(200);
+  await page.goto("/");
+  const controls = page.getByTestId("account-controls");
+  const signOut = controls.getByRole("button", { name: en.common.logout, exact: true });
+  await expect(signOut).toBeVisible();
+  expect(await signOut.evaluate(element => parseFloat(getComputedStyle(element).borderRadius))).toBeGreaterThan(100);
+  const controlsBox = await controls.boundingBox(), signOutBox = await signOut.boundingBox();
+  expect(Math.abs(controlsBox!.x + controlsBox!.width - signOutBox!.x - signOutBox!.width)).toBeLessThan(2);
+  await expect(controls.getByRole("button")).toHaveCount(2);
+  const selector = controls.getByRole("group");
+  const selectorBox = await selector.boundingBox();
+  const chevron = await controls.getByTestId("language-chevron").boundingBox();
+  expect(selectorBox!.x + selectorBox!.width - chevron!.x - chevron!.width).toBeGreaterThanOrEqual(12);
+  const nav = page.getByRole("navigation", { name: en.common.navLabel, exact: true });
+  expect((await nav.boundingBox())!.width).toBe(64);
+  const content = await page.getByRole("heading", { level: 1 }).first().boundingBox();
+  await nav.hover();
+  expect((await nav.boundingBox())!.width).toBe(208);
+  const home = nav.getByRole("link").first();
+  await expect(home.locator("span").last()).toHaveCSS("position", "static");
+  expect((await page.getByRole("heading", { level: 1 }).first().boundingBox())!.x).toBe(content!.x);
+  await page.mouse.move(500, 300);
+  expect((await nav.boundingBox())!.width).toBe(64);
+  await home.focus();
+  expect((await nav.boundingBox())!.width).toBe(208);
+});

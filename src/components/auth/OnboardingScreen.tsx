@@ -1,4 +1,5 @@
 "use client";
+import { AuthWarning } from "./AuthWarning";
 
 import { useState, useSyncExternalStore, type CSSProperties } from "react";
 import { SceneVideo } from "@/components/scene/SceneVideo";
@@ -51,7 +52,7 @@ export function OnboardingScreen({ profile }: { profile: AuthProfile }) {
         <label className="flex min-h-11 items-center justify-between gap-4">{t("settings.showStreak")}<input type="checkbox" checked={showStreak} onChange={event => setStreak(event.target.checked)} className="size-5 accent-accent" /></label>
         <label className="flex min-h-11 items-center justify-between gap-4">{t("settings.reduceMotion")}<input type="checkbox" checked={reduceMotion} onChange={event => setMotion(event.target.checked)} className="size-5 accent-accent" /></label>
       </div>}
-      {save.error && <p role="alert" className="mt-4 text-small text-text-muted">{t("onboarding.saveError")}</p>}
+      {save.error && <AuthWarning className="mt-4">{t("onboarding.saveError")}</AuthWarning>}
       <div className="mt-6 flex gap-3">
         {step > 1 && <button type="button" disabled={save.isPending} onClick={() => setStep(value => value - 1)} className="min-h-12 rounded-xl border border-border px-4 disabled:opacity-50">{t("onboarding.back")}</button>}
         <button type="submit" disabled={save.isPending || !displayName.trim()} className="min-h-12 flex-1 rounded-xl bg-accent px-4 font-semibold text-background disabled:opacity-50">{t(step === 3 ? "onboarding.finish" : "onboarding.next")}</button>

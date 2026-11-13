@@ -26,7 +26,7 @@ export function AppNav({ showStreak }: { showStreak: boolean }) {
     <nav
       aria-label={t("common.navLabel")}
       style={{ "--accent": getTheme(profile.data?.selectedTheme ?? "rain-desk").accentColor } as CSSProperties}
-      className="fixed inset-x-0 bottom-0 z-50 h-14 border-t border-border bg-surface md:inset-y-0 md:right-auto md:h-dvh md:w-16 md:border-t-0 md:border-r"
+      className="group/sidebar fixed inset-x-0 bottom-0 z-50 h-14 border-t border-border bg-surface md:inset-y-0 md:right-auto md:h-dvh md:w-16 md:border-t-0 md:border-r md:hover:w-52 md:focus-within:w-52"
     >
       <div className="flex h-full items-center gap-1 overflow-x-auto px-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:flex-col md:gap-2 md:overflow-x-visible md:overflow-y-auto md:pb-16 md:pt-6">
         {items.map(({ label, href, icon: Icon }) => {
@@ -42,21 +42,15 @@ export function AppNav({ showStreak }: { showStreak: boolean }) {
               onTouchStart={()=>setPrefetchHref(href)}
               aria-current={isActive ? "page" : undefined}
               className={cn(
-                "group relative flex h-11 min-w-11 flex-1 shrink-0 flex-col items-center justify-center gap-0.5 rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:w-11 md:flex-none md:gap-0",
+                "group relative flex h-11 min-w-11 flex-1 shrink-0 flex-col items-center justify-center gap-0.5 rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:w-full md:flex-none md:flex-row md:justify-start md:gap-3 md:pl-3.5",
                 isActive
                   ? "bg-accent/10 text-accent"
                   : "text-text-muted hover:bg-surface-2 hover:text-foreground",
               )}
             >
-              <Icon aria-hidden="true" className="size-5" strokeWidth={1.75} />
+              <Icon aria-hidden="true" className="size-5 shrink-0" strokeWidth={1.75} />
               <PendingNavigation />
-              <span className="text-[10px] leading-3 md:sr-only">{t(label)}</span>
-              <span
-                aria-hidden="true"
-                className="pointer-events-none absolute top-1/2 left-[calc(100%+12px)] hidden -translate-y-1/2 rounded-lg border border-border bg-surface-2 px-3 py-2 text-small text-foreground opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 md:block"
-              >
-                {t(label)}
-              </span>
+              <span className="text-[10px] leading-3 md:sr-only md:group-hover/sidebar:not-sr-only md:group-hover/sidebar:text-small md:group-focus-within/sidebar:not-sr-only md:group-focus-within/sidebar:text-small">{t(label)}</span>
             </Link>
           );
         })}
