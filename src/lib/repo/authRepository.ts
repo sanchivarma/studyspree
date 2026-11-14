@@ -31,8 +31,8 @@ export const authRepository: AuthRepository = {
       const preview = await loginDevAdmin(input);
       if (preview) return preview;
     }
-    if (operation === "logout" && await clearDevAdminSession()) return { status: "success", navigate: "/login" };
-    if (!getAuthConfig()) return { status: "error", message: "common.authUnavailable" };
+    const clearedPreview = operation === "logout" && await clearDevAdminSession();
+    if (!getAuthConfig()) return clearedPreview ? { status: "success", navigate: "/login" } : { status: "error", message: "common.authUnavailable" };
     const client = await createAuthClient();
     switch (operation) {
       case "checkUsername": {
@@ -119,7 +119,7 @@ export const authRepository: AuthRepository = {
         return result.error ? { status: "error", message: "common.authError" } : { status: "success", message: "recovery.saved", navigate: "/" };
       }
       case "logout": {
-        const result = await client.auth.signOut();
+        const result = await client.auth.signOut({ scope: "local" });
         return result.error ? { status: "error", message: "common.authError" } : { status: "success", navigate: "/login" };
       }
       default: {

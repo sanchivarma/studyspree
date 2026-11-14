@@ -61,4 +61,12 @@ describe("development preview authentication", () => {
     expect(await clearDevAdminSession()).toBe(true);
     expect(store.delete).toHaveBeenCalledWith("ss_dev_admin");
   });
+  it("removes an old preview cookie in production without authenticating it", async () => {
+    await loginDevAdmin({ username: "ss_admin", password: "ss_password" });
+    vi.stubEnv("NODE_ENV", "production");
+    expect(await getDevAdminProfile()).toBeNull();
+    expect(await clearDevAdminSession()).toBe(true);
+    expect(store.delete).toHaveBeenCalledWith("ss_dev_admin");
+    expect(hasDevAdmin()).toBe(false);
+  });
 });

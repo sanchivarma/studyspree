@@ -10,7 +10,7 @@ export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
   // These handlers validate their own input/origin and authenticate explicitly.
   // Refreshing a previous session here adds an unrelated network call to login/signup.
-  if (["/api/auth/login", "/api/auth/register", "/api/auth/username"].includes(path)) {
+  if (["/api/auth/login", "/api/auth/logout", "/api/auth/register", "/api/auth/username"].includes(path)) {
     response.headers.set("Cache-Control", "private, no-store");
     return response;
   }

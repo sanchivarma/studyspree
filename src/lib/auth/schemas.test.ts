@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { loginSchema, registrationSchema, registrationFormSchema, registrationErrors } from "./schemas";
 
-const registration = { firstName: "Alex", lastName: "Sample", email: "alex@example.com", username: "Alex_123", password: "password-test-123" };
+const registration = { firstName: "Alex", lastName: "Sample", email: "alex@example.com", username: "Alex_123", password: "password-test-123", ageConfirmed: true };
 
 describe("auth request validation", () => {
   it("normalizes usernames without changing passwords", () => {
@@ -31,5 +31,13 @@ describe("auth request validation", () => {
   });
   it("rejects oversized names and passwords", () => {
     expect(registrationSchema.safeParse({ ...registration, lastName: "a".repeat(81), password: "a".repeat(65) }).success).toBe(false);
+  });
+  it.each([false, undefined, "true", 18])("requires an explicit adult declaration, rejecting %s", ageConfirmed => {
+    expect(registrationSchema.safeParse({ ...registration, ageConfirmed }).success).toBe(false);
+  });
+  it("reports password confirmation alongside an unchecked age declaration", () => {
+    const result = registrationFormSchema.safeParse({ ...registration, ageConfirmed: false, confirmPassword: "different" });
+    if (result.success) throw new Error("Expected invalid form");
+    expect(registrationErrors(result.error)).toMatchObject({ ageConfirmed: "register.ageRequired", confirmPassword: "register.passwordMismatch" });
   });
 });

@@ -15,7 +15,7 @@
     "check:audio-licences": "node --experimental-strip-types scripts/check-audio-licences.ts",
     "prebuild": "npm run check:audio-licences && npm run check:character-assets && npm run check:default-media",
     "check:default-media": "node --experimental-strip-types scripts/check-default-media.mjs",
-    "db:start": "supabase start",
+    "db:start": "node scripts/start-local-supabase.mjs",
     "db:reset": "supabase db reset",
     "db:types": "node scripts/generate-db-types.mjs",
     "db:test": "supabase test db",

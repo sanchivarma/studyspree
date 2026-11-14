@@ -8,6 +8,8 @@ export default function nextConfig(phase: string): NextConfig {
   return {
     devIndicators: false,
     experimental: {
+      // Leave memory for local Supabase and browser verification during builds.
+      cpus: 2,
       serverActions: { bodySizeLimit: "6mb" },
       optimizePackageImports: ["radix-ui"],
       webpackMemoryOptimizations: true,

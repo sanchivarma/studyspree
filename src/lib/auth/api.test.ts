@@ -5,17 +5,18 @@ vi.mock("@/lib/repo/authRepository", () => ({ authRepository: { execute: mock.ex
 import { POST as username } from "@/app/api/auth/username/route";
 import { POST as register } from "@/app/api/auth/register/route";
 import { POST as login } from "@/app/api/auth/login/route";
+import { POST as logout } from "@/app/api/auth/logout/route";
 let address = 0;
 function request(body: unknown, origin = "http://localhost:3000") {
   return new Request("http://localhost:3000/api/auth/register", { method: "POST", headers: { origin, "Content-Type": "application/json", "x-forwarded-for": `test-${address}` }, body: JSON.stringify(body) });
 }
 beforeEach(() => { vi.resetAllMocks(); address++; });
-it.each([username, register, login])("rejects foreign origins and malformed JSON before authentication", async handler => {
+it.each([username, register, login, logout])("rejects foreign origins and malformed JSON before authentication", async handler => {
   expect((await handler(request({}, "https://other.test"))).status).toBe(403);
   expect((await handler(new Request("http://localhost:3000/api/auth/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{" }))).status).toBe(400);
   expect(mock.execute).not.toHaveBeenCalled();
 });
-it.each([[username, "checkUsername"], [register, "register"], [login, "login"]] as const)("dispatches the dedicated endpoint without page actions", async (handler, operation) => {
+it.each([[username, "checkUsername"], [register, "register"], [login, "login"], [logout, "logout"]] as const)("dispatches the dedicated endpoint without page actions", async (handler, operation) => {
   mock.execute.mockResolvedValue({ status: "success" });
   const response = await handler(request({ username: "alex" }));
   expect(response.status).toBe(200);
@@ -29,11 +30,15 @@ it("keeps duplicate usernames and invalid credentials distinct", async () => {
   mock.execute.mockResolvedValue({ status: "error", message: "login.invalidCredentials" });
   expect((await login(request({ username: "alex", password: "wrong" }))).status).toBe(401);
 });
-it("does not expose internal errors or claim success when dependencies are unavailable", async () => {
+it("logs creation errors without credentials and returns the dedicated registration message", async () => {
+  const log = vi.spyOn(console, "error").mockImplementation(() => {});
   mock.execute.mockRejectedValue(new Error("private credentials"));
   const response = await register(request({}));
   expect(response.status).toBe(503);
-  expect(await response.json()).toEqual({ status: "error", message: "common.authError" });
+  expect(await response.json()).toEqual({ status: "error", message: "register.creationError" });
+  expect(log).toHaveBeenCalledWith(expect.stringContaining('"event":"registration_error"'));
+  expect(log.mock.calls.flat().join()).not.toContain("private credentials");
+  log.mockRestore();
 });
 it("limits repeated username checks", async () => {
   mock.execute.mockResolvedValue({ status: "success" });

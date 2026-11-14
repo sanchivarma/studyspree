@@ -24,12 +24,11 @@ test("search stays responsive and sends the settled term once", async ({ page })
   expect(terms).toEqual(["quiet reading"]);
 });
 
-test("layout and Stats share one active-session polling interval", async ({ page }) => {
+test("layout and Stats do not poll the active session while idle", async ({ page }) => {
   test.setTimeout(120_000);
   await createLocalAccount(page, "Polling performance reader");
   await expect(page.getByTestId("default-study-room")).toBeVisible();
-  // Offset the second consumer from the layout's interval. Independent polling
-  // observers would otherwise appear deduplicated when mounted in one frame.
+  // Mount a second consumer after the layout has loaded its shared query.
   await page.waitForTimeout(2000);
   await page.getByRole("navigation", { name: "Main navigation", exact: true }).getByRole("link", { name: "Stats", exact: true }).click();
   await expect(page.getByTestId("stats-total")).toBeVisible();
@@ -38,6 +37,5 @@ test("layout and Stats share one active-session polling interval", async ({ page
     if (new URL(request.url()).pathname === "/api/repository" && request.postDataJSON()?.op === "active") reads++;
   });
   await page.waitForTimeout(11_000);
-  expect(reads).toBeGreaterThanOrEqual(2);
-  expect(reads).toBeLessThanOrEqual(3);
+  expect(reads).toBe(0);
 });

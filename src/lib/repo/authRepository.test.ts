@@ -1,11 +1,11 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
-  config: vi.fn(), rpc: vi.fn(), getUser: vi.fn(), signIn: vi.fn(), signUp: vi.fn(), oauth: vi.fn(), reset: vi.fn(), update: vi.fn(), logout: vi.fn(), single: vi.fn(), from: vi.fn(), magic: vi.fn(), profileUpdate: vi.fn(), returnTo: vi.fn(),
+  config: vi.fn(), rpc: vi.fn(), getUser: vi.fn(), signIn: vi.fn(), signUp: vi.fn(), oauth: vi.fn(), reset: vi.fn(), update: vi.fn(), logout: vi.fn(), clearPreview: vi.fn(), single: vi.fn(), from: vi.fn(), magic: vi.fn(), profileUpdate: vi.fn(), returnTo: vi.fn(),
 }));
 vi.mock("server-only", () => ({}));
 vi.mock("@/lib/auth/returnToServer", () => ({ consumeAuthReturnTo: mocks.returnTo, clearAuthReturnTo: vi.fn() }));
-vi.mock("@/lib/auth/devAdmin", () => ({ getDevAdminProfile: async () => null, loginDevAdmin: async () => null, clearDevAdminSession: async () => false }));
+vi.mock("@/lib/auth/devAdmin", () => ({ getDevAdminProfile: async () => null, loginDevAdmin: async () => null, clearDevAdminSession: mocks.clearPreview }));
 vi.mock("@/lib/auth/config", () => ({ getAuthConfig: mocks.config, getSiteUrl: () => "http://localhost:3000" }));
 vi.mock("@/lib/auth/server", () => ({ createAuthClient: async () => ({
   rpc: mocks.rpc, from: mocks.from,
@@ -20,6 +20,8 @@ describe("Supabase auth repository", () => {
     mocks.config.mockReturnValue({ url: "https://example.supabase.co", key: "test-key" });
     vi.stubEnv("SUPABASE_USERNAME_LOOKUP_SECRET", "test-secret-not-a-real-key-0000000000");
     mocks.signIn.mockResolvedValue({ data: { user: { id: "00000000-0000-4000-8000-000000000001" } }, error: null });
+    mocks.clearPreview.mockResolvedValue(false);
+    mocks.logout.mockResolvedValue({ error: null });
     mocks.rpc.mockResolvedValue({ data: null, error: null });
     mocks.getUser.mockResolvedValue({ data: { user: { id: "00000000-0000-4000-8000-000000000001" } }, error: null });
     mocks.single.mockResolvedValue({ data: { id: "00000000-0000-4000-8000-000000000001", username: "alex", first_name: "Alex", last_name: "", selected_theme: "rain-desk", show_streak: true, onboarding_complete: true }, error: null });
@@ -27,6 +29,19 @@ describe("Supabase auth repository", () => {
     mocks.profileUpdate.mockReturnValue({ eq: () => ({ select: () => ({ single: mocks.single }) }) });
   });
   afterEach(() => vi.unstubAllEnvs());
+  it("clears Supabase too when a development preview cookie is present", async () => {
+    mocks.clearPreview.mockResolvedValue(true);
+    expect(await authRepository.execute("logout", undefined)).toEqual({ status: "success", navigate: "/login" });
+    expect(mocks.logout).toHaveBeenCalledWith({ scope: "local" });
+  });
+  it("can clear an offline preview without a configured backend", async () => {
+    mocks.config.mockReturnValue(null); mocks.clearPreview.mockResolvedValue(true);
+    expect(await authRepository.execute("logout", undefined)).toEqual({ status: "success", navigate: "/login" });
+  });
+  it("does not claim a successful sign out when Supabase rejects it", async () => {
+    mocks.logout.mockResolvedValue({ error: { code: "service_unavailable" } });
+    expect((await authRepository.execute("logout", undefined)).status).toBe("error");
+  });
 
   it("does not invent a session when configuration is absent", async () => {
     mocks.config.mockReturnValue(null);
@@ -68,9 +83,9 @@ describe("Supabase auth repository", () => {
   });
   it("waits for confirmation when registration does not return a session", async () => {
     mocks.signUp.mockResolvedValue({ data: { session: null }, error: null });
-    expect(await authRepository.execute("register", { firstName: "Alex", lastName: "Sample", username: "alex", email: "alex@example.com", password: "secret-password" })).toEqual({ status: "success", message: "register.checkEmail" });
+    expect(await authRepository.execute("register", { firstName: "Alex", lastName: "Sample", username: "alex", email: "alex@example.com", password: "secret-password", ageConfirmed: true })).toEqual({ status: "success", message: "register.checkEmail" });
   });
-  const registration = { firstName: "Alex", lastName: "Sample", username: " ALEX ", email: " Alex@example.com ", password: "secret-password" };
+  const registration = { firstName: "Alex", lastName: "Sample", username: " ALEX ", email: " Alex@example.com ", password: "secret-password", ageConfirmed: true };
   it("checks Supabase for a normalized username before creating the account", async () => {
     mocks.rpc.mockResolvedValue({ data: "private@example.com", error: null });
     expect(await authRepository.execute("register", registration)).toEqual({ status: "error", fieldErrors: { username: "register.usernameTaken" } });
@@ -105,7 +120,7 @@ describe("Supabase auth repository", () => {
   it("passes normalized details and a confirmation redirect to signup", async () => {
     mocks.signUp.mockResolvedValue({ data: { session: null }, error: null });
     await authRepository.execute("register", registration);
-    expect(mocks.signUp).toHaveBeenCalledWith({ email: "alex@example.com", password: "secret-password", options: { data: { first_name: "Alex", last_name: "Sample", username: "alex" }, emailRedirectTo: "http://localhost:3000/auth/callback" } });
+    expect(mocks.signUp).toHaveBeenCalledWith({ email: "alex@example.com", password: "secret-password", options: { data: expect.objectContaining({ first_name: "Alex", last_name: "Sample", username: "alex", age_confirmed: true, age_policy: "18+", age_confirmed_at: expect.any(String) }), emailRedirectTo: "http://localhost:3000/auth/callback" } });
   });
   it.each(["google", "facebook"] as const)("starts real %s OAuth", async (provider) => {
     mocks.oauth.mockResolvedValue({ data: { url: "https://example.supabase.co/auth/v1/authorize" }, error: null });

@@ -20,9 +20,9 @@ export function useActiveSession({ synchronize = false }: { synchronize?: boolea
     return () => window.removeEventListener("storage", refresh);
   }, [client, synchronize]);
   const isRemote=typeof document!=="undefined"&&Boolean(document.querySelector('[data-repository-mode="server"]'));
-  // One layout observer owns polling and cross-tab reconciliation. Consumers
-  // share its cached result without each scheduling an independent interval.
-  const result=useQuery({ queryKey: queryKeys.activeSession(), queryFn: () => repo.getActiveSession(),refetchInterval:isRemote&&synchronize?5000:false,refetchIntervalInBackground:false });
+  // Load on mount and refresh after explicit session actions or cross-tab
+  // changes. Idle pages must not schedule repeated repository reads.
+  const result=useQuery({ queryKey: queryKeys.activeSession(), queryFn: () => repo.getActiveSession(),refetchInterval:false });
   const previous=useRef<string|null|undefined>(undefined);
   useEffect(()=>{
     if(!synchronize||!isRemote||result.isPending)return;

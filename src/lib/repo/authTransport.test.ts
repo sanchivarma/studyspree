@@ -24,3 +24,9 @@ it("posts login directly to the login API", async () => {
   await executeAuth("login", { username: "alex", password: "password" });
   expect(fetcher).toHaveBeenCalledWith("/api/auth/login", expect.objectContaining({ method: "POST", credentials: "same-origin" }));
 });
+it("posts sign out to its API rather than a page action", async () => {
+  const fetcher = vi.fn().mockResolvedValue(Response.json({ status: "success", navigate: "/login" }));
+  vi.stubGlobal("fetch", fetcher);
+  await executeAuth("logout");
+  expect(fetcher).toHaveBeenCalledWith("/api/auth/logout", expect.objectContaining({ method: "POST", body: "{}" }));
+});

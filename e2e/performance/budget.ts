@@ -1,8 +1,8 @@
 import { performance } from "node:perf_hooks";
 import { expect, type TestInfo } from "@playwright/test";
 
-export const TARGET_MS = 1000;
-export const LIMIT_MS = 2000;
+export const TARGET_MS = 500;
+export const LIMIT_MS = 1000;
 type TimedStep = (remaining: () => number) => Promise<unknown>;
 
 /** One shared deadline includes Playwright actionability, navigation and data readiness. */

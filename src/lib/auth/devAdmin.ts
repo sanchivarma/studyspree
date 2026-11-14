@@ -64,7 +64,8 @@ export async function getDevAdminProfile(): Promise<AuthProfile | null> {
 }
 
 export async function clearDevAdminSession() {
-  if (process.env.NODE_ENV !== "development") return false;
+  // Production never authenticates this cookie, but must still remove a cookie
+  // left by a previous development run when the user explicitly signs out.
   const cookieStore = await cookies();
   const exists = Boolean(cookieStore.get(COOKIE_NAME));
   cookieStore.delete(COOKIE_NAME);

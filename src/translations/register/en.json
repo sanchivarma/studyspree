@@ -13,6 +13,14 @@
     "passwordMismatch": "Passwords must match.",
     "usernameTaken": "This username is taken. Choose another username.",
     "passwordWeak": "Choose a stronger password with a mix of letters, numbers and symbols.",
-    "rateLimited": "Please wait a few minutes before creating your account."
+    "rateLimited": "Please wait a few minutes before creating your account.",
+    "ageConfirmation": "I confirm that I am 18 years old or older.",
+    "ageHelp": "StudySpree registration is for adults aged 18 and over.",
+    "ageRequired": "Please confirm that you are 18 or older to create an account.",
+    "creationError": "We couldn’t register your account. We have logged the issue. Please try later.",
+    "networkError": "We couldn’t reach StudySpree. Check your connection and please try later.",
+    "successTitle": "Registration successful",
+    "successBody": "Please check your email and click the confirmation link to activate your account. Welcome to the StudySpree family!",
+    "successClose": "Got it"
   }
 }

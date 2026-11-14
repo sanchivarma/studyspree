@@ -11,7 +11,7 @@ export const registrationSchema = z.object({
   email: z.string().trim().toLowerCase().pipe(z.email().max(254)), username: usernameSchema, password: passwordSchema,
   ageConfirmed: z.literal(true),
 }).strict();
-export const registrationFormSchema = registrationSchema.extend({ confirmPassword: z.string() })
+export const registrationFormSchema = registrationSchema.extend({ confirmPassword: z.string(), ageConfirmed: z.boolean().refine(value => value) })
   .refine(value => value.password === value.confirmPassword, { path: ["confirmPassword"], message: "Passwords must match" });
 export type RegistrationField = keyof z.infer<typeof registrationFormSchema>;
 export type RegistrationErrors = Partial<Record<RegistrationField, import("@/translations").TranslationKey>>;

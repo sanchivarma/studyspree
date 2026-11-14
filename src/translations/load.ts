@@ -12,7 +12,7 @@ const loaders = {
 const pending = new Map<Locale, Promise<Dictionary>>();
 export function loadDictionary(locale: Locale): Promise<Dictionary> {
   const existing = pending.get(locale);
-  if (existing) return existing;
+  if (existing && process.env.NODE_ENV !== "development") return existing;
   const requested = locale === "en" ? loaders.en() : Promise.all([loadDictionary("en"), loaders[locale]()])
     .then(([english, dictionary]) => Object.fromEntries(Object.entries(english).map(([namespace, fallback]) => [
       namespace, { ...fallback, ...dictionary[namespace as keyof Dictionary] },
@@ -21,6 +21,9 @@ export function loadDictionary(locale: Locale): Promise<Dictionary> {
     pending.delete(locale);
     throw error;
   });
+  // During development, dictionary modules can be replaced without restarting
+  // this loader. Do not retain old exports that lack freshly added labels.
+  if (process.env.NODE_ENV === "development") return result;
   pending.set(locale, result);
   return result;
 }

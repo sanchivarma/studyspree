@@ -14,6 +14,12 @@ export const LanguageContext = createContext<{
 
 export function LanguageProvider({ children, initialLocale, initialDictionary }: { children: React.ReactNode; initialLocale: Locale; initialDictionary: Dictionary }) {
   const [{ locale, dictionary }, updateLanguage] = useState({ locale: initialLocale, dictionary: initialDictionary });
+  const [previousInitialDictionary, setPreviousInitialDictionary] = useState(initialDictionary);
+  // A refreshed layout may carry new copy while this provider stays mounted.
+  if (previousInitialDictionary !== initialDictionary) {
+    setPreviousInitialDictionary(initialDictionary);
+    if (locale === initialLocale) updateLanguage({ locale: initialLocale, dictionary: initialDictionary });
+  }
   const latest = useRef(0);
   const t = useCallback((key: TranslationKey, params?: Record<string, string | number>) => formatTranslation(dictionary, key, params), [dictionary]);
   useEffect(() => {

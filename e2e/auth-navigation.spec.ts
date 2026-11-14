@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { expect, test } from "@playwright/test";
-import en from "../src/translations/en";
+const en = JSON.parse(readFileSync(new URL("../src/translations/common/en.json", import.meta.url), "utf8")) as { common: { logout: string; navLabel: string } };
 
 test("header controls and expandable navigation retain their keyboard behavior", async ({ page }) => {
   test.setTimeout(90000);
@@ -32,4 +32,11 @@ test("header controls and expandable navigation retain their keyboard behavior",
   expect((await nav.boundingBox())!.width).toBe(64);
   await home.focus();
   expect((await nav.boundingBox())!.width).toBe(208);
+  await page.context().addCookies([{ name: "ss_dev_admin", value: "stale-preview-cookie", url: new URL("/", page.url()).href }]);
+  await signOut.click();
+  await expect(page).toHaveURL(/\/login$/, { timeout: 15000 });
+  const cookies = await page.context().cookies();
+  expect(cookies.some(cookie => cookie.name === "ss_dev_admin" || cookie.name.endsWith("-auth-token") || /-auth-token\.\d+$/.test(cookie.name))).toBe(false);
+  await page.goto("/");
+  await expect(page).toHaveURL(/\/login$/);
 });

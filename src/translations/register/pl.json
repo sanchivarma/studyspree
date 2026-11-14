@@ -13,6 +13,14 @@
     "passwordMismatch": "Hasła muszą być takie same.",
     "usernameTaken": "Ta nazwa użytkownika jest zajęta. Wybierz inną.",
     "passwordWeak": "Wybierz silniejsze hasło z literami, cyframi i symbolami.",
-    "rateLimited": "Poczekaj kilka minut przed utworzeniem konta."
+    "rateLimited": "Poczekaj kilka minut przed utworzeniem konta.",
+    "ageConfirmation": "Potwierdzam, że mam co najmniej 18 lat.",
+    "ageHelp": "Rejestracja w StudySpree jest przeznaczona dla osób pełnoletnich.",
+    "ageRequired": "Potwierdź, że masz co najmniej 18 lat, aby utworzyć konto.",
+    "creationError": "Nie udało się utworzyć konta. Zapisaliśmy informację o problemie. Spróbuj później.",
+    "networkError": "Nie można połączyć się ze StudySpree. Sprawdź połączenie i spróbuj później.",
+    "successTitle": "Rejestracja zakończona",
+    "successBody": "Sprawdź pocztę i kliknij link, aby potwierdzić konto. Witamy w rodzinie StudySpree!",
+    "successClose": "Rozumiem"
   }
 }

@@ -30,7 +30,7 @@ const repositoryResponse = (response: Response, operation: string) =>
   new URL(response.url()).pathname === "/api/repository" && response.request().postDataJSON()?.op === operation;
 
 for (const item of navigationItems) {
-  test(`click ${item.id}: ready within two seconds`, async ({ page }, info) => {
+  test(`click ${item.id}: ready within one second`, async ({ page }, info) => {
     // Home must be reached from another screen, rather than clicking the current URL.
     if (item.id === "home") {
       await page.getByRole("navigation", { name: "Main navigation", exact: true }).getByRole("link", { name: "Study", exact: true }).click();
@@ -95,7 +95,7 @@ for (const destination of [{id:"settings",href:"/settings",label:"Settings",prim
   });
 }
 
-test("fresh companion selection and saved session complete within two seconds", async ({ page }, info) => {
+test("fresh companion selection and saved session complete within one second", async ({ page }, info) => {
   await page.goto("/study");
   await expect(page.getByRole("button", { name: "Start", exact: true })).toBeEnabled();
   await expectFastAction(info, "open companion picker", remaining => page.getByRole("button", { name: "Choose companions", exact: true }).click({ timeout: remaining() }),
@@ -124,20 +124,13 @@ test("fresh companion selection and saved session complete within two seconds", 
   await expect(page.getByTestId("complete-screen")).toBeVisible();
 });
 
-test("search opens and loads real results within two seconds", async ({ page }, info) => {
-  let loaded: Promise<Response>;
-  await expectFastAction(info, "open Search and load results", async remaining => {
-    loaded = page.waitForResponse(response => new URL(response.url()).pathname === "/api/community" && response.request().postDataJSON()?.area === "search", { timeout: remaining() });
-    void loaded.catch(() => undefined);
-    await page.getByRole("button", { name: "Search StudySpree", exact: true }).click({ timeout: remaining() });
-  }, async remaining => {
-    expect((await loaded).ok()).toBe(true);
-    await expect(page.getByRole("searchbox", { name: "Search", exact: true })).toBeEnabled({ timeout: remaining() });
-    await expect(page.getByRole("dialog").getByRole("status").filter({ hasText: text("community.loading") })).toHaveCount(0, { timeout: remaining() });
-  });
+test("header omits retired Search and notification controls", async ({ page }) => {
+  const controls = page.getByTestId("account-controls");
+  await expect(controls.getByRole("button")).toHaveCount(2);
+  await expect(page.getByRole("button", { name: "Search StudySpree", exact: true })).toHaveCount(0);
 });
 
-test("Start and Finish reach their saved screens within two seconds", async ({ page }, info) => {
+test("Start and Finish reach their saved screens within one second", async ({ page }, info) => {
   await page.goto("/study?mode=solo");
   await expect(page.getByRole("button", { name: "Start", exact: true })).toBeEnabled();
   let saved: Promise<Response>;
@@ -173,7 +166,7 @@ test("Start and Finish reach their saved screens within two seconds", async ({ p
   }
 });
 
-test("Settings toggle updates and saves within two seconds", async ({ page }, info) => {
+test("Settings toggle updates and saves within one second", async ({ page }, info) => {
   await page.goto("/settings");
   const control = page.getByRole("switch", { name: text("settings.showStreak"), exact: true });
   await expect(control).toBeEnabled();
@@ -192,7 +185,7 @@ test("Settings toggle updates and saves within two seconds", async ({ page }, in
   });
 });
 
-test("Virtual and People visibility controls respond within two seconds", async ({ page }, info) => {
+test("Virtual and People visibility controls respond within one second", async ({ page }, info) => {
   await page.goto("/study");
   await expect(page.getByRole("button", { name: "Start", exact: true })).toBeEnabled();
   for (const mode of ["Virtual partners", "People"]) {

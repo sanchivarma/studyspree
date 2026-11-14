@@ -14,5 +14,6 @@ export async function executeAuth(operation: AuthOperation, input?: unknown): Pr
     return post("/api/auth/register", input);
   }
   if (operation === "login") return post("/api/auth/login", input);
+  if (operation === "logout") return post("/api/auth/logout", {});
   return authenticate(operation, input);
 }

@@ -217,6 +217,9 @@ A Playwright test greps the Complete screen for banned words. Don't work around 
 - Don't fetch in `useEffect`; use TanStack Query
 
 ### Performance — the scene must hold 60fps on an old laptop
+
+- User acceptance rule (14 November): target 500 ms and never exceed 1,000 ms for API responses and complete click-to-ready actions. Measure real backend responses and the ready destination UI, including login and sign-out; do not treat an immediate spinner as completion. Do not commit or claim the task is complete until its latency checks pass. Report unverified or failing paths plainly.
+- The idle main screen loads community/repository data on page load and after explicit changes, without interval polling. Active room/chat updates and required session heartbeats have separate lifecycle requirements.
 - Animate **only** `transform` and `opacity`
 - Prompt 2.4 explicitly authorizes `stroke-dashoffset` animation for `DepletingRing`; this exception applies to that component only.
 - Never animate `width`, `height`, `top`, `left`, `margin`, `box-shadow`

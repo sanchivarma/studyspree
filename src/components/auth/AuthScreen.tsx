@@ -15,7 +15,7 @@ const inputClass = "h-12 w-full rounded-xl border border-border bg-background/50
 
 export function AuthScreen({ isConfigured, allowOAuth = true, hasDevLogin = false, hasCallbackError = false, initialMode = "login" }: { isConfigured: boolean; allowOAuth?: boolean; hasDevLogin?: boolean; hasCallbackError?: boolean; initialMode?: "login" | "register" }) {
   const { t } = useTranslation();
-  const { execute, isPending, result, clearResult } = useAuth();
+  const { execute, prepareLogin, isPending, result, clearResult } = useAuth();
   const [mode, setMode] = useState<"login" | "register" | "reset">(initialMode);
   const [errors, setErrors] = useState<RegistrationErrors>({});
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
@@ -104,7 +104,7 @@ export function AuthScreen({ isConfigured, allowOAuth = true, hasDevLogin = fals
                 <button disabled={!isConfigured || isPending} type="button" onClick={() => void execute("facebook")} className="min-h-12 rounded-xl border border-border bg-background/30 px-4 text-small disabled:opacity-50">{t("common.facebook")}</button>
               </div>
               <div className="my-5 flex items-center gap-3 text-small text-text-muted"><span className="h-px flex-1 bg-border" /><span>{t("common.or")}</span><span className="h-px flex-1 bg-border" /></div>
-            </> : <p className="mb-6 text-small text-text-muted">{t("recovery.help")}</p>}
+            </> : mode === "reset" ? <p className="mb-6 text-small text-text-muted">{t("recovery.help")}</p> : null}
 
             {mode === "login" && <form noValidate onSubmit={event => {
               event.preventDefault(); void execute("magicLink", new FormData(event.currentTarget).get("email"));
@@ -113,7 +113,7 @@ export function AuthScreen({ isConfigured, allowOAuth = true, hasDevLogin = fals
               <input id="magic-email" name="email" type="email" autoComplete="email" required maxLength={254} className={inputClass} />
               <button type="submit" disabled={!isConfigured || isPending} className="min-h-12 w-full rounded-xl border border-border px-4 text-small disabled:opacity-50">{t("login.sendLink")}</button>
             </form>}
-            <form key={mode} noValidate onSubmit={submit} className="space-y-4">
+            <form key={mode} noValidate onFocusCapture={() => { if (mode === "login") prepareLogin(); }} onSubmit={submit} className="space-y-4">
               {mode === "register" && <div className="grid gap-4 sm:grid-cols-2">{field("firstName", "common.firstName", "text", "given-name")}{field("lastName", "common.lastName", "text", "family-name")}</div>}
               {mode !== "login" && field("email", "common.email", "email", "email")}
               {mode !== "reset" && <>
@@ -142,7 +142,7 @@ export function AuthScreen({ isConfigured, allowOAuth = true, hasDevLogin = fals
       <Dialog.Root open={registrationSuccess} onOpenChange={setRegistrationSuccess}>
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 z-50 bg-background/80" />
-          <Dialog.Content className="fixed top-1/2 left-1/2 z-50 w-[calc(100%-3rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-3xl border border-border bg-surface p-8 shadow-xl">
+          <Dialog.Content className="fixed top-1/2 left-1/2 z-50 w-[calc(100%_-_3rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-3xl border border-border bg-surface p-8 shadow-xl">
             <Dialog.Title className="text-title">{t("register.successTitle")}</Dialog.Title>
             <Dialog.Description className="mt-4 text-body text-text-muted">{t("register.successBody")}</Dialog.Description>
             <Dialog.Close className="mt-6 min-h-12 w-full rounded-xl bg-accent px-4 font-semibold text-background">{t("register.successClose")}</Dialog.Close>

@@ -38,4 +38,8 @@ describe("OAuth callback", () => {
     const response = await GET(new NextRequest("http://localhost:3000/auth/callback?code=valid"));
     expect(response.headers.get("location")).toBe("http://localhost:3000/onboarding");
   });
+  it("keeps the browser hostname when Next uses a different internal hostname", async () => {
+    const response = await GET(new NextRequest("http://localhost:3000/auth/callback?code=valid", { headers: { host: "127.0.0.1:3000", "x-forwarded-host": "attacker.test" } }));
+    expect(response.headers.get("location")).toBe("http://127.0.0.1:3000/");
+  });
 });

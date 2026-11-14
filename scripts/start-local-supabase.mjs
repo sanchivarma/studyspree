@@ -1,5 +1,6 @@
 // Capture CLI output: local credentials must never be written into tool logs.
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { delimiter, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -41,6 +42,24 @@ child.on("close", code => {
     console.error(safe);
   }
   console.log(`Local Supabase start exited with status ${code}. Credentials were suppressed.`);
-  if (code === 0) console.log(`Authentication email transport: ${transport}.`);
+  if (code === 0) {
+    const projectId = readFileSync(join(root, "supabase/config.toml"), "utf8").match(/^project_id\s*=\s*"([a-zA-Z0-9_-]+)"/m)?.[1];
+    try {
+      if (!projectId) throw new Error("Project ID unavailable");
+      const check = spawnSync(join(dockerBin, process.platform === "win32" ? "docker.exe" : "docker"), ["inspect", `supabase_auth_${projectId}`], { encoding: "utf8", windowsHide: true });
+      if (check.status !== 0) throw new Error("Auth container unavailable");
+      const settings = JSON.parse(check.stdout)[0].Config.Env;
+      const setting = key => settings.find(value => value.startsWith(`${key}=`))?.slice(key.length + 1);
+      const correct = transport === "mailpit"
+        ? setting("GOTRUE_SMTP_HOST") === `supabase_inbucket_${projectId}`
+        : setting("GOTRUE_SMTP_HOST") === environment.SUPABASE_AUTH_EMAIL_SMTP_HOST && setting("GOTRUE_SMTP_ADMIN_EMAIL") === environment.SUPABASE_AUTH_EMAIL_SMTP_ADMIN_EMAIL;
+      if (!correct) throw new Error("Settings differ");
+      console.log(`Verified active authentication email transport: ${transport}.`);
+    } catch {
+      console.error("Active Auth SMTP settings do not match the requested transport. Stop and restart the local stack without resetting its database, then run npm run db:start. No credentials were printed.");
+      process.exitCode = 1;
+      return;
+    }
+  }
   process.exitCode = code ?? 1;
 });

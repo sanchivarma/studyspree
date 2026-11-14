@@ -4,6 +4,7 @@ import { authRepository } from "@/lib/repo/authRepository";
 import { hasSameOrigin } from "./sameOrigin";
 import { now } from "@/lib/clock";
 import type { AuthOperation, AuthResult } from "./types";
+import { randomUUID } from "node:crypto";
 
 const limited = new Map<string, { count: number; until: number }>();
 
@@ -27,10 +28,18 @@ export function authEndpoint(operation: AuthOperation) {
       if (!request.headers.get("content-type")?.includes("application/json")) throw new SyntaxError();
       const body = await request.text();
       if (body.length > 4096) throw new SyntaxError();
-      const result = await authRepository.execute(operation, JSON.parse(body));
+      let result = await authRepository.execute(operation, JSON.parse(body));
+      if (operation === "register" && result.status === "error" && ["common.authError", "common.authUnavailable"].includes(result.message ?? "")) {
+        console.error(JSON.stringify({ event: "registration_error", requestId: randomUUID(), category: result.message }));
+        result = { status: "error", message: "register.creationError" };
+      }
       const status = result.status === "success" ? 200 : result.fieldErrors ? 422 : result.message === "login.invalidCredentials" ? 401 : result.message === "common.invalidFields" ? 400 : result.message === "register.rateLimited" ? 429 : 503;
       return respond(result, status);
     } catch (error) {
+      if (operation === "register" && !(error instanceof SyntaxError || error instanceof z.ZodError)) {
+        console.error(JSON.stringify({ event: "registration_error", requestId: randomUUID(), category: "unexpected" }));
+        return respond({ status: "error", message: "register.creationError" }, 503);
+      }
       return respond({ status: "error", message: error instanceof SyntaxError || error instanceof z.ZodError ? "common.invalidFields" : "common.authError" }, error instanceof SyntaxError || error instanceof z.ZodError ? 400 : 503);
     }
   };
